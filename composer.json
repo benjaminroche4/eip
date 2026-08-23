@@ -63,6 +63,7 @@
             "npx tsc --noEmit",
             "npm run lint --silent",
             "npx prettier --check resources/js resources/css",
+            "npx vitest run",
             "vendor/bin/pint --test",
             "@php artisan test --compact"
         ]

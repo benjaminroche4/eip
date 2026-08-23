@@ -83,7 +83,9 @@ return [
         'privacy' => 'Politique de confidentialité',
         'legal' => 'Mentions légales',
         'terms' => 'Conditions générales',
-        'back_to_top' => 'Haut de page',
+        'reviews' => ':rating sur Google · +:count avis',
+        'reviews_label' => 'Voir nos avis Google',
+        'advisors' => 'Nos conseillers',
         'intro' => 'Nos conseillers sont à votre écoute par téléphone au :phone ou sur WhatsApp.',
     ],
     'home' => [

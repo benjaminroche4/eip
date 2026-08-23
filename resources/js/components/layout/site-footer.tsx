@@ -1,5 +1,5 @@
 import BrandWordmark from '@/components/footer/brand-wordmark';
-import ContactList from '@/components/footer/contact-list';
+import ContactCard from '@/components/footer/contact-card';
 import FooterColumn from '@/components/footer/footer-column';
 import FooterNav from '@/components/footer/footer-nav';
 import LegalBar from '@/components/footer/legal-bar';
@@ -26,8 +26,8 @@ export default function SiteFooter({ year }: { year: number }) {
                 <BrandWordmark />
             </div>
 
-            <div className={`${container} grid gap-12 pt-14 pb-16 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-15 lg:pt-20 lg:pb-20`}>
-                <div className="flex flex-col gap-5 sm:col-span-2 lg:col-span-1">
+            <div className={`${container} grid gap-12 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-15 lg:py-16`}>
+                <div className="flex flex-col items-center gap-5 text-center sm:col-span-2 sm:items-start sm:text-left lg:col-span-1">
                     <Link href={route('home')} aria-label="Homepage" className="focus-ring inline-flex w-fit rounded-sm">
                         <BrandLogo />
                     </Link>
@@ -42,11 +42,11 @@ export default function SiteFooter({ year }: { year: number }) {
                         <LanguageSwitcher />
                     </div>
                 </div>
-                <FooterColumn title={t('footer.navigation')}>
+                <FooterColumn title={t('footer.navigation')} className="order-last sm:order-none">
                     <FooterNav items={items} label={t('footer.navigation')} />
                 </FooterColumn>
                 <FooterColumn title={t('footer.contact')}>
-                    <ContactList />
+                    <ContactCard />
                 </FooterColumn>
             </div>
 

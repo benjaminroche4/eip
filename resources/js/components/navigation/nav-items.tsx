@@ -13,6 +13,11 @@ export function useNavItems(): NavItem[] {
     ];
 }
 
+/** Contact page URL — "#" until the route exists (see routes/web.php). */
+export function useContactHref(): string {
+    return route().has('contact') ? route('contact') : '#';
+}
+
 /** Matches an href against the current Inertia URL (ignores query/hash, never matches "#"). */
 export function useIsActive() {
     const { url } = usePage();

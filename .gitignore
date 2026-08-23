@@ -24,3 +24,4 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /public/sitemap.xml
+/tests/js/fixtures/translations.json

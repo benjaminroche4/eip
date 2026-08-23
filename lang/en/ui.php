@@ -83,7 +83,9 @@ return [
         'privacy' => 'Privacy Policy',
         'legal' => 'Legal Notice',
         'terms' => 'Terms & Conditions',
-        'back_to_top' => 'Back to top',
+        'reviews' => ':rating on Google · :count+ reviews',
+        'reviews_label' => 'See our Google reviews',
+        'advisors' => 'Our advisors',
         'intro' => 'Our advisors are available by phone at :phone or on WhatsApp.',
     ],
     'home' => [

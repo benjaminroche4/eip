@@ -11,7 +11,7 @@ import { useScrolled } from '@/hooks/use-scrolled';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { useCallback, useId, useState } from 'react';
+import { useCallback, useId, useRef, useState } from 'react';
 
 /** Site header (Figma 137-2085 desktop, 125-361 mobile). The "Our Properties" mega menu is not wired yet. */
 export default function SiteHeader() {
@@ -22,7 +22,11 @@ export default function SiteHeader() {
     const direction = useScrollDirection();
     const [menuOpen, setMenuOpen] = useState(false);
     const menuId = useId();
-    const closeMenu = useCallback(() => setMenuOpen(false), []);
+    const toggleRef = useRef<HTMLButtonElement>(null);
+    const closeMenu = useCallback(() => {
+        setMenuOpen(false);
+        toggleRef.current?.focus({ preventScroll: true });
+    }, []);
     // Mobile: slide the bar away while scrolling down, bring it back on the first upward scroll (never while the menu is open).
     const hidden = scrolled && direction === 'down' && !menuOpen;
 
@@ -86,7 +90,7 @@ export default function SiteHeader() {
                         {cta}
                     </div>
 
-                    <MobileMenuToggle open={menuOpen} controls={menuId} onToggle={() => setMenuOpen((o) => !o)} />
+                    <MobileMenuToggle ref={toggleRef} open={menuOpen} controls={menuId} onToggle={() => setMenuOpen((o) => !o)} />
                 </div>
 
                 <MobileMenuPanel id={menuId} open={menuOpen} compact={scrolled} items={navItems} isActive={isActive} cta={cta} onClose={closeMenu} />
