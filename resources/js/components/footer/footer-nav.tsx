@@ -1,17 +1,19 @@
 import { type NavItem } from '@/components/navigation/nav-items';
+import { hoverSurfaceClass } from '@/lib/hover-surface';
+import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 
-/** Inter 14 links with the animated underline used across the site — the same entries as the header. */
+/** Inter 14 links with the same drawn-underline hover as the header — the same entries as the header. */
 export default function FooterNav({ items, label }: { items: NavItem[]; label: string }) {
     return (
         <nav aria-label={label}>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col items-start gap-1">
                 {items.map((item) => (
                     <li key={item.key}>
                         <Link
                             href={item.href}
                             prefetch
-                            className="text-foreground focus-ring hover:text-primary-40 rounded-sm text-sm transition-colors"
+                            className={cn('text-foreground focus-ring inline-flex items-center rounded-sm px-2 py-1 text-sm', hoverSurfaceClass)}
                         >
                             {item.label}
                         </Link>

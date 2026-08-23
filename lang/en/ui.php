@@ -77,10 +77,13 @@ return [
         'navigation' => 'Navigation',
         'contact' => 'Contact Us',
         'follow' => 'Follow us',
+        'new_tab' => '(opens in a new tab)',
+        'legal_nav' => 'Legal links',
         'copyright' => '© :year :name',
         'privacy' => 'Privacy Policy',
         'legal' => 'Legal Notice',
         'terms' => 'Terms & Conditions',
+        'back_to_top' => 'Back to top',
         'intro' => 'Our advisors are available by phone at :phone or on WhatsApp.',
     ],
     'home' => [

@@ -22,12 +22,12 @@ export default function SiteFooter({ year }: { year: number }) {
 
     return (
         <footer className="from-background-10 to-background-02 after:via-border relative overflow-hidden bg-gradient-to-b after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent">
-            <div className={`${container} pt-12`}>
+            <div className={`${container} pt-12 lg:pt-16`}>
                 <BrandWordmark />
             </div>
 
-            <div className={`${container} grid gap-10 pt-12 pb-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-15`}>
-                <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-2">
+            <div className={`${container} grid gap-12 pt-14 pb-16 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-15 lg:pt-20 lg:pb-20`}>
+                <div className="flex flex-col gap-5 sm:col-span-2 lg:col-span-1">
                     <Link href={route('home')} aria-label="Homepage" className="focus-ring inline-flex w-fit rounded-sm">
                         <BrandLogo />
                     </Link>
@@ -45,7 +45,7 @@ export default function SiteFooter({ year }: { year: number }) {
                 <FooterColumn title={t('footer.navigation')}>
                     <FooterNav items={items} label={t('footer.navigation')} />
                 </FooterColumn>
-                <FooterColumn title={t('footer.contact')} className="sm:col-span-2 lg:col-span-1">
+                <FooterColumn title={t('footer.contact')}>
                     <ContactList />
                 </FooterColumn>
             </div>

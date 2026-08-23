@@ -77,10 +77,13 @@ return [
         'navigation' => 'Navigation',
         'contact' => 'Contact',
         'follow' => 'Nous suivre',
+        'new_tab' => '(nouvel onglet)',
+        'legal_nav' => 'Liens légaux',
         'copyright' => '© :year :name',
         'privacy' => 'Politique de confidentialité',
         'legal' => 'Mentions légales',
         'terms' => 'Conditions générales',
+        'back_to_top' => 'Haut de page',
         'intro' => 'Nos conseillers sont à votre écoute par téléphone au :phone ou sur WhatsApp.',
     ],
     'home' => [

@@ -11,7 +11,7 @@ const NETWORKS = [
 
 type SocialLinksProps = { className?: string };
 
-/** 24px Primary discs with 12px white glyphs (public/images/social), lighter on hover. Only configured networks render. */
+/** 36px outlined discs, filled Primary on hover/focus (white glyph inverted to dark at rest). 14px glyphs from public/images/social. Only configured networks render. */
 export default function SocialLinks({ className }: SocialLinksProps) {
     const { seo } = usePage<SharedData>().props;
     const { t } = useTranslation();
@@ -27,10 +27,16 @@ export default function SocialLinks({ className }: SocialLinksProps) {
                         href={seo.social[n.key]}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={n.label}
-                        className="bg-primary hover:bg-primary-50 focus-ring flex size-6 items-center justify-center rounded-full transition-colors duration-300"
+                        aria-label={`${n.label} ${t('footer.new_tab')}`}
+                        className="group ring-border hover:bg-primary hover:ring-primary focus-visible:bg-primary focus-visible:ring-primary focus-ring flex size-9 items-center justify-center rounded-full bg-transparent ring-1 transition-[background-color,box-shadow] duration-300 ease-out motion-reduce:transition-none"
                     >
-                        <img src={`/images/social/${n.key}.svg`} alt="" width={12} height={12} className="size-3" />
+                        <img
+                            src={`/images/social/${n.key}.svg`}
+                            alt=""
+                            width={14}
+                            height={14}
+                            className="size-3.5 invert transition-[filter] duration-300 group-hover:invert-0 group-focus-visible:invert-0 motion-reduce:transition-none"
+                        />
                     </a>
                 </li>
             ))}
