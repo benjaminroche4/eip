@@ -1,6 +1,7 @@
 import { useContactHref } from '@/components/navigation/nav-items';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useTranslation } from '@/hooks/use-translation';
+import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -24,11 +25,7 @@ export default function ContactCard() {
     if (!phone) return null;
 
     return (
-        <Link
-            href={href}
-            prefetch
-            className="group focus-ring flex flex-col gap-3 rounded-sm transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 motion-reduce:transition-none"
-        >
+        <Link href={href} prefetch className="group focus-ring flex flex-col gap-3 rounded-sm">
             <p className="text-foreground text-sm">{t('footer.intro')}</p>
 
             <div className="flex items-center gap-3">
@@ -43,7 +40,15 @@ export default function ContactCard() {
                     ))}
                 </ul>
                 <span aria-hidden className="bg-border h-6 w-px" />
-                <p className="text-foreground text-base tabular-nums">{phone}</p>
+                <p
+                    className={cn(
+                        'text-foreground relative text-base tabular-nums',
+                        // same drawn underline as the nav links, driven by the whole block's hover/focus
+                        'after:bg-foreground after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:after:origin-left group-hover:after:scale-x-100 group-focus-visible:after:origin-left group-focus-visible:after:scale-x-100 motion-reduce:after:transition-none',
+                    )}
+                >
+                    {phone}
+                </p>
             </div>
         </Link>
     );
