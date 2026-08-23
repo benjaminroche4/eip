@@ -22,7 +22,15 @@ Basé sur le starter kit officiel `laravel/react-starter-kit`. Pas de Next.js, p
 | `php artisan test` | 36 tests PHPUnit (classes ; SSR désactivé via `phpunit.xml`) |
 | `php artisan sitemap:generate` | régénère `public/sitemap.xml` (planifié chaque jour dans `routes/console.php`) |
 
-Avant de livrer : `tsc`, `eslint`, `pint`, `php artisan test` doivent passer.
+Avant de livrer : `composer run check` (tsc + eslint + prettier --check + pint --test + tests) doit passer.
+
+## Qualité & tests — règle absolue
+
+- **Tout le projet est sous tests** : chaque fonctionnalité (Action de domaine, contrôleur/route, middleware, commande, builder SEO, composant critique) a ses tests — unitaires (`tests/Unit`, classes PHPUnit) et fonctionnels (`tests/Feature`, requêtes HTTP Inertia/SSR). Une fonctionnalité sans test n'est pas terminée.
+- **Après chaque modification** de code (PHP ou TS), relancer `composer run check` et corriger jusqu'au vert. Ne jamais laisser un test rouge « pour plus tard ».
+- **Avant chaque `git push`** : `composer run check` complet + `npm run build:ssr` doivent passer. Un push avec des tests rouges est interdit, même pour un « petit » changement.
+- Nouveau comportement = nouveau test d'abord ou en même temps (régression couverte). Bug corrigé = test qui le reproduit.
+- Front : `npx tsc --noEmit`, ESLint et Prettier sont considérés comme des tests ; une page publique se vérifie aussi au `curl` SSR.
 
 ## Structure utile
 
