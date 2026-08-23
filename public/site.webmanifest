@@ -1,0 +1,9 @@
+{
+    "name": "Laravel App",
+    "short_name": "Laravel App",
+    "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }],
+    "theme_color": "#202832",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "start_url": "/"
+}

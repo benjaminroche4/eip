@@ -1,0 +1,102 @@
+/*
+ * Design tokens — source: Figma "Website" › Color Kit (node 62-435).
+ * Steps 10→100 = light→dark. Primary 50 = "Light", 60 = "Main".
+ * Expose as Tailwind utilities: bg-primary-60, text-grey-70, border-error-30, …
+ * Semantic shadcn tokens (--background, --primary…) are mapped onto this palette in app.css.
+ */
+@theme static {
+    /* Primary (brand, blue-grey) */
+    --color-primary-10: #e9eaeb;
+    --color-primary-20: #c9cbce;
+    --color-primary-30: #a8adb3;
+    --color-primary-40: #6c737b;
+    --color-primary-50: #383e47; /* Light */
+    --color-primary-60: #202832; /* Main */
+    --color-primary-70: #1b222b;
+    --color-primary-80: #171c24;
+    --color-primary-90: #12171d;
+    --color-primary-100: #0e1216;
+
+    /* Error */
+    --color-error-10: #ffeded;
+    --color-error-20: #fed3d3;
+    --color-error-30: #fdafaf;
+    --color-error-40: #fc8a8a;
+    --color-error-50: #fc6767;
+    --color-error-60: #fb4646;
+    --color-error-70: #d53c3c;
+    --color-error-80: #b23232;
+    --color-error-90: #8f2828;
+    --color-error-100: #711f1f;
+
+    /* Success */
+    --color-success-10: #eaf8ef;
+    --color-success-20: #cdefd9;
+    --color-success-30: #a5e3bb;
+    --color-success-40: #7bd59c;
+    --color-success-50: #54c97e;
+    --color-success-60: #2ebd62;
+    --color-success-70: #27a153;
+    --color-success-80: #218646;
+    --color-success-90: #1a6c38;
+    --color-success-100: #15552c;
+
+    /* Warning */
+    --color-warning-10: #fef4ea;
+    --color-warning-20: #fee5cd;
+    --color-warning-30: #fcd0a6;
+    --color-warning-40: #fbba7c;
+    --color-warning-50: #faa554;
+    --color-warning-60: #f9912f;
+    --color-warning-70: #d47b28;
+    --color-warning-80: #b16721;
+    --color-warning-90: #8e531b;
+    --color-warning-100: #704115;
+
+    /* Info */
+    --color-info-10: #eaf0fe;
+    --color-info-20: #cddcfe;
+    --color-info-30: #a6c0fc;
+    --color-info-40: #7ca2fb;
+    --color-info-50: #5486fa;
+    --color-info-60: #2f6cf9;
+    --color-info-70: #285cd4;
+    --color-info-80: #214db1;
+    --color-info-90: #1b3e8e;
+    --color-info-100: #153170;
+
+    /* Grey */
+    --color-grey-5: #f8f8f8; /* Figma "Grey/10" surface */
+    --color-grey-10: #f0f1f3;
+    --color-grey-20: #dcdee1;
+    --color-grey-30: #c0c4ca;
+    --color-grey-40: #a3a8b1;
+    --color-grey-50: #878e99;
+    --color-grey-60: #6d7583;
+    --color-grey-70: #5d636f;
+    --color-grey-80: #4d535d;
+    --color-grey-90: #3e434b;
+    --color-grey-100: #31353b;
+
+    /* Base (Figma variables) */
+    --color-stroke: #e3e3e3; /* Base/Stroke — mapped to --border */
+    --color-background-05: #faf6f2; /* Base/Background 05 — hover surface */
+    --color-secondary-30: #f3ebdf; /* Secondary/30 — footer hairlines */
+    --color-secondary-40: #ede1d0; /* Secondary/40 — badges on hover surface */
+    --color-secondary-80: #a19481; /* Secondary/80 — watermark outline */
+    --color-background-10: #ece7dd; /* footer gradient start */
+    --color-background-02: #fffdf9; /* footer gradient end */
+
+    /* Text (Figma variables) */
+    --color-text-heading: #0f1b29;
+    --color-text-body: #545b67;
+    --color-text-disabled: #cfcfd1;
+
+    /* Semantic status (usable as bg-success / text-warning-foreground …) */
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-info: var(--info);
+    --color-info-foreground: var(--info-foreground);
+}
