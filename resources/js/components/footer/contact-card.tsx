@@ -14,15 +14,20 @@ const ADVISORS = [
 
 /**
  * Contact block (the whole block links to the contact page): the availability sentence,
- * then one row — small overlapping advisor avatars | hairline | phone number.
+ * then one row — small overlapping advisor avatars | hairline | phone number — and, under a
+ * hairline, the Google rating ("4,9/5 sur 400 avis Google").
  */
 export default function ContactCard() {
-    const { seo } = usePage<SharedData>().props;
+    const { seo, locale } = usePage<SharedData>().props;
     const { t } = useTranslation();
     const href = useContactHref();
     const { phone } = seo.organization;
 
     if (!phone) return null;
+
+    const rating = seo.reviews
+        ? new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(seo.reviews.rating)
+        : null;
 
     return (
         <Link href={href} prefetch className="group focus-ring flex flex-col gap-3 rounded-sm">
@@ -50,6 +55,16 @@ export default function ContactCard() {
                     {phone}
                 </p>
             </div>
+
+            {seo.reviews && rating && (
+                <p className="border-border text-muted-foreground flex items-baseline gap-1.5 border-t pt-3 text-sm">
+                    <span className="text-foreground font-medium tabular-nums">
+                        {rating}
+                        <span className="text-muted-foreground text-xs font-normal">/5</span>
+                    </span>
+                    <span>{t('footer.reviews', { count: seo.reviews.count })}</span>
+                </p>
+            )}
         </Link>
     );
 }
