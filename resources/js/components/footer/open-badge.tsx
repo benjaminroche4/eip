@@ -13,7 +13,7 @@ export default function OpenBadge() {
     return (
         <Badge
             variant="outline"
-            className="border-foreground text-foreground bg-transparent px-2 py-0 text-[0.6875rem] font-medium"
+            className="border-border text-muted-foreground bg-transparent px-2 py-0 text-[0.6875rem] font-medium"
             title={seo.hours.label}
         >
             {t('footer.open_now')}
