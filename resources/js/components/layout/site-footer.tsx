@@ -1,3 +1,4 @@
+import AdvisorCard from '@/components/footer/advisor-card';
 import BrandWordmark from '@/components/footer/brand-wordmark';
 import ContactList from '@/components/footer/contact-list';
 import FooterColumn from '@/components/footer/footer-column';
@@ -5,10 +6,10 @@ import FooterNav from '@/components/footer/footer-nav';
 import LegalBar from '@/components/footer/legal-bar';
 import SocialLinks from '@/components/footer/social-links';
 import LanguageSwitcher from '@/components/i18n/language-switcher';
+import BrandLogo from '@/components/layout/brand-logo';
 import { useNavItems } from '@/components/navigation/nav-items';
 import { useTranslation } from '@/hooks/use-translation';
-import { type SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 const container = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-15';
 
@@ -17,30 +18,21 @@ const container = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-15';
  * brand block + navigation + contact columns on a sand → cream gradient, legal bar.
  */
 export default function SiteFooter({ year }: { year: number }) {
-    const { seo } = usePage<SharedData>().props;
     const { t } = useTranslation();
     const items = useNavItems();
 
     return (
-        <footer className="from-background-10 to-background-02 overflow-hidden bg-gradient-to-b">
+        <footer className="from-background-10 to-background-02 after:via-border relative overflow-hidden bg-gradient-to-b after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent">
             <div className={`${container} pt-12`}>
                 <BrandWordmark />
             </div>
 
             <div className={`${container} grid gap-10 pt-12 pb-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-15`}>
-                <div className="flex flex-col gap-4 lg:col-span-2">
+                <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-2">
                     <Link href={route('home')} aria-label="Homepage" className="focus-ring inline-flex w-fit rounded-sm">
-                        <img
-                            src="/brand/logo-mark.svg"
-                            alt={seo.siteName}
-                            width={59}
-                            height={36}
-                            loading="lazy"
-                            decoding="async"
-                            className="h-7 w-auto"
-                        />
+                        <BrandLogo />
                     </Link>
-                    <p className="text-foreground max-w-xs text-sm">
+                    <p className="text-muted-foreground max-w-xs text-sm font-light">
                         {t('footer.tagline_1')}
                         <br />
                         {t('footer.tagline_2')}
@@ -54,8 +46,9 @@ export default function SiteFooter({ year }: { year: number }) {
                 <FooterColumn title={t('footer.navigation')}>
                     <FooterNav items={items} label={t('footer.navigation')} />
                 </FooterColumn>
-                <FooterColumn title={t('footer.contact')}>
+                <FooterColumn title={t('footer.contact')} className="sm:col-span-2 lg:col-span-1">
                     <ContactList />
+                    <AdvisorCard />
                 </FooterColumn>
             </div>
 

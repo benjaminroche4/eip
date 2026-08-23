@@ -35,7 +35,7 @@ export default function Search({ filters, results, indexing }: Props) {
     }, [q]);
 
     const { t, tc } = useTranslation();
-    const pageTitle = filters.q ? t('search.title_with_term', { term: filters.q }) : t('search.title');
+    const pageTitle = filters.q ? t('search.title_with_term', { term: filters.q }) : t('search.seo_title');
     const { ziggy } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
     const crumbs = [
@@ -47,7 +47,7 @@ export default function Search({ filters, results, indexing }: Props) {
         <>
             <SeoHead
                 title={pageTitle}
-                description={t('search.description')}
+                description={t('search.seo_description')}
                 canonical={route('search')}
                 noindex={indexing.noindex}
                 prev={indexing.prev}

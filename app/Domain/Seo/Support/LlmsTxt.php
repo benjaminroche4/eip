@@ -31,6 +31,7 @@ final class LlmsTxt
             '## Ressources',
             '',
             "- [Plan du site]({$sitemap})",
+            '- ['.__('legal.legal.title').']('.url('/fr/mentions-legales').')',
         ];
 
         if ($contact) {

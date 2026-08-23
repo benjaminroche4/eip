@@ -57,6 +57,7 @@ resources/js/lib/json-ld.ts            builders JSON-LD (siteGraph, breadcrumbLi
 resources/css/tokens.css               palette Figma (voir Design system)
 config/seo.php                         défauts SEO/GEO partagés au front via la prop `seo`
 app/Domain/                            logique métier (voir Architecture)
+app/Domain/Legal/Data/LegalPage.php    pages légales (privacy/legal/terms) depuis lang/{locale}/legal.php → LegalController → pages/legal.tsx
 app/Domain/Localization/Support/LocalizedUrls.php   page courante dans chaque langue (hreflang, switcher)
 lang/{fr,en}/ui.php · routes.php       textes UI partagés au front · slugs d'URL traduits
 resources/js/hooks/use-translation.ts  t() / tc() côté React
@@ -65,7 +66,7 @@ resources/js/hooks/use-scroll-direction.ts  masque le header mobile au scroll ba
 resources/js/components/language-switcher.tsx
 resources/js/layouts/public-layout.tsx  layout des pages publiques (SiteHeader + <main>) — toute page publique l'utilise
 resources/js/components/layout/        site-header (assemblage, Figma 137-2085 / 125-361 / 137-3488), site-footer (Figma 261-5543, variante « wordmark en tête » choisie), brand-logo
-resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (tel/mail/adresse depuis `organization`, icône lucide sur une pastille sable 32px sans bordure), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux `#`), brand-wordmark (wordmark contour pleine largeur en tête du footer)
+resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (tel/mail/adresse depuis `organization`, icône lucide sur une pastille sable 32px sans bordure), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux vers les vraies pages + « Haut de page »), contact-cta (invitation + GoogleReviews + bouton), google-reviews (badge étoiles, masqué si non configuré), brand-wordmark (wordmark contour pleine largeur en tête du footer)
 resources/js/components/navigation/    nav-link (lien + hover ellipse + focus-ring), nav-divider, nav-items (entrées + useIsActive), menu-toggle-icon (3 traits → croix), mobile-menu-toggle (bouton 72×48, aria-expanded/controls), mobile-menu-panel (Figma 137-3968 : panneau **sous la barre** qui reste en place — `absolute top-full`, hauteur `100dvh − barre` (4.5rem / 4rem compact), glissement 700 ms + liens en cascade, CTA + LanguageLinks épinglés en bas, scroll body verrouillé, Échap, swipe haut, fermeture auto ≥ lg, focus sur le 1er lien). État `menuOpen` dans site-header
                                        mega-menu-column / -promo / -properties : mega-menu « Nos biens » prêt mais **non branché** (décision utilisateur)
 resources/js/components/seo/           seo-head (<SeoHead/>), seo-breadcrumbs, seo-image
@@ -136,7 +137,7 @@ Blocs / composition
 - Composants shadcn utilisés **tels quels** (`<Button size="lg">`) : pas de `h-12 px-4` sur une instance. Si le design diverge du composant, on change la variante dans `components/ui/`, une fois.
 - États de nav : couleur/fond uniquement, jamais de changement de `font-weight` entre default/hover/actif.
 - Accessibilité clavier : utilitaire **`focus-ring`** (`app.css`, ring 3px `--ring/50`, visible uniquement au clavier via `focus-visible`) sur tout élément interactif custom (liens de nav, logo, items de menu) — les composants shadcn l'ont déjà. Lien « Aller au contenu » (`a11y.skip_to_content`) + `<main id="main" tabIndex={-1}>` dans `PublicLayout`. `aria-label` sur les `<nav>`, `aria-expanded/controls` sur les déclencheurs, `aria-current="page"`, `motion-reduce:` sur les animations. Les menus (Radix) gèrent flèches / Échap / Tab nativement.
-- SEO des liens : un lien de nav doit pointer vers une vraie URL (`route()`), jamais `#` en prod — les `#` actuels (« Estimation », « Notre groupe », CTA) sont des placeholders à remplacer dès que les pages existent.
+- SEO des liens : un lien de nav doit pointer vers une vraie URL (`route()`), jamais `#` en prod — les `#` restants (« Vendre », « Estimation », CTA « Nous contacter ») sont des placeholders à remplacer dès que les pages existent. Pages légales : routes `privacy` / `legal` / `terms` (slugs traduits), contenu placeholder dans `lang/{fr,en}/legal.php` **à faire valider juridiquement**.
 - **Icônes : `lucide-react` uniquement** (`import { X } from 'lucide-react'`), taille via classe `size-*` (défaut `size-4` dans les boutons shadcn). Jamais de SVG d'icône écrit à la main, jamais d'autre lib (Heroicons, FontAwesome, react-icons…). Exception : les **logos de marques** (réseaux sociaux) sont des fichiers SVG dans `public/images/social/` rendus en `<img>`, car ce sont des logos, pas des icônes — et Threads n'existe dans aucune lib. Les `<svg>` du kit (`app-logo-icon.tsx`, zone privée) sont à remplacer par nos assets si la zone privée est reprise.
 - Ordre des classes géré par Prettier (plugin Tailwind) — ne pas le combattre.
 
@@ -221,12 +222,20 @@ Infrastructure
 - [x] `robots.txt` et `llms.txt` dynamiques (`SeoController` ← `Domain/Seo/Support`), sitemap XML avec `lastmod` régénéré chaque jour
 - [x] Favicons (ico + svg), `apple-touch-icon`, `site.webmanifest`, `theme-color`
 
+Meta title & description — conventions (testées par `tests/Feature/SeoMetaLengthTest.php`)
+- Chaque page publique a ses clés **`<page>.seo_title`** et **`<page>.seo_description`** dans `lang/{fr,en}/ui.php` (distinctes du `title` utilisé pour le `<h1>` / la nav). Les passer à `<SeoHead>`.
+- **Title : 50–60 caractères max (jamais > 60), 30 minimum**, suffixe ` · Estate in Paris` **compris** (sauf home, `withSuffix={false}`, où la marque ouvre le titre). Mot-clé principal au début, bénéfice/lieu ensuite, pas de suite de mots-clés, pas de « Accueil » / « Bienvenue ». Unique sur tout le site. Format : `{Mot-clé principal} {à Paris / précision} · Estate in Paris`.
+- **Description : 120–160 caractères**, une phrase active qui répond à l'intention de recherche, contient le mot-clé principal + « Paris » de façon naturelle, se termine par une incitation (« découvrez », « trouvez », « contactez »). Jamais tronquée par Google (< 160), jamais dupliquée entre pages, jamais identique au title.
+- Pages dynamiques (bien, article) : construire le title depuis les données (`{Type} {pièces} {quartier} · Estate in Paris`) et **tronquer proprement** à 60 (couper sur un mot, `…`) ; description générée depuis le résumé, même règle 120–160.
+- Pages `noindex` (résultats filtrés, pagination > 1) : title/description quand même renseignés (affichés dans l'onglet, partagés sur les réseaux).
+- OG/Twitter : `og:title` = title sans suffixe si > 60 ; `og:description` = description. Vérifier au `curl` : une seule balise `<title>`, une seule `meta description`.
+
 Par page (`<SeoHead/>`)
 - [x] `<title>` unique suffixé ` · Site` (`withSuffix={false}` sur la home), `meta description`, `canonical`
 - [x] `robots` : `index, follow, max-image-preview:large, max-snippet:-1` ou `noindex, follow`
 - [x] Open Graph complet + Twitter `summary_large_image`, image par défaut `public/og-default.png` (**placeholder 1200×630 à remplacer**)
 - [x] `rel=prev/next` pagination, `hreflang` automatique (surchargeable via `alternates`)
-- [x] JSON-LD via `lib/json-ld.ts` : `siteGraph()` (Organization + WebSite/SearchAction — home uniquement), `breadcrumbList()`, `faqPage()`, `article()`, `itemList()`
+- [x] JSON-LD via `lib/json-ld.ts` : `siteGraph()` (**RealEstateAgent**+Organization avec adresse, téléphone, e-mail, `openingHours`, `areaServed`, `priceRange`, `aggregateRating` + WebSite/SearchAction — home uniquement), `breadcrumbList()`, `faqPage()`, `article()`, `itemList()`
 - [x] Fil d'Ariane visible (`<SeoBreadcrumbs/>`) + BreadcrumbList
 
 GEO (Generative Engine Optimization — être cité par ChatGPT/Perplexity/AI Overviews)
@@ -244,6 +253,8 @@ Performance (Core Web Vitals)
 
 Variables d'environnement SEO (`.env`)
 ```
+SEO_OPENING_HOURS="Mo-Sa 09:00-19:00" (+ SEO_OPENING_HOURS_FR/EN libellés)   # footer + JSON-LD openingHours
+SEO_GOOGLE_RATING=4.9 / SEO_GOOGLE_REVIEW_COUNT=128 / SEO_GOOGLE_REVIEWS_URL=   # badge avis + AggregateRating — UNIQUEMENT des chiffres réels (Google pénalise les faux avis) ; vide = badge masqué
 SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_STREET= / SEO_ORG_POSTAL_CODE= / SEO_ORG_CITY=   # footer + JSON-LD
 SEO_SOCIAL_LINKEDIN= / SEO_SOCIAL_THREADS= / SEO_SOCIAL_FACEBOOK=   # vide = icône masquée
 APP_URL=https://www.exemple.fr        # base des canonical, sitemap, robots

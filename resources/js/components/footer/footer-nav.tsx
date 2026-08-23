@@ -1,7 +1,7 @@
 import { type NavItem } from '@/components/navigation/nav-items';
 import { Link } from '@inertiajs/react';
 
-/** Plain Inter 14 links, 8px apart — the same entries as the header. */
+/** Inter 14 links with the animated underline used across the site — the same entries as the header. */
 export default function FooterNav({ items, label }: { items: NavItem[]; label: string }) {
     return (
         <nav aria-label={label}>

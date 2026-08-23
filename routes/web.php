@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LegalController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeoController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,10 @@ Route::group([
 ], function () {
     Route::get('/', fn () => Inertia::render('home'))->name('home');
     Route::get(LaravelLocalization::transRoute('routes.search'), SearchController::class)->name('search');
+
+    foreach (['privacy', 'legal', 'terms'] as $key) {
+        Route::get(LaravelLocalization::transRoute("routes.$key"), fn () => app(LegalController::class)($key))->name($key);
+    }
 });
 
 Route::get('robots.txt', [SeoController::class, 'robots'])->name('robots');

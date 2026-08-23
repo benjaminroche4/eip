@@ -12,7 +12,12 @@ export default function Home() {
 
     return (
         <>
-            <SeoHead title={seo.siteName} withSuffix={false} description={seo.description} jsonLd={siteGraph(seo, origin, route('search'))} />
+            <SeoHead
+                title={t('home.seo_title')}
+                withSuffix={false}
+                description={t('home.seo_description')}
+                jsonLd={siteGraph(seo, origin, route('search'))}
+            />
             <PublicLayout>
                 <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{t('home.headline')}</h1>
                 <p className="text-muted-foreground mt-4 max-w-2xl text-lg/8 sm:text-base/7">{t('home.intro')}</p>

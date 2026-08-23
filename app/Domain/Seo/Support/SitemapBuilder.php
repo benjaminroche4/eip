@@ -42,6 +42,9 @@ final class SitemapBuilder
         return [
             ['path' => '/', 'priority' => 1.0, 'freq' => Url::CHANGE_FREQUENCY_WEEKLY],
             ['path' => 'routes.search', 'priority' => 0.8, 'freq' => Url::CHANGE_FREQUENCY_DAILY],
+            ['path' => 'routes.privacy', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
+            ['path' => 'routes.legal', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
+            ['path' => 'routes.terms', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
         ];
     }
 

@@ -2,20 +2,20 @@ import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-type Entry = { key: 'phone' | 'email' | 'address'; icon: ReactNode; label: string; value: ReactNode; href?: string };
+type Entry = { key: 'phone' | 'email' | 'address' | 'hours'; icon: ReactNode; label: string; value: ReactNode; href?: string };
 
 const valueClass = 'text-foreground text-sm font-medium';
 
-/** One row: icon in an outlined 32px square (border darkens on hover), accessible label, value. */
+/** One row: icon on a soft sand disc (no border, darkens on hover), accessible label, value. */
 function Row({ entry }: { entry: Entry }) {
     return (
         <li className="group flex items-center gap-3">
             <span
                 aria-hidden
-                className="border-border text-foreground group-hover:border-foreground flex size-8 shrink-0 items-center justify-center rounded-md border transition-colors duration-300 [&_svg]:size-4"
+                className="bg-background-05 text-foreground group-hover:bg-secondary-40 flex size-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 [&_svg]:size-4"
             >
                 {entry.icon}
             </span>
@@ -27,8 +27,10 @@ function Row({ entry }: { entry: Entry }) {
                 >
                     {entry.value}
                 </a>
-            ) : (
+            ) : entry.key === 'address' ? (
                 <address className={cn(valueClass, 'not-italic')}>{entry.value}</address>
+            ) : (
+                <span className={valueClass}>{entry.value}</span>
             )}
         </li>
     );
@@ -39,6 +41,7 @@ export default function ContactList() {
     const { seo } = usePage<SharedData>().props;
     const { t } = useTranslation();
     const { phone, email, address } = seo.organization;
+    const hours = seo.hours?.label;
     const cityLine = [address.postal_code, address.city].filter(Boolean).join(' ');
 
     const entries: Entry[] = [
@@ -56,6 +59,7 @@ export default function ContactList() {
                 </>
             ),
         },
+        hours && { key: 'hours' as const, icon: <Clock />, label: t('footer.hours'), value: hours },
     ].filter(Boolean) as Entry[];
 
     return (

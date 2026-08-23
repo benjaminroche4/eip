@@ -1,16 +1,47 @@
 import { type JsonLd } from '@/components/seo/seo-head';
 import { type SeoShared } from '@/types';
 
-/** Organization + WebSite (with Sitelinks SearchAction). Use once, on the homepage. */
+/** RealEstateAgent (Organization subtype Google understands) + WebSite (with Sitelinks SearchAction). Use once, on the homepage. */
 export function siteGraph(seo: SeoShared, origin: string, searchUrl: string): JsonLd[] {
+    const { organization: org, hours, reviews } = seo;
+    const address =
+        org.address.street || org.address.city
+            ? {
+                  address: {
+                      '@type': 'PostalAddress',
+                      ...(org.address.street ? { streetAddress: org.address.street } : {}),
+                      ...(org.address.postal_code ? { postalCode: org.address.postal_code } : {}),
+                      ...(org.address.city ? { addressLocality: org.address.city } : {}),
+                      addressCountry: org.address.country ?? 'FR',
+                  },
+              }
+            : {};
     return [
         {
-            '@type': 'Organization',
+            '@type': ['RealEstateAgent', 'Organization'],
             '@id': `${origin}/#organization`,
-            name: seo.organization.name,
+            name: org.name,
             url: origin,
-            logo: { '@type': 'ImageObject', url: seo.organization.logo },
-            ...(seo.organization.sameAs.length ? { sameAs: seo.organization.sameAs } : {}),
+            logo: { '@type': 'ImageObject', url: org.logo },
+            image: org.logo,
+            ...(org.phone ? { telephone: org.phone } : {}),
+            ...(org.email ? { email: org.email } : {}),
+            ...address,
+            ...(org.address.city ? { areaServed: { '@type': 'City', name: org.address.city } } : {}),
+            ...(hours?.spec ? { openingHours: hours.spec } : {}),
+            priceRange: '€€€€',
+            ...(reviews
+                ? {
+                      aggregateRating: {
+                          '@type': 'AggregateRating',
+                          ratingValue: reviews.rating,
+                          reviewCount: reviews.count,
+                          bestRating: 5,
+                          worstRating: 1,
+                      },
+                  }
+                : {}),
+            ...(org.sameAs.length ? { sameAs: org.sameAs } : {}),
         },
         {
             '@type': 'WebSite',

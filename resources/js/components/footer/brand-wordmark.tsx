@@ -13,7 +13,7 @@ export default function BrandWordmark({ className }: BrandWordmarkProps) {
             height={118}
             loading="lazy"
             decoding="async"
-            className={cn('w-full opacity-80 [mask-image:linear-gradient(to_bottom,black_70%,transparent)]', className)}
+            className={cn('hidden w-full opacity-80 [mask-image:linear-gradient(to_bottom,black_70%,transparent)] sm:block', className)}
         />
     );
 }
