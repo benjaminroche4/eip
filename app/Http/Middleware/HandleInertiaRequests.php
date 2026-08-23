@@ -71,7 +71,6 @@ class HandleInertiaRequests extends Middleware
                     'spec' => config('seo.hours.spec'),
                     'label' => config('seo.hours.labels.'.app()->getLocale(), config('seo.hours.labels.fr')),
                 ],
-                'agent' => config('seo.agent'),
                 'reviews' => config('seo.reviews.rating') && config('seo.reviews.count') ? config('seo.reviews') : null,
             ],
             'ziggy' => fn () => [

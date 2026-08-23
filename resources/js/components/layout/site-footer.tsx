@@ -1,4 +1,3 @@
-import AdvisorCard from '@/components/footer/advisor-card';
 import BrandWordmark from '@/components/footer/brand-wordmark';
 import ContactList from '@/components/footer/contact-list';
 import FooterColumn from '@/components/footer/footer-column';
@@ -48,7 +47,6 @@ export default function SiteFooter({ year }: { year: number }) {
                 </FooterColumn>
                 <FooterColumn title={t('footer.contact')} className="sm:col-span-2 lg:col-span-1">
                     <ContactList />
-                    <AdvisorCard />
                 </FooterColumn>
             </div>
 

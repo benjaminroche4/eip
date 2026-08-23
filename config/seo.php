@@ -42,13 +42,6 @@ return [
         ],
     ],
 
-    // Advisor shown in the footer contact card (photo 320×320 recommended, in public/images).
-    'agent' => [
-        'name' => env('SEO_AGENT_NAME', 'Votre conseiller'),
-        'role' => env('SEO_AGENT_ROLE'),
-        'photo' => env('SEO_AGENT_PHOTO', '/images/agent-placeholder.png'),
-    ],
-
     // Google reviews trust badge (footer) + AggregateRating in JSON-LD.
     // Only set real, verifiable numbers: Google penalises fabricated ratings.
     'reviews' => [
@@ -66,7 +59,8 @@ return [
 
     // GEO (Generative Engine Optimization): short, factual summary served in /llms.txt
     'llms' => [
-        'summary' => env('SEO_LLMS_SUMMARY', 'Décrivez ici votre produit/service en 2-3 phrases factuelles : ce que vous faites, pour qui, où.'),
+        'summary' => env('SEO_LLMS_SUMMARY', 'Estate in Paris est une agence immobilière de prestige basée à Paris (75003). Elle sélectionne et vend des appartements, hôtels particuliers et biens off-market à Paris pour une clientèle française et internationale, avec un conseiller dédié. Site bilingue français / anglais.'),
+        'summary_en' => env('SEO_LLMS_SUMMARY_EN', 'Estate in Paris is a luxury real estate agency based in Paris (75003). It selects and sells apartments, private mansions and off-market properties in Paris for French and international clients, with a dedicated advisor. Bilingual French / English website.'),
         'contact' => env('SEO_ORG_EMAIL'),
     ],
 ];

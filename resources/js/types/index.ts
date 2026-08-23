@@ -62,7 +62,6 @@ export interface SeoShared {
     };
     social: Partial<Record<'linkedin' | 'threads' | 'facebook', string>>;
     hours: { spec: string; label: string };
-    agent: { name: string; role: string | null; photo: string };
     reviews: { rating: number; count: number; url: string | null } | null;
 }
 

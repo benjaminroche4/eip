@@ -1,7 +1,6 @@
 import { useTranslation } from '@/hooks/use-translation';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowUp } from 'lucide-react';
 
 const LEGAL = ['privacy', 'legal', 'terms'] as const;
 
@@ -25,15 +24,6 @@ export default function LegalBar({ year }: { year: number }) {
                         </Link>
                     </li>
                 ))}
-                <li>
-                    <a
-                        href="#main"
-                        className="text-muted-foreground/70 focus-ring hover:text-foreground inline-flex items-center gap-1 rounded-sm transition-colors"
-                    >
-                        {t('footer.back_to_top')}
-                        <ArrowUp aria-hidden className="size-3" />
-                    </a>
-                </li>
             </ul>
         </div>
     );

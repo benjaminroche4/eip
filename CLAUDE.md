@@ -66,7 +66,7 @@ resources/js/hooks/use-scroll-direction.ts  masque le header mobile au scroll ba
 resources/js/components/language-switcher.tsx
 resources/js/layouts/public-layout.tsx  layout des pages publiques (SiteHeader + <main>) — toute page publique l'utilise
 resources/js/components/layout/        site-header (assemblage, Figma 137-2085 / 125-361 / 137-3488), site-footer (Figma 261-5543, variante « wordmark en tête » choisie), brand-logo
-resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (tel/mail/adresse depuis `organization`, icône lucide sur une pastille sable 32px sans bordure), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux vers les vraies pages + « Haut de page »), contact-cta (invitation + GoogleReviews + bouton), google-reviews (badge étoiles, masqué si non configuré), brand-wordmark (wordmark contour pleine largeur en tête du footer)
+resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (une seule phrase avec le téléphone, sans lien ni icône), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux vers les vraies pages), brand-wordmark (wordmark contour pleine largeur en tête du footer)
 resources/js/components/navigation/    nav-link (lien + hover ellipse + focus-ring), nav-divider, nav-items (entrées + useIsActive), menu-toggle-icon (3 traits → croix), mobile-menu-toggle (bouton 72×48, aria-expanded/controls), mobile-menu-panel (Figma 137-3968 : panneau **sous la barre** qui reste en place — `absolute top-full`, hauteur `100dvh − barre` (4.5rem / 4rem compact), glissement 700 ms + liens en cascade, CTA + LanguageLinks épinglés en bas, scroll body verrouillé, Échap, swipe haut, fermeture auto ≥ lg, focus sur le 1er lien). État `menuOpen` dans site-header
                                        mega-menu-column / -promo / -properties : mega-menu « Nos biens » prêt mais **non branché** (décision utilisateur)
 resources/js/components/seo/           seo-head (<SeoHead/>), seo-breadcrumbs, seo-image
@@ -238,7 +238,16 @@ Par page (`<SeoHead/>`)
 - [x] JSON-LD via `lib/json-ld.ts` : `siteGraph()` (**RealEstateAgent**+Organization avec adresse, téléphone, e-mail, `openingHours`, `areaServed`, `priceRange`, `aggregateRating` + WebSite/SearchAction — home uniquement), `breadcrumbList()`, `faqPage()`, `article()`, `itemList()`
 - [x] Fil d'Ariane visible (`<SeoBreadcrumbs/>`) + BreadcrumbList
 
-GEO (Generative Engine Optimization — être cité par ChatGPT/Perplexity/AI Overviews)
+GEO (Generative Engine Optimization — être cité par ChatGPT/Perplexity/AI Overviews) — **règle absolue, chaque page**
+- **Réponse d'abord** : le premier paragraphe sous le `<h1>` répond directement à l'intention de la page en 1–2 phrases factuelles, autonomes (citables hors contexte : nom de la marque + sujet + lieu). Pas de « Bienvenue ».
+- **H2 formulés en questions** quand c'est naturel (« Comment acheter un hôtel particulier à Paris ? »), suivis d'une réponse courte puis du détail. Sections courtes, listes, tableaux pour les chiffres.
+- **Faits datés et sourcés** : chiffres, prix, délais, dates, sources nommées ; `dateModified` visible sur les contenus éditoriaux.
+- **FAQ** en fin de page dès qu'il y a ≥ 3 questions, balisée avec `faqPage()` (JSON-LD) et visible dans le HTML.
+- **E-E-A-T** : auteur identifiable (nom, rôle) sur les articles via `article()`, page « À propos » / équipe, mentions légales réelles, `Organization`/`RealEstateAgent` complet (`sameAs`, adresse, téléphone, horaires, avis).
+- **Entités cohérentes** : même nom de marque, même adresse, même téléphone partout (HTML, JSON-LD, `llms.txt`, footer). Aucune valeur placeholder ne doit atteindre la prod (test `SeoTest::test_llms_txt…` vérifie l'absence de texte d'exemple).
+- **`/llms.txt`** tenu à jour : résumé FR + EN, pages principales dans les deux langues, contact, horaires. Toute nouvelle page publique indexable y est ajoutée (`LlmsTxt::build()`) en plus du sitemap.
+- **Crawlers IA** autorisés sur le public (`RobotsTxt`), jamais bloqués par un rate-limit ou un challenge JS ; le contenu doit être dans le HTML SSR (pas injecté après hydratation).
+- **Tests** : une page publique = test Feature qui vérifie la présence du `<h1>`, du paragraphe réponse et du JSON-LD attendu dans les props Inertia.
 - [x] Crawlers IA explicitement autorisés sur le contenu public (GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot, Google-Extended, Applebot-Extended)
 - [x] `/llms.txt` (llmstxt.org) — **remplir `SEO_LLMS_SUMMARY`** : 2-3 phrases factuelles (quoi, pour qui, où)
 - [x] Données structurées riches (Organization `sameAs`, FAQPage, Article avec auteur/dates)
@@ -254,7 +263,7 @@ Performance (Core Web Vitals)
 Variables d'environnement SEO (`.env`)
 ```
 SEO_OPENING_HOURS="Mo-Sa 09:00-19:00" (+ SEO_OPENING_HOURS_FR/EN libellés)   # footer + JSON-LD openingHours
-SEO_GOOGLE_RATING=4.9 / SEO_GOOGLE_REVIEW_COUNT=128 / SEO_GOOGLE_REVIEWS_URL=   # badge avis + AggregateRating — UNIQUEMENT des chiffres réels (Google pénalise les faux avis) ; vide = badge masqué
+SEO_GOOGLE_RATING=4.9 / SEO_GOOGLE_REVIEW_COUNT=128 / SEO_GOOGLE_REVIEWS_URL=   # AggregateRating JSON-LD uniquement (plus de badge visible) — UNIQUEMENT des chiffres réels
 SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_STREET= / SEO_ORG_POSTAL_CODE= / SEO_ORG_CITY=   # footer + JSON-LD
 SEO_SOCIAL_LINKEDIN= / SEO_SOCIAL_THREADS= / SEO_SOCIAL_FACEBOOK=   # vide = icône masquée
 APP_URL=https://www.exemple.fr        # base des canonical, sitemap, robots

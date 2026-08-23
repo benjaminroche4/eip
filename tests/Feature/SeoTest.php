@@ -22,7 +22,13 @@ class SeoTest extends TestCase
 
     public function test_llms_txt_is_served_for_ai_crawlers(): void
     {
-        $this->get('/llms.txt')->assertOk()->assertSee('# '.config('seo.site_name'));
+        $this->get('/llms.txt')
+            ->assertOk()
+            ->assertSee('# '.config('seo.site_name'))
+            ->assertSee('/fr/recherche')
+            ->assertSee('/en/search')
+            ->assertSee('## Contact')
+            ->assertDontSee('Décrivez ici');
     }
 
     public function test_search_page_is_indexable_only_on_its_unfiltered_first_page(): void
