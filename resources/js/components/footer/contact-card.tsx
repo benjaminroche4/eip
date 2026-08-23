@@ -14,20 +14,15 @@ const ADVISORS = [
 
 /**
  * Contact block (the whole block links to the contact page): the availability sentence,
- * then one row — small overlapping advisor avatars | hairline | phone number — and, under a
- * hairline, the Google rating ("4,9/5 · +400 avis Google"), separated by a fading gradient hairline like the header/footer ones.
+ * then one row — small overlapping advisor avatars | hairline | phone number.
  */
 export default function ContactCard() {
-    const { seo, locale } = usePage<SharedData>().props;
+    const { seo } = usePage<SharedData>().props;
     const { t } = useTranslation();
     const href = useContactHref();
     const { phone } = seo.organization;
 
     if (!phone) return null;
-
-    const rating = seo.reviews
-        ? new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(seo.reviews.rating)
-        : null;
 
     return (
         <Link href={href} prefetch className="group focus-ring flex flex-col gap-3 rounded-sm">
@@ -55,17 +50,6 @@ export default function ContactCard() {
                     {phone}
                 </p>
             </div>
-
-            {seo.reviews && rating && (
-                <p className="before:via-border text-muted-foreground relative flex items-baseline gap-2 pt-4 text-sm before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-linear-to-r before:from-transparent before:to-transparent">
-                    <span className="font-heading text-foreground text-lg font-semibold tabular-nums">
-                        {rating}
-                        <span className="text-muted-foreground font-sans text-xs font-normal">/5</span>
-                    </span>
-                    <span className="text-foreground">·</span>
-                    <span>{t('footer.reviews', { count: seo.reviews.count })}</span>
-                </p>
-            )}
         </Link>
     );
 }
