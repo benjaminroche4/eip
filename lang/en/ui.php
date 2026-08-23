@@ -85,7 +85,7 @@ return [
         'legal' => 'Legal Notice',
         'terms' => 'Terms & Conditions',
         'advisors' => 'Our advisors',
-        'reviews' => 'from :count Google reviews',
+        'reviews' => ':count+ Google reviews',
         'open_now' => 'Open',
         'intro' => 'Our advisors are here for you.',
     ],

@@ -85,7 +85,7 @@ return [
         'legal' => 'Mentions légales',
         'terms' => 'Conditions générales',
         'advisors' => 'Nos conseillers',
-        'reviews' => 'sur :count avis Google',
+        'reviews' => '+:count avis Google',
         'open_now' => 'Ouvert',
         'intro' => 'Nos conseillers sont à votre écoute.',
     ],
