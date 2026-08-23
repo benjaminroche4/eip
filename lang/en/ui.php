@@ -84,8 +84,6 @@ return [
         'privacy' => 'Privacy Policy',
         'legal' => 'Legal Notice',
         'terms' => 'Terms & Conditions',
-        'reviews' => ':rating on Google · :count+ reviews',
-        'reviews_label' => 'See our Google reviews',
         'advisors' => 'Our advisors',
         'open_now' => 'Open',
         'intro' => 'Our advisors are here for you.',

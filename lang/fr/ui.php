@@ -84,8 +84,6 @@ return [
         'privacy' => 'Politique de confidentialité',
         'legal' => 'Mentions légales',
         'terms' => 'Conditions générales',
-        'reviews' => ':rating sur Google · +:count avis',
-        'reviews_label' => 'Voir nos avis Google',
         'advisors' => 'Nos conseillers',
         'open_now' => 'Ouvert',
         'intro' => 'Nos conseillers sont à votre écoute.',
