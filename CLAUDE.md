@@ -32,6 +32,17 @@ Avant de livrer : `composer run check` (tsc + eslint + prettier --check + pint -
 - Nouveau comportement = nouveau test d'abord ou en même temps (régression couverte). Bug corrigé = test qui le reproduit.
 - Front : `npx tsc --noEmit`, ESLint et Prettier sont considérés comme des tests ; une page publique se vérifie aussi au `curl` SSR.
 
+## Accessibilité — règle absolue (WCAG 2.2 AA, RGAA)
+
+- **Tout élément interactif est utilisable au clavier seul** : Tab/Shift+Tab dans un ordre logique, Entrée/Espace pour activer, Échap pour fermer (menus, sheets, dialogs), flèches dans les listes/menus quand le pattern ARIA le demande. Aucun piège de focus ; focus rendu visible (`focus-visible:` ring) sur tout ce qui prend le focus, jamais `outline-none` sans remplacement.
+- **Focus géré** : à l'ouverture d'un menu/dialog le focus entre dedans, à la fermeture il revient sur le déclencheur (Radix/shadcn le fait ; le conserver). Hover-only = interdit : tout ce qui s'ouvre au survol s'ouvre aussi au focus/clic.
+- **Sémantique d'abord** : `<button>` pour une action, `<a href>` pour une navigation, `<nav aria-label>`, `<main>`, un seul `<h1>`, hiérarchie de titres sans saut. Pas de `div onClick`.
+- **ARIA** uniquement en complément : `aria-label` sur les contrôles iconiques, `aria-expanded`/`aria-controls` sur les déclencheurs, `aria-current="page"`, `aria-hidden` + `inert` sur le contenu masqué, `sr-only` pour les libellés invisibles. Images décoratives `alt=""`, informatives `alt` descriptif.
+- **Contraste** ≥ 4.5:1 texte / 3:1 UI et grands textes (vérifier avec les tokens, light et dark). Cibles tactiles ≥ 24×24 (44×44 sur mobile). Information jamais portée par la couleur seule.
+- **Mouvement** : toute animation respecte `motion-reduce:` ; rien ne clignote, rien d'auto-défilant non stoppable.
+- **Langue** : `<html lang>` correct, `hreflang`/`lang` sur les liens vers une autre langue.
+- **Vérification = test** : chaque composant interactif a un test clavier (Testing Library + `user-event` : tab, enter, escape, retour du focus) ; les pages publiques passent `axe` sans violation. Une fonctionnalité non accessible au clavier n'est pas terminée.
+
 ## Structure utile
 
 ```
@@ -54,7 +65,7 @@ resources/js/hooks/use-scroll-direction.ts  masque le header mobile au scroll ba
 resources/js/components/language-switcher.tsx
 resources/js/layouts/public-layout.tsx  layout des pages publiques (SiteHeader + <main>) — toute page publique l'utilise
 resources/js/components/layout/        site-header (assemblage, Figma 137-2085 / 125-361 / 137-3488), site-footer (Figma 261-5543, variante « wordmark en tête » choisie), brand-logo
-resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (tel/mail/adresse depuis `organization`, icône lucide dans un carré bordé 32px — variante « Outlined squares » choisie), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux `#`), brand-wordmark (wordmark contour pleine largeur en tête du footer)
+resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (tel/mail/adresse depuis `organization`, icône lucide sur une pastille sable 32px sans bordure), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux `#`), brand-wordmark (wordmark contour pleine largeur en tête du footer)
 resources/js/components/navigation/    nav-link (lien + hover ellipse + focus-ring), nav-divider, nav-items (entrées + useIsActive), menu-toggle-icon (3 traits → croix), mobile-menu-toggle (bouton 72×48, aria-expanded/controls), mobile-menu-panel (Figma 137-3968 : panneau **sous la barre** qui reste en place — `absolute top-full`, hauteur `100dvh − barre` (4.5rem / 4rem compact), glissement 700 ms + liens en cascade, CTA + LanguageLinks épinglés en bas, scroll body verrouillé, Échap, swipe haut, fermeture auto ≥ lg, focus sur le 1er lien). État `menuOpen` dans site-header
                                        mega-menu-column / -promo / -properties : mega-menu « Nos biens » prêt mais **non branché** (décision utilisateur)
 resources/js/components/seo/           seo-head (<SeoHead/>), seo-breadcrumbs, seo-image
