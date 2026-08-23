@@ -3,6 +3,7 @@ import ContactCard from '@/components/footer/contact-card';
 import FooterColumn from '@/components/footer/footer-column';
 import FooterNav from '@/components/footer/footer-nav';
 import LegalBar from '@/components/footer/legal-bar';
+import OpenBadge from '@/components/footer/open-badge';
 import SocialLinks from '@/components/footer/social-links';
 import LanguageSwitcher from '@/components/i18n/language-switcher';
 import BrandLogo from '@/components/layout/brand-logo';
@@ -45,7 +46,7 @@ export default function SiteFooter({ year }: { year: number }) {
                 <FooterColumn title={t('footer.navigation')} className="order-last sm:order-none">
                     <FooterNav items={items} label={t('footer.navigation')} />
                 </FooterColumn>
-                <FooterColumn title={t('footer.contact')}>
+                <FooterColumn title={t('footer.contact')} badge={<OpenBadge />}>
                     <ContactCard />
                 </FooterColumn>
             </div>

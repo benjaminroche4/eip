@@ -35,10 +35,10 @@ return [
 
     // Opening hours: schema.org spec + human labels per locale (footer + JSON-LD RealEstateAgent.openingHours)
     'hours' => [
-        'spec' => env('SEO_OPENING_HOURS', 'Mo-Sa 09:00-19:00'),
+        'spec' => env('SEO_OPENING_HOURS', 'Mo-Fr 08:00-20:00, Sa 08:00-12:00'),
         'labels' => [
-            'fr' => env('SEO_OPENING_HOURS_FR', 'Lun – Sam, 9h – 19h'),
-            'en' => env('SEO_OPENING_HOURS_EN', 'Mon – Sat, 9am – 7pm'),
+            'fr' => env('SEO_OPENING_HOURS_FR', 'Lun – Ven, 8h – 20h · Sam, 8h – 12h'),
+            'en' => env('SEO_OPENING_HOURS_EN', 'Mon – Fri, 8am – 8pm · Sat, 8am – 12pm'),
         ],
     ],
 

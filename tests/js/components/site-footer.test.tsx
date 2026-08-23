@@ -13,6 +13,7 @@ describe('SiteFooter', () => {
         const card = screen.getByRole('link', { name: /Nos conseillers sont à votre écoute/ });
         expect(card).toHaveTextContent('+33 6 00 00 00 00');
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).children).toHaveLength(3);
+        expect(screen.getByText('Ouvert')).toBeInTheDocument();
         expect(screen.getByText('© 2026 Estate in Paris')).toBeInTheDocument();
 
         const legal = screen.getByRole('navigation', { name: /légaux|legal/i });

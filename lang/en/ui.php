@@ -40,6 +40,7 @@ return [
         ],
         'buy' => 'Buy',
         'sell' => 'Sell',
+        'blog' => 'Journal',
         'estimate' => 'Property Valuation',
         'language' => 'Language',
     ],
@@ -86,6 +87,7 @@ return [
         'reviews' => ':rating on Google · :count+ reviews',
         'reviews_label' => 'See our Google reviews',
         'advisors' => 'Our advisors',
+        'open_now' => 'Open',
         'intro' => 'Our advisors are here for you.',
     ],
     'home' => [

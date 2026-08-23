@@ -51,7 +51,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
                 address: { street: '22 Rue Notre Dame de Nazareth', city: 'Paris', postal_code: '75003', country: 'FR' },
             },
             social: { linkedin: 'https://www.linkedin.com/company/x', facebook: 'https://www.facebook.com/x' },
-            hours: { spec: 'Mo-Sa 09:00-19:00', label: 'Lun – Sam, 9h – 19h' },
+            hours: { spec: 'Mo-Fr 08:00-20:00, Sa 08:00-12:00', label: 'Lun – Ven, 8h – 20h · Sam, 8h – 12h', open: true },
             reviews: { rating: 4.9, count: 400, url: 'https://www.google.com/maps' },
         },
         ziggy: { location: 'http://localhost/fr', url: 'http://localhost' },

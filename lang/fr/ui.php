@@ -40,6 +40,7 @@ return [
         ],
         'buy' => 'Acheter',
         'sell' => 'Vendre',
+        'blog' => 'Blog',
         'estimate' => 'Estimation',
         'language' => 'Langue',
     ],
@@ -86,6 +87,7 @@ return [
         'reviews' => ':rating sur Google · +:count avis',
         'reviews_label' => 'Voir nos avis Google',
         'advisors' => 'Nos conseillers',
+        'open_now' => 'Ouvert',
         'intro' => 'Nos conseillers sont à votre écoute.',
     ],
     'home' => [

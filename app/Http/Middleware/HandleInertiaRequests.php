@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Domain\Localization\Support\LocalizedUrls;
+use App\Domain\Seo\Support\OpeningHours;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -70,6 +71,7 @@ class HandleInertiaRequests extends Middleware
                 'hours' => [
                     'spec' => config('seo.hours.spec'),
                     'label' => config('seo.hours.labels.'.app()->getLocale(), config('seo.hours.labels.fr')),
+                    'open' => (new OpeningHours((string) config('seo.hours.spec')))->isOpen(),
                 ],
                 'reviews' => config('seo.reviews.rating') && config('seo.reviews.count') ? config('seo.reviews') : null,
             ],

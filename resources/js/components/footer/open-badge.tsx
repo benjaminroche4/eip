@@ -1,0 +1,18 @@
+import { Badge } from '@/components/ui/badge';
+import { useTranslation } from '@/hooks/use-translation';
+import { type SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
+
+/** "Open" pill shown only during opening hours (computed server-side in Paris time, so SSR and client agree). */
+export default function OpenBadge() {
+    const { seo } = usePage<SharedData>().props;
+    const { t } = useTranslation();
+
+    if (!seo.hours.open) return null;
+
+    return (
+        <Badge variant="outline" className="border-foreground text-foreground bg-transparent font-medium" title={seo.hours.label}>
+            {t('footer.open_now')}
+        </Badge>
+    );
+}
