@@ -10,7 +10,8 @@ describe('SiteFooter', () => {
         renderPage(<SiteFooter year={2026} />);
 
         expect(screen.getByRole('navigation', { name: 'Navigation' })).toBeInTheDocument();
-        const card = screen.getByRole('link', { name: /\+33 6 00 00 00 00/ });
+        const card = screen.getByRole('link', { name: /Nos conseillers sont à votre écoute/ });
+        expect(card).toHaveTextContent('+33 6 00 00 00 00');
         expect(card).toHaveTextContent('4,9 sur Google · +400 avis');
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).children).toHaveLength(3);
         expect(screen.getByText('© 2026 Estate in Paris')).toBeInTheDocument();

@@ -86,7 +86,7 @@ return [
         'reviews' => ':rating on Google · :count+ reviews',
         'reviews_label' => 'See our Google reviews',
         'advisors' => 'Our advisors',
-        'intro' => 'Our advisors are available by phone at :phone or on WhatsApp.',
+        'intro' => 'Our advisors are here for you.',
     ],
     'home' => [
         'title' => 'Home',

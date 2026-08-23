@@ -86,7 +86,7 @@ return [
         'reviews' => ':rating sur Google · +:count avis',
         'reviews_label' => 'Voir nos avis Google',
         'advisors' => 'Nos conseillers',
-        'intro' => 'Nos conseillers sont à votre écoute par téléphone au :phone ou sur WhatsApp.',
+        'intro' => 'Nos conseillers sont à votre écoute.',
     ],
     'home' => [
         'title' => 'Accueil',

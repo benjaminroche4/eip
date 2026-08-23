@@ -54,7 +54,10 @@ export default function ContactCard() {
                 ))}
             </ul>
 
-            <p className="text-foreground text-sm">{t('footer.intro', { phone })}</p>
+            <div className="flex flex-col gap-1">
+                <p className="text-muted-foreground text-sm">{t('footer.intro')}</p>
+                <p className="font-heading text-foreground text-xl tracking-wide tabular-nums">{phone}</p>
+            </div>
 
             {seo.reviews && rating && (
                 <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
