@@ -22,7 +22,7 @@ Basé sur le starter kit officiel `laravel/react-starter-kit`. Pas de Next.js, p
 | `php artisan test` | 36 tests PHPUnit (classes ; SSR désactivé via `phpunit.xml`) |
 | `php artisan sitemap:generate` | régénère `public/sitemap.xml` (planifié chaque jour dans `routes/console.php`) |
 
-Avant de livrer : `tsc`, `eslint`, `pint`, `php artisan test` doivent passer. Pint `--dirty` ne marche pas (pas de git pour l'instant).
+Avant de livrer : `tsc`, `eslint`, `pint`, `php artisan test` doivent passer.
 
 ## Structure utile
 
@@ -258,4 +258,4 @@ SEO_LLMS_SUMMARY="…"
 - Header mobile : se cache au scroll bas / revient au scroll haut ; menu sous la barre (header conservé, icône → croix) avec swipe vers le haut pour fermer et fermeture auto au passage en desktop.
 - Tests : PHPUnit classique, pas Pest (le kit n'installe pas Pest).
 - `ui/dropdown-menu.tsx` et `ui/button.tsx` mis à jour vers le shadcn actuel (new-york / Tailwind v4 : `default h-9 px-4`, `sm h-8`, `lg h-10 px-6`, `icon size-9`, `data-slot`, icônes `size-4` par défaut sauf classe `size-*` explicite). Les autres composants `ui/` sont encore ceux du kit (style « default », Tailwind v3) : les mettre à jour un par un avec `--overwrite` quand on y touche, en vérifiant les usages du kit (auth, settings, sidebar).
-- Git non initialisé (décision utilisateur en attente).
+- Git initialisé le 2026-08-23, remote `origin` = https://github.com/benjaminroche4/eip (branche `main`).
