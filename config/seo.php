@@ -53,8 +53,7 @@ return [
     // Social profiles shown in the footer (leave empty to hide). Also merged into Organization.sameAs.
     'social' => [
         'linkedin' => env('SEO_SOCIAL_LINKEDIN'),
-        'threads' => env('SEO_SOCIAL_THREADS'),
-        'facebook' => env('SEO_SOCIAL_FACEBOOK'),
+        'instagram' => env('SEO_SOCIAL_INSTAGRAM'),
     ],
 
     // GEO (Generative Engine Optimization): short, factual summary served in /llms.txt

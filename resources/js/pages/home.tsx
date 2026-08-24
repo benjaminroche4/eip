@@ -1,3 +1,5 @@
+import Hero from '@/components/home/hero';
+import ValueStrip from '@/components/home/value-strip';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
@@ -18,9 +20,9 @@ export default function Home() {
                 description={t('home.seo_description')}
                 jsonLd={siteGraph(seo, origin, route('search'))}
             />
-            <PublicLayout>
-                <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{t('home.headline')}</h1>
-                <p className="text-muted-foreground mt-4 max-w-2xl text-lg/8 sm:text-base/7">{t('home.intro')}</p>
+            <PublicLayout hero>
+                <Hero />
+                <ValueStrip />
             </PublicLayout>
         </>
     );

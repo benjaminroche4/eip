@@ -51,7 +51,7 @@ class SeoMetaLengthTest extends TestCase
     {
         $this->withLocale('fr');
 
-        $this->get('/fr')
+        $this->get('/')
             ->assertOk()
             ->assertInertia(fn ($page) => $page
                 ->component('home')

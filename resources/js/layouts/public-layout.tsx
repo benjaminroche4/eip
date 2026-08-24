@@ -6,10 +6,13 @@ import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
 
-type PublicLayoutProps = PropsWithChildren<{ className?: string }>;
+type PublicLayoutProps = PropsWithChildren<{
+    className?: string;
+    /** Page opens with a full-bleed hero: edge-to-edge on mobile, aligned with the header card on desktop. */ hero?: boolean;
+}>;
 
 /** Layout of every public (SSR, indexable) page: header, <main> filling the viewport, footer pinned at the bottom. */
-export default function PublicLayout({ children, className }: PublicLayoutProps) {
+export default function PublicLayout({ children, className, hero = false }: PublicLayoutProps) {
     const { t } = useTranslation();
     const { year } = usePage<SharedData>().props;
 
@@ -22,7 +25,15 @@ export default function PublicLayout({ children, className }: PublicLayoutProps)
                 {t('a11y.skip_to_content')}
             </a>
             <SiteHeader />
-            <main id="main" tabIndex={-1} className={cn('mx-auto w-full max-w-7xl flex-1 px-4 py-10 focus:outline-none sm:px-6 lg:px-8', className)}>
+            <main
+                id="main"
+                tabIndex={-1}
+                className={cn(
+                    'mx-auto w-full max-w-7xl flex-1 focus:outline-none',
+                    hero ? 'px-0 pt-2 pb-10 lg:px-5 lg:pt-3' : 'px-4 py-10 sm:px-6 lg:px-8',
+                    className,
+                )}
+            >
                 {children}
             </main>
             <SiteFooter year={year} />

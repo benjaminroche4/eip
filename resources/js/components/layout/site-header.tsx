@@ -41,7 +41,9 @@ export default function SiteHeader() {
             data-scrolled={scrolled}
             data-hidden={hidden}
             className={cn(
-                'sticky top-0 z-40 w-full transition-[padding,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+                // Fixed in-flow height (bar + desktop top gap): compacting happens inside, so the document never
+                // reflows above the viewport — otherwise Chrome's scroll anchoring shifts scrollY and the header flickers.
+                'sticky top-0 z-40 h-16 w-full transition-[padding,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] [overflow-anchor:none] motion-reduce:transition-none lg:h-19',
                 scrolled ? 'lg:px-0 lg:pt-0' : 'lg:px-5 lg:pt-3',
                 hidden && '-translate-y-full lg:translate-y-0',
             )}
@@ -60,7 +62,7 @@ export default function SiteHeader() {
                 <div
                     className={cn(
                         'mx-auto flex max-w-7xl items-center justify-between px-4 transition-[height,padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none lg:justify-start lg:gap-5 lg:px-5',
-                        scrolled ? 'h-16 lg:h-14' : 'h-18',
+                        scrolled ? 'h-14' : 'h-16',
                     )}
                 >
                     <Link

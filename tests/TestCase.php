@@ -14,7 +14,9 @@ abstract class TestCase extends BaseTestCase
      */
     protected function withLocale(string $locale): static
     {
-        putenv(LaravelLocalization::ENV_ROUTE_KEY.'='.$locale);
+        // The default locale is hidden from URLs: its routes are the unprefixed ones registered at boot.
+        $forced = $locale === config('app.fallback_locale') ? '' : $locale; // app.locale is mutated per request by the package
+        putenv(LaravelLocalization::ENV_ROUTE_KEY.'='.$forced);
         $this->refreshApplication();
 
         return $this;

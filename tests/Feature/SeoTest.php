@@ -25,7 +25,7 @@ class SeoTest extends TestCase
         $this->get('/llms.txt')
             ->assertOk()
             ->assertSee('# '.config('seo.site_name'))
-            ->assertSee('/fr/recherche')
+            ->assertSee('/recherche')
             ->assertSee('/en/search')
             ->assertSee('## Contact')
             ->assertDontSee('Décrivez ici');
@@ -33,16 +33,16 @@ class SeoTest extends TestCase
 
     public function test_search_page_is_indexable_only_on_its_unfiltered_first_page(): void
     {
-        $this->withLocale('fr')->get('/fr/recherche')->assertOk()->assertInertia(fn (Assert $page) => $page->component('search')->where('indexing.noindex', false));
-        $this->get('/fr/recherche?q=1')->assertOk()->assertInertia(fn (Assert $page) => $page->where('indexing.noindex', true));
-        $this->get('/fr/recherche?page=2')->assertOk()->assertInertia(
-            fn (Assert $page) => $page->where('indexing.noindex', true)->where('indexing.prev', url('/fr/recherche'))
+        $this->withLocale('fr')->get('/recherche')->assertOk()->assertInertia(fn (Assert $page) => $page->component('search')->where('indexing.noindex', false));
+        $this->get('/recherche?q=1')->assertOk()->assertInertia(fn (Assert $page) => $page->where('indexing.noindex', true));
+        $this->get('/recherche?page=2')->assertOk()->assertInertia(
+            fn (Assert $page) => $page->where('indexing.noindex', true)->where('indexing.prev', url('/recherche'))
         );
     }
 
     public function test_shared_seo_props_are_available_to_every_page(): void
     {
-        $this->withLocale('fr')->get('/fr')->assertInertia(fn (Assert $page) => $page->has('seo.siteName')->has('seo.image')->has('ziggy.location'));
+        $this->withLocale('fr')->get('/')->assertInertia(fn (Assert $page) => $page->has('seo.siteName')->has('seo.image')->has('ziggy.location'));
     }
 
     public function test_unknown_pages_render_the_inertia_error_page_with_a_404_status(): void
@@ -55,7 +55,7 @@ class SeoTest extends TestCase
     {
         $this->artisan('sitemap:generate')->assertSuccessful();
         $xml = file_get_contents(public_path('sitemap.xml'));
-        $this->assertStringContainsString('<loc>'.url('/fr/recherche').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/recherche').'</loc>', $xml);
         $this->assertStringContainsString('<loc>'.url('/en/search').'</loc>', $xml);
         $this->assertStringContainsString('hreflang="x-default"', $xml);
     }

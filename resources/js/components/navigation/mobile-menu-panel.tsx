@@ -1,5 +1,5 @@
 import LanguageLinks from '@/components/i18n/language-links';
-import { type NavItem } from '@/components/navigation/nav-items';
+import { type NavItem, useSecondaryNavItems } from '@/components/navigation/nav-items';
 import NavLink from '@/components/navigation/nav-link';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
@@ -26,6 +26,7 @@ const rowDelays = ['delay-200', 'delay-300', 'delay-500', 'delay-700', 'delay-10
  */
 export default function MobileMenuPanel({ id, open, compact, items, isActive, cta, onClose }: MobileMenuPanelProps) {
     const { t } = useTranslation();
+    const secondary = useSecondaryNavItems();
     const firstLink = useRef<HTMLAnchorElement>(null);
     const swipeStart = useRef<number | null>(null);
 
@@ -62,7 +63,7 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
             className={cn(
                 'absolute inset-x-0 top-full overflow-hidden lg:hidden',
                 open ? 'pointer-events-auto' : 'pointer-events-none',
-                compact ? 'h-[calc(100dvh-4rem)]' : 'h-[calc(100dvh-4.5rem)]',
+                compact ? 'h-[calc(100dvh-3.5rem)]' : 'h-[calc(100dvh-4rem)]',
             )}
         >
             <div
@@ -91,6 +92,33 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                                 </li>
                             ))}
                     </ul>
+                    {open && secondary.length > 0 && (
+                        <>
+                            <span
+                                aria-hidden
+                                className={cn(
+                                    'via-border my-3 block h-px w-full bg-gradient-to-r from-transparent to-transparent',
+                                    rowEnter,
+                                    'delay-500',
+                                )}
+                            />
+                            <ul className="flex flex-col gap-1">
+                                {secondary.map((item, i) => (
+                                    <li key={item.key} className={cn(rowEnter, rowDelays[items.length + i] ?? 'delay-1000')}>
+                                        <NavLink
+                                            href={item.href}
+                                            size="lg"
+                                            active={isActive(item.href)}
+                                            aria-current={isActive(item.href) ? 'page' : undefined}
+                                            onClick={onClose}
+                                        >
+                                            {item.label}
+                                        </NavLink>
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
                 </nav>
 
                 {open && (

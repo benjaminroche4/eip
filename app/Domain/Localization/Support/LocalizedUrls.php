@@ -16,7 +16,8 @@ final class LocalizedUrls
         $locales = [];
 
         foreach ($supported as $code => $meta) {
-            $url = LaravelLocalization::getLocalizedURL($code, null, [], true) ?: url("/$code");
+            // forceDefaultLocation=false: the default locale stays hidden from its URLs (hideDefaultLocaleInURL)
+            $url = LaravelLocalization::getLocalizedURL($code, null, [], false) ?: url($code === LaravelLocalization::getDefaultLocale() ? '/' : "/$code");
             $alternates[$code] = $url;
             $locales[] = [
                 'code' => $code,

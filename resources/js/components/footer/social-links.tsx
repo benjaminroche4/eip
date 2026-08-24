@@ -5,8 +5,7 @@ import { usePage } from '@inertiajs/react';
 
 const NETWORKS = [
     { key: 'linkedin', label: 'LinkedIn' },
-    { key: 'threads', label: 'Threads' },
-    { key: 'facebook', label: 'Facebook' },
+    { key: 'instagram', label: 'Instagram' },
 ] as const;
 
 type SocialLinksProps = { className?: string };

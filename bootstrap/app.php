@@ -22,9 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->web(prepend: [
-            CanonicalUrl::class,
-        ]);
+        // Global (before routing) so "/fr/..." and host/scheme variants redirect even when no route matches.
+        $middleware->prepend(CanonicalUrl::class);
 
         $middleware->web(append: [
             HandleInertiaRequests::class,

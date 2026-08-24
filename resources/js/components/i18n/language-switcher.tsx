@@ -21,7 +21,7 @@ export default function LanguageSwitcher({ className, compact = false }: Languag
             <DropdownMenuTrigger
                 aria-label={t('nav.language')}
                 className={cn(
-                    'group text-foreground focus-ring relative flex h-9 items-center gap-1.5 rounded-sm px-1 text-xs font-medium tracking-wide uppercase',
+                    'group text-foreground focus-ring relative flex h-9 items-center gap-1.5 rounded-none px-1 text-xs font-medium tracking-wide uppercase',
                     'after:bg-foreground after:absolute after:inset-x-1 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 data-[state=open]:after:scale-x-100 motion-reduce:after:transition-none',
                     className,
                 )}
@@ -37,7 +37,7 @@ export default function LanguageSwitcher({ className, compact = false }: Languag
                 sideOffset={compact ? 14 : 8}
                 collisionPadding={16}
                 className={cn(
-                    'border-border text-card-foreground divide-border min-w-48 divide-y rounded-md border p-0 shadow-none',
+                    'border-border text-card-foreground divide-border min-w-48 divide-y rounded-none border p-0 shadow-none',
                     // open with a soft drop, no zoom
                     'data-[state=open]:zoom-in-100 data-[state=closed]:zoom-out-100 data-[side=bottom]:slide-in-from-top-3 duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:animate-none',
                     compact ? 'bg-card/80 supports-[backdrop-filter]:bg-card/70 backdrop-blur-md' : 'bg-card',

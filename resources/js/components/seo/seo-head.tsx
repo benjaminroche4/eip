@@ -44,7 +44,8 @@ export default function SeoHead({
     children,
 }: SeoHeadProps) {
     const { seo, ziggy, localization } = usePage<SharedData>().props;
-    const url = canonical ?? ziggy.location.split(/[?#]/)[0];
+    const current = new URL(ziggy.location);
+    const url = canonical ?? `${current.origin}${current.pathname}`; // keeps the trailing slash on the root URL
     const fullTitle = withSuffix ? `${title}${seo.separator}${seo.siteName}` : title;
     const desc = description ?? seo.description;
     const img = image ?? seo.image;

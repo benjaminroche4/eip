@@ -7,7 +7,8 @@ import OpenBadge from '@/components/footer/open-badge';
 import SocialLinks from '@/components/footer/social-links';
 import LanguageSwitcher from '@/components/i18n/language-switcher';
 import BrandLogo from '@/components/layout/brand-logo';
-import { useNavItems } from '@/components/navigation/nav-items';
+import { useFooterNavItems } from '@/components/navigation/nav-items';
+import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import { Link } from '@inertiajs/react';
 
@@ -19,7 +20,7 @@ const container = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-15';
  */
 export default function SiteFooter({ year }: { year: number }) {
     const { t } = useTranslation();
-    const items = useNavItems();
+    const items = useFooterNavItems();
 
     return (
         <footer className="from-background-10 to-background-02 after:via-border relative overflow-hidden bg-gradient-to-b after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent">
@@ -48,6 +49,10 @@ export default function SiteFooter({ year }: { year: number }) {
                 </FooterColumn>
                 <FooterColumn title={t('footer.contact')} badge={<OpenBadge />}>
                     <ContactCard />
+                    <span aria-hidden className="via-border block h-px w-full bg-gradient-to-r from-transparent to-transparent" />
+                    <Button asChild variant="outline" size="lg" className="hover:bg-background-05 w-full bg-transparent dark:bg-transparent">
+                        <Link href="#">{t('nav.contact_page')}</Link>
+                    </Button>
                 </FooterColumn>
             </div>
 

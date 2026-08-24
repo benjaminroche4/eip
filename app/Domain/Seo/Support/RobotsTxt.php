@@ -20,7 +20,7 @@ final class RobotsTxt
         User-agent: *
         Allow: /
         {$disallow}
-        Disallow: /fr/recherche?*
+        Disallow: /recherche?*
         Disallow: /en/search?*
 
         # AI / answer engines (GEO)

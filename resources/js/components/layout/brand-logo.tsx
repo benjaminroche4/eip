@@ -6,7 +6,9 @@ import { usePage } from '@inertiajs/react';
  * Brand logo from public/brand/*.svg — picks desktop/mobile by breakpoint
  * and dark/light variant by theme. "dark" files = dark artwork for light backgrounds.
  */
-export default function BrandLogo({ className, priority = false }: { className?: string; priority?: boolean }) {
+type BrandLogoProps = { className?: string; priority?: boolean };
+
+export default function BrandLogo({ className, priority = false }: BrandLogoProps) {
     const { seo } = usePage<SharedData>().props;
     const fetchPriority = priority ? 'high' : 'auto';
 

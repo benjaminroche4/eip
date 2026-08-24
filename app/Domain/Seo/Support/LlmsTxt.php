@@ -20,8 +20,8 @@ final class LlmsTxt
             '',
             '## Pages principales (FR)',
             '',
-            '- [Accueil]('.url('/fr').") : présentation de {$name}, immobilier de prestige à Paris.",
-            '- [Rechercher un bien]('.url('/fr/recherche').') : appartements, hôtels particuliers et biens off-market à Paris.',
+            '- [Accueil]('.url('/').") : présentation de {$name}, immobilier de prestige à Paris.",
+            '- [Rechercher un bien]('.url('/recherche').') : appartements, hôtels particuliers et biens off-market à Paris.',
             '',
             '## Main pages (EN)',
             '',
@@ -31,8 +31,8 @@ final class LlmsTxt
             '## Ressources',
             '',
             "- [Plan du site / Sitemap]({$sitemap})",
-            '- ['.__('legal.legal.title', [], 'fr').']('.url('/fr/mentions-legales').')',
-            '- ['.__('legal.privacy.title', [], 'fr').']('.url('/fr/politique-de-confidentialite').')',
+            '- ['.__('legal.legal.title', [], 'fr').']('.url('/mentions-legales').')',
+            '- ['.__('legal.privacy.title', [], 'fr').']('.url('/politique-de-confidentialite').')',
         ];
 
         $contact = array_filter([

@@ -60,7 +60,7 @@ export interface SeoShared {
         phone: string | null;
         address: { street?: string; city?: string; postal_code?: string; country?: string };
     };
-    social: Partial<Record<'linkedin' | 'threads' | 'facebook', string>>;
+    social: Partial<Record<'linkedin' | 'instagram', string>>;
     hours: { spec: string; label: string; open: boolean };
     reviews: { rating: number; count: number; url: string | null } | null;
 }

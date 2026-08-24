@@ -11,12 +11,13 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 |--------------------------------------------------------------------------
 | Public, localized routes — /fr/... and /en/... (slugs in lang/{locale}/routes.php)
 |--------------------------------------------------------------------------
-| "/" (no locale) is redirected by `localizationRedirect` to the locale negotiated
-| from the session, cookie or Accept-Language header. Auth & settings stay unprefixed.
+| French (default) lives at the root, English under /en. The URL is the only source of truth:
+| no cookie/session/Accept-Language redirects (they would bounce "/" back to "/en" after a
+| visitor picked English, and mislead crawlers). Auth & settings stay unprefixed.
 */
 Route::group([
     'prefix' => LaravelLocalization::setLocale(),
-    'middleware' => ['localize', 'localeCookieRedirect', 'localizationRedirect'],
+    'middleware' => ['localize', 'localizationRedirect'],
 ], function () {
     Route::get('/', fn () => Inertia::render('home'))->name('home');
     Route::get(LaravelLocalization::transRoute('routes.search'), SearchController::class)->name('search');

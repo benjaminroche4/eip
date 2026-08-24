@@ -8,6 +8,40 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* "Decipher" reveal: blurred, slightly tracked-out and lowered → sharp. Used word by word on hero headlines. */
+@theme {
+    --animate-unblur: unblur 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* Infinite marquee: the track holds the list twice, so -50% loops seamlessly. */
+    --animate-marquee: marquee 40s linear infinite;
+
+    @keyframes marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @keyframes unblur {
+        from {
+            opacity: 0;
+            filter: blur(16px);
+            letter-spacing: 0.12em;
+            transform: translateY(0.5em) scale(1.04);
+        }
+        40% {
+            opacity: 1;
+        }
+        to {
+            opacity: 1;
+            filter: blur(0);
+            letter-spacing: 0;
+            transform: translateY(0) scale(1);
+        }
+    }
+}
+
 /* Visible keyboard focus, consistent with shadcn buttons: 3px ring in --ring at 50 %, no mouse outline. */
 @utility focus-ring {
     @apply focus-visible:ring-ring/50 focus-visible:border-ring transition-shadow outline-none focus-visible:ring-[3px];

@@ -66,6 +66,7 @@ resources/js/hooks/use-scroll-direction.ts  masque le header mobile au scroll ba
 resources/js/components/language-switcher.tsx
 resources/js/layouts/public-layout.tsx  layout des pages publiques (SiteHeader + <main>) — toute page publique l'utilise
 resources/js/components/layout/        site-header (assemblage, Figma 137-2085 / 125-361 / 137-3488), site-footer (Figma 261-5543, variante « wordmark en tête » choisie), brand-logo
+resources/js/components/home/hero.tsx   hero HP (Figma 123-304, `PublicLayout hero`) : bord à bord sur mobile / cadre 12px aligné sur le header en desktop, révélation au chargement (fondu + zoom 1.05→1, titre et CTA en cascade), passe-partout `border-white/15` inset 12px, photo responsive `public/images/home/hero-{800,1200,2000}.jpg` (srcSet), voile + dégradé, h1 Montserrat medium, CTA `variant="neutral" size="lg"`
 resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (une seule phrase avec le téléphone, sans lien ni icône), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux vers les vraies pages), brand-wordmark (wordmark contour pleine largeur en tête du footer)
 resources/js/components/navigation/    nav-link (lien + hover ellipse + focus-ring), nav-divider, nav-items (entrées + useIsActive), menu-toggle-icon (3 traits → croix), mobile-menu-toggle (bouton 72×48, aria-expanded/controls), mobile-menu-panel (Figma 137-3968 : panneau **sous la barre** qui reste en place — `absolute top-full`, hauteur `100dvh − barre` (4.5rem / 4rem compact), glissement 700 ms + liens en cascade, CTA + LanguageLinks épinglés en bas, scroll body verrouillé, Échap, swipe haut, fermeture auto ≥ lg, focus sur le 1er lien). État `menuOpen` dans site-header
                                        mega-menu-column / -promo / -properties : mega-menu « Nos biens » prêt mais **non branché** (décision utilisateur)
@@ -133,7 +134,11 @@ Blocs / composition
 - **Une page = `<SeoHead/>` + un layout + du contenu**. Jamais de `<SiteHeader/>` ni de `<main>` dans une page : c'est le rôle de `PublicLayout`.
 - Tout élément répété ou nommé dans le Figma a son composant (lien de nav, séparateur, colonne, carte promo, switcher…). Un fichier d'assemblage (`site-header.tsx`) ne contient que de la composition et de l'état.
 - Texte : jamais en dur, toujours `t()` / `tc()` (FR + EN). Liens : `route('name')` (déjà localisé), `<Link prefetch>` pour la nav.
+- **Figma = intention, pas pixel** : on arrondit toujours aux pas de l'échelle Tailwind (`p-6/10/12`, `min-h-96/112/128`, `text-5xl/6xl`…) et aux variantes shadcn existantes (`size="lg"`), jamais de valeur arbitraire (`h-[52px]`, `w-[220px]`) pour coller à la maquette.
 - Style : **100 % classes Tailwind**, zéro `style=`, zéro hex dans le JSX. Couleurs via tokens sémantiques (`bg-card`, `text-foreground`, `bg-background-05`…), tailles sur l'échelle Tailwind (`h-10`, `h-18`, `w-85`), polices via `font-sans` / `font-heading`, tailles de texte par défaut (`text-sm`, `text-base`, `text-xl`).
+- Variantes Button ajoutées à la source (`ui/button.tsx`) : `variant="neutral"` (blanc sur photo, hover sable). Pas de taille custom : on reste sur `sm` / `default` / `lg`.
+- **Boutons à angles droits** (`rounded-none` dans toutes les variantes/tailles de `ui/button.tsx`, décision utilisateur).
+- **Pas d'ombres** (`shadow-*`) sur le site public — décision utilisateur « premium » : `shadow-xs` retiré des variantes de `ui/button.tsx`, `shadow-none` sur les panneaux (dropdown). Si un composant shadcn ajouté en apporte une, la retirer dans la variante, pas sur l'instance.
 - Composants shadcn utilisés **tels quels** (`<Button size="lg">`) : pas de `h-12 px-4` sur une instance. Si le design diverge du composant, on change la variante dans `components/ui/`, une fois.
 - États de nav : couleur/fond uniquement, jamais de changement de `font-weight` entre default/hover/actif.
 - Accessibilité clavier : utilitaire **`focus-ring`** (`app.css`, ring 3px `--ring/50`, visible uniquement au clavier via `focus-visible`) sur tout élément interactif custom (liens de nav, logo, items de menu) — les composants shadcn l'ont déjà. Lien « Aller au contenu » (`a11y.skip_to_content`) + `<main id="main" tabIndex={-1}>` dans `PublicLayout`. `aria-label` sur les `<nav>`, `aria-expanded/controls` sur les déclencheurs, `aria-current="page"`, `motion-reduce:` sur les animations. Les menus (Radix) gèrent flèches / Échap / Tab nativement.
@@ -148,12 +153,13 @@ Avant de livrer un composant : `npx tsc --noEmit`, `npm run lint`, `npm run form
 Package : `mcamara/laravel-localization` (config `config/laravellocalization.php`, locales `fr` (défaut) et `en`).
 
 URLs
-- **Toutes les pages publiques sont préfixées** : `/fr/...` et `/en/...`. `/` (et toute URL sans préfixe) → 302 vers la locale négociée (session → cookie → `Accept-Language` → `fr`). Jamais de redirection sur une URL déjà préfixée.
+- **Français (défaut) à la racine, anglais sous `/en`** (`hideDefaultLocaleInURL = true`) : `/`, `/recherche`, `/mentions-legales` ↔ `/en`, `/en/search`, `/en/legal-notice`. Toute URL `/fr/...` → **301** vers la version sans préfixe (middleware `CanonicalUrl`, global, avant le routing — le package ne faisait qu'un 302).
+- **Pas de redirection par `Accept-Language`** (`useAcceptLanguageHeader = false`) : `/` sert toujours le FR (Googlebot envoie souvent `en-US` et ne verrait jamais la home FR). **Aucune mémorisation cookie/session** (`localeCookieRedirect` retiré : il renvoyait `/` vers `/en` après un passage en anglais — bug rencontré). Le switcher est explicite, l'URL est la seule source de vérité ; `hreflang` + `x-default` (= FR) guident les moteurs.
 - **Slugs traduits** dans `lang/{fr,en}/routes.php` (`'search' => 'recherche' | 'search'`), déclarés avec `LaravelLocalization::transRoute('routes.search')` dans le groupe localisé de `routes/web.php`. `/en/recherche` = 404 (pas de doublon).
 - Les routes auth/settings/dashboard restent **sans préfixe** (zone privée, `no-ssr`) ; la langue y suit la session/cookie.
 - `route('search')` (PHP **et** JS via Ziggy) génère déjà l'URL de la locale courante — ne jamais concaténer `/fr` à la main. Pour une autre locale : `LaravelLocalization::getLocalizedURL('en')` ou la prop partagée `localization.alternates`.
 - ⚠️ `php artisan route:cache` ne marche pas avec les routes traduites : utiliser `php artisan route:trans:cache` (et `route:trans:clear`) en prod.
-- Tests : les routes sont enregistrées avant la requête → appeler `$this->withLocale('fr')` (helper `tests/TestCase.php`) avant `get('/fr/...')`. La négociation `Accept-Language` est désactivée par le package en console : non testable, vérifier au `curl`.
+- Tests : les routes sont enregistrées avant la requête → `$this->withLocale('en')` (helper `tests/TestCase.php`) avant `get('/en/...')`. Pour le FR, `withLocale('fr')` (ou rien) = routes sans préfixe. Le helper compare à `app.fallback_locale` car le package mute `app.locale` à chaque requête.
 
 Chaînes
 - **UI** : `lang/fr/ui.php` + `lang/en/ui.php` (clés sémantiques imbriquées : `nav.search`, `search.results`…). Partagées au front par `HandleInertiaRequests` (`translations`) et lues via le hook **`useTranslation()`** : `t('nav.search')`, `t('search.title_with_term', { term })`, `tc('search.results', count)` (pluriel syntaxe Laravel `{0} …|{1} …|[2,*] …`). Côté PHP : `__('ui.nav.search')`. **Toujours ajouter la clé dans les deux fichiers.**
@@ -189,13 +195,14 @@ Ajouter une page publique
 - Premier hit en SSR : `<h1>`, title/meta dynamiques, résultats dans le HTML.
 - Raffinement côté client : `router.get(route('search'), {q}, { only: ['results','seo'], preserveState, replace })` → **partial reload** (seuls `results` + `seo` sont renvoyés en JSON), debounce 300 ms, URL mise à jour et partageable.
 - Indexation : seule `/recherche` vide page 1 est `index`. `?q=` ou `page>1` → `noindex, follow` (géré par la prop `seo.noindex` côté contrôleur). `rel="prev|next"` émis pour la pagination.
+- `LocalizedUrls` appelle `getLocalizedURL($code, null, [], false)` : le 4e paramètre (`forceDefaultLocation`) à `true` réinjecterait `/fr` dans les hreflang — bug déjà rencontré.
 - Les props d'indexation de la page s'appellent `indexing` (pas `seo`, réservé à la prop partagée globale — collision déjà rencontrée).
 - Pour les listings SEO durables, créer des **URL propres** (`/recherche/{slug}`, `/categorie/{slug}/{ville}`) rendues en SSR et ajoutées au sitemap, plutôt que des query strings.
 - Brancher les vraies données : remplacer le dataset placeholder de `SearchController` par un `Model::query()`/Scout + `paginate()`, garder la forme `{data,total,current_page,last_page}`.
 
 ## Logo & identité
 
-- Assets de marque dans `public/brand/` : `logo-mark.svg` (pictogramme seul, footer), `wordmark-outline.svg` (filigrane footer), icônes sociales `public/images/social/*.svg` (12px blanc, Figma) ; `logo_dark_desktop.svg` (213×24) et `logo_dark_mobile.svg` (112×28) = artwork foncé `#202832` pour fond clair (fournis par l'utilisateur). Les variantes `logo_light_*.svg` (dark mode) sont **générées** par `sed 's/#202832/#f0f1f3/g'` ; à régénérer si les logos changent.
+- Assets de marque dans `public/brand/` : `logo-mark.svg` (pictogramme seul, footer), `wordmark-outline.svg` (filigrane footer), icônes sociales `public/images/social/*.svg` (12px blanc, Figma) ; lauriers dorés `public/images/laurel-{left,right}.svg` (repris du projet RIP, élément de confiance du hero) ; `logo_dark_desktop.svg` (213×24) et `logo_dark_mobile.svg` (112×28) = artwork foncé `#202832` pour fond clair (fournis par l'utilisateur). Les variantes `logo_light_*.svg` (dark mode) sont **générées** par `sed 's/#202832/#f0f1f3/g'` ; à régénérer si les logos changent.
 - Composant **`<BrandLogo priority?>`** (`components/brand-logo.tsx`) choisit mobile/desktop (`sm:`) et dark/light (`dark:`). À utiliser partout, jamais un `<img>` direct.
 - `favicon.svg` = copie du logo mobile. JSON-LD Organization → `logo_dark_desktop.svg` (`config/seo.php`).
 - Déclinaisons à fournir : `public/favicon.svg`, `public/favicon.ico` (32×32), `public/apple-touch-icon.png` (180×180), `public/og-default.png` (1200×630, image de partage par défaut).
@@ -265,7 +272,7 @@ Variables d'environnement SEO (`.env`)
 SEO_OPENING_HOURS="Mo-Sa 09:00-19:00" (+ SEO_OPENING_HOURS_FR/EN libellés)   # footer + JSON-LD openingHours
 SEO_GOOGLE_RATING=4.9 / SEO_GOOGLE_REVIEW_COUNT=128 / SEO_GOOGLE_REVIEWS_URL=   # AggregateRating JSON-LD uniquement (plus de badge visible) — UNIQUEMENT des chiffres réels
 SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_STREET= / SEO_ORG_POSTAL_CODE= / SEO_ORG_CITY=   # footer + JSON-LD
-SEO_SOCIAL_LINKEDIN= / SEO_SOCIAL_THREADS= / SEO_SOCIAL_FACEBOOK=   # vide = icône masquée
+SEO_SOCIAL_LINKEDIN= / SEO_SOCIAL_INSTAGRAM=   # vide = icône masquée
 APP_URL=https://www.exemple.fr        # base des canonical, sitemap, robots
 APP_LOCALE=fr
 INERTIA_SSR_ENABLED=true
@@ -294,7 +301,7 @@ SEO_LLMS_SUMMARY="…"
 - La page démo `welcome.tsx` du kit a été remplacée par `pages/home.tsx` (PublicLayout, textes `home.*`), en attente du design Figma de la HP.
 - Le callback `title:` de `createInertiaApp` a été retiré (app.tsx + ssr.tsx) : le suffixe est géré par `<SeoHead>` pour éviter « Titre - Laravel - Laravel ».
 - Fonts : Instrument Sans (kit) → Inter + Montserrat self-hosted (décision utilisateur, perf), d'abord via fontsource puis en `@font-face` maison latin-only + preload.
-- Header mobile : se cache au scroll bas / revient au scroll haut ; menu sous la barre (header conservé, icône → croix) avec swipe vers le haut pour fermer et fermeture auto au passage en desktop.
+- Header : 64px (compact 56px au scroll) ; le header transparent « overlay » sur le hero a été essayé puis retiré (décision utilisateur). Header mobile : se cache au scroll bas / revient au scroll haut ; menu sous la barre (header conservé, icône → croix) avec swipe vers le haut pour fermer et fermeture auto au passage en desktop.
 - Tests : PHPUnit classique, pas Pest (le kit n'installe pas Pest).
 - `ui/dropdown-menu.tsx` et `ui/button.tsx` mis à jour vers le shadcn actuel (new-york / Tailwind v4 : `default h-9 px-4`, `sm h-8`, `lg h-10 px-6`, `icon size-9`, `data-slot`, icônes `size-4` par défaut sauf classe `size-*` explicite). Les autres composants `ui/` sont encore ceux du kit (style « default », Tailwind v3) : les mettre à jour un par un avec `--overwrite` quand on y touche, en vérifiant les usages du kit (auth, settings, sidebar).
 - Git initialisé le 2026-08-23, remote `origin` = https://github.com/benjaminroche4/eip (branche `main`).
