@@ -289,11 +289,18 @@ SEO_LLMS_SUMMARY="…"
 - `/robots.txt` et `/llms.txt` sont des **routes** (`SeoController`), pas des fichiers : l'URL du sitemap suit `APP_URL` automatiquement. Listes de chemins privés et d'agents IA dans `Domain/Seo/Support/RobotsTxt.php`.
 - `public/sitemap.xml` est généré par `SitemapBuilder`, ignoré par git, régénéré quotidiennement par le scheduler (`php artisan schedule:run` via cron en prod). Ajouter les pages dynamiques dans `SitemapBuilder::build()`.
 
-## Déploiement (à prévoir)
+## Déploiement — Laravel Cloud
 
-- `APP_URL` réel (utilisé pour canonical/sitemap), `INERTIA_SSR_ENABLED=true`.
-- `npm run build:ssr` dans le pipeline, puis `php artisan inertia:start-ssr` supervisé. Redémarrer le SSR après chaque déploiement (`php artisan inertia:stop-ssr`).
-- Fonts : envisager le self-hosting (supprime une requête externe, meilleur LCP).
+Hébergement : **Laravel Cloud** (déploiement automatique à chaque `git push` sur `main`). Le push ne suffit pas seul : la configuration ci-dessous doit être en place dans le dashboard Cloud.
+
+- **Build** : `npm ci && npm run build:ssr` (pas `npm run build` : le SSR a besoin de `bootstrap/ssr/ssr.js`).
+- **Deploy commands** : `php artisan migrate --force`, `php artisan config:cache`, `php artisan view:cache`, `php artisan event:cache`, `php artisan route:trans:cache`. ⚠️ Jamais `route:cache` / `optimize` (casse les routes traduites — voir Internationalisation).
+- **SSR** : vérifier dans Cloud qu'un process/worker Inertia SSR est disponible pour l'app (`php artisan inertia:start-ssr`, port 13714) et le redémarrer après chaque déploiement. Si Cloud n'offre pas ce process, mettre `INERTIA_SSR_ENABLED=false` : le site rend côté client sans erreur, mais on perd le SSR (SEO) — à traiter en priorité.
+- **Scheduler** : activer le scheduler Cloud (`schedule:run` chaque minute) pour la régénération quotidienne du sitemap.
+- **Base / cache** : MySQL Cloud (les variables `DB_*` sont injectées par Cloud) ; le cache est en table BDD (`CACHE_STORE=database`) → les migrations doivent être passées avant le premier hit.
+- **Variables d'environnement** à renseigner dans Cloud (valeurs réelles, aucun placeholder) : `APP_URL` (https, www ou non selon le domaine canonique), `APP_ENV=production`, `APP_DEBUG=false`, `INERTIA_SSR_ENABLED`, tout le bloc `SEO_*` (org, téléphone, adresse, réseaux, horaires, avis), `MAIL_*`.
+- Après le déploiement, vérifier : `curl -s https://<domaine>/ | grep '<h1'` (SSR), `/robots.txt`, `/sitemap.xml`, `/llms.txt`, redirection `/fr/...` → `/...` (301) et http → https.
+- En local, `make start` / `make clean` (Makefile).
 
 ## Historique des choix
 

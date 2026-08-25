@@ -50,7 +50,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
                 phone: '+33 6 00 00 00 00',
                 address: { street: '22 Rue Notre Dame de Nazareth', city: 'Paris', postal_code: '75003', country: 'FR' },
             },
-            social: { linkedin: 'https://www.linkedin.com/company/x', facebook: 'https://www.facebook.com/x' },
+            social: { linkedin: 'https://www.linkedin.com/company/x', instagram: 'https://www.instagram.com/x' },
             hours: { spec: 'Mo-Fr 08:00-20:00, Sa 08:00-12:00', label: 'Lun – Ven, 8h – 20h · Sam, 8h – 12h', open: true },
             reviews: { rating: 4.9, count: 400, url: 'https://www.google.com/maps' },
         },

@@ -9,7 +9,7 @@ describe('SiteFooter', () => {
     it('renders navigation, contact, social links and the legal bar', () => {
         renderPage(<SiteFooter year={2026} />);
 
-        expect(screen.getByRole('navigation', { name: 'Navigation' })).toBeInTheDocument();
+        expect(screen.getByRole('navigation', { name: 'Nos services' })).toBeInTheDocument();
         const card = screen.getByRole('link', { name: /Nos conseillers sont à votre écoute/ });
         expect(card).toHaveTextContent('+33 6 00 00 00 00');
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).children).toHaveLength(3);

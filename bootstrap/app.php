@@ -22,8 +22,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Laravel Cloud terminates TLS on its load balancer: trust X-Forwarded-* so the request scheme/host
+        // are the public ones (otherwise CanonicalUrl sees "http" and loops on its https redirect).
+        $middleware->trustProxies(at: '*');
+
         // Global (before routing) so "/fr/..." and host/scheme variants redirect even when no route matches.
-        $middleware->prepend(CanonicalUrl::class);
+        // Appended, not prepended: it must run AFTER TrustProxies to read the real scheme/host.
+        $middleware->append(CanonicalUrl::class);
 
         $middleware->web(append: [
             HandleInertiaRequests::class,
