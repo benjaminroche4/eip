@@ -14,8 +14,25 @@ final class SanityClient
 {
     public const CACHE_TTL_SECONDS = 300;
 
-    /** @param array{project_id: ?string, dataset: string, api_version: string, token: ?string, use_cdn: bool} $config */
-    public function __construct(private readonly array $config) {}
+    /** @var array{project_id: string, dataset: string, api_version: string, token: string, use_cdn: bool} */
+    private readonly array $config;
+
+    /** @param array{project_id?: ?string, dataset?: ?string, api_version?: ?string, token?: ?string, use_cdn?: mixed} $config */
+    public function __construct(array $config)
+    {
+        // Values pasted into a hosting dashboard often carry trailing whitespace: trim everything.
+        $this->config = [
+            'project_id' => trim((string) ($config['project_id'] ?? '')),
+            'dataset' => trim((string) ($config['dataset'] ?? 'production')),
+            'api_version' => trim((string) ($config['api_version'] ?? '2025-02-09')),
+            'token' => trim((string) ($config['token'] ?? '')),
+            'use_cdn' => filter_var($config['use_cdn'] ?? false, FILTER_VALIDATE_BOOL),
+        ];
+
+        if ($this->config['project_id'] === '') {
+            throw new \InvalidArgumentException('Sanity is not configured: SANITY_PROJECT_ID is empty (check the environment variables and re-run config:cache).');
+        }
+    }
 
     /** @param array<string, mixed> $params GROQ params, referenced as `$name` in the query. */
     public function fetch(string $groq, array $params = []): mixed
@@ -29,7 +46,7 @@ final class SanityClient
         $key = 'sanity:'.md5($url.serialize($query));
 
         return Cache::remember($key, self::CACHE_TTL_SECONDS, function () use ($url, $query) {
-            $response = Http::withToken((string) $this->config['token'])
+            $response = Http::withToken($this->config['token'])
                 ->acceptJson()
                 ->timeout(10)
                 ->get($url, $query);
