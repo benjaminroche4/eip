@@ -15,13 +15,9 @@ type MobileMenuPanelProps = {
     onClose: () => void;
 };
 
-/** Staggered entrance of the rows once the panel has dropped in (tailwindcss-animate: delay = animation-delay). */
-const rowEnter = 'animate-in fade-in slide-in-from-top-2 fill-mode-both duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:animate-none';
-const rowDelays = ['delay-200', 'delay-300', 'delay-500', 'delay-700', 'delay-1000'];
-
 /**
  * Mobile menu (Figma 137-3968) opening *under* the header bar, which stays in place: the panel
- * slides down to the bottom of the viewport, rows stagger in, CTA and "EN | FR" are pinned at the bottom.
+ * fills the viewport below it (no entrance animation, user decision), CTA and "EN | FR" are pinned at the bottom.
  * Locks body scroll, closes on Escape / swipe-up / resize to desktop, moves focus to the first link.
  */
 export default function MobileMenuPanel({ id, open, compact, items, isActive, cta, onClose }: MobileMenuPanelProps) {
@@ -70,15 +66,15 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                 onPointerDown={onPointerDown}
                 onPointerUp={onPointerUp}
                 className={cn(
-                    'bg-card text-card-foreground flex h-full flex-col overflow-y-auto overscroll-contain p-4 transition-[transform,opacity,visibility] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
-                    open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-full opacity-0 duration-400',
+                    'bg-card text-card-foreground flex h-full flex-col overflow-y-auto overscroll-contain p-4',
+                    open ? 'visible' : 'invisible',
                 )}
             >
                 <nav aria-label={t('nav.mobile')} className="pt-4">
                     <ul className="flex flex-col gap-1">
                         {open &&
                             items.map((item, i) => (
-                                <li key={item.key} className={cn(rowEnter, rowDelays[i] ?? 'delay-1000')}>
+                                <li key={item.key}>
                                     <NavLink
                                         ref={i === 0 ? firstLink : undefined}
                                         href={item.href}
@@ -94,17 +90,10 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                     </ul>
                     {open && secondary.length > 0 && (
                         <>
-                            <span
-                                aria-hidden
-                                className={cn(
-                                    'via-border my-3 block h-px w-full bg-gradient-to-r from-transparent to-transparent',
-                                    rowEnter,
-                                    'delay-500',
-                                )}
-                            />
+                            <span aria-hidden className="via-border my-3 block h-px w-full bg-gradient-to-r from-transparent to-transparent" />
                             <ul className="flex flex-col gap-1">
-                                {secondary.map((item, i) => (
-                                    <li key={item.key} className={cn(rowEnter, rowDelays[items.length + i] ?? 'delay-1000')}>
+                                {secondary.map((item) => (
+                                    <li key={item.key}>
                                         <NavLink
                                             href={item.href}
                                             size="lg"
@@ -122,13 +111,7 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                 </nav>
 
                 {open && (
-                    <div
-                        className={cn(
-                            'mt-auto flex flex-col items-center gap-5 pb-4 [&>*:first-child]:w-full [&>*:first-child>a]:w-full',
-                            rowEnter,
-                            'delay-700',
-                        )}
-                    >
+                    <div className="mt-auto flex flex-col items-center gap-5 pb-4 [&>*:first-child]:w-full [&>*:first-child>a]:w-full">
                         <div>{cta}</div>
                         <LanguageLinks />
                     </div>

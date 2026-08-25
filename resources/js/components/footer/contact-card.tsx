@@ -25,7 +25,7 @@ export default function ContactCard() {
     if (!phone) return null;
 
     return (
-        <Link href={href} prefetch className="group focus-ring flex flex-col gap-3 rounded-sm">
+        <Link href={href} prefetch className="group focus-ring flex flex-col gap-3 rounded-none">
             <p className="text-foreground text-sm">{t('footer.intro')}</p>
 
             <div className="flex items-center gap-3">

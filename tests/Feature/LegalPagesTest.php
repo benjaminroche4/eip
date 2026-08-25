@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -20,6 +21,7 @@ class LegalPagesTest extends TestCase
 
     public function test_legal_pages_are_listed_in_the_sitemap(): void
     {
+        Http::fake(); // blog entries come from Sanity — not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
         $xml = file_get_contents(public_path('sitemap.xml'));
         $this->assertStringContainsString('<loc>'.url('/mentions-legales').'</loc>', $xml);

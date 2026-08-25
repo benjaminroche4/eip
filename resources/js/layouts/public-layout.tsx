@@ -20,7 +20,7 @@ export default function PublicLayout({ children, className, hero = false }: Publ
         <div className="flex min-h-dvh flex-col">
             <a
                 href="#main"
-                className="focus-ring bg-primary text-primary-foreground sr-only z-50 rounded-md px-4 py-2 text-base focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+                className="focus-ring bg-primary text-primary-foreground sr-only z-50 rounded-none px-4 py-2 text-base focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
             >
                 {t('a11y.skip_to_content')}
             </a>

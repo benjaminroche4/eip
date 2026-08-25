@@ -13,10 +13,14 @@ export default function OpenBadge() {
     return (
         <Badge
             variant="outline"
-            className="border-border text-muted-foreground bg-transparent px-2 py-0 text-[0.6875rem] font-medium"
+            className="border-border text-muted-foreground relative bg-transparent px-2 py-0 text-[0.6875rem] font-medium"
             title={seo.hours.label}
         >
             {t('footer.open_now')}
+            {/* Border shimmer: a conic light arc rotating along the 1px outline (ring-mask hides the inside) */}
+            <span aria-hidden className="ring-mask pointer-events-none absolute inset-0 overflow-hidden rounded-full motion-reduce:hidden">
+                <span className="animate-border-shimmer via-foreground/60 absolute -inset-full bg-conic from-transparent to-transparent" />
+            </span>
         </Badge>
     );
 }

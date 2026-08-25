@@ -7,6 +7,15 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 /** Current page in every supported locale — feeds hreflang, the language switcher and og:locale:alternate. */
 final class LocalizedUrls
 {
+    /** @var array<string, string>|null locale → URL, set by controllers whose translated page has a different slug (blog). */
+    private ?array $override = null;
+
+    /** @param array<string, string> $urlsByLocale */
+    public function override(array $urlsByLocale): void
+    {
+        $this->override = $urlsByLocale;
+    }
+
     /** @return array<string, mixed> */
     public function forCurrentRequest(): array
     {
@@ -17,7 +26,8 @@ final class LocalizedUrls
 
         foreach ($supported as $code => $meta) {
             // forceDefaultLocation=false: the default locale stays hidden from its URLs (hideDefaultLocaleInURL)
-            $url = LaravelLocalization::getLocalizedURL($code, null, [], false) ?: url($code === LaravelLocalization::getDefaultLocale() ? '/' : "/$code");
+            $url = $this->override[$code]
+                ?? (LaravelLocalization::getLocalizedURL($code, null, [], false) ?: url($code === LaravelLocalization::getDefaultLocale() ? '/' : "/$code"));
             $alternates[$code] = $url;
             $locales[] = [
                 'code' => $code,

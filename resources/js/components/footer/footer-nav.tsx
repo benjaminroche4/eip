@@ -15,7 +15,7 @@ export default function FooterNav({ items, label }: { items: NavItem[]; label: s
                             href={item.href}
                             prefetch
                             className={cn(
-                                'text-foreground focus-ring inline-flex items-center gap-2 rounded-sm px-2 py-1 text-sm',
+                                'text-foreground focus-ring inline-flex items-center gap-2 rounded-none px-2 py-1 text-sm',
                                 hoverSurfaceClass,
                             )}
                         >

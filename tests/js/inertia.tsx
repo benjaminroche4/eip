@@ -8,6 +8,11 @@ import translations from './fixtures/translations.json';
 const ROUTES: Record<string, string> = {
     home: '/fr',
     search: '/fr/recherche',
+    buy: '/fr/acheter-immobilier-paris',
+    sell: '/fr/vendre-immobilier-paris',
+    estimate: '/fr/estimation-immobiliere-paris',
+    contact: '/fr/contact',
+    'blog.index': '/fr/blog',
     privacy: '/fr/politique-de-confidentialite',
     legal: '/fr/mentions-legales',
     terms: '/fr/conditions-generales',
@@ -24,6 +29,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
         auth: { user: null as never },
         locale: 'fr',
         year: 2026,
+        flash: { success: null },
         localization: {
             current: 'fr',
             default: 'fr',
@@ -48,8 +54,10 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
                 sameAs: [],
                 email: 'contact@example.com',
                 phone: '+33 6 00 00 00 00',
+                whatsapp: '33600000000',
                 address: { street: '22 Rue Notre Dame de Nazareth', city: 'Paris', postal_code: '75003', country: 'FR' },
             },
+            advisor: { name: 'Maris Moreau', role: 'Conseillère senior', photo: '/images/advisors/advisor-1.webp', experienceYears: 12 },
             social: { linkedin: 'https://www.linkedin.com/company/x', instagram: 'https://www.instagram.com/x' },
             hours: { spec: 'Mo-Fr 08:00-20:00, Sa 08:00-12:00', label: 'Lun – Ven, 8h – 20h · Sam, 8h – 12h', open: true },
             reviews: { rating: 4.9, count: 400, url: 'https://www.google.com/maps' },
@@ -58,6 +66,9 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
         ...overrides,
     } as SharedData;
 }
+
+/** Spy on useForm().post so form tests can assert the submitted route. */
+export const formPost = vi.fn();
 
 /** Current Inertia page used by the mocked usePage(); change `url` per test to assert active states. */
 export const page = { url: '/fr', props: sharedProps() };
@@ -76,6 +87,17 @@ vi.mock('@inertiajs/react', async () => {
         usePage: () => page,
         Head: ({ children }: { children?: React.ReactNode }) => React.createElement(React.Fragment, null, children),
         router: { get: vi.fn(), visit: vi.fn() },
+        useForm: <T extends Record<string, unknown>>(initial: T) => {
+            const [data, setState] = React.useState<T>(initial);
+            return {
+                data,
+                setData: (key: keyof T, value: T[keyof T]) => setState((d) => ({ ...d, [key]: value })),
+                post: formPost,
+                processing: false,
+                errors: {} as Partial<Record<keyof T, string>>,
+                reset: () => setState(initial),
+            };
+        },
     };
 });
 

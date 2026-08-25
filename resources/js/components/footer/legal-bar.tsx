@@ -19,7 +19,7 @@ export default function LegalBar({ year }: { year: number }) {
                             <Link
                                 href={route(key)}
                                 prefetch
-                                className="text-muted-foreground focus-ring hover:text-foreground rounded-sm transition-colors duration-300"
+                                className="text-muted-foreground focus-ring hover:text-foreground rounded-none transition-colors duration-300"
                             >
                                 {t(`footer.${key}`)}
                             </Link>

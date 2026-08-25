@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'locale' => app()->getLocale(),
             'year' => now()->year,
+            'flash' => fn () => ['success' => $request->session()->get('success')],
             'localization' => fn () => app(LocalizedUrls::class)->forCurrentRequest(),
             'translations' => fn () => trans('ui'),
             'seo' => fn () => [
@@ -65,9 +66,16 @@ class HandleInertiaRequests extends Middleware
                     'sameAs' => array_values(array_unique(array_filter([...config('seo.organization.same_as'), ...array_values(config('seo.social'))]))),
                     'email' => config('seo.organization.email'),
                     'phone' => config('seo.organization.phone'),
+                    'whatsapp' => config('seo.organization.whatsapp'),
                     'address' => array_filter(config('seo.organization.address')),
                 ],
                 'social' => array_filter(config('seo.social')),
+                'advisor' => config('seo.advisor.name') ? [
+                    'name' => config('seo.advisor.name'),
+                    'role' => config('seo.advisor.role.'.app()->getLocale()) ?: config('seo.advisor.role.fr'),
+                    'photo' => config('seo.advisor.photo'),
+                    'experienceYears' => config('seo.advisor.experience_years'),
+                ] : null,
                 'hours' => [
                     'spec' => config('seo.hours.spec'),
                     'label' => config('seo.hours.labels.'.app()->getLocale(), config('seo.hours.labels.fr')),

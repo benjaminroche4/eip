@@ -24,6 +24,7 @@ return [
         'logo' => '/brand/logo_dark_desktop.svg',
         'email' => env('SEO_ORG_EMAIL'),
         'phone' => env('SEO_ORG_PHONE'),
+        'whatsapp' => env('SEO_ORG_WHATSAPP'), // international number without spaces (e.g. 33659253695) — empty = link hidden
         'same_as' => array_values(array_filter(explode(',', (string) env('SEO_ORG_SAME_AS', '')))), // social/profile URLs
         'address' => [
             'street' => env('SEO_ORG_STREET'),
@@ -48,6 +49,14 @@ return [
         'rating' => env('SEO_GOOGLE_RATING') !== null ? (float) env('SEO_GOOGLE_RATING') : null,
         'count' => env('SEO_GOOGLE_REVIEW_COUNT') !== null ? (int) env('SEO_GOOGLE_REVIEW_COUNT') : null,
         'url' => env('SEO_GOOGLE_REVIEWS_URL'),
+    ],
+
+    // Advisor featured on the contact confirmation (name empty = card hidden). Photo in public/images/advisors.
+    'advisor' => [
+        'name' => env('SEO_ADVISOR_NAME'),
+        'role' => ['fr' => env('SEO_ADVISOR_ROLE_FR'), 'en' => env('SEO_ADVISOR_ROLE_EN')],
+        'photo' => env('SEO_ADVISOR_PHOTO', '/images/advisors/advisor-1.webp'),
+        'experience_years' => env('SEO_ADVISOR_EXPERIENCE_YEARS') !== null ? (int) env('SEO_ADVISOR_EXPERIENCE_YEARS') : null,
     ],
 
     // Social profiles shown in the footer (leave empty to hide). Also merged into Organization.sameAs.

@@ -27,6 +27,7 @@ export interface SharedData {
     auth: Auth;
     locale: string;
     year: number;
+    flash: { success: string | null };
     localization: Localization;
     translations: Translations;
     seo: SeoShared;
@@ -58,9 +59,13 @@ export interface SeoShared {
         sameAs: string[];
         email: string | null;
         phone: string | null;
+        /** International number without spaces (wa.me link); null hides the WhatsApp link. */
+        whatsapp: string | null;
         address: { street?: string; city?: string; postal_code?: string; country?: string };
     };
     social: Partial<Record<'linkedin' | 'instagram', string>>;
+    /** Advisor shown on the contact confirmation; null when not configured. */
+    advisor: { name: string; role: string | null; photo: string; experienceYears: number | null } | null;
     hours: { spec: string; label: string; open: boolean };
     reviews: { rating: number; count: number; url: string | null } | null;
 }

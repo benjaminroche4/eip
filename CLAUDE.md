@@ -5,7 +5,7 @@ Basé sur le starter kit officiel `laravel/react-starter-kit`. Pas de Next.js, p
 
 ## Environnement local
 
-- PHP 8.4 (Homebrew), Composer 2.8, Node 20 — **MySQL via MAMP** (port 8889, root/root, base `laravel_app`). MAMP doit être lancé.
+- PHP 8.4 (Homebrew), Composer 2.8, Node 20 — **MySQL via MAMP** (port 8889, root/root, base `estate_in_paris`). MAMP doit être lancé.
 - Démarrer : `composer run dev` (serveur PHP + Vite HMR + queue + logs). Le port 8000 est souvent pris par un `symfony` local → Laravel bascule sur **http://127.0.0.1:8001**.
 - SSR en dev : `npm run build:ssr && php artisan inertia:start-ssr` dans un second terminal (sinon Inertia rend en client, sans erreur).
 - Vérifier le SSR : `curl -s http://127.0.0.1:8001/ | grep '<h1'` doit renvoyer du contenu.
@@ -57,6 +57,9 @@ resources/js/lib/json-ld.ts            builders JSON-LD (siteGraph, breadcrumbLi
 resources/css/tokens.css               palette Figma (voir Design system)
 config/seo.php                         défauts SEO/GEO partagés au front via la prop `seo`
 app/Domain/                            logique métier (voir Architecture)
+app/Domain/Blog/                       blog Sanity : Support/SanityClient (GROQ via HTTP, token serveur, cache 5 min, CDN si SANITY_USE_CDN), SanityImage (ref → URL cdn + srcset + dimensions), PortableText (normalise le body, extrait FAQ), SeoText (title ≤ 60 / description ≤ 160) ; Actions ListBlogPosts / ShowBlogPost / ListBlogUrls (sitemap) ; Data BlogQuery / BlogPostSummary / BlogPost / BlogListing
+app/Http/Controllers/BlogController.php  /blog (+ ?page, noindex > 1) et /blog/{slug} → pages/blog/index.tsx, show.tsx. Le switcher/hreflang suivent le slug traduit (translation.metadata) via LocalizedUrls::override()
+resources/js/components/blog/          types.ts (miroir des DTO + blocs Sanity), portable-text (block/image/youtube, listes regroupées, marks), blog-body (quickAnswerBlock, wysiwygBlock, tableBlock, ctaBlock, faqBlock), blog-post-card
 app/Domain/Legal/Data/LegalPage.php    pages légales (privacy/legal/terms) depuis lang/{locale}/legal.php → LegalController → pages/legal.tsx
 app/Domain/Localization/Support/LocalizedUrls.php   page courante dans chaque langue (hreflang, switcher)
 lang/{fr,en}/ui.php · routes.php       textes UI partagés au front · slugs d'URL traduits
@@ -69,7 +72,6 @@ resources/js/components/layout/        site-header (assemblage, Figma 137-2085 /
 resources/js/components/home/hero.tsx   hero HP (Figma 123-304, `PublicLayout hero`) : bord à bord sur mobile / cadre 12px aligné sur le header en desktop, révélation au chargement (fondu + zoom 1.05→1, titre et CTA en cascade), passe-partout `border-white/15` inset 12px, photo responsive `public/images/home/hero-{800,1200,2000}.jpg` (srcSet), voile + dégradé, h1 Montserrat medium, CTA `variant="neutral" size="lg"`
 resources/js/components/footer/        social-links (réseaux depuis config/seo.php `social`), contact-list (une seule phrase avec le téléphone, sans lien ni icône), footer-column, footer-nav (mêmes entrées que le header), legal-bar (© + liens légaux vers les vraies pages), brand-wordmark (wordmark contour pleine largeur en tête du footer)
 resources/js/components/navigation/    nav-link (lien + hover ellipse + focus-ring), nav-divider, nav-items (entrées + useIsActive), menu-toggle-icon (3 traits → croix), mobile-menu-toggle (bouton 72×48, aria-expanded/controls), mobile-menu-panel (Figma 137-3968 : panneau **sous la barre** qui reste en place — `absolute top-full`, hauteur `100dvh − barre` (4.5rem / 4rem compact), glissement 700 ms + liens en cascade, CTA + LanguageLinks épinglés en bas, scroll body verrouillé, Échap, swipe haut, fermeture auto ≥ lg, focus sur le 1er lien). État `menuOpen` dans site-header
-                                       mega-menu-column / -promo / -properties : mega-menu « Nos biens » prêt mais **non branché** (décision utilisateur)
 resources/js/components/seo/           seo-head (<SeoHead/>), seo-breadcrumbs, seo-image
 resources/js/components/i18n/          language-links (« EN | FR » inline, Inter medium, inactif à 50 % — menu mobile, footer), language-switcher (DropdownMenu shadcn, ouverture au clic/clavier uniquement — pas au survol, décision utilisateur), flag (SVG)
 resources/js/lib/hover-surface.ts      classes du hover « premium » (ellipse bas→haut, bg-background-05)
@@ -126,9 +128,9 @@ types/index.ts           types partagés Inertia (SharedData, props communes)
 ```
 
 Nommage
-- Fichiers **kebab-case** (`mega-menu-promo.tsx`), composant **PascalCase en export default** portant le même nom (`MegaMenuPromo`). Un composant par fichier.
-- Props typées `type XxxProps = {...}` juste au-dessus du composant ; hooks `useXxx` ; constantes de classes `xxxClass` ; clés de traduction en `snake_case` (`nav.mega.promo_title`).
-- Composants préfixés par leur domaine quand le nom seul est ambigu (`SeoHead`, `SeoImage`, `NavLink`, `MegaMenuColumn`, `BrandLogo`).
+- Fichiers **kebab-case** (`blog-post-card.tsx`), composant **PascalCase en export default** portant le même nom (`BlogPostCard`). Un composant par fichier.
+- Props typées `type XxxProps = {...}` juste au-dessus du composant ; hooks `useXxx` ; constantes de classes `xxxClass` ; clés de traduction en `snake_case` (`blog.read_time`).
+- Composants préfixés par leur domaine quand le nom seul est ambigu (`SeoHead`, `SeoImage`, `NavLink`, `BlogBody`, `BrandLogo`).
 
 Blocs / composition
 - **Une page = `<SeoHead/>` + un layout + du contenu**. Jamais de `<SiteHeader/>` ni de `<main>` dans une page : c'est le rôle de `PublicLayout`.
@@ -137,12 +139,12 @@ Blocs / composition
 - **Figma = intention, pas pixel** : on arrondit toujours aux pas de l'échelle Tailwind (`p-6/10/12`, `min-h-96/112/128`, `text-5xl/6xl`…) et aux variantes shadcn existantes (`size="lg"`), jamais de valeur arbitraire (`h-[52px]`, `w-[220px]`) pour coller à la maquette.
 - Style : **100 % classes Tailwind**, zéro `style=`, zéro hex dans le JSX. Couleurs via tokens sémantiques (`bg-card`, `text-foreground`, `bg-background-05`…), tailles sur l'échelle Tailwind (`h-10`, `h-18`, `w-85`), polices via `font-sans` / `font-heading`, tailles de texte par défaut (`text-sm`, `text-base`, `text-xl`).
 - Variantes Button ajoutées à la source (`ui/button.tsx`) : `variant="neutral"` (blanc sur photo, hover sable). Pas de taille custom : on reste sur `sm` / `default` / `lg`.
-- **Boutons à angles droits** (`rounded-none` dans toutes les variantes/tailles de `ui/button.tsx`, décision utilisateur).
+- **Angles : droits ou pleinement ronds, jamais entre les deux** (décision utilisateur, 2026-08-25). *Surfaces et contrôles = `rounded-none`* : boutons, champs (`input`, `select`, `textarea`), cartes, images, panneaux/menus, alertes, header, lien « Aller au contenu », focus rings. *Pilules = `rounded-full`* : badges de statut/tag (« Ouvert », « Siège », « Conseillers disponibles »), disques des réseaux sociaux, avatars, point de statut. Un `rounded-sm/md/lg/xl` n'a pas sa place sur le site public : si un composant shadcn ajouté en apporte un, le passer à `rounded-none` dans la variante (`ui/*.tsx`), sauf s'il s'agit d'un badge/avatar.
 - **Pas d'ombres** (`shadow-*`) sur le site public — décision utilisateur « premium » : `shadow-xs` retiré des variantes de `ui/button.tsx`, `shadow-none` sur les panneaux (dropdown). Si un composant shadcn ajouté en apporte une, la retirer dans la variante, pas sur l'instance.
 - Composants shadcn utilisés **tels quels** (`<Button size="lg">`) : pas de `h-12 px-4` sur une instance. Si le design diverge du composant, on change la variante dans `components/ui/`, une fois.
 - États de nav : couleur/fond uniquement, jamais de changement de `font-weight` entre default/hover/actif.
 - Accessibilité clavier : utilitaire **`focus-ring`** (`app.css`, ring 3px `--ring/50`, visible uniquement au clavier via `focus-visible`) sur tout élément interactif custom (liens de nav, logo, items de menu) — les composants shadcn l'ont déjà. Lien « Aller au contenu » (`a11y.skip_to_content`) + `<main id="main" tabIndex={-1}>` dans `PublicLayout`. `aria-label` sur les `<nav>`, `aria-expanded/controls` sur les déclencheurs, `aria-current="page"`, `motion-reduce:` sur les animations. Les menus (Radix) gèrent flèches / Échap / Tab nativement.
-- SEO des liens : un lien de nav doit pointer vers une vraie URL (`route()`), jamais `#` en prod — les `#` restants (« Vendre », « Estimation », CTA « Nous contacter ») sont des placeholders à remplacer dès que les pages existent. Pages légales : routes `privacy` / `legal` / `terms` (slugs traduits), contenu placeholder dans `lang/{fr,en}/legal.php` **à faire valider juridiquement**.
+- SEO des liens : un lien de nav doit pointer vers une vraie URL (`route()`), jamais `#` en prod. Pages de service `contact` / `estimate` / `sell` / `buy` (routes nommées, slugs SEO `contact`, `estimation-immobiliere-paris`, `vendre-immobilier-paris`, `acheter-immobilier-paris` ↔ `contact`, `property-valuation-paris`, `sell-property-paris`, `buy-property-paris`) : squelettes `pages/<key>.tsx` = `PublicLayout` + `<PageIntro page>` (`components/page/page-intro.tsx` : SeoHead + fil d'Ariane + h1 + phrase-réponse, textes `ui.pages.<key>.*`), **contenu à venir**. Pages légales : routes `privacy` / `legal` / `terms` (slugs traduits), contenu placeholder dans `lang/{fr,en}/legal.php` **à faire valider juridiquement**.
 - **Icônes : `lucide-react` uniquement** (`import { X } from 'lucide-react'`), taille via classe `size-*` (défaut `size-4` dans les boutons shadcn). Jamais de SVG d'icône écrit à la main, jamais d'autre lib (Heroicons, FontAwesome, react-icons…). Exception : les **logos de marques** (réseaux sociaux) sont des fichiers SVG dans `public/images/social/` rendus en `<img>`, car ce sont des logos, pas des icônes — et Threads n'existe dans aucune lib. Les `<svg>` du kit (`app-logo-icon.tsx`, zone privée) sont à remplacer par nos assets si la zone privée est reprise.
 - Ordre des classes géré par Prettier (plugin Tailwind) — ne pas le combattre.
 
@@ -273,6 +275,8 @@ SEO_OPENING_HOURS="Mo-Sa 09:00-19:00" (+ SEO_OPENING_HOURS_FR/EN libellés)   # 
 SEO_GOOGLE_RATING=4.9 / SEO_GOOGLE_REVIEW_COUNT=128 / SEO_GOOGLE_REVIEWS_URL=   # AggregateRating JSON-LD uniquement (plus de badge visible) — UNIQUEMENT des chiffres réels
 SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_STREET= / SEO_ORG_POSTAL_CODE= / SEO_ORG_CITY=   # footer + JSON-LD
 SEO_SOCIAL_LINKEDIN= / SEO_SOCIAL_INSTAGRAM=   # vide = icône masquée
+MAIL_MAILER=resend / RESEND_KEY= / MAIL_FROM_ADDRESS=contact@estate-in-paris.fr   # e-mails transactionnels via Resend (package resend/resend-php, transport natif Laravel) ; domaine estate-in-paris.fr vérifié dans Resend
+SANITY_PROJECT_ID= / SANITY_DATASET=production / SANITY_API_VERSION= / SANITY_TOKEN= / SANITY_USE_CDN=false   # blog (config/services.php › sanity) ; USE_CDN=true en prod ; le token ne quitte jamais le serveur
 APP_URL=https://www.exemple.fr        # base des canonical, sitemap, robots
 APP_LOCALE=fr
 INERTIA_SSR_ENABLED=true
@@ -308,7 +312,7 @@ Hébergement : **Laravel Cloud** (déploiement automatique à chaque `git push` 
 - La page démo `welcome.tsx` du kit a été remplacée par `pages/home.tsx` (PublicLayout, textes `home.*`), en attente du design Figma de la HP.
 - Le callback `title:` de `createInertiaApp` a été retiré (app.tsx + ssr.tsx) : le suffixe est géré par `<SeoHead>` pour éviter « Titre - Laravel - Laravel ».
 - Fonts : Instrument Sans (kit) → Inter + Montserrat self-hosted (décision utilisateur, perf), d'abord via fontsource puis en `@font-face` maison latin-only + preload.
-- Header : 64px (compact 56px au scroll) ; le header transparent « overlay » sur le hero a été essayé puis retiré (décision utilisateur). Header mobile : se cache au scroll bas / revient au scroll haut ; menu sous la barre (header conservé, icône → croix) avec swipe vers le haut pour fermer et fermeture auto au passage en desktop.
+- Header : 64px (compact 56px au scroll) ; le mega-menu « Nos biens » (mega-menu-column/-promo/-properties) a été construit puis **supprimé** (jamais branché, décision utilisateur) ; le header transparent « overlay » sur le hero a été essayé puis retiré (décision utilisateur). Header mobile : se cache au scroll bas / revient au scroll haut ; menu sous la barre (header conservé, icône → croix) avec swipe vers le haut pour fermer et fermeture auto au passage en desktop.
 - Tests : PHPUnit classique, pas Pest (le kit n'installe pas Pest).
 - `ui/dropdown-menu.tsx` et `ui/button.tsx` mis à jour vers le shadcn actuel (new-york / Tailwind v4 : `default h-9 px-4`, `sm h-8`, `lg h-10 px-6`, `icon size-9`, `data-slot`, icônes `size-4` par défaut sauf classe `size-*` explicite). Les autres composants `ui/` sont encore ceux du kit (style « default », Tailwind v3) : les mettre à jour un par un avec `--overwrite` quand on y touche, en vérifiant les usages du kit (auth, settings, sidebar).
 - Git initialisé le 2026-08-23, remote `origin` = https://github.com/benjaminroche4/eip (branche `main`).

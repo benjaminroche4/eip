@@ -3,7 +3,7 @@ import BrandLogo from '@/components/layout/brand-logo';
 import MobileMenuPanel from '@/components/navigation/mobile-menu-panel';
 import MobileMenuToggle from '@/components/navigation/mobile-menu-toggle';
 import NavDivider from '@/components/navigation/nav-divider';
-import { useIsActive, useNavItems } from '@/components/navigation/nav-items';
+import { useContactHref, useIsActive, useNavItems } from '@/components/navigation/nav-items';
 import NavLink from '@/components/navigation/nav-link';
 import { Button } from '@/components/ui/button';
 import { useScrollDirection } from '@/hooks/use-scroll-direction';
@@ -13,10 +13,11 @@ import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { useCallback, useId, useRef, useState } from 'react';
 
-/** Site header (Figma 137-2085 desktop, 125-361 mobile). The "Our Properties" mega menu is not wired yet. */
+/** Site header (Figma 137-2085 desktop, 125-361 mobile). */
 export default function SiteHeader() {
     const { t } = useTranslation();
     const navItems = useNavItems();
+    const contactHref = useContactHref();
     const isActive = useIsActive();
     const scrolled = useScrolled();
     const direction = useScrollDirection();
@@ -32,7 +33,9 @@ export default function SiteHeader() {
 
     const cta = (
         <Button asChild size="lg">
-            <Link href="#">{t('nav.contact')}</Link>
+            <Link href={contactHref} prefetch>
+                {t('nav.contact')}
+            </Link>
         </Button>
     );
 
@@ -55,7 +58,7 @@ export default function SiteHeader() {
                     'after:via-border after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent after:transition-opacity after:duration-500',
                     scrolled
                         ? 'bg-card/80 supports-[backdrop-filter]:bg-card/70 max-w-full rounded-none backdrop-blur-md after:opacity-100'
-                        : 'bg-card max-w-7xl after:opacity-0 lg:rounded-lg',
+                        : 'bg-card max-w-7xl after:opacity-0',
                     menuOpen && 'bg-card after:opacity-100',
                 )}
             >
@@ -69,7 +72,7 @@ export default function SiteHeader() {
                         href={route('home')}
                         aria-label="Homepage"
                         className={cn(
-                            'focus-ring flex shrink-0 origin-left items-center rounded-sm transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+                            'focus-ring flex shrink-0 origin-left items-center rounded-none transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
                             scrolled && 'scale-90',
                         )}
                     >

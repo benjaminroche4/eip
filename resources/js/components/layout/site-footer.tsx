@@ -7,7 +7,7 @@ import OpenBadge from '@/components/footer/open-badge';
 import SocialLinks from '@/components/footer/social-links';
 import LanguageSwitcher from '@/components/i18n/language-switcher';
 import BrandLogo from '@/components/layout/brand-logo';
-import { useFooterNavItems } from '@/components/navigation/nav-items';
+import { useContactHref, useFooterNavItems } from '@/components/navigation/nav-items';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import { Link } from '@inertiajs/react';
@@ -20,6 +20,7 @@ const container = 'mx-auto max-w-7xl px-4 sm:px-6 lg:px-15';
  */
 export default function SiteFooter({ year }: { year: number }) {
     const { t } = useTranslation();
+    const contactHref = useContactHref();
     const items = useFooterNavItems();
 
     return (
@@ -30,7 +31,7 @@ export default function SiteFooter({ year }: { year: number }) {
 
             <div className={`${container} grid gap-12 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-15 lg:py-16`}>
                 <div className="flex flex-col items-center gap-5 text-center sm:col-span-2 sm:items-start sm:text-left lg:col-span-1">
-                    <Link href={route('home')} aria-label="Homepage" className="focus-ring inline-flex w-fit rounded-sm">
+                    <Link href={route('home')} aria-label="Homepage" className="focus-ring inline-flex w-fit rounded-none">
                         <BrandLogo />
                     </Link>
                     <p className="text-muted-foreground max-w-xs text-sm font-light">
@@ -51,7 +52,9 @@ export default function SiteFooter({ year }: { year: number }) {
                     <ContactCard />
                     <span aria-hidden className="via-border block h-px w-full bg-gradient-to-r from-transparent to-transparent" />
                     <Button asChild variant="outline" size="lg" className="hover:bg-background-05 w-full bg-transparent dark:bg-transparent">
-                        <Link href="#">{t('nav.contact_page')}</Link>
+                        <Link href={contactHref} prefetch>
+                            {t('nav.contact_page')}
+                        </Link>
                     </Button>
                 </FooterColumn>
             </div>

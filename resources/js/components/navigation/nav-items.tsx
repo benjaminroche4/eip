@@ -3,37 +3,37 @@ import { usePage } from '@inertiajs/react';
 
 export type NavItem = { key: string; label: string; href: string; badge?: string };
 
-/** Primary navigation entries (labels from lang/ui.php). "#" = page not built yet. */
+/** Primary navigation entries (labels from lang/ui.php). */
 export function useNavItems(): NavItem[] {
     const { t } = useTranslation();
     return [
-        { key: 'buy', label: t('nav.buy'), href: route('search') },
-        { key: 'sell', label: t('nav.sell'), href: '#' },
-        { key: 'estimate', label: t('nav.estimate'), href: '#' },
+        { key: 'buy', label: t('nav.buy'), href: route('buy') },
+        { key: 'sell', label: t('nav.sell'), href: route('sell') },
+        { key: 'estimate', label: t('nav.estimate'), href: route('estimate') },
     ];
 }
 
-/** Contact page URL — "#" until the route exists (see routes/web.php). */
+/** Contact page URL. */
 export function useContactHref(): string {
-    return route().has('contact') ? route('contact') : '#';
+    return route('contact');
 }
 
 /** Footer navigation: main entries, then contact and blog. */
 export function useFooterNavItems(): NavItem[] {
     const { t } = useTranslation();
     return [
-        { key: 'buy', label: t('nav.buy'), href: route('search') },
-        { key: 'sell', label: t('nav.sell'), href: '#' },
-        { key: 'estimate', label: t('nav.estimate'), href: '#' },
-        { key: 'contact', label: t('nav.contact_page'), href: '#' },
-        { key: 'blog', label: t('nav.blog'), href: '#' },
+        { key: 'buy', label: t('nav.buy'), href: route('buy') },
+        { key: 'sell', label: t('nav.sell'), href: route('sell') },
+        { key: 'estimate', label: t('nav.estimate'), href: route('estimate') },
+        { key: 'contact', label: t('nav.contact_page'), href: route('contact') },
+        { key: 'blog', label: t('nav.blog'), href: route('blog.index') },
     ];
 }
 
 /** Secondary entries shown under a divider in the mobile menu (blog, later: about…). */
 export function useSecondaryNavItems(): NavItem[] {
     const { t } = useTranslation();
-    return [{ key: 'blog', label: t('nav.blog'), href: '#' }];
+    return [{ key: 'blog', label: t('nav.blog'), href: route('blog.index') }];
 }
 
 /** Matches an href against the current Inertia URL (ignores query/hash, never matches "#"). */

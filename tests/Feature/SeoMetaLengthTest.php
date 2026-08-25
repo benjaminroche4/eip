@@ -16,6 +16,11 @@ class SeoMetaLengthTest extends TestCase
         return [
             'home' => ['ui.home.seo_title', 'ui.home.seo_description', false],
             'search' => ['ui.search.seo_title', 'ui.search.seo_description', true],
+            'blog' => ['ui.blog.seo_title', 'ui.blog.seo_description', true],
+            'contact' => ['ui.pages.contact.seo_title', 'ui.pages.contact.seo_description', true],
+            'estimate' => ['ui.pages.estimate.seo_title', 'ui.pages.estimate.seo_description', true],
+            'sell' => ['ui.pages.sell.seo_title', 'ui.pages.sell.seo_description', true],
+            'buy' => ['ui.pages.buy.seo_title', 'ui.pages.buy.seo_description', true],
             'privacy' => ['legal.privacy.title', 'legal.privacy.description', true],
             'legal' => ['legal.legal.title', 'legal.legal.description', true],
             'terms' => ['legal.terms.title', 'legal.terms.description', true],

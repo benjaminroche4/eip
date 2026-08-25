@@ -12,17 +12,17 @@ describe('SiteHeader', () => {
         expect(screen.getByRole('link', { name: 'Homepage' })).toHaveAttribute('href', '/fr');
         const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
         expect(within(nav).getAllByRole('link').length).toBeGreaterThanOrEqual(3);
-        expect(screen.getByRole('link', { name: 'Nous contacter' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Nous contacter' })).toHaveAttribute('href', '/fr/contact');
     });
 
     it('marks the current page with aria-current', () => {
-        renderPage(<SiteHeader />, { url: '/fr/recherche' });
+        renderPage(<SiteHeader />, { url: '/fr/acheter-immobilier-paris' });
 
         const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
         const current = within(nav)
             .getAllByRole('link')
             .find((l) => l.getAttribute('aria-current') === 'page');
-        expect(current).toHaveAttribute('href', '/fr/recherche');
+        expect(current).toHaveAttribute('href', '/fr/acheter-immobilier-paris');
     });
 
     it('is fully keyboard operable: Tab reaches every control in order', async () => {

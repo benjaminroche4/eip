@@ -8,11 +8,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* "Decipher" reveal: blurred, slightly tracked-out and lowered → sharp. Used word by word on hero headlines. */
 @theme {
-    --animate-unblur: unblur 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     /* Infinite marquee: the track holds the list twice, so -50% loops seamlessly. */
     --animate-marquee: marquee 40s linear infinite;
+    /* Border shimmer: a light arc travelling along a pill's outline (footer "Open" badge). */
+    --animate-border-shimmer: border-shimmer 6s linear infinite;
+
+    @keyframes border-shimmer {
+        to {
+            transform: rotate(1turn);
+        }
+    }
 
     @keyframes marquee {
         from {
@@ -22,24 +28,15 @@
             transform: translateX(-50%);
         }
     }
+}
 
-    @keyframes unblur {
-        from {
-            opacity: 0;
-            filter: blur(16px);
-            letter-spacing: 0.12em;
-            transform: translateY(0.5em) scale(1.04);
-        }
-        40% {
-            opacity: 1;
-        }
-        to {
-            opacity: 1;
-            filter: blur(0);
-            letter-spacing: 0;
-            transform: translateY(0) scale(1);
-        }
-    }
+/* Keeps only a 1px ring of an element visible (its padding), masking the inside: used to paint a shimmer on a border. */
+@utility ring-mask {
+    padding: 1px;
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
 }
 
 /* Visible keyboard focus, consistent with shadcn buttons: 3px ring in --ring at 50 %, no mouse outline. */

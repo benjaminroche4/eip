@@ -12,7 +12,7 @@ const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(({ active = false, s
         prefetch
         aria-current={active ? 'page' : undefined}
         className={cn(
-            'font-heading text-foreground focus-ring flex items-center gap-3 rounded-sm p-2 text-sm font-normal',
+            'font-heading text-foreground focus-ring flex items-center gap-3 rounded-none p-2 text-sm font-normal',
             size === 'md' ? 'h-10' : 'h-11 w-full text-base',
             hoverSurfaceClass,
             active && hoverActiveClass,

@@ -38,8 +38,8 @@ export default function LanguageSwitcher({ className, compact = false }: Languag
                 collisionPadding={16}
                 className={cn(
                     'border-border text-card-foreground divide-border min-w-48 divide-y rounded-none border p-0 shadow-none',
-                    // open with a soft drop, no zoom
-                    'data-[state=open]:zoom-in-100 data-[state=closed]:zoom-out-100 data-[side=bottom]:slide-in-from-top-3 duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:animate-none',
+                    // no open/close animation (user decision)
+                    'data-[state=closed]:animate-none data-[state=open]:animate-none',
                     compact ? 'bg-card/80 supports-[backdrop-filter]:bg-card/70 backdrop-blur-md' : 'bg-card',
                 )}
             >

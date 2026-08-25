@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeoController;
@@ -21,6 +23,16 @@ Route::group([
 ], function () {
     Route::get('/', fn () => Inertia::render('home'))->name('home');
     Route::get(LaravelLocalization::transRoute('routes.search'), SearchController::class)->name('search');
+    Route::get(LaravelLocalization::transRoute('routes.blog'), [BlogController::class, 'index'])->name('blog.index');
+    Route::get(LaravelLocalization::transRoute('routes.blog_show'), [BlogController::class, 'show'])->name('blog.show');
+
+    // Service pages (content to come): one Inertia page per route, SEO slugs in lang/{locale}/routes.php.
+    Route::get(LaravelLocalization::transRoute('routes.contact'), [ContactController::class, 'show'])->name('contact');
+    Route::post(LaravelLocalization::transRoute('routes.contact'), [ContactController::class, 'store'])->middleware('throttle:contact')->name('contact.store');
+
+    foreach (['estimate', 'sell', 'buy'] as $key) {
+        Route::get(LaravelLocalization::transRoute("routes.$key"), fn () => Inertia::render($key))->name($key);
+    }
 
     foreach (['privacy', 'legal', 'terms'] as $key) {
         Route::get(LaravelLocalization::transRoute("routes.$key"), fn () => app(LegalController::class)($key))->name($key);
