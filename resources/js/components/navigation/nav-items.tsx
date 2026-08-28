@@ -18,7 +18,7 @@ export function useContactHref(): string {
     return route('contact');
 }
 
-/** Footer navigation: main entries, then contact and blog. */
+/** Footer navigation: main entries, then contact, newsletter and blog. */
 export function useFooterNavItems(): NavItem[] {
     const { t } = useTranslation();
     return [
@@ -26,6 +26,8 @@ export function useFooterNavItems(): NavItem[] {
         { key: 'sell', label: t('nav.sell'), href: route('sell') },
         { key: 'estimate', label: t('nav.estimate'), href: route('estimate') },
         { key: 'contact', label: t('nav.contact_page'), href: route('contact') },
+        { key: 'newsletter', label: t('nav.newsletter'), href: route('newsletter') },
+        { key: 'faq', label: t('nav.faq'), href: route('faq') },
         { key: 'blog', label: t('nav.blog'), href: route('blog.index') },
     ];
 }

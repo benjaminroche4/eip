@@ -1,5 +1,6 @@
 import SiteFooter from '@/components/layout/site-footer';
 import SiteHeader from '@/components/layout/site-header';
+import PageBackdrop from '@/components/page/page-backdrop';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
@@ -29,11 +30,12 @@ export default function PublicLayout({ children, className, hero = false }: Publ
                 id="main"
                 tabIndex={-1}
                 className={cn(
-                    'mx-auto w-full max-w-7xl flex-1 focus:outline-none',
-                    hero ? 'px-0 pt-2 pb-10 lg:px-5 lg:pt-3' : 'px-4 py-10 sm:px-6 lg:px-8',
+                    'relative mx-auto w-full max-w-7xl flex-1 focus:outline-none',
+                    hero ? 'px-0 pt-2 pb-10 lg:px-5 lg:pt-3' : 'px-4 py-16 sm:px-6 sm:py-20 lg:px-8',
                     className,
                 )}
             >
+                {!hero && <PageBackdrop />}
                 {children}
             </main>
             <SiteFooter year={year} />

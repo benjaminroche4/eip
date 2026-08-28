@@ -3,21 +3,22 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/** Local development data: one login + realistic contact / valuation requests and newsletter subscribers. Never run in production. */
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        $this->call([
+            ContactRequestSeeder::class,
+            NewsletterSubscriberSeeder::class,
+            ValuationRequestSeeder::class,
         ]);
     }
 }

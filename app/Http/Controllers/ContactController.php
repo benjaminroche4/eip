@@ -18,8 +18,10 @@ class ContactController extends Controller
 
     public function store(ContactRequest $request, SendContactMessage $send): RedirectResponse
     {
-        $send(ContactMessage::fromRequest($request));
+        $message = ContactMessage::fromRequest($request);
+        $send($message);
 
-        return back()->with('success', __('ui.contact.sent'));
+        // The confirmation shows which number the advisor will call back.
+        return back()->with('success', __('ui.contact.sent'))->with('callback_phone', $message->phone);
     }
 }

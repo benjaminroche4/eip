@@ -6,7 +6,9 @@ import SeoImage from '@/components/seo/seo-image';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
 import { formatDate } from '@/lib/format-date';
+import { linkClass } from '@/lib/hover-surface';
 import { article, breadcrumbList, faqPage } from '@/lib/json-ld';
+import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -95,7 +97,7 @@ export default function BlogShow({ post, alternates }: Props) {
                 </article>
 
                 <p className="mt-10">
-                    <Link href={route('blog.index')} prefetch className="focus-ring underline underline-offset-4">
+                    <Link href={route('blog.index')} prefetch className={cn('focus-ring', linkClass)}>
                         {t('blog.back')}
                     </Link>
                 </p>

@@ -32,7 +32,7 @@ export default function ContactCard() {
                 <ul role="list" aria-label={t('footer.advisors')} className="flex -space-x-2">
                     {ADVISORS.map((a) => (
                         <li key={a.id}>
-                            <Avatar className="ring-background-05 size-8 ring-2">
+                            <Avatar className="ring-card size-8 ring-2">
                                 <AvatarImage src={`/images/advisors/advisor-${a.id}.webp`} alt="" loading="lazy" />
                                 <AvatarFallback className="bg-background-10 text-foreground text-xs font-medium">{a.initials}</AvatarFallback>
                             </Avatar>

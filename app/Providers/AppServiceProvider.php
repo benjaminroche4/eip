@@ -7,6 +7,7 @@ use App\Domain\Blog\Support\SanityImage;
 use App\Domain\Localization\Support\LocalizedUrls;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -32,7 +33,12 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
+        // <x-emails::layout> for the HTML e-mails (resources/views/mail/layout.blade.php).
+        Blade::anonymousComponentPath(resource_path('views/mail'), 'emails');
+
         // Public contact form: 5 submissions per minute per IP.
         RateLimiter::for('contact', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+        RateLimiter::for('newsletter', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+        RateLimiter::for('estimate', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
     }
 }

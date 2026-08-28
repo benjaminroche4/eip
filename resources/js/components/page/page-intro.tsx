@@ -25,7 +25,7 @@ export default function PageIntro({ page }: PageIntroProps) {
             <SeoHead title={t(`pages.${page}.seo_title`)} description={t(`pages.${page}.seo_description`)} jsonLd={breadcrumbList(crumbs, origin)} />
             <SeoBreadcrumbs crumbs={crumbs} />
             <h1 className="mt-4 text-3xl font-medium tracking-tight">{t(`pages.${page}.title`)}</h1>
-            <p className="mt-4 max-w-3xl text-base/7">{t(`pages.${page}.intro`)}</p>
+            <p className="mt-4 max-w-3xl text-base/7 text-pretty">{t(`pages.${page}.intro`)}</p>
         </>
     );
 }

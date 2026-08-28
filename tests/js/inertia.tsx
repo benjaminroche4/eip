@@ -12,6 +12,8 @@ const ROUTES: Record<string, string> = {
     sell: '/fr/vendre-immobilier-paris',
     estimate: '/fr/estimation-immobiliere-paris',
     contact: '/fr/contact',
+    newsletter: '/fr/newsletter',
+    faq: '/fr/questions-frequentes',
     'blog.index': '/fr/blog',
     privacy: '/fr/politique-de-confidentialite',
     legal: '/fr/mentions-legales',
@@ -29,7 +31,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
         auth: { user: null as never },
         locale: 'fr',
         year: 2026,
-        flash: { success: null },
+        flash: { success: null, callbackPhone: null, newsletter: null },
         localization: {
             current: 'fr',
             default: 'fr',
@@ -55,7 +57,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
                 email: 'contact@example.com',
                 phone: '+33 6 00 00 00 00',
                 whatsapp: '33600000000',
-                address: { street: '22 Rue Notre Dame de Nazareth', city: 'Paris', postal_code: '75003', country: 'FR' },
+                address: { street: '3 rue Grégoire de Tours', city: 'Paris', postal_code: '75006', country: 'FR' },
             },
             advisor: { name: 'Maris Moreau', role: 'Conseillère senior', photo: '/images/advisors/advisor-1.webp', experienceYears: 12 },
             social: { linkedin: 'https://www.linkedin.com/company/x', instagram: 'https://www.instagram.com/x' },
@@ -69,6 +71,9 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
 
 /** Spy on useForm().post so form tests can assert the submitted route. */
 export const formPost = vi.fn();
+
+/** Server-side validation errors returned by the mocked useForm() — set per test, reset in beforeEach. */
+export const formErrors: Record<string, string> = {};
 
 /** Current Inertia page used by the mocked usePage(); change `url` per test to assert active states. */
 export const page = { url: '/fr', props: sharedProps() };
@@ -91,10 +96,11 @@ vi.mock('@inertiajs/react', async () => {
             const [data, setState] = React.useState<T>(initial);
             return {
                 data,
-                setData: (key: keyof T, value: T[keyof T]) => setState((d) => ({ ...d, [key]: value })),
+                setData: (key: keyof T | ((current: T) => T), value?: T[keyof T]) =>
+                    setState((d) => (typeof key === 'function' ? key(d) : { ...d, [key]: value })),
                 post: formPost,
                 processing: false,
-                errors: {} as Partial<Record<keyof T, string>>,
+                errors: formErrors as Partial<Record<keyof T, string>>,
                 reset: () => setState(initial),
             };
         },

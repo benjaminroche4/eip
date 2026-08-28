@@ -7,6 +7,7 @@ import OpenBadge from '@/components/footer/open-badge';
 import SocialLinks from '@/components/footer/social-links';
 import LanguageSwitcher from '@/components/i18n/language-switcher';
 import BrandLogo from '@/components/layout/brand-logo';
+import GradientHairline from '@/components/layout/gradient-hairline';
 import { useContactHref, useFooterNavItems } from '@/components/navigation/nav-items';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
@@ -50,7 +51,7 @@ export default function SiteFooter({ year }: { year: number }) {
                 </FooterColumn>
                 <FooterColumn title={t('footer.contact')} badge={<OpenBadge />}>
                     <ContactCard />
-                    <span aria-hidden className="via-border block h-px w-full bg-gradient-to-r from-transparent to-transparent" />
+                    <GradientHairline />
                     <Button asChild variant="outline" size="lg" className="hover:bg-background-05 w-full bg-transparent dark:bg-transparent">
                         <Link href={contactHref} prefetch>
                             {t('nav.contact_page')}

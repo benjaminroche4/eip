@@ -4,15 +4,13 @@ import { describe, expect, it } from 'vitest';
 import { page, renderPage, sharedProps } from '../inertia';
 
 describe('OpenBadge', () => {
-    it('shows the label with a decorative shimmer that stays out of the accessible tree', () => {
+    it('shows the label during opening hours, without decorative extras', () => {
         page.props = sharedProps();
         renderPage(<OpenBadge />);
 
-        const badge = screen.getByText('Ouvert').parentElement!;
+        const badge = screen.getByText('Ouvert');
         expect(badge).toHaveTextContent(/^Ouvert$/);
-        const shimmer = badge.querySelector('.ring-mask');
-        expect(shimmer).not.toBeNull();
-        expect(shimmer).toHaveAttribute('aria-hidden');
+        expect(badge.querySelector('.ring-mask')).toBeNull();
     });
 
     it('renders nothing outside opening hours', () => {

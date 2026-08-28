@@ -3,6 +3,8 @@
 // Translated URL slugs — used by LaravelLocalization::transRoute('routes.xxx')
 return [
     'contact' => 'contact',
+    'newsletter' => 'newsletter',
+    'faq' => 'faq',
     'estimate' => 'property-valuation-paris',
     'sell' => 'sell-property-paris',
     'buy' => 'buy-property-paris',

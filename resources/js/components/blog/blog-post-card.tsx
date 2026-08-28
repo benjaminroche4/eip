@@ -1,6 +1,8 @@
 import SeoImage from '@/components/seo/seo-image';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatDate } from '@/lib/format-date';
+import { linkClass } from '@/lib/hover-surface';
+import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { type BlogPostSummary } from './types';
@@ -32,7 +34,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
                 {post.read_time ? <span> · {t('blog.read_time', { minutes: post.read_time })}</span> : null}
             </p>
             <h2 className="text-xl font-medium">
-                <Link href={post.url} prefetch className="focus-ring hover:underline">
+                <Link href={post.url} prefetch className={cn('focus-ring', linkClass)}>
                     {post.title}
                 </Link>
             </h2>

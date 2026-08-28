@@ -17,7 +17,7 @@ const MobileMenuToggle = forwardRef<HTMLButtonElement, MobileMenuToggleProps>(({
             aria-expanded={open}
             aria-controls={controls}
             onClick={onToggle}
-            className="h-12 w-18 rounded-full hover:bg-transparent lg:hidden dark:hover:bg-transparent"
+            className="-mr-6.5 h-12 w-18 rounded-full hover:bg-transparent lg:hidden dark:hover:bg-transparent"
         >
             <MenuToggleIcon open={open} />
         </Button>

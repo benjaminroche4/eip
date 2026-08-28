@@ -11,9 +11,46 @@
 @theme {
     /* Infinite marquee: the track holds the list twice, so -50% loops seamlessly. */
     --animate-marquee: marquee 40s linear infinite;
-    /* Border shimmer: a light arc travelling along a pill's outline (footer "Open" badge). */
-    --animate-border-shimmer: border-shimmer 6s linear infinite;
+    /* Border shimmer: a faint light arc gliding along an outline (newsletter card; removed from the footer "Open" badge). */
+    --animate-border-shimmer: border-shimmer 8s linear 2; /* two passes on load, then still (user decision 2026-08-27) */
+    /* shadcn Accordion (Radix exposes the content height as a CSS variable). */
+    /* Valuation recap: a group's disc pops into a check once complete; fade-in dims the page behind the mobile recap sheet. */
+    --animate-fade-in: fade-in 0.2s ease-out both;
+    --animate-pop: pop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+    }
+
+    @keyframes pop {
+        from {
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+    }
+
+    --animate-accordion-down: accordion-down 0.2s ease-out;
+    --animate-accordion-up: accordion-up 0.2s ease-out;
+
+    @keyframes accordion-down {
+        from {
+            height: 0;
+        }
+        to {
+            height: var(--radix-accordion-content-height);
+        }
+    }
+
+    @keyframes accordion-up {
+        from {
+            height: var(--radix-accordion-content-height);
+        }
+        to {
+            height: 0;
+        }
+    }
     @keyframes border-shimmer {
         to {
             transform: rotate(1turn);
@@ -30,7 +67,17 @@
     }
 }
 
-/* Keeps only a 1px ring of an element visible (its padding), masking the inside: used to paint a shimmer on a border. */
+/* Fades a decorative backdrop into the page: solid at the top, gone at the bottom, softened on both sides (PageBackdrop). */
+@utility backdrop-fade {
+    mask-image:
+        linear-gradient(to bottom, black 0%, black 30%, transparent 100%), linear-gradient(to right, transparent, black 25%, black 75%, transparent);
+    mask-composite: intersect;
+    -webkit-mask-image:
+        linear-gradient(to bottom, black 0%, black 30%, transparent 100%), linear-gradient(to right, transparent, black 25%, black 75%, transparent);
+    -webkit-mask-composite: source-in;
+}
+
+/* Keeps only a 1px ring of an element visible (its padding), masking the inside: used to paint a shimmer on a border (newsletter card). */
 @utility ring-mask {
     padding: 1px;
     mask:
@@ -224,5 +271,7 @@
 
     body {
         @apply bg-background text-foreground;
+        /* Full-bleed backdrops (newsletter gradient) use w-screen: clip the odd pixel of overflow instead of a horizontal scrollbar. */
+        overflow-x: clip;
     }
 }

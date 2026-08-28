@@ -9,7 +9,8 @@ describe('SiteFooter', () => {
     it('renders navigation, contact, social links and the legal bar', () => {
         renderPage(<SiteFooter year={2026} />);
 
-        expect(screen.getByRole('navigation', { name: 'Nos services' })).toBeInTheDocument();
+        const nav = screen.getByRole('navigation', { name: 'Nos services' });
+        expect(within(nav).getByRole('link', { name: 'Newsletter' })).toHaveAttribute('href', '/fr/newsletter');
         const card = screen.getByRole('link', { name: /Nos conseillers sont à votre écoute/ });
         expect(card).toHaveTextContent('+33 6 00 00 00 00');
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).children).toHaveLength(3);
@@ -38,7 +39,7 @@ describe('SiteFooter', () => {
         const user = userEvent.setup();
         const { container } = renderPage(<SiteFooter year={2026} />);
 
-        const focusables = Array.from(container.querySelectorAll<HTMLElement>('a[href], button'));
+        const focusables = Array.from(container.querySelectorAll<HTMLElement>('a[href], button, input:not([tabindex="-1"])'));
         for (const el of focusables) {
             await user.tab();
             expect(el).toHaveFocus();

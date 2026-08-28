@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
+import { linkClass } from '@/lib/hover-surface';
 import { breadcrumbList } from '@/lib/json-ld';
+import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, router, usePage } from '@inertiajs/react';
 import { Search as SearchIcon } from 'lucide-react';
@@ -87,7 +89,7 @@ export default function Search({ filters, results, indexing }: Props) {
                 <ul className="divide-border mt-6 divide-y">
                     {results.data.map((item) => (
                         <li key={item.id} className="py-4">
-                            <Link href={item.url} className="text-lg font-medium hover:underline sm:text-base">
+                            <Link href={item.url} className={cn('focus-ring text-lg font-medium sm:text-base', linkClass)}>
                                 {item.title}
                             </Link>
                             <p className="text-muted-foreground mt-1 text-base/7 sm:text-sm/6">{item.excerpt}</p>

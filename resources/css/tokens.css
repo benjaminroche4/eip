@@ -83,7 +83,9 @@
     --color-background-05: #faf6f2; /* Base/Background 05 — hover surface */
     --color-secondary-30: #f3ebdf; /* Secondary/30 — footer hairlines */
     --color-secondary-40: #ede1d0; /* Secondary/40 — badges on hover surface */
+    --color-secondary-50: #e8d8c2; /* Secondary/50 — selected selection card border (valuation form) */
     --color-secondary-80: #a19481; /* Secondary/80 — watermark outline */
+    --color-background-08: #f8f4ed; /* Figma « Base/Background 10 » — FAQ open item, icon tiles */
     --color-background-10: #ece7dd; /* footer gradient start */
     --color-background-02: #fffdf9; /* footer gradient end */
 

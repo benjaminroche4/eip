@@ -117,3 +117,32 @@ export function itemList(items: { name: string; url: string }[]): JsonLd {
         itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, url: it.url })),
     };
 }
+
+/** ContactPage whose main entity is the agency's sales ContactPoint (phone, e-mail, FR/EN, opening hours). */
+export function contactPage(seo: SeoShared, origin: string, url: string, name: string): JsonLd {
+    const { organization: org, hours } = seo;
+    return {
+        '@type': 'ContactPage',
+        name,
+        url,
+        about: { '@id': `${origin}/#organization` },
+        mainEntity: {
+            '@type': 'RealEstateAgent',
+            '@id': `${origin}/#organization`,
+            name: org.name,
+            ...(org.phone ? { telephone: org.phone } : {}),
+            ...(org.email ? { email: org.email } : {}),
+            ...(hours?.spec ? { openingHours: hours.spec } : {}),
+            contactPoint: [
+                {
+                    '@type': 'ContactPoint',
+                    contactType: 'sales',
+                    ...(org.phone ? { telephone: org.phone } : {}),
+                    ...(org.email ? { email: org.email } : {}),
+                    availableLanguage: ['fr', 'en'],
+                    ...(hours?.spec ? { hoursAvailable: hours.spec } : {}),
+                },
+            ],
+        },
+    };
+}

@@ -50,7 +50,11 @@ class HandleInertiaRequests extends Middleware
             ],
             'locale' => app()->getLocale(),
             'year' => now()->year,
-            'flash' => fn () => ['success' => $request->session()->get('success')],
+            'flash' => fn () => [
+                'success' => $request->session()->get('success'),
+                'callbackPhone' => $request->session()->get('callback_phone'),
+                'newsletter' => $request->session()->get('newsletter_success'),
+            ],
             'localization' => fn () => app(LocalizedUrls::class)->forCurrentRequest(),
             'translations' => fn () => trans('ui'),
             'seo' => fn () => [

@@ -47,7 +47,10 @@ export default function SiteHeader() {
                 // Fixed in-flow height (bar + desktop top gap): compacting happens inside, so the document never
                 // reflows above the viewport — otherwise Chrome's scroll anchoring shifts scrollY and the header flickers.
                 'sticky top-0 z-40 h-16 w-full transition-[padding,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] [overflow-anchor:none] motion-reduce:transition-none lg:h-19',
-                scrolled ? 'lg:px-0 lg:pt-0' : 'lg:px-5 lg:pt-3',
+                // Desktop: the 12px gap above the floating card is painted with the page background (behind the card, above the
+                // content) and shrinks with the padding, so nothing ever shows through while the card settles at the top.
+                'lg:before:bg-background lg:before:absolute lg:before:inset-x-0 lg:before:top-0 lg:before:-z-10 lg:before:transition-[height] lg:before:duration-500 lg:before:ease-[cubic-bezier(0.16,1,0.3,1)] lg:before:motion-reduce:transition-none',
+                scrolled ? 'lg:px-0 lg:pt-0 lg:before:h-0' : 'lg:px-5 lg:pt-3 lg:before:h-3',
                 hidden && '-translate-y-full lg:translate-y-0',
             )}
         >
@@ -58,7 +61,7 @@ export default function SiteHeader() {
                     'after:via-border after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent after:transition-opacity after:duration-500',
                     scrolled
                         ? 'bg-card/80 supports-[backdrop-filter]:bg-card/70 max-w-full rounded-none backdrop-blur-md after:opacity-100'
-                        : 'bg-card max-w-7xl after:opacity-0',
+                        : 'bg-card max-w-7xl after:opacity-100 lg:after:opacity-0', // mobile: hairline always visible
                     menuOpen && 'bg-card after:opacity-100',
                 )}
             >

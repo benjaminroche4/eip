@@ -1,4 +1,6 @@
 import { useTranslation } from '@/hooks/use-translation';
+import { linkClass } from '@/lib/hover-surface';
+import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
@@ -19,7 +21,10 @@ export default function LegalBar({ year }: { year: number }) {
                             <Link
                                 href={route(key)}
                                 prefetch
-                                className="text-muted-foreground focus-ring hover:text-foreground rounded-none transition-colors duration-300"
+                                className={cn(
+                                    'text-muted-foreground focus-ring hover:text-foreground rounded-none transition-colors duration-300',
+                                    linkClass,
+                                )}
                             >
                                 {t(`footer.${key}`)}
                             </Link>

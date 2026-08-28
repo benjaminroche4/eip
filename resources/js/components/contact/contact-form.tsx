@@ -1,16 +1,19 @@
 import ContactSuccess from '@/components/contact/contact-success';
 import FormField from '@/components/contact/form-field';
+import PhoneInput from '@/components/contact/phone-input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from '@/hooks/use-translation';
 import { type SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { ArrowUpRight, BellRing } from 'lucide-react';
-import { type FormEvent } from 'react';
+import { type FormEvent, useState } from 'react';
 
 const ADVISORS = [
     { id: 1, initials: 'AB' },
@@ -29,11 +32,12 @@ type ContactFormData = {
     phone: string;
     topic: string;
     message: string;
+    consent: boolean;
     website: string; // honeypot, stays empty
 };
 
 /**
- * "Request a private consultation" card (Figma 261-7411): advisor avatars + availability badge,
+ * "Request a callback" card (Figma 261-7411): advisor avatars + availability badge,
  * title, then the form posted with Inertia (server-side validation, errors inline, success flash).
  */
 export default function ContactForm({ topics }: ContactFormProps) {
@@ -46,8 +50,12 @@ export default function ContactForm({ topics }: ContactFormProps) {
         phone: '',
         topic: '',
         message: '',
+        consent: false,
         website: '',
     });
+
+    // Radix Select opens on pointerdown, not on the synthetic click a <label> sends: open it ourselves from the label.
+    const [topicOpen, setTopicOpen] = useState(false);
 
     const submit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -55,7 +63,7 @@ export default function ContactForm({ topics }: ContactFormProps) {
     };
 
     return (
-        <section aria-labelledby="contact-form-title" className="border-secondary-30 bg-card border p-2">
+        <section aria-labelledby="contact-form-title" className="border-secondary-30 bg-card border p-2 shadow-lg shadow-black/5">
             <div className="from-background-05 flex flex-col gap-10 bg-gradient-to-b to-transparent px-4 pt-7 pb-6 sm:px-8 sm:pt-8">
                 {flash.success ? (
                     <ContactSuccess message={flash.success} />
@@ -76,9 +84,16 @@ export default function ContactForm({ topics }: ContactFormProps) {
                                     ))}
                                 </ul>
                                 {seo.hours.open && (
-                                    <Badge variant="outline" className="bg-card text-success gap-1.5 border-transparent font-medium">
-                                        <span aria-hidden className="bg-success size-1.5 rounded-full" />
-                                        {t('contact.advisors_available')}
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-card text-success gap-2 border-transparent font-medium"
+                                        title={seo.hours.label}
+                                    >
+                                        <span aria-hidden className="relative flex size-2 shrink-0">
+                                            <span className="bg-success/60 absolute inset-0 animate-ping rounded-full motion-reduce:hidden" />
+                                            <span className="bg-success relative size-2 rounded-full" />
+                                        </span>
+                                        {t('contact.available')}
                                     </Badge>
                                 )}
                             </div>
@@ -131,22 +146,18 @@ export default function ContactForm({ topics }: ContactFormProps) {
                             </FormField>
 
                             <FormField id="phone" label={t('contact.phone')} error={errors.phone} required>
-                                {(aria) => (
-                                    <Input
-                                        {...aria}
-                                        type="tel"
-                                        name="phone"
-                                        autoComplete="tel"
-                                        inputMode="tel"
-                                        value={data.phone}
-                                        onChange={(e) => setData('phone', e.target.value)}
-                                    />
-                                )}
+                                {(aria) => <PhoneInput {...aria} name="phone" value={data.phone} onChange={(v) => setData('phone', v)} />}
                             </FormField>
 
-                            <FormField id="topic" label={t('contact.topic')} error={errors.topic} required>
+                            <FormField id="topic" label={t('contact.topic')} error={errors.topic} required onLabelClick={() => setTopicOpen(true)}>
                                 {(aria) => (
-                                    <Select name="topic" value={data.topic} onValueChange={(v) => setData('topic', v)}>
+                                    <Select
+                                        name="topic"
+                                        value={data.topic}
+                                        onValueChange={(v) => setData('topic', v)}
+                                        open={topicOpen}
+                                        onOpenChange={setTopicOpen}
+                                    >
                                         <SelectTrigger {...aria} className="w-full">
                                             <SelectValue placeholder={t('contact.topic_placeholder')} />
                                         </SelectTrigger>
@@ -161,7 +172,7 @@ export default function ContactForm({ topics }: ContactFormProps) {
                                 )}
                             </FormField>
 
-                            <FormField id="message" label={t('contact.message')} error={errors.message} required>
+                            <FormField id="message" label={t('contact.message')} error={errors.message}>
                                 {(aria) => (
                                     <div className="relative">
                                         <Textarea
@@ -182,6 +193,29 @@ export default function ContactForm({ topics }: ContactFormProps) {
                                     </div>
                                 )}
                             </FormField>
+
+                            <div className="flex flex-col gap-2">
+                                <div className="flex items-start gap-3">
+                                    <Checkbox
+                                        id="consent"
+                                        name="consent"
+                                        checked={data.consent}
+                                        onCheckedChange={(checked) => setData('consent', checked === true)}
+                                        aria-required
+                                        aria-invalid={Boolean(errors.consent)}
+                                        aria-describedby={errors.consent ? 'consent-error' : undefined}
+                                        className="mt-0.5"
+                                    />
+                                    <Label htmlFor="consent" className="text-muted-foreground text-base/6 font-normal sm:text-sm/5">
+                                        {t('contact.consent')}
+                                    </Label>
+                                </div>
+                                {errors.consent && (
+                                    <p id="consent-error" className="text-destructive text-sm">
+                                        {errors.consent}
+                                    </p>
+                                )}
+                            </div>
 
                             {/* Honeypot: invisible to people, filled by bots, rejected server-side */}
                             <div aria-hidden className="hidden">

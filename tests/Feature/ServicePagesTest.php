@@ -14,6 +14,8 @@ class ServicePagesTest extends TestCase
     {
         return [
             'contact' => ['fr' => '/contact', 'en' => '/en/contact'],
+            'newsletter' => ['fr' => '/newsletter', 'en' => '/en/newsletter'],
+            'faq' => ['fr' => '/questions-frequentes', 'en' => '/en/faq'],
             'estimate' => ['fr' => '/estimation-immobiliere-paris', 'en' => '/en/property-valuation-paris'],
             'sell' => ['fr' => '/vendre-immobilier-paris', 'en' => '/en/sell-property-paris'],
             'buy' => ['fr' => '/acheter-immobilier-paris', 'en' => '/en/buy-property-paris'],

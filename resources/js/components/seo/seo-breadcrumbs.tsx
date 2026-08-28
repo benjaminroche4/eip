@@ -1,5 +1,7 @@
 import { useTranslation } from '@/hooks/use-translation';
+import { linkClass } from '@/lib/hover-surface';
 import { type Crumb } from '@/lib/json-ld';
+import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ChevronRight } from 'lucide-react';
 import { Fragment } from 'react';
@@ -17,7 +19,7 @@ export default function SeoBreadcrumbs({ crumbs }: { crumbs: Crumb[] }) {
                             {i > 0 && <ChevronRight aria-hidden className="size-4" />}
                             <li aria-current={last ? 'page' : undefined} className={last ? 'text-foreground' : undefined}>
                                 {c.url && !last ? (
-                                    <Link href={c.url} prefetch className="hover:text-foreground">
+                                    <Link href={c.url} prefetch className={cn('focus-ring hover:text-foreground', linkClass)}>
                                         {c.name}
                                     </Link>
                                 ) : (
