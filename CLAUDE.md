@@ -214,8 +214,8 @@ Ajouter une page publique
 
 - Assets de marque dans `public/brand/` : `logo-mark.svg` (pictogramme seul, footer), `wordmark-outline.svg` (filigrane footer), icônes sociales `public/images/social/*.svg` (12px blanc, Figma) ; lauriers dorés `public/images/laurel-{left,right}.svg` (repris du projet RIP, élément de confiance du hero) ; `logo_dark_desktop.svg` (213×24) et `logo_dark_mobile.svg` (112×28) = artwork foncé `#202832` pour fond clair (fournis par l'utilisateur). Les variantes `logo_light_*.svg` (dark mode) sont **générées** par `sed 's/#202832/#f0f1f3/g'` ; à régénérer si les logos changent.
 - Composant **`<BrandLogo priority?>`** (`components/brand-logo.tsx`) choisit mobile/desktop (`sm:`) et dark/light (`dark:`). À utiliser partout, jamais un `<img>` direct.
-- `favicon.svg` = copie du logo mobile. JSON-LD Organization → `logo_dark_desktop.svg` (`config/seo.php`).
-- Déclinaisons à fournir : `public/favicon.svg`, `public/favicon.ico` (32×32), `public/apple-touch-icon.png` (180×180), `public/og-default.png` (1200×630, image de partage par défaut).
+- `favicon.svg` = **le pictogramme clé sur carré sable `#E3D0B5`** (généré depuis `brand/logo-mark.svg`, viewBox 64×64 — plus la copie du wordmark 112×28, illisible en favicon). JSON-LD Organization → `logo_dark_desktop.svg` (`config/seo.php`).
+- **Favicons (fournis 2026-08-29, `public/`)** : `favicon.ico` (16/32/48 multi-tailles), `favicon-16x16.png`, `favicon-32x32.png`, `favicon.svg` (navigateurs modernes), `apple-touch-icon.png` (180×180, iOS), `android-chrome-{192,512}x{192,512}.png` + variantes **`-maskable`** (même artwork sur fond blanc avec la zone de sécurité de 20 %, générées par `sips`) référencées dans `site.webmanifest` (`name`/`theme_color` alignés sur `config/seo.php`, `purpose: any|maskable`, `start_url` `/`). Déclarés dans `app.blade.php` ; `FaviconTest` vérifie existence, tailles, `<link>` et manifest. Reste **`public/og-default.png` (1200×630) = placeholder à remplacer**.
 - Le nom affiché (`alt`, titres) vient de `SEO_SITE_NAME` / `APP_NAME`.
 
 ## Design system (Figma Color Kit)
