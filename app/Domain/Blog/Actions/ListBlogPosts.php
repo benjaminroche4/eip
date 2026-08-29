@@ -11,7 +11,14 @@ use App\Domain\Blog\Support\SanityImage;
 /** Published articles of one locale, newest first, paginated. */
 final class ListBlogPosts
 {
-    public const FILTER = '_type == "blog" && language == $lang && defined(slug.current) && !(_id in path("drafts.**"))';
+    /** Published articles of the site's document type (services.sanity.blog_type, passed as $type) in one locale. */
+    public const FILTER = '_type == $type && language == $lang && defined(slug.current) && !(_id in path("drafts.**"))';
+
+    /** GROQ params shared by every article query. @return array<string, string> */
+    public static function typeParams(): array
+    {
+        return ['type' => (string) config('services.sanity.blog_type', 'estateBlog')];
+    }
 
     public const SUMMARY = '_id, _createdAt, title, "slug": slug.current, language, shortDescription, readTime,
         "publishedAt": coalesce(publishedAt, createdAt, _createdAt), "updatedAt": _updatedAt,
@@ -27,7 +34,7 @@ final class ListBlogPosts
             self::SUMMARY,
         );
 
-        $result = $this->sanity->fetch($groq, [
+        $result = $this->sanity->fetch($groq, self::typeParams() + [
             'lang' => $query->locale,
             'from' => $query->offset(),
             'to' => $query->offset() + $query->perPage,

@@ -34,6 +34,8 @@ return [
         'api_version' => env('SANITY_API_VERSION', '2025-02-09'),
         'token' => env('SANITY_TOKEN'),
         'use_cdn' => (bool) env('SANITY_USE_CDN', false),
+        // Document type of the articles: the Sanity project is shared with Relocation in Paris (`blog`); this site reads `estateBlog`.
+        'blog_type' => env('SANITY_BLOG_TYPE', 'estateBlog'),
     ],
 
     'slack' => [

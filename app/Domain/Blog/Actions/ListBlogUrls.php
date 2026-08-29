@@ -12,10 +12,10 @@ final class ListBlogUrls
     /** @return list<array{slug: string, language: string, updatedAt: string, translations: array<string, string>}> */
     public function __invoke(): array
     {
-        $docs = $this->sanity->fetch('*[_type == "blog" && defined(slug.current) && !(_id in path("drafts.**"))] {
+        $docs = $this->sanity->fetch('*[_type == $type && defined(slug.current) && !(_id in path("drafts.**"))] {
             "slug": slug.current, language, "updatedAt": _updatedAt,
             "translations": *[_type == "translation.metadata" && references(^._id)][0].translations[]{ "lang": _key, "slug": value->slug.current }
-        }') ?? [];
+        }', ListBlogPosts::typeParams()) ?? [];
 
         return array_values(array_map(function (array $doc) {
             $translations = [$doc['language'] => $doc['slug']];

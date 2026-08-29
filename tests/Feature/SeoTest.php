@@ -51,12 +51,23 @@ class SeoTest extends TestCase
         $this->get('/cette-page-n-existe-pas')->assertNotFound()->assertInertia(fn (Assert $page) => $page->component('error')->where('status', 404));
     }
 
-    public function test_sitemap_command_writes_public_sitemap_xml(): void
+    public function test_sitemap_command_writes_an_index_and_one_sitemap_per_content_family(): void
     {
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $xml = file_get_contents(public_path('sitemap.xml'));
-        $this->assertStringContainsString('<loc>'.url('/recherche').'</loc>', $xml);
-        $this->assertStringContainsString('<loc>'.url('/en/search').'</loc>', $xml);
-        $this->assertStringContainsString('hreflang="x-default"', $xml);
+
+        $index = file_get_contents(public_path('sitemap.xml'));
+        $this->assertStringContainsString('<sitemapindex', $index);
+        foreach (['sitemap.pages.xml', 'sitemap.blog.xml'] as $file) {
+            $this->assertStringContainsString('<loc>'.url('/'.$file).'</loc>', $index);
+            $this->assertFileExists(public_path($file));
+        }
+        $this->assertMatchesRegularExpression('/<lastmod>\d{4}-\d{2}-\d{2}T/', $index);
+        $this->assertStringNotContainsString('<url>', $index, 'the index only lists sitemaps');
+
+        $pages = file_get_contents(public_path('sitemap.pages.xml'));
+        $this->assertStringContainsString('<loc>'.url('/recherche').'</loc>', $pages);
+        $this->assertStringContainsString('<loc>'.url('/en/search').'</loc>', $pages);
+        $this->assertStringContainsString('hreflang="x-default"', $pages);
+        $this->assertStringNotContainsString('<loc>'.url('/blog').'/', $pages, 'articles live in the blog sitemap'); // url() trims the trailing slash
     }
 }

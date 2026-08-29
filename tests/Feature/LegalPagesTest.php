@@ -23,7 +23,7 @@ class LegalPagesTest extends TestCase
     {
         Http::fake(); // blog entries come from Sanity — not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $xml = file_get_contents(public_path('sitemap.xml'));
+        $xml = file_get_contents(public_path('sitemap.pages.xml'));
         $this->assertStringContainsString('<loc>'.url('/mentions-legales').'</loc>', $xml);
         $this->assertStringContainsString('<loc>'.url('/en/legal-notice').'</loc>', $xml);
     }

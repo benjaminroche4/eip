@@ -25,7 +25,7 @@ final class ShowBlogPost
             ListBlogPosts::SUMMARY,
         );
 
-        $doc = $this->sanity->fetch($groq, ['lang' => $locale, 'slug' => $slug]);
+        $doc = $this->sanity->fetch($groq, ListBlogPosts::typeParams() + ['lang' => $locale, 'slug' => $slug]);
 
         return is_array($doc) && ! empty($doc['_id']) ? BlogPost::fromSanity($doc, $this->images, $this->portableText) : null;
     }

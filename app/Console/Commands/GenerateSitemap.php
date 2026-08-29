@@ -9,12 +9,15 @@ class GenerateSitemap extends Command
 {
     protected $signature = 'sitemap:generate';
 
-    protected $description = 'Generate public/sitemap.xml from indexable routes';
+    protected $description = 'Generate public/sitemap.xml (index) and its sub-sitemaps (pages, blog)';
 
     public function handle(SitemapBuilder $builder): int
     {
-        $builder->build()->writeToFile(public_path('sitemap.xml'));
-        $this->info('sitemap.xml generated.');
+        foreach ($builder->build() as $file => $sitemap) {
+            $sitemap->writeToFile(public_path($file));
+            $this->line("$file written.");
+        }
+        $this->info('Sitemap index generated.');
 
         return self::SUCCESS;
     }
