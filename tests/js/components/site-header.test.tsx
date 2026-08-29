@@ -9,20 +9,20 @@ describe('SiteHeader', () => {
     it('renders the brand link, the main navigation and the CTA', () => {
         renderPage(<SiteHeader />);
 
-        expect(screen.getByRole('link', { name: 'Homepage' })).toHaveAttribute('href', '/fr');
+        expect(screen.getByRole('link', { name: 'Homepage' })).toHaveAttribute('href', '/');
         const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
         expect(within(nav).getAllByRole('link').length).toBeGreaterThanOrEqual(3);
-        expect(screen.getByRole('link', { name: 'Nous contacter' })).toHaveAttribute('href', '/fr/contact');
+        expect(screen.getByRole('link', { name: 'Nous contacter' })).toHaveAttribute('href', '/contact');
     });
 
     it('marks the current page with aria-current', () => {
-        renderPage(<SiteHeader />, { url: '/fr/acheter-immobilier-paris' });
+        renderPage(<SiteHeader />, { url: '/acheter-immobilier-paris' });
 
         const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
         const current = within(nav)
             .getAllByRole('link')
             .find((l) => l.getAttribute('aria-current') === 'page');
-        expect(current).toHaveAttribute('href', '/fr/acheter-immobilier-paris');
+        expect(current).toHaveAttribute('href', '/acheter-immobilier-paris');
     });
 
     it('is fully keyboard operable: Tab reaches every control in order', async () => {

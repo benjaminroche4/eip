@@ -32,7 +32,7 @@ describe('NewsletterForm', () => {
         expect(screen.getByLabelText(/^Adresse e-mail/)).toHaveFocus();
         await user.keyboard('jean@example.com{Enter}');
 
-        expect(formPost).toHaveBeenCalledWith('/fr/newsletter.store', expect.objectContaining({ preserveScroll: true }));
+        expect(formPost).toHaveBeenCalledWith('/newsletter.store', expect.objectContaining({ preserveScroll: true }));
     });
 
     it('replaces the form with the confirmation and moves focus to it', () => {

@@ -78,9 +78,10 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    // French is the site's default locale (root URLs); never let a missing or empty env flip it to English (URLs would swap) or crash the app.
+    'locale' => env('APP_LOCALE') ?: 'fr',
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE') ?: 'fr',
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 

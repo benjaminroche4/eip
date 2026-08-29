@@ -40,7 +40,7 @@ describe('ContactForm', () => {
         expect(screen.getByRole('checkbox', { name: /j'accepte/ })).toBeChecked();
         await user.click(screen.getByRole('button', { name: 'Envoyer ma demande' }));
 
-        expect(formPost).toHaveBeenCalledWith('/fr/contact.store', expect.objectContaining({ preserveScroll: true }));
+        expect(formPost).toHaveBeenCalledWith('/contact.store', expect.objectContaining({ preserveScroll: true }));
         expect(screen.getByText('50/2000')).toBeInTheDocument();
         expect(screen.getByLabelText(/^Téléphone/)).toHaveValue('+33 6 12 34 56 78');
         await user.type(screen.getByLabelText(/^Téléphone/), '9999999'); // beyond the French length: ignored
@@ -106,7 +106,7 @@ describe('ContactForm', () => {
         expect(status).toHaveTextContent("Si vous n'êtes pas disponible, il vous laissera un SMS ou un e-mail.");
         expect(status).toHaveTextContent('Nous vous appelons au :');
         expect(status).toHaveTextContent('+41 78 215 72 84');
-        expect(screen.getByRole('link', { name: /Retour à l'accueil/ })).toHaveAttribute('href', '/fr');
+        expect(screen.getByRole('link', { name: /Retour à l'accueil/ })).toHaveAttribute('href', '/');
         expect(screen.queryByRole('button', { name: 'Envoyer ma demande' })).not.toBeInTheDocument();
     });
 

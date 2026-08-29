@@ -51,4 +51,15 @@ class LocalizationTest extends TestCase
         $this->withLocale('en')->get('/en')->assertSee('<html lang="en">', false);
         $this->withLocale('fr')->get('/')->assertSee('<html lang="fr">', false);
     }
+
+    /** A production environment without APP_LOCALE must still serve French at the root and English under /en. */
+    public function test_french_is_the_default_locale_even_without_the_env_variable(): void
+    {
+        $config = file_get_contents(base_path('config/app.php'));
+
+        $this->assertStringContainsString("env('APP_LOCALE') ?: 'fr'", $config, 'config/app.php must default the locale to fr, even for an empty value');
+        $this->assertStringContainsString("env('APP_FALLBACK_LOCALE') ?: 'fr'", $config, 'config/app.php must default the fallback locale to fr, even for an empty value');
+        $this->assertSame('fr', config('app.locale'));
+        $this->assertSame('fr', config('app.fallback_locale'));
+    }
 }

@@ -21,7 +21,7 @@ describe('ContactSuccess', () => {
         expect(within(card).getByText("Si vous n'êtes pas disponible, il vous laissera un SMS ou un e-mail.")).toBeInTheDocument();
         expect(within(card).queryByText(/expérience|Rappel sous/)).not.toBeInTheDocument();
 
-        expect(screen.getByRole('link', { name: "Retour à l'accueil" })).toHaveAttribute('href', '/fr');
+        expect(screen.getByRole('link', { name: "Retour à l'accueil" })).toHaveAttribute('href', '/');
         expect(await axe(container)).toHaveNoViolations();
     });
 

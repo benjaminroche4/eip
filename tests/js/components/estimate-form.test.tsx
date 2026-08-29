@@ -115,7 +115,7 @@ describe('EstimateForm', () => {
         expect(screen.getByText('13/2000')).toBeInTheDocument();
 
         await user.click(screen.getAllByRole('button', { name: 'Demander mon estimation' })[0]);
-        expect(formPost).toHaveBeenCalledWith('/fr/estimate.store', expect.objectContaining({ preserveScroll: true }));
+        expect(formPost).toHaveBeenCalledWith('/estimate.store', expect.objectContaining({ preserveScroll: true }));
     });
 
     it('focuses the field from the recap line', async () => {
@@ -231,7 +231,7 @@ describe('EstimateForm', () => {
         expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(
             expect.arrayContaining(['CompletAnalyse par un expert', '2Échange personnalisé', '3Conseils de valorisation']),
         );
-        expect(screen.getByRole('link', { name: 'Découvrir nos biens' })).toHaveAttribute('href', '/fr/acheter-immobilier-paris');
+        expect(screen.getByRole('link', { name: 'Découvrir nos biens' })).toHaveAttribute('href', '/acheter-immobilier-paris');
 
         await user.click(screen.getByRole('button', { name: 'Copier la référence' }));
         expect(await navigator.clipboard.readText()).toBe('VAL-2026-0184');

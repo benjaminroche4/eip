@@ -49,8 +49,8 @@ describe('FAQ page', () => {
 
         expect(openQuestions().map((b) => b.textContent)).toEqual(['Un étranger peut-il acheter ?']);
         expect(within(panel()).getByRole('button', { name: 'Combien de temps pour acheter ?' })).toHaveAttribute('aria-expanded', 'false');
-        expect(within(panel()).getByRole('link', { name: 'Contactez-nous' })).toHaveAttribute('href', '/fr/contact');
-        expect(within(panel()).getByRole('link', { name: 'Contacter un conseiller' })).toHaveAttribute('href', '/fr/contact');
+        expect(within(panel()).getByRole('link', { name: 'Contactez-nous' })).toHaveAttribute('href', '/contact');
+        expect(within(panel()).getByRole('link', { name: 'Contacter un conseiller' })).toHaveAttribute('href', '/contact');
     });
 
     it('remembers the open questions per topic, syncs the URL hash and can expand / collapse a whole topic', async () => {
@@ -92,7 +92,7 @@ describe('FAQ page', () => {
         await user.clear(screen.getByRole('searchbox'));
         await user.type(screen.getByRole('searchbox'), 'piscine');
         expect(screen.getByRole('status')).toHaveTextContent('Aucune question ne correspond');
-        expect(screen.getByRole('link', { name: 'Poser ma question' })).toHaveAttribute('href', '/fr/contact');
+        expect(screen.getByRole('link', { name: 'Poser ma question' })).toHaveAttribute('href', '/contact');
 
         await user.click(screen.getByRole('tab', { name: 'Vendre un bien' })); // picking a topic clears the search
         expect(screen.getByRole('searchbox')).toHaveValue('');

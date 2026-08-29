@@ -10,7 +10,7 @@ describe('SiteFooter', () => {
         renderPage(<SiteFooter year={2026} />);
 
         const nav = screen.getByRole('navigation', { name: 'Nos services' });
-        expect(within(nav).getByRole('link', { name: 'Newsletter' })).toHaveAttribute('href', '/fr/newsletter');
+        expect(within(nav).getByRole('link', { name: 'Newsletter' })).toHaveAttribute('href', '/newsletter');
         const card = screen.getByRole('link', { name: /Nos conseillers sont à votre écoute/ });
         expect(card).toHaveTextContent('+33 6 00 00 00 00');
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).children).toHaveLength(3);
@@ -18,8 +18,8 @@ describe('SiteFooter', () => {
         expect(screen.getByText('© 2026 Estate in Paris')).toBeInTheDocument();
 
         const legal = screen.getByRole('navigation', { name: /légaux|legal/i });
-        expect(within(legal).getByRole('link', { name: 'Mentions légales' })).toHaveAttribute('href', '/fr/mentions-legales');
-        expect(within(legal).getByRole('link', { name: 'Politique de confidentialité' })).toHaveAttribute('href', '/fr/politique-de-confidentialite');
+        expect(within(legal).getByRole('link', { name: 'Mentions légales' })).toHaveAttribute('href', '/mentions-legales');
+        expect(within(legal).getByRole('link', { name: 'Politique de confidentialité' })).toHaveAttribute('href', '/politique-de-confidentialite');
     });
 
     it('only renders configured social networks, as safe external links', () => {

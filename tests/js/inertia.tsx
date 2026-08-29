@@ -4,24 +4,24 @@ import { type ReactElement } from 'react';
 import { vi } from 'vitest';
 import translations from './fixtures/translations.json';
 
-/** Minimal Ziggy-like route(): named routes of the localized public site (FR). */
+/** Minimal Ziggy-like route(): named routes of the public site in French — the default locale lives at the root, no /fr prefix. */
 const ROUTES: Record<string, string> = {
-    home: '/fr',
-    search: '/fr/recherche',
-    buy: '/fr/acheter-immobilier-paris',
-    sell: '/fr/vendre-immobilier-paris',
-    estimate: '/fr/estimation-immobiliere-paris',
-    contact: '/fr/contact',
-    newsletter: '/fr/newsletter',
-    faq: '/fr/questions-frequentes',
-    'blog.index': '/fr/blog',
-    privacy: '/fr/politique-de-confidentialite',
-    legal: '/fr/mentions-legales',
-    terms: '/fr/conditions-generales',
+    home: '/',
+    search: '/recherche',
+    buy: '/acheter-immobilier-paris',
+    sell: '/vendre-immobilier-paris',
+    estimate: '/estimation-immobiliere-paris',
+    contact: '/contact',
+    newsletter: '/newsletter',
+    faq: '/questions-frequentes',
+    'blog.index': '/blog',
+    privacy: '/politique-de-confidentialite',
+    legal: '/mentions-legales',
+    terms: '/conditions-generales',
 };
 export function routeStub(name?: string): string & { has: (n: string) => boolean } {
     if (name === undefined) return { has: (n: string) => n in ROUTES } as never;
-    return ROUTES[name] ?? `/fr/${name}`;
+    return ROUTES[name] ?? `/${name}`;
 }
 
 export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
@@ -37,10 +37,10 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
             default: 'fr',
             regional: 'fr_FR',
             locales: [
-                { code: 'fr', native: 'Français', regional: 'fr_FR', url: 'http://localhost/fr', current: true },
+                { code: 'fr', native: 'Français', regional: 'fr_FR', url: 'http://localhost/', current: true },
                 { code: 'en', native: 'English', regional: 'en_GB', url: 'http://localhost/en', current: false },
             ],
-            alternates: { fr: 'http://localhost/fr', en: 'http://localhost/en' },
+            alternates: { fr: 'http://localhost/', en: 'http://localhost/en' },
         },
         translations: translations.fr,
         seo: {
@@ -64,7 +64,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
             hours: { spec: 'Mo-Fr 08:00-20:00, Sa 08:00-12:00', label: 'Lun – Ven, 8h – 20h · Sam, 8h – 12h', open: true },
             reviews: { rating: 4.9, count: 400, url: 'https://www.google.com/maps' },
         },
-        ziggy: { location: 'http://localhost/fr', url: 'http://localhost' },
+        ziggy: { location: 'http://localhost/', url: 'http://localhost' },
         ...overrides,
     } as SharedData;
 }
@@ -76,7 +76,7 @@ export const formPost = vi.fn();
 export const formErrors: Record<string, string> = {};
 
 /** Current Inertia page used by the mocked usePage(); change `url` per test to assert active states. */
-export const page = { url: '/fr', props: sharedProps() };
+export const page = { url: '/', props: sharedProps() };
 
 vi.mock('@inertiajs/react', async () => {
     const React = await import('react');
@@ -108,6 +108,6 @@ vi.mock('@inertiajs/react', async () => {
 });
 
 export function renderPage(ui: ReactElement, options?: RenderOptions & { url?: string }) {
-    page.url = options?.url ?? '/fr';
+    page.url = options?.url ?? '/';
     return render(ui, options);
 }
