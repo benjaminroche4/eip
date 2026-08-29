@@ -43,4 +43,9 @@ return [
         ],
     ],
 
+    // Google Tag Manager container (GTM-XXXXXXX). Empty = no tag injected (local, tests).
+    'gtm' => [
+        'id' => env('GTM_ID'),
+    ],
+
 ];

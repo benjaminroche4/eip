@@ -54,6 +54,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'callbackPhone' => $request->session()->get('callback_phone'),
                 'newsletter' => $request->session()->get('newsletter_success'),
+                'valuationReference' => $request->session()->get('valuation_reference'),
             ],
             'localization' => fn () => app(LocalizedUrls::class)->forCurrentRequest(),
             'translations' => fn () => trans('ui'),

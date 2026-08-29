@@ -24,8 +24,8 @@ class EstimateController extends Controller
 
     public function store(EstimateRequest $request, SendValuationRequest $send): RedirectResponse
     {
-        $send(Valuation::fromRequest($request));
+        $stored = $send(Valuation::fromRequest($request));
 
-        return back()->with('success', __('ui.estimate.sent'));
+        return back()->with('success', __('ui.estimate.sent'))->with('valuation_reference', $stored->reference);
     }
 }

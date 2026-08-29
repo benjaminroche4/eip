@@ -27,7 +27,7 @@ export interface SharedData {
     auth: Auth;
     locale: string;
     year: number;
-    flash: { success: string | null; callbackPhone: string | null; newsletter: string | null };
+    flash: { success: string | null; callbackPhone: string | null; newsletter: string | null; valuationReference: string | null };
     localization: Localization;
     translations: Translations;
     seo: SeoShared;

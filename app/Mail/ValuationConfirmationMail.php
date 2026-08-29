@@ -16,7 +16,7 @@ class ValuationConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public readonly Valuation $valuation)
+    public function __construct(public readonly Valuation $valuation, public readonly string $reference)
     {
         $this->locale($valuation->locale);
     }
@@ -35,7 +35,7 @@ class ValuationConfirmationMail extends Mailable
     {
         return new Content(view: 'mail.valuation-confirmation', text: 'mail.valuation-confirmation-text', with: [
             'agency' => AgencyCard::for($this->valuation->locale),
-            'rows' => ValuationRequestMail::rows($this->valuation),
+            'rows' => [__('ui.estimate.reference') => $this->reference] + ValuationRequestMail::rows($this->valuation),
         ]);
     }
 }

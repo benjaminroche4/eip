@@ -214,13 +214,28 @@ describe('EstimateForm', () => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
 
-    it('shows the confirmation instead of the form once sent', () => {
-        page.props = sharedProps({ flash: { success: 'Votre demande est bien reçue.', callbackPhone: null, newsletter: null } });
+    it('shows the confirmation (reference, advisor, next steps) instead of the form once sent', async () => {
+        const user = userEvent.setup();
+        page.props = sharedProps({
+            flash: { success: 'Votre demande est bien reçue.', callbackPhone: null, newsletter: null, valuationReference: 'VAL-2026-0184' },
+        });
         render();
 
         expect(screen.queryAllByRole('button', { name: 'Demander mon estimation' })).toHaveLength(0);
-        expect(screen.getByRole('status')).toHaveTextContent('Votre demande est bien reçue.');
-        expect(screen.getByRole('heading', { level: 2, name: "Merci, votre demande d'estimation est envoyée" })).toHaveFocus();
+        const status = screen.getAllByRole('status')[0];
+        expect(status).toHaveTextContent('Votre demande est bien reçue.');
+        expect(screen.getByRole('heading', { level: 2, name: 'Votre demande a bien été reçue' })).toHaveFocus();
+        expect(screen.getByText('VAL-2026-0184')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 3, name: 'Votre conseiller' })).toBeInTheDocument();
+        expect(screen.getByText("12+ ans d'expérience")).toBeInTheDocument();
+        expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(
+            expect.arrayContaining(['CompletAnalyse par un expert', '2Échange personnalisé', '3Conseils de valorisation']),
+        );
+        expect(screen.getByRole('link', { name: 'Découvrir nos biens' })).toHaveAttribute('href', '/fr/acheter-immobilier-paris');
+
+        await user.click(screen.getByRole('button', { name: 'Copier la référence' }));
+        expect(await navigator.clipboard.readText()).toBe('VAL-2026-0184');
+        expect(screen.getByRole('button', { name: 'Référence copiée' })).toBeInTheDocument();
     });
 
     it('has no axe violations', async () => {

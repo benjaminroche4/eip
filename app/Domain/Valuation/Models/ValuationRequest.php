@@ -19,6 +19,12 @@ class ValuationRequest extends Model
         'consent_at', 'mail_sent_at', 'handled_at',
     ];
 
+    /** Human reference shown to the owner and the team: VAL-{year}-{id on 4 digits}. */
+    public function getReferenceAttribute(): string
+    {
+        return sprintf('VAL-%s-%04d', ($this->created_at ?? now())->format('Y'), $this->id);
+    }
+
     protected static function newFactory(): ValuationRequestFactory
     {
         return ValuationRequestFactory::new();

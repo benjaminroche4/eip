@@ -23,14 +23,14 @@ final class SendValuationRequest
 
         try {
             $to = config('seo.organization.email') ?: config('mail.from.address');
-            Mail::to($to)->send(new ValuationRequestMail($valuation));
+            Mail::to($to)->send(new ValuationRequestMail($valuation, $request->reference));
             $request->update(['mail_sent_at' => now()]);
         } catch (Throwable $e) {
             Log::error('Valuation request #'.$request->id.' saved but agency e-mail failed: '.$e->getMessage());
         }
 
         try {
-            Mail::to($valuation->email, $valuation->fullName)->send(new ValuationConfirmationMail($valuation));
+            Mail::to($valuation->email, $valuation->fullName)->send(new ValuationConfirmationMail($valuation, $request->reference));
         } catch (Throwable $e) {
             Log::warning('Valuation request #'.$request->id.': confirmation e-mail failed: '.$e->getMessage());
         }

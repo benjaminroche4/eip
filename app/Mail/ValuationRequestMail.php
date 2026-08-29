@@ -16,7 +16,7 @@ class ValuationRequestMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public readonly Valuation $valuation) {}
+    public function __construct(public readonly Valuation $valuation, public readonly string $reference) {}
 
     public function envelope(): Envelope
     {
@@ -30,7 +30,7 @@ class ValuationRequestMail extends Mailable
     {
         return new Content(view: 'mail.valuation-request', text: 'mail.valuation-request-text', with: [
             'agency' => AgencyCard::for(app()->getLocale()),
-            'rows' => self::rows($this->valuation),
+            'rows' => [__('ui.estimate.reference') => $this->reference] + self::rows($this->valuation),
             'sentAt' => now()->locale(app()->getLocale())->isoFormat(__('ui.mail.sent_at_format', [], app()->getLocale())),
         ]);
     }

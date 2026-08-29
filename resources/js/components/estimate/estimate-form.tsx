@@ -32,6 +32,7 @@ import {
     DoorOpen,
     FileCheck,
     Home,
+    Info,
     Landmark,
     Layers,
     Lock,
@@ -555,7 +556,12 @@ export default function EstimateForm({ propertyTypes, contactMethods, floors, fe
                             aria-labelledby="step-method"
                             aria-invalid={Boolean(errors.contact_method)}
                         />
-                        {data.contact_method === 'whatsapp' && <p className="text-muted-foreground text-sm">{t('estimate.whatsapp_hint')}</p>}
+                        {data.contact_method === 'whatsapp' && (
+                            <p className="text-muted-foreground flex items-start gap-2 text-sm">
+                                <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
+                                {t('estimate.whatsapp_hint')}
+                            </p>
+                        )}
                     </fieldset>
 
                     {/* 5 — anything else + consent */}

@@ -31,7 +31,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
         auth: { user: null as never },
         locale: 'fr',
         year: 2026,
-        flash: { success: null, callbackPhone: null, newsletter: null },
+        flash: { success: null, callbackPhone: null, newsletter: null, valuationReference: null },
         localization: {
             current: 'fr',
             default: 'fr',

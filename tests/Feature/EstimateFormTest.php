@@ -63,7 +63,8 @@ class EstimateFormTest extends TestCase
 
         $this->from('/estimation-immobiliere-paris')->post('/estimation-immobiliere-paris', $this->payload())
             ->assertRedirect('/estimation-immobiliere-paris')
-            ->assertSessionHas('success', __('ui.estimate.sent'));
+            ->assertSessionHas('success', __('ui.estimate.sent'))
+            ->assertSessionHas('valuation_reference', 'VAL-'.now()->format('Y').'-0001');
 
         $this->assertDatabaseHas('valuation_requests', [
             'email' => 'jean.dupont@example.com',
@@ -87,6 +88,8 @@ class EstimateFormTest extends TestCase
 
             return $mail->hasTo('agence@example.test')
                 && $mail->envelope()->subject === 'Demande d\'estimation — Jean Dupont (Appartement)'
+                && $mail->reference === ValuationRequest::first()->reference
+                && str_contains($html, ValuationRequest::first()->reference)
                 && str_contains($html, '12 rue de Seine, 75006 Paris')
                 && str_contains($html, '120 m²')
                 && str_contains($html, '3e')
