@@ -40,13 +40,16 @@ class EstimateFormTest extends TestCase
 
     public function test_estimate_page_lists_the_options_and_the_texts(): void
     {
+        config(['services.google_maps.key' => 'test-maps-key']);
+
         $this->get('/estimation-immobiliere-paris')
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('estimate')
                 ->where('propertyTypes', ['apartment', 'duplex', 'studio', 'mansion', 'house', 'loft', 'building', 'other'])
                 ->where('contactMethods', ['phone', 'whatsapp', 'email'])
                 ->where('floors.0', 'ground')
-                ->where('conditions', ['renovate', 'good', 'new']));
+                ->where('conditions', ['renovate', 'good', 'new'])
+                ->where('googleMapsKey', 'test-maps-key'));
 
         foreach (['fr', 'en'] as $locale) {
             app()->setLocale($locale);

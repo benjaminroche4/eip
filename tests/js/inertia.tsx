@@ -61,7 +61,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
             },
             advisor: { name: 'Maris Moreau', role: 'Conseillère senior', photo: '/images/advisors/advisor-1.webp', experienceYears: 12 },
             social: { linkedin: 'https://www.linkedin.com/company/x', instagram: 'https://www.instagram.com/x' },
-            hours: { spec: 'Mo-Fr 08:00-20:00, Sa 08:00-12:00', label: 'Lun – Ven, 8h – 20h · Sam, 8h – 12h', open: true },
+            hours: { spec: 'Mo-Fr 08:00-20:00, Sa 08:00-12:00', label: 'Lun - Ven, 8h - 20h · Sam, 8h - 12h', open: true },
             reviews: { rating: 4.9, count: 400, url: 'https://www.google.com/maps' },
         },
         ziggy: { location: 'http://localhost/', url: 'http://localhost' },

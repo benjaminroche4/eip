@@ -1,5 +1,6 @@
 import Hero from '@/components/home/hero';
-import ValueStrip from '@/components/home/value-strip';
+import PropertyCarousel from '@/components/home/property-carousel';
+import TrustBanner from '@/components/home/trust-banner';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
@@ -22,7 +23,8 @@ export default function Home() {
             />
             <PublicLayout hero>
                 <Hero />
-                <ValueStrip />
+                <TrustBanner />
+                <PropertyCarousel />
             </PublicLayout>
         </>
     );

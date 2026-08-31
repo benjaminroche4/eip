@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 /**
  * Guards the SEO title / description length conventions (see CLAUDE.md « Meta title & description »).
- * Title: 30–60 characters including the " · Site" suffix when applied. Description: 120–160 characters.
+ * Title: 30-60 characters including the " · Site" suffix when applied. Description: 120-160 characters.
  */
 class SeoMetaLengthTest extends TestCase
 {

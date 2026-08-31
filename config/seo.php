@@ -38,8 +38,8 @@ return [
     'hours' => [
         'spec' => env('SEO_OPENING_HOURS', 'Mo-Fr 08:00-20:00, Sa 08:00-12:00'),
         'labels' => [
-            'fr' => env('SEO_OPENING_HOURS_FR', 'Lun – Ven, 8h – 20h · Sam, 8h – 12h'),
-            'en' => env('SEO_OPENING_HOURS_EN', 'Mon – Fri, 8am – 8pm · Sat, 8am – 12pm'),
+            'fr' => env('SEO_OPENING_HOURS_FR', 'Lun - Ven, 8h - 20h · Sam, 8h - 12h'),
+            'en' => env('SEO_OPENING_HOURS_EN', 'Mon - Fri, 8am - 8pm · Sat, 8am - 12pm'),
         ],
     ],
 

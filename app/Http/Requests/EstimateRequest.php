@@ -20,7 +20,7 @@ class EstimateRequest extends FormRequest
             'property_type' => ['required', Rule::in(Valuation::PROPERTY_TYPES)],
             'full_name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'string', 'email:rfc', 'max:190'],
-            'phone' => ['required', 'string', 'max:30', 'regex:/^\+?(?:[\s().-]*\d){6,15}[\s().-]*$/'], // 6–15 digits (E.164), separators allowed
+            'phone' => ['required', 'string', 'max:30', 'regex:/^\+?(?:[\s().-]*\d){6,15}[\s().-]*$/'], // 6-15 digits (E.164), separators allowed
             'address' => ['required', 'string', 'max:255'],
             'surface' => ['required', 'integer', 'min:5', 'max:999'],
             'floor' => ['nullable', Rule::in(Valuation::FLOORS)],

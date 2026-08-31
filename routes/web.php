@@ -50,6 +50,14 @@ Route::group([
     }
 });
 
+// Local-only preview of the error pages: in dev APP_DEBUG shows the debug screen instead of the
+// Inertia error page (bootstrap/app.php), so real 403/500 cannot be triggered to check the design.
+if (app()->environment('local')) {
+    Route::get('dev/error/{status}', fn (string $status) => Inertia::render('error', ['status' => (int) $status])
+        ->toResponse(request())
+        ->setStatusCode((int) $status))->whereIn('status', ['403', '404', '500', '503']);
+}
+
 Route::get('robots.txt', [SeoController::class, 'robots'])->name('robots');
 Route::get('llms.txt', [SeoController::class, 'llms'])->name('llms');
 

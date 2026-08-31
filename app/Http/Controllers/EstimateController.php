@@ -19,6 +19,7 @@ class EstimateController extends Controller
             'floors' => Valuation::FLOORS,
             'features' => Valuation::FEATURES,
             'conditions' => Valuation::CONDITIONS,
+            'googleMapsKey' => config('services.google_maps.key'),
         ]);
     }
 

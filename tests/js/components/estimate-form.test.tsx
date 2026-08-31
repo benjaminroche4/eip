@@ -12,7 +12,16 @@ const FEATURES = ['bright', 'view', 'quiet', 'outdoor', 'metro', 'central', 'par
 const CONDITIONS = ['renovate', 'good', 'new'];
 
 const render = () =>
-    renderPage(<EstimateForm propertyTypes={TYPES} contactMethods={METHODS} floors={FLOORS} features={FEATURES} conditions={CONDITIONS} />);
+    renderPage(
+        <EstimateForm
+            propertyTypes={TYPES}
+            contactMethods={METHODS}
+            floors={FLOORS}
+            features={FEATURES}
+            conditions={CONDITIONS}
+            googleMapsKey={null}
+        />,
+    );
 const recap = () => within(screen.getByRole('complementary', { name: 'Votre demande' }));
 
 describe('EstimateForm', () => {

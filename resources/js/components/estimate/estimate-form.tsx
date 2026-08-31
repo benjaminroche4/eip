@@ -1,5 +1,6 @@
 import FormField from '@/components/contact/form-field';
 import PhoneInput from '@/components/contact/phone-input';
+import AddressAutocomplete from '@/components/estimate/address-autocomplete';
 import EstimateRecap from '@/components/estimate/estimate-recap';
 import EstimateSuccess from '@/components/estimate/estimate-success';
 import SelectionCards, { type SelectionOption } from '@/components/estimate/selection-cards';
@@ -81,7 +82,14 @@ const FIELD_ORDER = [
     'consent',
 ];
 
-type EstimateFormProps = { propertyTypes: string[]; contactMethods: string[]; floors: string[]; features: string[]; conditions: string[] };
+type EstimateFormProps = {
+    propertyTypes: string[];
+    contactMethods: string[];
+    floors: string[];
+    features: string[];
+    conditions: string[];
+    googleMapsKey: string | null;
+};
 
 type EstimateFormData = {
     property_type: string;
@@ -112,7 +120,7 @@ const formatValue = (digits: string) => (digits ? Number(digits).toLocaleString(
  * free text + consent — and a sticky summary card on the right that fills in as the owner types and can submit.
  * Server-side validation: error summary at the top, first invalid field focused, lines flagged in the recap.
  */
-export default function EstimateForm({ propertyTypes, contactMethods, floors, features, conditions }: EstimateFormProps) {
+export default function EstimateForm({ propertyTypes, contactMethods, floors, features, conditions, googleMapsKey }: EstimateFormProps) {
     const { t, tc } = useTranslation();
     const { flash, seo, locale } = usePage<SharedData>().props;
     const {
@@ -385,23 +393,15 @@ export default function EstimateForm({ propertyTypes, contactMethods, floors, fe
                         </StepHeading>
                         <FormField id="address" label={t('estimate.address')} error={errors.address} required>
                             {(aria) => (
-                                <div className="relative">
-                                    <Input
-                                        {...aria}
-                                        name="address"
-                                        autoComplete="street-address"
-                                        placeholder={t('estimate.address_placeholder')}
-                                        value={data.address}
-                                        onChange={(e) => setData('address', e.target.value)}
-                                        className={cn(valid.address && 'pr-9')}
-                                    />
-                                    {valid.address && (
-                                        <span className="text-success pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
-                                            <Check aria-hidden className="animate-pop size-4 motion-reduce:animate-none" />
-                                            <span className="sr-only">{t('estimate.valid')}</span>
-                                        </span>
-                                    )}
-                                </div>
+                                <AddressAutocomplete
+                                    aria={aria}
+                                    value={data.address}
+                                    onChange={(next) => setData('address', next)}
+                                    valid={valid.address}
+                                    apiKey={googleMapsKey}
+                                    locale={locale}
+                                    placeholder={t('estimate.address_placeholder')}
+                                />
                             )}
                         </FormField>
                         <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">

@@ -7,10 +7,17 @@ import { breadcrumbList } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
-type EstimateProps = { propertyTypes: string[]; contactMethods: string[]; floors: string[]; features: string[]; conditions: string[] };
+type EstimateProps = {
+    propertyTypes: string[];
+    contactMethods: string[];
+    floors: string[];
+    features: string[];
+    conditions: string[];
+    googleMapsKey: string | null;
+};
 
 /** Valuation page: eyebrow + h1 + answer-first intro, then the request form with its live recap (Figma 696-13105). */
-export default function Estimate({ propertyTypes, contactMethods, floors, features, conditions }: EstimateProps) {
+export default function Estimate({ propertyTypes, contactMethods, floors, features, conditions, googleMapsKey }: EstimateProps) {
     const { t } = useTranslation();
     const { ziggy } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
@@ -41,6 +48,7 @@ export default function Estimate({ propertyTypes, contactMethods, floors, featur
                         floors={floors}
                         features={features}
                         conditions={conditions}
+                        googleMapsKey={googleMapsKey}
                     />
                 </div>
             </PublicLayout>

@@ -99,6 +99,24 @@ describe('FAQ page', () => {
         expect(screen.getByRole('tabpanel')).toBeInTheDocument();
     });
 
+    it('switches topics from the mobile "Sommaire" dropdown', async () => {
+        const user = userEvent.setup();
+        render();
+
+        const trigger = screen.getByRole('button', { name: /Sommaire/ });
+        expect(trigger).toHaveTextContent('Acheter un bien'); // the active topic shows next to the label
+        await user.click(trigger);
+
+        const menu = screen.getByRole('menu');
+        expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Acheter un bien02', 'Vendre un bien01']);
+        await user.click(within(menu).getByRole('menuitem', { name: /Vendre un bien/ }));
+
+        expect(screen.queryByRole('menu')).not.toBeInTheDocument(); // picking closes the dropdown
+        expect(screen.getByRole('tab', { name: 'Vendre un bien' })).toHaveAttribute('aria-selected', 'true');
+        expect(within(panel()).getByRole('heading', { level: 2, name: 'Vendre un bien' })).toBeInTheDocument();
+        expect(trigger).toHaveTextContent('Vendre un bien');
+    });
+
     it('has no axe violations', async () => {
         const { container } = render();
         expect(await axe(container)).toHaveNoViolations();

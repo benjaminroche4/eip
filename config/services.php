@@ -50,4 +50,9 @@ return [
         'id' => env('GTM_ID'),
     ],
 
+    // Google Maps Platform browser key (Places autocomplete on the valuation form). Empty = plain input, no suggestions.
+    'google_maps' => [
+        'key' => env('GOOGLE_MAPS_API_KEY'),
+    ],
+
 ];

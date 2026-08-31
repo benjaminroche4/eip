@@ -3,11 +3,13 @@ import FaqCta from '@/components/faq/faq-cta';
 import FaqSearch from '@/components/faq/faq-search';
 import { type FaqCategory, type FaqItem } from '@/components/faq/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useTranslation } from '@/hooks/use-translation';
 import { stripFaqMarkup } from '@/lib/faq-markup';
 import { cn } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
 import { Tabs as TabsPrimitive } from 'radix-ui';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type FaqTabsProps = { categories: FaqCategory[] };
 
@@ -15,9 +17,9 @@ type FaqTabsProps = { categories: FaqCategory[] };
 const normalize = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 /**
- * FAQ by topic (Figma 696-10782 desktop / 696-10837 mobile). Radix Tabs for the semantics and the keyboard
- * (arrows between topics, the panel is the accordion) — a sticky column of topics on the left in desktop, the
- * same rows in a horizontally scrollable, snapping strip on mobile.
+ * FAQ by topic (Figma 696-10782 desktop). Radix Tabs for the semantics and the keyboard (arrows between
+ * topics, the panel is the accordion) — a sticky column of topics on the left in desktop; on mobile the
+ * topics live in a bordered "contents" dropdown (chevron on the right), which replaced the scrolling strip.
  *
  * On top of the design: a search over every question, sitting above the topics (results take the panel, topics dimmed; none → contact CTA; picking a topic clears it), one URL
  * anchor per topic and per question (`#slug`, restored on load, kept in sync while browsing), open questions
@@ -32,7 +34,6 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
         Object.fromEntries(categories.map((c) => [c.key, c.items[0] ? [c.items[0].slug] : []])),
     );
     const [query, setQuery] = useState('');
-    const list = useRef<HTMLDivElement>(null);
     const searchId = 'faq-search';
 
     // Deep link: #topic-slug or #question-slug opens the right topic (and question) and scrolls to it.
@@ -46,11 +47,6 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
         if (byQuestion) setOpen((o) => ({ ...o, [category.key]: [...new Set([...(o[category.key] ?? []), slug])] }));
         window.requestAnimationFrame(() => document.getElementById(slug)?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
     }, [categories]);
-
-    // Keep the selected tab in view (mobile strip) when it changes from the keyboard or a tap near the edge.
-    useEffect(() => {
-        list.current?.querySelector<HTMLElement>('[data-state="active"]')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
-    }, [active]);
 
     /** Shareable URL: the last opened question, else the topic — without adding history entries. */
     const syncHash = (slug: string) => window.history.replaceState(window.history.state, '', `#${slug}`);
@@ -82,45 +78,66 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
 
     return (
         <TabsPrimitive.Root value={active} onValueChange={selectTopic} orientation="vertical" className="flex flex-col gap-7 lg:flex-row lg:gap-16">
-            {/* Topics column — search on top, then the topics. Mobile: the strip scrolls and fades out on the right; desktop: sticky */}
+            {/* Topics column — search on top, then the topics. Mobile: a bordered dropdown; desktop: sticky rows */}
             <div className="flex shrink-0 flex-col gap-5 lg:sticky lg:top-24 lg:w-72 lg:self-start">
                 {/* Search over every question of every topic */}
                 <FaqSearch id={searchId} value={query} onChange={setQuery} count={results ? results.length : null} />
 
-                <div className="relative -mx-4 sm:mx-0">
-                    <TabsPrimitive.List
-                        ref={list}
-                        aria-label={t('faq.categories_label')}
-                        className="flex snap-x gap-1 overflow-x-auto px-4 [scrollbar-width:none] sm:px-0 lg:flex-col lg:gap-0.5 lg:overflow-visible"
-                    >
+                {/* Mobile: a bordered "contents" dropdown instead of the strip (user decision 2026-08-31) */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger className="group focus-ring border-border bg-card flex h-11 w-full items-center justify-between gap-3 rounded-none border px-4 text-sm lg:hidden">
+                        <span>{t('faq.summary')}</span>
+                        <span className="text-muted-foreground flex min-w-0 items-center gap-2">
+                            <span className="truncate">{categories.find((c) => c.key === active)?.title}</span>
+                            <ChevronDown
+                                aria-hidden
+                                className="size-4 shrink-0 transition-transform group-data-open:rotate-180 motion-reduce:transition-none"
+                            />
+                        </span>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-(--radix-dropdown-menu-trigger-width)">
                         {categories.map((category) => (
-                            <TabsPrimitive.Trigger
+                            <DropdownMenuItem
                                 key={category.key}
-                                value={category.key}
-                                data-searching={results ? '' : undefined}
+                                onSelect={() => selectTopic(category.key)}
                                 className={cn(
-                                    // One style everywhere: square rows on the accordion surfaces (sand once active, light sand on hover),
-                                    // colour only — never weight. Mobile: a scrolling strip; desktop: full-width rows. Dimmed while searching.
-                                    'group focus-ring flex shrink-0 snap-start scroll-mx-4 items-center gap-3 rounded-none px-4 py-3 text-left text-sm whitespace-nowrap',
-                                    'text-muted-foreground data-[state=active]:text-foreground',
-                                    'data-[state=active]:bg-background-08 data-[state=inactive]:hover:bg-background-05',
-                                    'data-searching:text-muted-foreground data-searching:bg-transparent',
-                                    'lg:w-full lg:gap-4 lg:whitespace-normal',
+                                    // Same surfaces as the desktop rows: light sand highlight, full sand when active — even hovered
+                                    'focus:bg-background-05 justify-between rounded-none py-2.5',
+                                    category.key === active && 'bg-background-08 focus:bg-background-08 text-foreground',
                                 )}
                             >
-                                <span className="lg:flex-1">{category.title}</span>
-                                {/* Number of questions in the topic (decorative) */}
+                                {category.title}
                                 <span aria-hidden className="text-muted-foreground text-xs tabular-nums">
                                     {String(category.items.length).padStart(2, '0')}
                                 </span>
-                            </TabsPrimitive.Trigger>
+                            </DropdownMenuItem>
                         ))}
-                    </TabsPrimitive.List>
-                    <span
-                        aria-hidden
-                        className="from-background pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l to-transparent lg:hidden"
-                    />
-                </div>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <TabsPrimitive.List aria-label={t('faq.categories_label')} className="flex flex-col gap-0.5 max-lg:hidden">
+                    {categories.map((category) => (
+                        <TabsPrimitive.Trigger
+                            key={category.key}
+                            value={category.key}
+                            data-searching={results ? '' : undefined}
+                            className={cn(
+                                // Square full-width rows on the accordion surfaces (sand once active, light sand on hover),
+                                // colour only — never weight. Dimmed while searching.
+                                'group focus-ring flex w-full items-center gap-4 rounded-none px-4 py-3 text-left text-sm',
+                                'text-muted-foreground data-[state=active]:text-foreground',
+                                'data-[state=active]:bg-background-08 data-[state=inactive]:hover:bg-background-05',
+                                'data-searching:text-muted-foreground data-searching:bg-transparent',
+                            )}
+                        >
+                            <span className="flex-1">{category.title}</span>
+                            {/* Number of questions in the topic (decorative) */}
+                            <span aria-hidden className="text-muted-foreground text-xs tabular-nums">
+                                {String(category.items.length).padStart(2, '0')}
+                            </span>
+                        </TabsPrimitive.Trigger>
+                    ))}
+                </TabsPrimitive.List>
             </div>
 
             {/* Search results take the panel slot; the topic panels stay mounted (hidden) for crawlers */}
