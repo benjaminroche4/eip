@@ -35,4 +35,21 @@ final class SanityImage
             'alt' => (string) ($image['alt'] ?? ''),
         ];
     }
+
+    /**
+     * Square, cropped thumbnail URL (avatars). Null when the image has no resolvable asset.
+     *
+     * @param  array{asset?: array{_ref?: string}}|null  $image
+     */
+    public function thumbnail(?array $image, int $size = 64): ?string
+    {
+        $ref = $image['asset']['_ref'] ?? null;
+        if (! is_string($ref) || ! preg_match('/^image-([a-f0-9]+)-(\d+)x(\d+)-(\w+)$/', $ref, $m)) {
+            return null;
+        }
+
+        [, $id, $width, $height, $ext] = $m;
+
+        return sprintf('https://cdn.sanity.io/images/%s/%s/%s-%sx%s.%s?w=%d&h=%d&fit=crop&auto=format', $this->projectId, $this->dataset, $id, $width, $height, $ext, $size, $size);
+    }
 }

@@ -1,11 +1,11 @@
 import GradientHairline from '@/components/layout/gradient-hairline';
 import { useTranslation } from '@/hooks/use-translation';
-import { BadgeCheck, ChartNoAxesCombined, type LucideIcon, Timer } from 'lucide-react';
+import { BadgeCheck, type LucideIcon, Timer, TrendingUp } from 'lucide-react';
 import { Fragment } from 'react';
 
 const BENEFITS: { key: 'opportunities' | 'guidance' | 'expertise'; icon: LucideIcon }[] = [
     { key: 'opportunities', icon: BadgeCheck },
-    { key: 'guidance', icon: ChartNoAxesCombined },
+    { key: 'guidance', icon: TrendingUp },
     { key: 'expertise', icon: Timer },
 ];
 
@@ -31,9 +31,9 @@ export default function NewsletterBenefits() {
                             {/* Same icon tile as the contact details (contact-detail.tsx) */}
                             <span
                                 aria-hidden
-                                className="bg-background-05 text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded-full"
+                                className="bg-background-05 text-muted-foreground flex size-11 shrink-0 items-center justify-center rounded-full"
                             >
-                                <Icon className="size-4" />
+                                <Icon className="size-5" />
                             </span>
                             <div className="flex flex-col gap-2">
                                 <h3 className="font-sans text-lg font-medium">{t(`newsletter.benefits.${key}.title`)}</h3>

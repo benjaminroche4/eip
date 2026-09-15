@@ -12,8 +12,18 @@ export type BlogPostSummary = {
     published_at: string;
     updated_at: string;
     image: BlogImage | null;
-    category: { name: string; slug: string } | null;
-    authors: { name: string; slug: string }[];
+    category: { name: string; slug: string; color: string | null } | null;
+    authors: { name: string; slug: string; photo: string | null }[];
+};
+
+export type BlogCategory = NonNullable<BlogPostSummary['category']>;
+
+/** Mirrors the `filter` prop of BlogController::index. */
+export type BlogFilter = {
+    categories: (BlogCategory & { count: number })[];
+    total_all: number;
+    active: string | null;
+    urls: Record<string, string>;
 };
 
 export type BlogFaq = { question: string; answer: string };
@@ -22,6 +32,9 @@ export type BlogPost = BlogPostSummary & {
     body: BlogSection[];
     faqs: BlogFaq[];
     seo_title: string;
+    /** false when the article title is kept whole and the brand suffix would push the <title> past 60 characters. */
+    seo_title_suffix: boolean;
+    word_count: number;
     seo_description: string;
     tags: string[];
 };

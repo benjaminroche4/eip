@@ -1,6 +1,6 @@
 import CountryFlag from '@/components/i18n/country-flag';
 import { Button } from '@/components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useTranslation } from '@/hooks/use-translation';
@@ -15,6 +15,8 @@ import fr from 'react-phone-number-input/locale/fr.json';
 
 const LABELS: Record<string, typeof fr> = { fr, en };
 const DEFAULT_COUNTRY: Record<string, Country> = { fr: 'FR', en: 'GB' };
+/** Main calling codes listed first (user decision 2026-09-15): France, its neighbours and the usual buyer countries. */
+const MAIN_COUNTRIES: Country[] = ['FR', 'BE', 'CH', 'LU', 'MC', 'GB', 'US', 'AE'];
 
 type CountryOption = { value?: Country; label: string; divider?: boolean };
 
@@ -27,15 +29,50 @@ type CountrySelectProps = {
     'aria-label'?: string;
     searchPlaceholder: string;
     emptyLabel: string;
+    mainLabel: string;
+    allLabel: string;
 };
 
 /**
  * Country picker rendered by react-phone-number-input as a searchable combobox (shadcn Popover + Command):
  * compact trigger "flag ISO ⌄", list of "flag name +code" filtered by name or calling code.
+ * The library's `countryOptionsOrder` divider splits the list into a "main" group and the rest.
  */
-function CountrySelect({ value, onChange, options, disabled, readOnly, searchPlaceholder, emptyLabel, ...props }: CountrySelectProps) {
+function CountrySelect({
+    value,
+    onChange,
+    options,
+    disabled,
+    readOnly,
+    searchPlaceholder,
+    emptyLabel,
+    mainLabel,
+    allLabel,
+    ...props
+}: CountrySelectProps) {
     const [open, setOpen] = useState(false);
-    const countries = options.filter((o): o is CountryOption & { value: Country } => Boolean(o.value) && !o.divider);
+    const isCountry = (o: CountryOption): o is CountryOption & { value: Country } => Boolean(o.value) && !o.divider;
+    const dividerAt = options.findIndex((o) => o.divider);
+    const main = dividerAt === -1 ? [] : options.slice(0, dividerAt).filter(isCountry);
+    const rest = options.slice(dividerAt + 1).filter(isCountry);
+
+    const renderItem = (c: CountryOption & { value: Country }) => {
+        const code = `+${getCountryCallingCode(c.value)}`;
+        return (
+            <CommandItem
+                key={c.value}
+                value={`${c.label} ${code}`}
+                onSelect={() => {
+                    onChange(c.value);
+                    setOpen(false);
+                }}
+            >
+                <FlagLabel country={c.value} label={c.label} className="min-w-0 flex-1 [&>span:last-child]:truncate" />
+                <span className="text-muted-foreground tabular-nums">{code}</span>
+                <Check aria-hidden className={cn('size-4', value === c.value ? 'opacity-100' : 'opacity-0')} />
+            </CommandItem>
+        );
+    };
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -58,25 +95,13 @@ function CountrySelect({ value, onChange, options, disabled, readOnly, searchPla
                     <CommandInput placeholder={searchPlaceholder} />
                     <CommandList>
                         <CommandEmpty>{emptyLabel}</CommandEmpty>
-                        <CommandGroup>
-                            {countries.map((c) => {
-                                const code = `+${getCountryCallingCode(c.value)}`;
-                                return (
-                                    <CommandItem
-                                        key={c.value}
-                                        value={`${c.label} ${code}`}
-                                        onSelect={() => {
-                                            onChange(c.value);
-                                            setOpen(false);
-                                        }}
-                                    >
-                                        <FlagLabel country={c.value} label={c.label} className="min-w-0 flex-1 [&>span:last-child]:truncate" />
-                                        <span className="text-muted-foreground tabular-nums">{code}</span>
-                                        <Check aria-hidden className={cn('size-4', value === c.value ? 'opacity-100' : 'opacity-0')} />
-                                    </CommandItem>
-                                );
-                            })}
-                        </CommandGroup>
+                        {main.length > 0 && (
+                            <>
+                                <CommandGroup heading={mainLabel}>{main.map(renderItem)}</CommandGroup>
+                                <CommandSeparator />
+                            </>
+                        )}
+                        <CommandGroup heading={main.length > 0 ? allLabel : undefined}>{rest.map(renderItem)}</CommandGroup>
                     </CommandList>
                 </Command>
             </PopoverContent>
@@ -123,6 +148,7 @@ export default function PhoneInput({ id, name, value, onChange, ...aria }: Phone
             countryCallingCodeEditable={false}
             defaultCountry={DEFAULT_COUNTRY[locale] ?? 'FR'}
             labels={LABELS[locale] ?? fr}
+            countryOptionsOrder={[...MAIN_COUNTRIES, '|', '...']}
             value={value}
             onChange={(v) => onChange(v ?? '')}
             limitMaxLength // no more digits than the selected country allows (E.164)
@@ -135,6 +161,8 @@ export default function PhoneInput({ id, name, value, onChange, ...aria }: Phone
                 'aria-label': t('contact.country'),
                 searchPlaceholder: t('contact.country_search'),
                 emptyLabel: t('contact.country_empty'),
+                mainLabel: t('contact.country_main'),
+                allLabel: t('contact.country_all'),
             }}
             className={cn(
                 'border-input divide-input flex h-10 w-full divide-x border transition-[color,box-shadow]',

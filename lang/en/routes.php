@@ -10,6 +10,7 @@ return [
     'buy' => 'buy-property-paris',
     'blog' => 'blog',
     'blog_show' => 'blog/{slug}',
+    'blog_category' => 'blog/category/{category}',
     'search' => 'search',
     'privacy' => 'privacy-policy',
     'legal' => 'legal-notice',

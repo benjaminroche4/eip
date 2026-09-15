@@ -15,8 +15,8 @@ final readonly class BlogPostSummary implements Arrayable
 {
     /**
      * @param  array{url: string, srcset: string, width: int, height: int, alt: string}|null  $image
-     * @param  array{name: string, slug: string}|null  $category
-     * @param  list<array{name: string, slug: string}>  $authors
+     * @param  array{name: string, slug: string, color: string|null}|null  $category
+     * @param  list<array{name: string, slug: string, photo: string|null}>  $authors
      */
     public function __construct(
         public string $id,
@@ -47,7 +47,9 @@ final readonly class BlogPostSummary implements Arrayable
             image: $images->resolve($doc['mainPhoto'] ?? null),
             category: self::category($doc['category'] ?? null),
             authors: array_values(array_filter(array_map(
-                fn ($a) => is_array($a) && ! empty($a['fullName']) ? ['name' => $a['fullName'], 'slug' => (string) ($a['slug'] ?? '')] : null,
+                fn ($a) => is_array($a) && ! empty($a['fullName'])
+                    ? ['name' => $a['fullName'], 'slug' => (string) ($a['slug'] ?? ''), 'photo' => $images->thumbnail($a['photo'] ?? null)]
+                    : null,
                 $doc['authors'] ?? [],
             ))),
         );
@@ -75,11 +77,19 @@ final readonly class BlogPostSummary implements Arrayable
         ];
     }
 
-    /** @return array{name: string, slug: string}|null */
-    private static function category(mixed $category): ?array
+    /** @return array{name: string, slug: string, color: string|null}|null */
+    public static function category(mixed $category): ?array
     {
-        return is_array($category) && ! empty($category['name'])
-            ? ['name' => $category['name'], 'slug' => (string) ($category['slug'] ?? '')]
-            : null;
+        if (! is_array($category) || empty($category['name'])) {
+            return null;
+        }
+
+        $color = $category['color'] ?? null;
+
+        return [
+            'name' => $category['name'],
+            'slug' => (string) ($category['slug'] ?? ''),
+            'color' => is_string($color) && preg_match('/^#[0-9a-fA-F]{6}$/', $color) ? strtolower($color) : null,
+        ];
     }
 }

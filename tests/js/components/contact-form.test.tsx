@@ -52,6 +52,21 @@ describe('ContactForm', () => {
         renderPage(<ContactForm topics={TOPICS} />);
 
         await user.click(screen.getByRole('combobox', { name: 'Indicatif du pays' }));
+        // Main calling codes first, under their own heading, then every other country alphabetically.
+        const names = screen.getAllByRole('option').map((o) => o.textContent);
+        expect(names.slice(0, 8)).toEqual([
+            'France+33',
+            'Belgique+32',
+            'Suisse+41',
+            'Luxembourg+352',
+            'Monaco+377',
+            'Grande-Bretagne et Irlande du Nord+44',
+            "États-Unis d'Amérique+1",
+            'Émirats Arabes Unis+971',
+        ]);
+        expect(names.length).toBeGreaterThan(200);
+        expect(screen.getByText('Principaux')).toBeInTheDocument();
+        expect(screen.getByText('Tous les pays')).toBeInTheDocument();
         await user.type(screen.getByPlaceholderText('Rechercher un pays…'), 'suis');
         await user.click(screen.getByRole('option', { name: /^Suisse\+41/ }));
 

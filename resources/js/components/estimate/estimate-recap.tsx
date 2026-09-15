@@ -139,7 +139,7 @@ export default function EstimateRecap({ values, frameless = false }: EstimateRec
         group.rows.some((r) => r.required) && group.rows.filter((r) => r.required).every((r) => r.value !== '');
 
     return (
-        <aside aria-labelledby="estimate-recap-title" className={cn(!frameless && 'border-secondary-30 bg-card border p-2 shadow-lg shadow-black/5')}>
+        <aside aria-labelledby="estimate-recap-title" className={cn(!frameless && 'border-secondary-30 bg-card border p-2')}>
             <div className="from-background-05 flex flex-col gap-6 bg-gradient-to-b to-transparent px-5 pt-6 pb-5">
                 {/* Header: the advisors' faces and the title — nothing more */}
                 <div className="flex items-center gap-3">

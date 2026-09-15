@@ -27,6 +27,7 @@ Route::group([
     Route::get('/', fn () => Inertia::render('home'))->name('home');
     Route::get(LaravelLocalization::transRoute('routes.search'), SearchController::class)->name('search');
     Route::get(LaravelLocalization::transRoute('routes.blog'), [BlogController::class, 'index'])->name('blog.index');
+    Route::get(LaravelLocalization::transRoute('routes.blog_category'), [BlogController::class, 'category'])->name('blog.category');
     Route::get(LaravelLocalization::transRoute('routes.blog_show'), [BlogController::class, 'show'])->name('blog.show');
 
     // Service pages (content to come): one Inertia page per route, SEO slugs in lang/{locale}/routes.php.

@@ -10,6 +10,7 @@ return [
     'buy' => 'acheter-immobilier-paris',
     'blog' => 'blog',
     'blog_show' => 'blog/{slug}',
+    'blog_category' => 'blog/categorie/{category}',
     'search' => 'recherche',
     'privacy' => 'politique-de-confidentialite',
     'legal' => 'mentions-legales',

@@ -40,7 +40,7 @@ final class LlmsTxt
             '- [Contact]('.url('/en/contact').') : reach the agency by phone or email.',
             '- [FAQ]('.url('/en/faq').') : answers about buying, selling and valuing a luxury property in Paris.',
             '- [Newsletter]('.url('/en/newsletter').') : weekly letter (every Monday) on the Paris luxury property market (trends, prices, off-market opportunities).',
-            '- [Journal]('.url('/en/blog').') : advice on buying, selling or settling in Paris (neighbourhoods, prices, procedures, taxes).',
+            '- [Blog]('.url('/en/blog').') : advice on buying, selling or settling in Paris (neighbourhoods, prices, procedures, taxes).',
             '',
             '## Ressources',
             '',

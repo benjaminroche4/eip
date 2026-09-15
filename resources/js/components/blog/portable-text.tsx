@@ -1,8 +1,11 @@
 import SeoImage from '@/components/seo/seo-image';
 import { useTranslation } from '@/hooks/use-translation';
+import { cn } from '@/lib/utils';
 import { youtubeId } from '@/lib/youtube';
+import { ArrowUpRight, Info, Quote } from 'lucide-react';
 import { Fragment, type ReactNode } from 'react';
 import { type PortableNode, type Span, type TextBlock } from './types';
+import YoutubeEmbed from './youtube-embed';
 
 type PortableTextProps = { value: PortableNode[] };
 
@@ -30,12 +33,25 @@ function groupLists(nodes: PortableNode[]): (PortableNode | TextBlock[])[] {
     return out;
 }
 
+/**
+ * Lists in the site's tone rather than browser bullets: a small primary dot for bullets, a numbered sand disc for
+ * ordered lists (CSS counter). A grey well was tried and removed (user decision). Markers are drawn with `before:` so the text stays selectable and aligned.
+ */
 function List({ items }: { items: TextBlock[] }) {
-    const Tag = items[0].listItem === 'number' ? 'ol' : 'ul';
+    const ordered = items[0].listItem === 'number';
+    const Tag = ordered ? 'ol' : 'ul';
     return (
-        <Tag className={Tag === 'ol' ? 'my-4 list-decimal space-y-2 pl-6' : 'my-4 list-disc space-y-2 pl-6'}>
+        <Tag role="list" className={cn('my-5 flex flex-col gap-2.5 text-base/7', ordered && '[counter-reset:item]')}>
             {items.map((b) => (
-                <li key={b._key}>
+                <li
+                    key={b._key}
+                    className={cn(
+                        'relative before:absolute before:left-0',
+                        ordered
+                            ? 'before:bg-background-08 before:text-foreground pl-9 before:top-0.5 before:flex before:size-6 before:items-center before:justify-center before:rounded-full before:text-xs before:font-medium before:tabular-nums before:content-[counter(item)] before:[counter-increment:item]'
+                            : 'before:bg-primary pl-6 before:top-3 before:size-1.5 before:rounded-full',
+                    )}
+                >
                     <Spans block={b} />
                 </li>
             ))}
@@ -44,21 +60,27 @@ function List({ items }: { items: TextBlock[] }) {
 }
 
 function Node({ node }: { node: PortableNode }) {
-    const { t } = useTranslation();
-
     if (node._type === 'image') {
         if (!node.image) return null;
+        const alt = node.alt ?? node.image.alt;
         return (
             <figure className="my-8">
                 <SeoImage
                     src={node.image.url}
                     srcSet={node.image.srcset}
-                    sizes="(min-width: 768px) 48rem, 100vw"
+                    sizes="(min-width: 1024px) 46rem, 100vw"
                     width={node.image.width}
                     height={node.image.height}
-                    alt={node.alt ?? node.image.alt}
-                    className="h-auto w-full"
+                    alt={alt}
+                    className="aspect-video w-full object-cover"
                 />
+                {/* Caption = the alt text, with an info icon on the left (user decision 2026-09-15). */}
+                {alt && (
+                    <figcaption className="text-muted-foreground mt-2 flex items-start gap-1.5 text-xs">
+                        <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" />
+                        {alt}
+                    </figcaption>
+                )}
             </figure>
         );
     }
@@ -66,76 +88,88 @@ function Node({ node }: { node: PortableNode }) {
     if (node._type === 'youtube') {
         const id = youtubeId(node.url);
         if (!id) return null;
-        const title = node.shortDescription ?? 'YouTube';
-        return (
-            <figure className="my-8">
-                <iframe
-                    src={`https://www.youtube-nocookie.com/embed/${id}`}
-                    title={t('blog.video', { title })}
-                    className="aspect-video w-full"
-                    loading="lazy"
-                    allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                />
-                {node.shortDescription && <figcaption className="text-muted-foreground mt-2 text-sm">{node.shortDescription}</figcaption>}
-            </figure>
-        );
+        return <YoutubeEmbed id={id} title={node.shortDescription ?? 'YouTube'} caption={node.shortDescription} />;
     }
 
     switch (node.style) {
         case 'h2':
             return (
-                <h2 className="mt-10 mb-4 text-2xl font-medium">
+                <h2 className="mt-14 mb-4 text-2xl font-medium tracking-tight">
                     <Spans block={node} />
                 </h2>
             );
         case 'h3':
             return (
-                <h3 className="mt-8 mb-3 text-xl font-medium">
+                <h3 className="mt-10 mb-3 text-xl font-medium">
                     <Spans block={node} />
                 </h3>
             );
         case 'h4':
             return (
-                <h4 className="mt-6 mb-2 text-lg font-medium">
+                <h4 className="mt-8 mb-2 text-lg font-medium">
                     <Spans block={node} />
                 </h4>
             );
         case 'blockquote':
-            return (
-                <blockquote className="border-border my-6 border-l-2 pl-4 italic">
-                    <Spans block={node} />
-                </blockquote>
-            );
+            return <PullQuote block={node} />;
         default:
             return (
-                <p className="my-4 text-base/7">
+                <p className="my-5 text-base/7">
                     <Spans block={node} />
                 </p>
             );
     }
 }
 
+/**
+ * Pull quote (user decision 2026-09-15, ui.sh variant « Double carte »): sand outer block (p-2) with an inner white
+ * card, quotation mark on the left of the text — the same double-card pattern as the quick answer and the conclusion.
+ */
+function PullQuote({ block }: { block: TextBlock }) {
+    return (
+        <blockquote className="bg-background-08 my-8 p-2">
+            <div className="bg-card flex gap-4 p-5 sm:p-6">
+                <Quote aria-hidden className="text-secondary-50 mt-0.5 size-6 shrink-0 fill-current" />
+                <p className="text-foreground text-base/7 text-pretty sm:text-sm/6">
+                    <Spans block={block} />
+                </p>
+            </div>
+        </blockquote>
+    );
+}
+
 /** Inline children with their marks (strong / em / underline / link markDefs). */
 function Spans({ block }: { block: TextBlock }) {
+    const { t } = useTranslation();
     const defs = new Map((block.markDefs ?? []).map((d) => [d._key, d]));
     return (
         <>
             {block.children.map((span) => (
-                <Fragment key={span._key}>{decorate(span, defs)}</Fragment>
+                <Fragment key={span._key}>{decorate(span, defs, t)}</Fragment>
             ))}
         </>
     );
 }
 
-function decorate(span: Span, defs: Map<string, { _type: string; href?: string }>): ReactNode {
+function decorate(span: Span, defs: Map<string, { _type: string; href?: string }>, t: (key: string) => string): ReactNode {
     return (span.marks ?? []).reduce<ReactNode>((inner, mark) => {
         const def = defs.get(mark);
         if (def?._type === 'link' && def.href) {
             const external = /^https?:\/\//.test(def.href);
             return (
-                <a href={def.href} className="focus-ring underline underline-offset-4" rel={external ? 'noopener' : undefined}>
+                <a
+                    href={def.href}
+                    className="focus-ring hover:text-primary underline underline-offset-4 transition-colors motion-reduce:transition-none"
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                >
                     {inner}
+                    {external && (
+                        <>
+                            <ArrowUpRight aria-hidden className="ml-0.5 inline size-3 align-baseline" />
+                            <span className="sr-only"> {t('blog.external_link')}</span>
+                        </>
+                    )}
                 </a>
             );
         }

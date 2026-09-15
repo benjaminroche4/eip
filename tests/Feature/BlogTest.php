@@ -25,8 +25,8 @@ class BlogTest extends TestCase
             'publishedAt' => '2026-03-02T09:00:00Z',
             'updatedAt' => '2026-03-10T09:00:00Z',
             'mainPhoto' => ['alt' => 'Vue de Paris', 'asset' => ['_ref' => 'image-abc123-1600x900-jpg']],
-            'category' => ['name' => 'Achat', 'slug' => 'achat'],
-            'authors' => [['fullName' => 'Jean Dupont', 'slug' => 'jean-dupont']],
+            'category' => ['name' => 'Achat', 'slug' => 'achat', 'color' => '#C2A878'],
+            'authors' => [['fullName' => 'Jean Dupont', 'slug' => 'jean-dupont', 'photo' => ['asset' => ['_ref' => 'image-def456-80x80-webp']]]],
         ], $withBody ? [
             'metaDescription' => 'Tout ce qu\'il faut savoir pour acheter un appartement à Paris en 2026 : quartiers, prix au mètre carré, frais de notaire et étapes clés. Découvrez le guide.',
             'tags' => ['achat', 'paris'],
@@ -55,8 +55,19 @@ class BlogTest extends TestCase
             $this->assertStringContainsString('_type == $type', $query, 'article queries must filter on the configured document type');
             $this->assertSame('"estateBlog"', $request->data()['$type'] ?? null, 'the shared Sanity project holds both sites: this one reads estateBlog');
 
+            if (str_contains($query, '$categoryType') && ! str_contains($query, '"total"')) {
+                return Http::response(['result' => [['slug' => 'achat', 'language' => 'fr'], ['slug' => 'buying', 'language' => 'en']]]);
+            }
             if (str_contains($query, '"total"')) {
-                return Http::response(['result' => ['items' => [$this->doc()], 'total' => $total]]);
+                $this->assertStringContainsString('_type == $categoryType', $query, 'the listing also fetches the categories with their counts');
+                $this->assertSame('"estateCategory"', $request->data()['$categoryType'] ?? null);
+                $this->assertSame(str_contains($query, 'slug.current == $category'), array_key_exists('$category', $request->data()), 'the category param is sent only when the listing is filtered');
+
+                return Http::response(['result' => ['items' => [$this->doc()], 'total' => $total, 'all' => $total + 1, 'featured' => $this->doc(slug: 'dernier-article'), 'categories' => [
+                    ['name' => 'Achat', 'slug' => 'achat', 'color' => '#C2A878', 'count' => $total],
+                    ['name' => 'Vendre', 'slug' => 'vendre', 'color' => null, 'count' => 1],
+                    ['name' => 'Vide', 'slug' => 'vide', 'color' => null, 'count' => 0],
+                ]]]);
             }
             if (str_contains($query, '$slug')) {
                 return Http::response(['result' => $article]);
@@ -85,8 +96,54 @@ class BlogTest extends TestCase
             ->where('posts.data.0.url', url('/blog/acheter-a-paris'))
             ->where('posts.data.0.image.width', 1600)
             ->where('posts.data.0.category.name', 'Achat')
+            ->where('posts.data.0.category.color', '#c2a878')
+            ->where('posts.data.0.authors.0.name', 'Jean Dupont')
+            ->where('posts.data.0.authors.0.photo', 'https://cdn.sanity.io/images/ks9vwq45/production/def456-80x80.webp?w=64&h=64&fit=crop&auto=format')
+            ->where('filter.active', null)
+            ->where('filter.total_all', 2)
+            ->where('filter.categories', [
+                ['name' => 'Achat', 'slug' => 'achat', 'color' => '#c2a878', 'count' => 1],
+                ['name' => 'Vendre', 'slug' => 'vendre', 'color' => null, 'count' => 1],
+            ])
+            ->where('filter.urls.all', url('/blog'))
+            ->where('filter.urls.achat', url('/blog/categorie/achat'))
             ->where('indexing.noindex', false)
             ->where('indexing.next', null));
+    }
+
+    public function test_category_page_is_indexable_with_a_clean_url_and_keeps_the_category_in_pagination(): void
+    {
+        $this->withLocale('fr');
+        $this->fakeSanity(null, total: 30);
+
+        $this->get('/blog/categorie/achat')->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->component('blog/index')
+            ->where('filter.active', 'achat')
+            ->where('indexing.noindex', false)
+            ->where('indexing.canonical', url('/blog/categorie/achat'))
+            ->where('indexing.next', url('/blog/categorie/achat?page=2'))
+            ->where('featured.url', url('/blog/dernier-article')) // the latest article of the locale, whatever the category
+            // categories are not mapped between locales: the switcher / hreflang go to the other locale's blog index
+            ->where('localization.alternates.en', url('/en/blog'))
+            ->where('localization.alternates.fr', url('/blog/categorie/achat')));
+
+        $this->get('/blog/categorie/achat?page=2')->assertOk()->assertInertia(fn (Assert $page) => $page
+            ->where('indexing.noindex', true)
+            ->where('indexing.prev', url('/blog/categorie/achat')));
+
+        Http::assertSent(fn (Request $r) => ($r->data()['$category'] ?? null) === '"achat"');
+    }
+
+    public function test_unknown_or_empty_category_and_pages_past_the_end_are_404(): void
+    {
+        $this->withLocale('fr');
+        $this->fakeSanity(null, total: 1);
+
+        $this->get('/blog/categorie/inconnue')->assertNotFound();
+        $this->get('/blog/categorie/vide')->assertNotFound(); // exists in Sanity with 0 article
+        $this->get('/blog/categorie/Achat%20OR%201')->assertNotFound();
+        $this->get('/blog?page=2')->assertNotFound(); // 1 article = 1 page
+        $this->get('/blog?category=achat')->assertOk()->assertInertia(fn (Assert $page) => $page->where('filter.active', null)); // the old query param is ignored
     }
 
     public function test_listing_pagination_is_noindex_with_prev_next(): void
@@ -121,12 +178,15 @@ class BlogTest extends TestCase
         $this->get('/blog/acheter-a-paris')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('blog/show')
             ->where('post.slug', 'acheter-a-paris')
-            ->where('post.seo_title', 'Acheter un appartement à Paris : le guide…') // 42 chars + ' · Estate in Paris' = 60
+            ->where('post.seo_title', 'Acheter un appartement à Paris') // cut at the « : » break, keeping the keyword head
+            ->where('post.seo_title_suffix', true)
+            ->where('post.word_count', 12) // « Introduction » + « Premier paragraphe. » + 3 FAQ questions / answers
             ->where('post.body.0._type', 'wysiwygBlock')
             ->where('post.body.0.content.1.image.width', 1200)
             ->where('post.body.0.content.1.image.url', 'https://cdn.sanity.io/images/ks9vwq45/production/def456-1200x800.webp?w=1200&auto=format&fit=max')
             ->count('post.faqs', 3)
             ->where('post.tags', ['achat', 'paris'])
+            ->where('related', []) // the listing fake only returns the current article, which is excluded
             ->where('alternates.fr', url('/blog/acheter-a-paris'))
             ->where('alternates.en', url('/en/blog/buying-in-paris'))
             ->where('alternates.x-default', url('/blog/acheter-a-paris'))
@@ -134,7 +194,7 @@ class BlogTest extends TestCase
             ->where('localization.alternates.en', url('/en/blog/buying-in-paris'))
             ->where('localization.alternates.fr', url('/blog/acheter-a-paris')));
 
-        $this->assertLessThanOrEqual(60, mb_strlen('Acheter un appartement à Paris : le guide…'.config('seo.title_separator').config('seo.site_name')));
+        $this->assertLessThanOrEqual(60, mb_strlen('Acheter un appartement à Paris'.config('seo.title_separator').config('seo.site_name')));
     }
 
     public function test_article_without_translation_sends_switcher_to_the_blog_index(): void
@@ -181,6 +241,8 @@ class BlogTest extends TestCase
         $this->assertStringContainsString('<loc>'.url('/blog/acheter-a-paris').'</loc>', $blog);
         $this->assertStringContainsString('hreflang="en" href="'.url('/en/blog/buying-in-paris').'"', $blog);
         $this->assertStringNotContainsString('<loc>'.url('/blog').'</loc>', $blog, 'the listing page belongs to the pages sitemap');
+        $this->assertStringContainsString('<loc>'.url('/blog/categorie/achat').'</loc>', $blog, 'category pages are indexable');
+        $this->assertStringContainsString('<loc>'.url('/en/blog/category/buying').'</loc>', $blog);
 
         $this->get('/llms.txt')->assertOk()->assertSee(url('/blog'))->assertSee(url('/en/blog'));
     }

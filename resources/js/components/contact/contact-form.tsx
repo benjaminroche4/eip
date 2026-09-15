@@ -63,7 +63,7 @@ export default function ContactForm({ topics }: ContactFormProps) {
     };
 
     return (
-        <section aria-labelledby="contact-form-title" className="border-secondary-30 bg-card border p-2 shadow-lg shadow-black/5">
+        <section aria-labelledby="contact-form-title" className="border-secondary-30 bg-card border p-2">
             <div className="from-background-05 flex flex-col gap-10 bg-gradient-to-b to-transparent px-4 pt-7 pb-6 sm:px-8 sm:pt-8">
                 {flash.success ? (
                     <ContactSuccess message={flash.success} />

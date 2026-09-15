@@ -1,44 +1,67 @@
+import BlogAuthorCard from '@/components/blog/blog-author-card';
 import BlogBody from '@/components/blog/blog-body';
-import { type BlogPost } from '@/components/blog/types';
+import BlogCategoryPill from '@/components/blog/blog-category-pill';
+import BlogRelated from '@/components/blog/blog-related';
+import BlogSideCard from '@/components/blog/blog-side-card';
+import BlogTags from '@/components/blog/blog-tags';
+import BlogToc from '@/components/blog/blog-toc';
+import ReadingProgress from '@/components/blog/reading-progress';
+import { type BlogPost, type BlogPostSummary } from '@/components/blog/types';
+import GradientHairline from '@/components/layout/gradient-hairline';
+import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoBreadcrumbs from '@/components/seo/seo-breadcrumbs';
 import SeoHead, { type JsonLd } from '@/components/seo/seo-head';
 import SeoImage from '@/components/seo/seo-image';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
-import { formatDate } from '@/lib/format-date';
-import { linkClass } from '@/lib/hover-surface';
-import { article, breadcrumbList, faqPage } from '@/lib/json-ld';
-import { cn } from '@/lib/utils';
+import { blogToc } from '@/lib/blog-toc';
+import { article, breadcrumbList, faqPage, organizationNode } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
+import { useRef } from 'react';
 
 type Props = {
     post: BlogPost;
+    /** Up to three other articles (same category first) for « À lire aussi ». */
+    related: BlogPostSummary[];
     /** hreflang map (only real translations + x-default) — overrides the shared localization alternates. */
     alternates: Record<string, string>;
 };
 
-export default function BlogShow({ post, alternates }: Props) {
+/**
+ * Article page (user decision 2026-09-15): `max-w-6xl`, breadcrumb top-left, then the same centred header as the listing
+ * (eyebrow = category, h1, excerpt as intro), the main photo full width (no frame, no caption: the description stays in the alt), and the text in two
+ * columns on desktop (reading progress hairline fixed at the top) — sticky side cards on the left (table of contents, then author · dates · read time, framed like the valuation recap), body on the right.
+ */
+export default function BlogShow({ post, related, alternates }: Props) {
     const { t } = useTranslation();
-    const { ziggy, locale, seo } = usePage<SharedData>().props;
+    const { ziggy, seo } = usePage<SharedData>().props;
+    const articleRef = useRef<HTMLElement>(null);
     const origin = new URL(ziggy.location).origin;
     const crumbs = [
         { name: t('nav.home'), url: route('home') },
-        { name: t('blog.title'), url: route('blog.index') },
+        { name: t('blog.breadcrumb'), url: route('blog.index') },
         { name: post.title, url: post.url },
     ];
     const author = post.authors[0]?.name ?? seo.organization.name;
+    const toc = blogToc(post.body, t('blog.faq'));
     const jsonLd: JsonLd[] = [
         article({
             headline: post.title,
             description: post.seo_description,
             url: post.url,
-            image: post.image?.url,
+            image: post.image ? { url: post.image.url, width: post.image.width, height: post.image.height } : undefined,
             datePublished: post.published_at,
             dateModified: post.updated_at,
             authorName: author,
+            authorImage: post.authors[0]?.photo,
             publisherId: `${origin}/#organization`,
+            inLanguage: seo.locale.replace('_', '-'),
+            section: post.category?.name,
+            keywords: post.tags,
+            wordCount: post.word_count,
         }),
+        organizationNode(seo, origin), // resolves the publisher / worksFor references on this page
         breadcrumbList(crumbs, origin),
     ];
     if (post.faqs.length >= 3) jsonLd.push(faqPage(post.faqs));
@@ -47,6 +70,7 @@ export default function BlogShow({ post, alternates }: Props) {
         <>
             <SeoHead
                 title={post.seo_title}
+                withSuffix={post.seo_title_suffix}
                 description={post.seo_description}
                 canonical={post.url}
                 image={post.image?.url}
@@ -56,51 +80,60 @@ export default function BlogShow({ post, alternates }: Props) {
                 alternates={alternates}
                 jsonLd={jsonLd}
             />
-            <PublicLayout className="max-w-3xl">
-                <SeoBreadcrumbs crumbs={crumbs} />
-                <article>
-                    <header className="mt-4">
-                        {post.category && <p className="text-muted-foreground text-sm">{post.category.name}</p>}
-                        <h1 className="mt-2 text-3xl font-medium tracking-tight sm:text-4xl">{post.title}</h1>
-                        {post.excerpt && <p className="mt-4 text-lg/8">{post.excerpt}</p>}
-                        <p className="text-muted-foreground mt-4 text-sm">
-                            {t('blog.by', { author })} · {t('blog.published_on', { date: formatDate(post.published_at, locale) })}
-                            {post.updated_at && post.updated_at.slice(0, 10) !== post.published_at.slice(0, 10) && (
-                                <> · {t('blog.updated_on', { date: formatDate(post.updated_at, locale) })}</>
-                            )}
-                            {post.read_time ? <> · {t('blog.read_time', { minutes: post.read_time })}</> : null}
-                        </p>
-                        {post.image && (
-                            <SeoImage
-                                priority
-                                src={post.image.url}
-                                srcSet={post.image.srcset}
-                                sizes="(min-width: 768px) 48rem, 100vw"
-                                width={post.image.width}
-                                height={post.image.height}
-                                alt={post.image.alt}
-                                className="mt-8 h-auto w-full"
-                            />
-                        )}
+            <PublicLayout className="max-w-6xl">
+                {/* Pulled up into the layout's top padding so the crumb hugs the header (user decision 2026-09-15). */}
+                <div className="-mt-10 sm:-mt-12">
+                    <SeoBreadcrumbs crumbs={crumbs} />
+                </div>
+                <ReadingProgress target={articleRef} />
+                <article ref={articleRef} className="mt-10 flex flex-col gap-12 lg:gap-16">
+                    <header className="flex flex-col items-center gap-3 text-center">
+                        <div className="flex flex-col items-center gap-3">
+                            {post.category ? <BlogCategoryPill category={post.category} /> : <PageEyebrow>{t('blog.title')}</PageEyebrow>}
+                            <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{post.title}</h1>
+                        </div>
+                        {post.excerpt && <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{post.excerpt}</p>}
                     </header>
 
-                    <BlogBody sections={post.body} />
-
-                    {post.tags.length > 0 && (
-                        <footer className="border-border mt-10 border-t pt-6">
-                            <p className="text-muted-foreground text-sm">
-                                <span className="font-medium">{t('blog.tags')} : </span>
-                                {post.tags.join(', ')}
-                            </p>
-                        </footer>
+                    {post.image && (
+                        <SeoImage
+                            priority
+                            src={post.image.url}
+                            srcSet={post.image.srcset}
+                            sizes="(min-width: 1152px) 72rem, 100vw"
+                            width={post.image.width}
+                            height={post.image.height}
+                            alt={post.image.alt}
+                            className="aspect-[2/1] w-full object-cover"
+                        />
                     )}
+
+                    <div className="grid gap-10 lg:grid-cols-3 lg:gap-16">
+                        <div className="flex flex-col gap-4 self-start lg:sticky lg:top-24 lg:col-span-1">
+                            {toc.length > 0 && (
+                                <BlogSideCard>
+                                    <BlogToc entries={toc} />
+                                </BlogSideCard>
+                            )}
+                            <BlogAuthorCard post={post} />
+                        </div>
+                        {/* The first section drops its top margin so the body starts level with the side cards. */}
+                        <div className="max-w-prose min-w-0 lg:col-span-2 [&>:first-child]:mt-0">
+                            <BlogBody sections={post.body} />
+
+                            <footer className="mt-12 flex flex-col gap-6">
+                                <GradientHairline />
+                                <BlogTags tags={post.tags} />
+                            </footer>
+                        </div>
+                    </div>
                 </article>
 
-                <p className="mt-10">
-                    <Link href={route('blog.index')} prefetch className={cn('focus-ring', linkClass)}>
-                        {t('blog.back')}
-                    </Link>
-                </p>
+                {related.length > 0 && (
+                    <div className="mt-16 lg:mt-24">
+                        <BlogRelated posts={related} />
+                    </div>
+                )}
             </PublicLayout>
         </>
     );

@@ -19,9 +19,11 @@ const ROUTES: Record<string, string> = {
     legal: '/mentions-legales',
     terms: '/conditions-generales',
 };
-export function routeStub(name?: string): string & { has: (n: string) => boolean } {
+export function routeStub(name?: string, params?: Record<string, string | number>): string & { has: (n: string) => boolean } {
     if (name === undefined) return { has: (n: string) => n in ROUTES } as never;
-    return ROUTES[name] ?? `/${name}`;
+    const path = ROUTES[name] ?? `/${name}`;
+    const query = params ? new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)])).toString() : '';
+    return (query ? `${path}?${query}` : path) as never;
 }
 
 export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
@@ -80,11 +82,13 @@ export const page = { url: '/', props: sharedProps() };
 
 vi.mock('@inertiajs/react', async () => {
     const React = await import('react');
-    const Link = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & { prefetch?: boolean | string }>(function Link(
-        { prefetch, children, ...props },
-        ref,
-    ) {
-        void prefetch; // Inertia-only prop, must not reach the DOM
+    const Link = React.forwardRef<
+        HTMLAnchorElement,
+        React.AnchorHTMLAttributes<HTMLAnchorElement> & { prefetch?: boolean | string; preserveScroll?: boolean; preserveState?: boolean }
+    >(function Link({ prefetch, preserveScroll, preserveState, children, ...props }, ref) {
+        void prefetch; // Inertia-only props, must not reach the DOM
+        void preserveScroll;
+        void preserveState;
         return React.createElement('a', { ref, ...props }, children);
     });
     return {

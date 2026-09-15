@@ -2,6 +2,7 @@
 
 namespace App\Domain\Seo\Support;
 
+use App\Domain\Blog\Actions\ListBlogCategoryUrls;
 use App\Domain\Blog\Actions\ListBlogUrls;
 use App\Domain\Blog\Exceptions\SanityRequestFailed;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +22,7 @@ final class SitemapBuilder
     /** Sub-sitemaps written next to the index, in public/. */
     public const FILES = ['pages' => 'sitemap.pages.xml', 'blog' => 'sitemap.blog.xml'];
 
-    public function __construct(private readonly ListBlogUrls $blogUrls) {}
+    public function __construct(private readonly ListBlogUrls $blogUrls, private readonly ListBlogCategoryUrls $categoryUrls) {}
 
     /**
      * Builds the index and the sub-sitemaps. Returns them keyed by file name (`sitemap.xml` first),
@@ -106,7 +107,31 @@ final class SitemapBuilder
             $sitemap->add($url);
         }
 
+        // Category pages (clean URLs, indexable): no hreflang, categories are not mapped between locales.
+        foreach ($this->blogCategories() as $category) {
+            if (in_array($category['language'], $locales, true)) {
+                $sitemap->add(
+                    Url::create(LaravelLocalization::getURLFromRouteNameTranslated($category['language'], 'routes.blog_category', ['category' => $category['slug']]))
+                        ->setPriority(0.5)
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                        ->setLastModificationDate($lastmod ?? new \DateTimeImmutable),
+                );
+            }
+        }
+
         return ['sitemap' => $sitemap, 'lastmod' => $lastmod ?? new \DateTimeImmutable];
+    }
+
+    /** @return list<array{slug: string, language: string}> */
+    private function blogCategories(): array
+    {
+        try {
+            return ($this->categoryUrls)();
+        } catch (SanityRequestFailed $e) {
+            Log::warning('Sitemap: blog categories skipped — '.$e->getMessage());
+
+            return [];
+        }
     }
 
     /** @return list<array{slug: string, language: string, updatedAt: string, translations: array<string, string>}> */

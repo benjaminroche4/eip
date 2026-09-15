@@ -1,4 +1,3 @@
-import GradientHairline from '@/components/layout/gradient-hairline';
 import LegalToc from '@/components/legal/legal-toc';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoHead from '@/components/seo/seo-head';
@@ -8,7 +7,6 @@ import { breadcrumbList } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { CalendarDays } from 'lucide-react';
-import { Fragment } from 'react';
 
 type LegalProps = {
     page: { key: string; title: string; description: string; updated: string; sections: { heading: string; body: string }[] };
@@ -47,14 +45,12 @@ export default function Legal({ page }: LegalProps) {
                     <div className="flex flex-col gap-7 lg:flex-row lg:gap-16">
                         <LegalToc headings={page.sections.map((section) => section.heading)} />
                         <div className="flex min-w-0 flex-1 flex-col gap-8">
+                            {/* No divider between sections (user decision 2026-09-15): whitespace alone separates them. */}
                             {page.sections.map((section, index) => (
-                                <Fragment key={section.heading}>
-                                    {index > 0 && <GradientHairline />}
-                                    <section id={`legal-section-${index}`} className="flex scroll-mt-24 flex-col gap-2">
-                                        <h2 className="text-lg font-medium">{section.heading}</h2>
-                                        <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{section.body}</p>
-                                    </section>
-                                </Fragment>
+                                <section key={section.heading} id={`legal-section-${index}`} className="flex scroll-mt-24 flex-col gap-2">
+                                    <h2 className="text-lg font-medium">{section.heading}</h2>
+                                    <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{section.body}</p>
+                                </section>
                             ))}
                         </div>
                     </div>

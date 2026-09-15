@@ -4,6 +4,11 @@ import { describe, expect, it } from 'vitest';
 import { page, renderPage, sharedProps } from '../inertia';
 
 describe('OpenBadge', () => {
+    it('shows a green status dot before the label', () => {
+        renderPage(<OpenBadge />);
+        expect(screen.getByText('Ouvert').querySelector('span[aria-hidden]')).toHaveClass('bg-success', 'rounded-full');
+    });
+
     it('shows the label during opening hours, without decorative extras', () => {
         page.props = sharedProps();
         renderPage(<OpenBadge />);

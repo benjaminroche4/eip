@@ -67,4 +67,27 @@ final class PortableText
 
         return '';
     }
+
+    /**
+     * Words of every text span in the body (Article JSON-LD `wordCount`).
+     *
+     * @param  list<array<string, mixed>>  $body
+     */
+    public function wordCount(array $body): int
+    {
+        $text = '';
+        foreach ($body as $section) {
+            $text .= ' '.($section['title'] ?? '');
+            foreach ($section['content'] ?? [] as $node) {
+                if (($node['_type'] ?? null) === 'block') {
+                    $text .= ' '.implode(' ', array_column($node['children'] ?? [], 'text'));
+                }
+            }
+            foreach ($section['items'] ?? [] as $item) {
+                $text .= ' '.($item['question'] ?? '').' '.($item['answer'] ?? '');
+            }
+        }
+
+        return count(preg_split('/\s+/u', trim($text), -1, PREG_SPLIT_NO_EMPTY) ?: []);
+    }
 }

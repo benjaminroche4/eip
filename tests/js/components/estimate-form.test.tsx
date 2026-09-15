@@ -83,7 +83,7 @@ describe('EstimateForm', () => {
         expect(screen.getByRole('radio', { name: 'Duplex' })).toHaveAttribute('aria-checked', 'true');
 
         const rooms = screen.getByLabelText(/^Nombre de pièces/);
-        const [decrease, increase] = within(rooms.parentElement!).getAllByRole('button');
+        const [decrease, increase] = within(rooms.closest<HTMLElement>('[data-slot=stepper]')!).getAllByRole('button');
         expect(decrease).toBeDisabled(); // min 1
         await user.click(increase);
         await user.click(increase);
@@ -93,6 +93,32 @@ describe('EstimateForm', () => {
         for (let i = 0; i < 12; i++) await user.click(increase);
         expect(rooms).toHaveValue(10); // capped at 10
         expect(increase).toBeDisabled();
+    });
+
+    it('rolls the stepper digit like a slot reel and keeps square buttons', async () => {
+        const user = userEvent.setup();
+        render();
+
+        const rooms = screen.getByLabelText(/^Nombre de pièces/);
+        const stepper = rooms.closest<HTMLElement>('[data-slot=stepper]')!;
+        const [decrease, increase] = within(stepper).getAllByRole('button');
+        expect(decrease).toHaveClass('rounded-none');
+        expect(increase).toHaveClass('rounded-none');
+
+        const reel = () => stepper.querySelector('[aria-hidden]:not(svg)')!;
+        expect(reel().querySelector('.animate-slot-in-up')).toBeNull(); // no animation on mount
+
+        await user.click(increase);
+        expect(reel().querySelector('.animate-slot-in-up')).toHaveTextContent('2');
+        expect(reel().querySelector('.animate-slot-out-up')).toHaveTextContent('1');
+
+        await user.click(decrease);
+        expect(reel().querySelector('.animate-slot-in-down')).toHaveTextContent('1');
+        expect(reel().querySelector('.animate-slot-out-down')).toHaveTextContent('2');
+
+        // Typing in the field hides the reel so the typed digits stay visible.
+        await user.click(rooms);
+        expect(reel()).toHaveClass('group-focus-within:hidden');
     });
 
     it('mirrors the typed values in the recap, formats the value and posts to the estimate route', async () => {

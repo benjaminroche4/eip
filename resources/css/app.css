@@ -17,6 +17,39 @@
     /* Valuation recap: a group's disc pops into a check once complete; fade-in dims the page behind the mobile recap sheet. */
     --animate-fade-in: fade-in 0.2s ease-out both;
     --animate-pop: pop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* Valuation stepper: the digit rolls like a slot reel — the old one leaves, the new one enters from the direction of travel. */
+    --animate-slot-in-up: slot-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-slot-in-down: slot-in-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-slot-out-up: slot-out-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-slot-out-down: slot-out-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+    @keyframes slot-in-up {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes slot-in-down {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes slot-out-up {
+        to {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes slot-out-down {
+        to {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+    }
 
     @keyframes fade-in {
         from {

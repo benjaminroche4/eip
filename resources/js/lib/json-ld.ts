@@ -87,26 +87,64 @@ export function faqPage(items: Faq[]): JsonLd {
     };
 }
 
+/**
+ * Minimal Organization node (`#organization`) for pages whose other nodes reference it as publisher / worksFor —
+ * the full RealEstateAgent graph only lives on the homepage, so without this the reference would dangle.
+ */
+export function organizationNode(seo: SeoShared, origin: string): JsonLd {
+    const org = seo.organization;
+    return {
+        '@type': ['RealEstateAgent', 'Organization'],
+        '@id': `${origin}/#organization`,
+        name: org.name,
+        url: origin,
+        logo: { '@type': 'ImageObject', url: org.logo },
+        ...(org.sameAs.length ? { sameAs: org.sameAs } : {}),
+    };
+}
+
 export function article(input: {
     headline: string;
     description: string;
     url: string;
-    image?: string;
+    image?: { url: string; width: number; height: number } | string;
     datePublished: string;
     dateModified?: string;
     authorName: string;
     authorUrl?: string;
+    authorImage?: string | null;
     publisherId: string;
+    inLanguage?: string;
+    section?: string | null;
+    keywords?: string[];
+    wordCount?: number;
 }): JsonLd {
+    const image =
+        typeof input.image === 'string'
+            ? [input.image]
+            : input.image
+              ? [{ '@type': 'ImageObject', url: input.image.url, width: input.image.width, height: input.image.height }]
+              : undefined;
     return {
         '@type': 'Article',
         headline: input.headline,
         description: input.description,
         mainEntityOfPage: input.url,
-        ...(input.image ? { image: [input.image] } : {}),
+        url: input.url,
+        ...(image ? { image } : {}),
         datePublished: input.datePublished,
         dateModified: input.dateModified ?? input.datePublished,
-        author: { '@type': 'Person', name: input.authorName, ...(input.authorUrl ? { url: input.authorUrl } : {}) },
+        ...(input.inLanguage ? { inLanguage: input.inLanguage } : {}),
+        ...(input.section ? { articleSection: input.section } : {}),
+        ...(input.keywords?.length ? { keywords: input.keywords.join(', ') } : {}),
+        ...(input.wordCount ? { wordCount: input.wordCount } : {}),
+        author: {
+            '@type': 'Person',
+            name: input.authorName,
+            ...(input.authorUrl ? { url: input.authorUrl } : {}),
+            ...(input.authorImage ? { image: input.authorImage } : {}),
+            worksFor: { '@id': input.publisherId },
+        },
         publisher: { '@id': input.publisherId },
     };
 }

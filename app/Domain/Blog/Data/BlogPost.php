@@ -29,6 +29,7 @@ final readonly class BlogPost implements Arrayable
         public string $seoDescription,
         public array $translations,
         public array $tags,
+        public int $wordCount = 0,
     ) {}
 
     /** @param array<string, mixed> $doc */
@@ -53,6 +54,7 @@ final readonly class BlogPost implements Arrayable
             seoDescription: SeoText::description((string) ($doc['metaDescription'] ?: $summary->excerpt ?: $portableText->firstParagraph($body))),
             translations: $translations,
             tags: array_values(array_filter($doc['tags'] ?? [], 'is_string')),
+            wordCount: $portableText->wordCount($body),
         );
     }
 
@@ -80,6 +82,8 @@ final readonly class BlogPost implements Arrayable
             'body' => $this->body,
             'faqs' => $this->faqs,
             'seo_title' => $this->seoTitle,
+            'seo_title_suffix' => SeoText::fitsSuffix($this->seoTitle),
+            'word_count' => $this->wordCount,
             'seo_description' => $this->seoDescription,
             'tags' => $this->tags,
         ];
