@@ -25,6 +25,11 @@ return [
 
         'url' => env('INERTIA_SSR_URL', 'http://127.0.0.1:13714'),
 
+        // Seconds before giving up on the SSR server (App\Http\Ssr\ResilientHttpGateway): an unreachable server
+        // must fall back to client rendering fast, never hang the request until the proxy times out.
+        'connect_timeout' => (float) env('INERTIA_SSR_CONNECT_TIMEOUT', 1),
+        'timeout' => (float) env('INERTIA_SSR_TIMEOUT', 5),
+
         'ensure_bundle_exists' => (bool) env('INERTIA_SSR_ENSURE_BUNDLE_EXISTS', true),
 
         // 'bundle' => base_path('bootstrap/ssr/ssr.mjs'),
