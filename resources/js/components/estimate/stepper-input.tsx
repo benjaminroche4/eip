@@ -32,7 +32,7 @@ export default function StepperInput({ value, onChange, min = 0, max = 10, ...pr
     return (
         <div
             data-slot="stepper"
-            className="border-input focus-within:border-ring focus-within:ring-ring/50 aria-invalid:border-destructive flex h-10 items-center gap-2 border p-1 focus-within:ring-[3px]"
+            className="border-input focus-within:border-ring focus-within:ring-ring/50 aria-invalid:border-destructive bg-card flex h-10 items-center gap-2 border p-1 focus-within:ring-[3px]"
         >
             <button type="button" onClick={() => step(-1)} disabled={value <= min} aria-label={t('estimate.decrease')} className={buttonClass}>
                 <Minus aria-hidden className="size-4" />

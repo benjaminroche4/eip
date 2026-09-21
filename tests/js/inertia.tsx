@@ -14,6 +14,7 @@ const ROUTES: Record<string, string> = {
     contact: '/contact',
     newsletter: '/newsletter',
     faq: '/questions-frequentes',
+    about: '/a-propos',
     'blog.index': '/blog',
     privacy: '/politique-de-confidentialite',
     legal: '/mentions-legales',
@@ -95,7 +96,7 @@ vi.mock('@inertiajs/react', async () => {
         Link,
         usePage: () => page,
         Head: ({ children }: { children?: React.ReactNode }) => React.createElement(React.Fragment, null, children),
-        router: { get: vi.fn(), visit: vi.fn() },
+        router: { get: vi.fn(), visit: vi.fn(), prefetch: vi.fn(), on: vi.fn(() => () => {}) },
         useForm: <T extends Record<string, unknown>>(initial: T) => {
             const [data, setState] = React.useState<T>(initial);
             return {

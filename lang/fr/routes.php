@@ -4,6 +4,7 @@
 return [
     'contact' => 'contact',
     'newsletter' => 'newsletter',
+    'about' => 'a-propos',
     'faq' => 'questions-frequentes',
     'estimate' => 'estimation-immobiliere-paris',
     'sell' => 'vendre-immobilier-paris',

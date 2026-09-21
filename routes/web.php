@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BuyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EstimateController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SearchController;
@@ -24,7 +27,7 @@ Route::group([
     'prefix' => LaravelLocalization::setLocale(),
     'middleware' => ['localize', 'localizationRedirect'],
 ], function () {
-    Route::get('/', fn () => Inertia::render('home'))->name('home');
+    Route::get('/', HomeController::class)->name('home');
     Route::get(LaravelLocalization::transRoute('routes.search'), SearchController::class)->name('search');
     Route::get(LaravelLocalization::transRoute('routes.blog'), [BlogController::class, 'index'])->name('blog.index');
     Route::get(LaravelLocalization::transRoute('routes.blog_category'), [BlogController::class, 'category'])->name('blog.category');
@@ -37,14 +40,14 @@ Route::group([
     Route::get(LaravelLocalization::transRoute('routes.newsletter'), [NewsletterController::class, 'show'])->name('newsletter');
     Route::post(LaravelLocalization::transRoute('routes.newsletter'), [NewsletterController::class, 'store'])->middleware('throttle:newsletter')->name('newsletter.store');
 
+    Route::get(LaravelLocalization::transRoute('routes.about'), AboutController::class)->name('about');
     Route::get(LaravelLocalization::transRoute('routes.faq'), FaqController::class)->name('faq');
 
     Route::get(LaravelLocalization::transRoute('routes.estimate'), [EstimateController::class, 'show'])->name('estimate');
     Route::post(LaravelLocalization::transRoute('routes.estimate'), [EstimateController::class, 'store'])->middleware('throttle:estimate')->name('estimate.store');
 
-    foreach (['sell', 'buy'] as $key) {
-        Route::get(LaravelLocalization::transRoute("routes.$key"), fn () => Inertia::render($key))->name($key);
-    }
+    Route::get(LaravelLocalization::transRoute('routes.buy'), BuyController::class)->name('buy');
+    Route::get(LaravelLocalization::transRoute('routes.sell'), fn () => Inertia::render('sell'))->name('sell');
 
     foreach (['privacy', 'legal', 'terms'] as $key) {
         Route::get(LaravelLocalization::transRoute("routes.$key"), fn () => app(LegalController::class)($key))->name($key);

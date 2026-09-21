@@ -1,9 +1,12 @@
 import EstimateForm from '@/components/estimate/estimate-form';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 import { formErrors, formPost, page, renderPage, sharedProps } from '../inertia';
+
+// This file renders the whole form (13 heavy tests, ~12 s in the full run): a 5 s per-test budget times out under load.
+vi.setConfig({ testTimeout: 15000 });
 
 const TYPES = ['apartment', 'duplex', 'studio', 'mansion', 'house', 'loft', 'building', 'other'];
 const METHODS = ['phone', 'whatsapp', 'email'];

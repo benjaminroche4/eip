@@ -9,19 +9,129 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    /* Infinite marquee: the track holds the list twice, so -50% loops seamlessly. */
-    --animate-marquee: marquee 40s linear infinite;
     /* Border shimmer: a faint light arc gliding along an outline (newsletter card; removed from the footer "Open" badge). */
     --animate-border-shimmer: border-shimmer 8s linear 2; /* two passes on load, then still (user decision 2026-08-27) */
     /* shadcn Accordion (Radix exposes the content height as a CSS variable). */
     /* Valuation recap: a group's disc pops into a check once complete; fade-in dims the page behind the mobile recap sheet. */
     --animate-fade-in: fade-in 0.2s ease-out both;
     --animate-pop: pop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* CTA card: concentric sand circles behind the content turn imperceptibly (one turn a minute) while breathing (user decision 2026-09-16). */
+    /* Home hero reveal: the photo settles from a slight zoom while fading in, then eyebrow / title / text / button / trust row rise in cascade (--stagger). */
+    --animate-hero-photo: hero-photo 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-hero-rise: hero-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-rings: rings 60s linear infinite;
+    --animate-rings-breathe: rings-breathe 10s ease-in-out infinite;
+    /* Mobile menu: each row unfolds into place (rise + fade), staggered by --stagger — fast and premium (user decision 2026-09-16). */
+    --animate-menu-in: menu-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
     /* Valuation stepper: the digit rolls like a slot reel — the old one leaves, the new one enters from the direction of travel. */
     --animate-slot-in-up: slot-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
     --animate-slot-in-down: slot-in-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
     --animate-slot-out-up: slot-out-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
     --animate-slot-out-down: slot-out-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* About hero message card: the leaving message slides out in the direction of travel while blurring, the new one
+       slides in from the other side and sharpens (user decision 2026-09-16). */
+    --animate-reel-in-up: reel-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-reel-in-down: reel-in-down 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-reel-out-up: reel-out-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-reel-out-down: reel-out-down 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* About manifesto: each word settles from a slight 3D tilt while its blur clears, as if written (user decision 2026-09-16), staggered by --stagger. */
+    --animate-manifesto-in: manifesto-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* Commitments band (about): the track holds the list twice, so -50% loops seamlessly; paused on hover. */
+    --animate-marquee: marquee 120s linear infinite;
+    /* About values: when a value reaches the middle of the viewport its number locks into place — lands from a slight
+       overscale with its blur clearing, overshoots a hair, settles — while the dot on the thread emits one ring (user decision 2026-09-21). */
+    --animate-value-lock: value-lock 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-value-ring: value-ring 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+    @keyframes hero-photo {
+        from {
+            transform: scale(1.05);
+            opacity: 0;
+        }
+    }
+
+    @keyframes hero-rise {
+        from {
+            transform: translateY(16px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes reel-in-up {
+        from {
+            transform: translateY(1.5rem);
+            filter: blur(6px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes reel-in-down {
+        from {
+            transform: translateY(-1.5rem);
+            filter: blur(6px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes reel-out-up {
+        to {
+            transform: translateY(-1.5rem);
+            filter: blur(6px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes reel-out-down {
+        to {
+            transform: translateY(1.5rem);
+            filter: blur(6px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+    @keyframes manifesto-in {
+        from {
+            transform: perspective(800px) rotateX(22deg) translateY(24px);
+            filter: blur(12px);
+            opacity: 0;
+        }
+        60% {
+            filter: blur(0);
+        }
+    }
+
+    @keyframes rings {
+        to {
+            transform: rotate(1turn);
+        }
+    }
+
+    @keyframes rings-breathe {
+        0%,
+        100% {
+            opacity: 0.6;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.03);
+        }
+    }
+
+    @keyframes menu-in {
+        from {
+            transform: translateY(12px);
+            opacity: 0;
+        }
+    }
 
     @keyframes slot-in-up {
         from {
@@ -64,6 +174,34 @@
         }
     }
 
+    /* Restrained on purpose (premium): a 8% overscale, a light blur, a hair of overshoot — never a bounce. */
+    @keyframes value-lock {
+        from {
+            transform: scale(1.08);
+            filter: blur(2px);
+            opacity: 0.7;
+        }
+        60% {
+            transform: scale(0.99);
+            filter: blur(0);
+            opacity: 1;
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes value-ring {
+        from {
+            transform: translateX(-50%) scale(1);
+            opacity: 0.35;
+        }
+        to {
+            transform: translateX(-50%) scale(3);
+            opacity: 0;
+        }
+    }
+
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
 
@@ -89,18 +227,15 @@
             transform: rotate(1turn);
         }
     }
-
-    @keyframes marquee {
-        from {
-            transform: translateX(0);
-        }
-        to {
-            transform: translateX(-50%);
-        }
-    }
 }
 
 /* Fades a decorative backdrop into the page: solid at the top, gone at the bottom, softened on both sides (PageBackdrop). */
+/* Radial fade for decorative patterns (CTA rings): full in the middle, gone at the edges. */
+@utility pattern-fade {
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+}
+
 @utility backdrop-fade {
     mask-image:
         linear-gradient(to bottom, black 0%, black 30%, transparent 100%), linear-gradient(to right, transparent, black 25%, black 75%, transparent);

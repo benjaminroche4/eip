@@ -4,7 +4,7 @@ type MenuToggleIconProps = { open: boolean; className?: string };
 
 /** All three lines sit at the vertical centre and are only ever moved with transforms, so every step animates. */
 const lineClass =
-    'absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none';
+    'absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-current transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none';
 
 /**
  * Three hairlines (20×14) morphing into a cross: the outer lines slide to the centre while rotating

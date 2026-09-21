@@ -14,7 +14,8 @@ import { Link } from '@inertiajs/react';
 import { useCallback, useId, useRef, useState } from 'react';
 
 /** Site header (Figma 137-2085 desktop, 125-361 mobile). */
-export default function SiteHeader() {
+/** `overlay`: the header floats over a full-bleed hero (home) — the desktop gap above the card stays transparent until scrolled. */
+export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
     const { t } = useTranslation();
     const navItems = useNavItems();
     const contactHref = useContactHref();
@@ -49,20 +50,26 @@ export default function SiteHeader() {
                 'sticky top-0 z-40 h-16 w-full transition-[padding,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] [overflow-anchor:none] motion-reduce:transition-none lg:h-19',
                 // Desktop: the 12px gap above the floating card is painted with the page background (behind the card, above the
                 // content) and shrinks with the padding, so nothing ever shows through while the card settles at the top.
-                'lg:before:bg-background lg:before:absolute lg:before:inset-x-0 lg:before:top-0 lg:before:-z-10 lg:before:transition-[height] lg:before:duration-500 lg:before:ease-[cubic-bezier(0.16,1,0.3,1)] lg:before:motion-reduce:transition-none',
+                'lg:before:absolute lg:before:inset-x-0 lg:before:top-0 lg:before:-z-10 lg:before:transition-[height] lg:before:duration-500 lg:before:ease-[cubic-bezier(0.16,1,0.3,1)] lg:before:motion-reduce:transition-none',
+                !overlay && 'lg:before:bg-background',
                 scrolled ? 'lg:px-0 lg:pt-0 lg:before:h-0' : 'lg:px-5 lg:pt-3 lg:before:h-3',
                 hidden && '-translate-y-full lg:translate-y-0',
             )}
         >
-            {/* Floating card that morphs into an edge-to-edge translucent bar once scrolled */}
+            {/* Floating card that morphs into an edge-to-edge solid white bar once scrolled */}
             <div
                 className={cn(
                     'text-card-foreground relative mx-auto transition-[max-width,border-radius,background-color,backdrop-filter] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
                     'after:via-border after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent after:transition-opacity after:duration-500',
+                    // Hairline under the bar: desktop only, once scrolled (never on mobile, menu open or closed — user decision 2026-09-16).
+                    // Scrolled: solid white edge-to-edge bar, no blur (user decision 2026-09-16).
                     scrolled
-                        ? 'bg-card/80 supports-[backdrop-filter]:bg-card/70 max-w-full rounded-none backdrop-blur-md after:opacity-100'
-                        : 'bg-card max-w-7xl after:opacity-100 lg:after:opacity-0', // mobile: hairline always visible
-                    menuOpen && 'bg-card after:opacity-100',
+                        ? 'bg-card supports-[backdrop-filter]:bg-card max-w-full rounded-none backdrop-blur-none after:opacity-0 lg:after:opacity-100'
+                        : // Solid white card at every width, no blur (user decision 2026-09-16).
+                          'bg-card supports-[backdrop-filter]:bg-card max-w-7xl backdrop-blur-none after:opacity-0',
+                    // Menu open: solid white, whatever the scroll state.
+                    // Switched fast so the bar and the panel turn white together.
+                    menuOpen && 'bg-card supports-[backdrop-filter]:bg-card backdrop-blur-none duration-0',
                 )}
             >
                 <div

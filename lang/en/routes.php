@@ -4,6 +4,7 @@
 return [
     'contact' => 'contact',
     'newsletter' => 'newsletter',
+    'about' => 'about-us',
     'faq' => 'faq',
     'estimate' => 'property-valuation-paris',
     'sell' => 'sell-property-paris',

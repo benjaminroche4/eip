@@ -10,7 +10,19 @@ describe('SiteFooter', () => {
         renderPage(<SiteFooter year={2026} />);
 
         const nav = screen.getByRole('navigation', { name: 'Nos services' });
-        expect(within(nav).getByRole('link', { name: 'Newsletter' })).toHaveAttribute('href', '/newsletter');
+        expect(
+            within(nav)
+                .getAllByRole('link')
+                .map((l) => l.textContent),
+        ).toEqual(['Acheter', 'Vendre', 'Estimation']);
+        const about = screen.getByRole('navigation', { name: 'À propos' });
+        expect(
+            within(about)
+                .getAllByRole('link')
+                .map((l) => l.textContent),
+        ).toEqual(['Contactez-nous', 'Newsletter', 'FAQ', 'Blog', 'À propos']);
+        expect(within(about).getByRole('link', { name: 'Newsletter' })).toHaveAttribute('href', '/newsletter');
+        expect(within(about).getByRole('link', { name: 'À propos' })).toHaveAttribute('href', '/a-propos');
         const card = screen.getByRole('link', { name: /Nos conseillers sont à votre écoute/ });
         expect(card).toHaveTextContent('+33 6 00 00 00 00');
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).children).toHaveLength(3);

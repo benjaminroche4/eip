@@ -1,21 +1,43 @@
+import { cn } from '@/lib/utils';
+
 /**
  * Decorative Haussmann façade drawn with 1px hairlines (mansard roof with dormers, double cornice, running balcony,
- * window rhythm), sitting behind the top of every public page without a hero (PublicLayout). Static, stroke-only,
+ * window rhythm), sitting behind the top of every public page (PublicLayout). Static, stroke-only,
  * very low contrast and faded on its edges (`backdrop-fade`, app.css) so it reads as a watermark, not a wallpaper.
  * Hidden from assistive tech and from small screens.
  */
-export default function PageBackdrop() {
+type PageBackdropProps = {
+    /** Override height / colour / opacity (e.g. a sand full-height version behind a band). */
+    className?: string;
+    /** Draw the strokes with a sand gradient (secondary-60 → secondary-30 → transparent) instead of `currentColor`. */
+    gradient?: boolean;
+};
+
+export default function PageBackdrop({ className, gradient = false }: PageBackdropProps = {}) {
     return (
-        <div aria-hidden className="backdrop-fade pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-96 overflow-hidden opacity-20 sm:block">
+        <div
+            aria-hidden
+            className={cn(
+                'backdrop-fade pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-96 overflow-hidden opacity-20 sm:block',
+                className,
+            )}
+        >
             <svg
                 viewBox="0 0 1440 384"
                 preserveAspectRatio="xMidYMin slice"
                 className="text-border h-full w-full"
                 fill="none"
-                stroke="currentColor"
+                stroke={gradient ? 'url(#backdrop-stroke)' : 'currentColor'}
                 strokeWidth="1"
             >
                 <defs>
+                    {gradient && (
+                        <linearGradient id="backdrop-stroke" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stopColor="var(--color-secondary-60)" />
+                            <stop offset="0.55" stopColor="var(--color-secondary-30)" />
+                            <stop offset="1" stopColor="var(--color-secondary-60)" stopOpacity="0" />
+                        </linearGradient>
+                    )}
                     {/* One bay every 192px: tall French window with its transom and a stone sill */}
                     <pattern id="bay" width="192" height="128" patternUnits="userSpaceOnUse">
                         <rect x="74" y="28" width="44" height="76" />

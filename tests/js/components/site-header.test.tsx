@@ -63,3 +63,51 @@ describe('SiteHeader', () => {
         expect(await axe(container)).toHaveNoViolations();
     });
 });
+
+describe('SiteHeader mobile menu layout', () => {
+    it('lists the secondary links (blog, FAQ, about) with plain sand hover, then the CTA and the language links under a divider', async () => {
+        const user = userEvent.setup();
+        renderPage(<SiteHeader />);
+        await user.click(screen.getByRole('button', { name: 'Ouvrir le menu' }));
+
+        const mobileNav = screen.getByRole('navigation', { name: 'Navigation mobile' });
+        const links = within(mobileNav).getAllByRole('link');
+        expect(links.slice(-3).map((l) => l.textContent)).toEqual(['Blog', 'FAQ', 'À propos']);
+        // First level: thin grey icon + vertical hairline before the label (ui.sh variant « Hairline verticale »).
+        links.slice(0, 3).forEach((l) => {
+            expect(l.querySelector('svg')).not.toBeNull();
+            expect(l.querySelector('span[aria-hidden].w-px')).not.toBeNull();
+        });
+        links.slice(3).forEach((l) => expect(l.querySelector('svg')).toBeNull());
+        links.slice(0, 3).forEach((l) => expect(l).toHaveClass('font-medium')); // first level in medium, secondary stays regular
+        links.slice(3).forEach((l) => expect(l).not.toHaveClass('font-medium'));
+        expect(links[2]).toHaveTextContent('Estimer mon bienSous 24 h'); // action label + nudge badge on the valuation entry
+        expect(within(links[2]).getByText('Sous 24 h')).toHaveClass('rounded-none', 'bg-background-08'); // square sand badge (ui.sh variant « Carré sable »)
+        // Stack unfold: every row animates in, staggered 35 ms apart.
+        const rows = links.map((l) => l.parentElement!);
+        rows.forEach((li) => expect(li).toHaveClass('animate-menu-in'));
+        expect(rows[0].style.getPropertyValue('--stagger')).toBe('0ms');
+        expect(rows[1].style.getPropertyValue('--stagger')).toBe('35ms');
+
+        // Secondary links sit in a sand gradient well (ui.sh variant « Dégradé sable »).
+        expect(links[3].closest('ul')).toHaveClass('from-background-08', 'bg-linear-to-b');
+        expect(links[2].querySelector('svg')).toHaveClass('lucide-house');
+        links.forEach((l) => expect(l).not.toHaveClass('after:h-px')); // plain hover, no drawn underline
+        links.slice(0, 3).forEach((l) => expect(l).toHaveClass('hover:bg-background-05')); // first level: sand hover
+        // Secondary links: white hover / current state on the sand well (user decision 2026-09-16).
+        links.slice(3).forEach((l) => {
+            expect(l).toHaveClass('hover:bg-card', 'aria-[current=page]:bg-card');
+            expect(l).not.toHaveClass('hover:bg-background-05');
+        });
+        // The CTA + language links follow the nav directly (not pinned with mt-auto): the contact button is the panel's next link after the nav.
+        const cta = within(mobileNav.parentElement!).getByRole('link', { name: 'Nous contacter' });
+        expect(cta.closest('.mt-auto')).toBeNull();
+
+        // A tap on the blurred veil around the panel closes the menu at once (rows unmounted, no cascade on the way out).
+        const veil = mobileNav.parentElement!.parentElement!;
+        expect(veil).toHaveClass('backdrop-blur-md');
+        await user.click(veil);
+        expect(screen.getByRole('button', { name: 'Ouvrir le menu' })).toHaveAttribute('aria-expanded', 'false');
+        expect(within(mobileNav.parentElement!).queryByRole('link', { name: 'Nous contacter' })).toBeNull();
+    });
+});

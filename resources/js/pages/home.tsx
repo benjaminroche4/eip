@@ -1,6 +1,8 @@
+import CtaCard from '@/components/home/cta-card';
 import Hero from '@/components/home/hero';
-import PropertyCarousel from '@/components/home/property-carousel';
-import TrustBanner from '@/components/home/trust-banner';
+import Services from '@/components/home/services';
+import SuccessStories, { type SuccessStory } from '@/components/home/success-stories';
+import Testimonials, { type Testimonial } from '@/components/home/testimonials';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
@@ -8,7 +10,9 @@ import { siteGraph } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
-export default function Home() {
+type HomeProps = { testimonials: Testimonial[]; stories: SuccessStory[] };
+
+export default function Home({ testimonials, stories }: HomeProps) {
     const { seo, ziggy } = usePage<SharedData>().props;
     const { t } = useTranslation();
     const origin = new URL(ziggy.location).origin;
@@ -23,8 +27,13 @@ export default function Home() {
             />
             <PublicLayout hero>
                 <Hero />
-                <TrustBanner />
-                <PropertyCarousel />
+                <Services />
+                <Testimonials items={testimonials} />
+                <SuccessStories stories={stories} />
+                {/* Closing call to action (Figma 712-24182 / 712-24510), shown on the home page for now. */}
+                <div className="mx-auto mt-16 max-w-5xl px-6 lg:mt-24 lg:px-8">
+                    <CtaCard />
+                </div>
             </PublicLayout>
         </>
     );

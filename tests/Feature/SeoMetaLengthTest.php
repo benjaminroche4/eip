@@ -20,6 +20,7 @@ class SeoMetaLengthTest extends TestCase
             'contact' => ['ui.pages.contact.seo_title', 'ui.pages.contact.seo_description', true],
             'newsletter' => ['ui.pages.newsletter.seo_title', 'ui.pages.newsletter.seo_description', true],
             'faq' => ['ui.pages.faq.seo_title', 'ui.pages.faq.seo_description', true],
+            'about' => ['ui.pages.about.seo_title', 'ui.pages.about.seo_description', true],
             'estimate' => ['ui.pages.estimate.seo_title', 'ui.pages.estimate.seo_description', true],
             'sell' => ['ui.pages.sell.seo_title', 'ui.pages.sell.seo_description', true],
             'buy' => ['ui.pages.buy.seo_title', 'ui.pages.buy.seo_description', true],

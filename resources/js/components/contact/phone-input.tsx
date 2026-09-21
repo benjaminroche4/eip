@@ -165,7 +165,7 @@ export default function PhoneInput({ id, name, value, onChange, ...aria }: Phone
                 allLabel: t('contact.country_all'),
             }}
             className={cn(
-                'border-input divide-input flex h-10 w-full divide-x border transition-[color,box-shadow]',
+                'border-input divide-input bg-card flex h-10 w-full divide-x border transition-[color,box-shadow]',
                 'focus-within:border-ring focus-within:ring-ring/50 focus-within:ring-[3px]',
                 aria['aria-invalid'] && 'border-destructive ring-destructive/20 focus-within:border-destructive',
             )}

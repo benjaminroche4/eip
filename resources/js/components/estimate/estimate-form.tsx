@@ -679,7 +679,7 @@ export default function EstimateForm({ propertyTypes, contactMethods, floors, fe
                 {/* Mobile: the submit bar sticks to the bottom of the screen while the form is on screen, then scrolls away with it (no second button: the in-form one is desktop only) */}
                 <div
                     ref={mobileBar}
-                    className="border-border bg-card/95 pointer-events-auto sticky bottom-0 z-60 -mx-4 mt-6 flex items-center gap-3 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur sm:-mx-6 lg:hidden"
+                    className="border-border bg-card/95 pointer-events-auto sticky bottom-0 z-60 -mx-6 mt-6 flex items-center gap-3 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur lg:hidden"
                 >
                     <Button type="submit" form={FORM_ID} size="lg" disabled={processing} className="flex-1">
                         {processing ? t('estimate.submitting') : t('estimate.submit')}

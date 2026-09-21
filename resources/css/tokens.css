@@ -84,6 +84,7 @@
     --color-secondary-30: #f3ebdf; /* Secondary/30 — footer hairlines */
     --color-secondary-40: #ede1d0; /* Secondary/40 — badges on hover surface */
     --color-secondary-50: #e8d8c2; /* Secondary/50 — selected selection card border (valuation form) */
+    --color-secondary-60: #e3d0b5; /* Secondary/60 Main — sand dots (marquee, values thread), stars, backdrop gradients */
     --color-secondary-80: #a19481; /* Secondary/80 — watermark outline */
     --color-background-08: #f8f4ed; /* Figma « Base/Background 10 » — FAQ open item, icon tiles */
     --color-background-10: #ece7dd; /* footer gradient start */

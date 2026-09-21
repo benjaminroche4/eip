@@ -59,6 +59,12 @@ return [
         'experience_years' => env('SEO_ADVISOR_EXPERIENCE_YEARS') !== null ? (int) env('SEO_ADVISOR_EXPERIENCE_YEARS') : null,
     ],
 
+    // YouTube video ids of the presentation videos (null = photo only, no play button). The id never appears in the HTML
+    // until the visitor clicks: the page shows the photo, the privacy-enhanced iframe loads on demand.
+    'videos' => [
+        'buy' => env('SEO_VIDEO_BUY'),
+    ],
+
     // Social profiles shown in the footer (leave empty to hide). Also merged into Organization.sameAs.
     'social' => [
         'linkedin' => env('SEO_SOCIAL_LINKEDIN'),
