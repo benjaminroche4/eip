@@ -30,5 +30,12 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <!-- Sanity test values: BlogTest fakes the HTTP calls; they live here (not in setUp) because withLocale()
+             re-creates the app and drops config() overrides — CI, where .env.example leaves SANITY_PROJECT_ID empty,
+             failed on every blog test (2026-09-21). -->
+        <env name="SANITY_PROJECT_ID" value="ks9vwq45" force="true"/>
+        <env name="SANITY_TOKEN" value="secret-token" force="true"/>
+        <env name="SANITY_USE_CDN" value="false" force="true"/>
+        <env name="SANITY_BLOG_TYPE" value="estateBlog" force="true"/>
     </php>
 </phpunit>
