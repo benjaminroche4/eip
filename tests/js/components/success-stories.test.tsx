@@ -38,7 +38,9 @@ describe('SuccessStories', () => {
         expect(container.querySelector('ul li > div')?.className).not.toMatch(/rounded|shadow/); // square, no shadow
         expect(screen.getByRole('link', { name: 'Explorer nos réussites' })).toHaveAttribute('href', '/blog');
         expect(container.querySelector('p.font-heading span')?.className).toMatch(/animate-manifesto-in|opacity-0/); // word-by-word reveal
-        expect(screen.getByRole('button', { name: 'Réussite précédente' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Réussite précédente' })).toBeEnabled(); // infinite loop: never an end
+        expect(container.querySelectorAll('ul > li')).toHaveLength(6); // three copies of the two stories, outer ones aria-hidden
+        expect(container.querySelectorAll('ul > li[aria-hidden="true"]')).toHaveLength(4);
 
         expect(await axe(container)).toHaveNoViolations();
     });

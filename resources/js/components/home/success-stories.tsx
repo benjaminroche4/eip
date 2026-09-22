@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { type CSSProperties, Fragment, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState } from 'react';
 
 export type SuccessStory = { title: string; place: string; duration: string; result: string; photo: string; alt: string };
 
@@ -25,14 +25,13 @@ const arrowClass = 'group transition-transform active:scale-90 motion-reduce:tra
  * « Success stories » (Figma 712-25407 desktop / 712-25844 mobile): photos only (user decision 2026-09-22 — the
  * eyebrow / title / place · duration · result overlay was removed, the story stays in the `alt`), one horizontal
  * snap row at every width, photos in the former card format (`w-80 sm:w-96 lg:w-104`, `h-96 sm:h-112 lg:h-120`), one centred at a time below `lg` and a row starting at the left edge from `lg` (`snap-start`), draggable with the mouse or the finger (`useDragScroll`)
- * with previous / next arrows under the row; then a centred Montserrat quote written word by word when it enters
+ * with previous / next arrows under the row, in an infinite loop (three copies, recentred invisibly — user decision 2026-09-22); then a centred Montserrat quote written word by word when it enters
  * the viewport (the about manifesto's reveal) and one button to the blog, where the case studies live. Also used on « Vendre » (2026-09-22) with `quote={false}`
  * and `embedded` in place of the former photo mosaic.
  */
 export default function SuccessStories({ stories, quote = true, embedded = false }: SuccessStoriesProps) {
     const { t } = useTranslation();
     const rowRef = useRef<HTMLUListElement>(null);
-    const [current, setCurrent] = useState(0);
     const quoteRef = useRef<HTMLDivElement>(null);
     // From lg the row starts at the column's left edge and snaps to photo starts (user decision 2026-09-22: a first
     // photo centred with a blank left half looked like it « started in the middle »); below lg one photo is centred.
@@ -54,33 +53,46 @@ export default function SuccessStories({ stories, quote = true, embedded = false
     const quoteWords = t('stories.quote').split(' ');
     useDragScroll(rowRef, { align: desktop ? 'start' : 'center', open: 'first' });
 
+    // Infinite loop (user decision 2026-09-22, the testimonials' mechanics): the row is rendered three times and kept
+    // inside the middle copy, so arrows, drag and touch never meet an end. `span()` = width of one copy; a jump of
+    // exactly one span is invisible. Copies outside the middle set are `aria-hidden`.
+    const loop = stories.length > 1;
+    const rendered = loop ? [...stories, ...stories, ...stories] : stories;
+    const span = useCallback(() => {
+        const el = rowRef.current;
+        if (!el || !loop) return 0;
+        const first = el.children[0] as HTMLElement | undefined;
+        const mid = el.children[stories.length] as HTMLElement | undefined;
+        return first && mid ? mid.offsetLeft - first.offsetLeft : 0;
+    }, [loop, stories.length]);
     useEffect(() => {
         const el = rowRef.current;
-        if (!el) return;
+        if (!el || !loop) return;
+        const s = span();
+        if (s) el.scrollLeft = s;
         const onScroll = () => {
-            const cards = Array.from(el.children) as HTMLElement[];
-            const start = window.matchMedia('(min-width: 64rem)').matches;
-            const reference = start ? el.scrollLeft : el.scrollLeft + el.clientWidth / 2;
-            const distance = (card: HTMLElement) => Math.abs((start ? card.offsetLeft : card.offsetLeft + card.offsetWidth / 2) - reference);
-            let best = 0;
-            cards.forEach((card, i) => {
-                if (distance(card) < distance(cards[best])) best = i;
-            });
-            setCurrent(best);
+            const s = span();
+            if (!s) return;
+            if (el.scrollLeft >= s * 1.5) el.scrollLeft -= s;
+            else if (el.scrollLeft < s * 0.5) el.scrollLeft += s;
         };
         el.addEventListener('scroll', onScroll, { passive: true });
         return () => el.removeEventListener('scroll', onScroll);
-    }, []);
-
-    const goTo = (index: number) => {
+    }, [loop, span]);
+    // Arrows scroll by one photo (its width + the 20px gap); scroll-snap settles it. A smooth scroll that would cross a
+    // loop threshold is preceded by an invisible recentre so it is never interrupted.
+    const scrollBy = (direction: 1 | -1) => {
         const el = rowRef.current;
-        const card = el?.children[index] as HTMLElement | undefined;
+        const card = el?.firstElementChild as HTMLElement | null;
         if (!el || !card) return;
-        const start = window.matchMedia('(min-width: 64rem)').matches;
-        el.scrollTo({
-            left: start ? card.offsetLeft : card.offsetLeft + card.offsetWidth / 2 - el.clientWidth / 2,
-            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        });
+        const step = direction * (card.offsetWidth + 20);
+        const s = span();
+        if (s) {
+            const target = el.scrollLeft + step;
+            if (target >= s * 1.5) el.scrollLeft -= s;
+            else if (target < s * 0.5) el.scrollLeft += s;
+        }
+        el.scrollBy({ left: step, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     };
 
     return (
@@ -97,8 +109,12 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                     role="list"
                     className="-mx-6 flex w-[calc(100%+3rem)] cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-[calc(50%-10rem)] pb-1 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none sm:px-[calc(50%-12rem)] lg:mx-0 lg:w-full lg:px-0 [&::-webkit-scrollbar]:hidden"
                 >
-                    {stories.map((story) => (
-                        <li key={story.title} className="w-80 shrink-0 snap-center sm:w-96 lg:w-104 lg:snap-start">
+                    {rendered.map((story, index) => (
+                        <li
+                            key={`${story.title}-${index}`}
+                            className="w-80 shrink-0 snap-center sm:w-96 lg:w-104 lg:snap-start"
+                            aria-hidden={loop && (index < stories.length || index >= stories.length * 2) ? true : undefined}
+                        >
                             <StoryPhoto story={story} />
                         </li>
                     ))}
@@ -110,8 +126,7 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                         size="icon"
                         className={arrowClass}
                         aria-label={t('stories.previous')}
-                        disabled={current === 0}
-                        onClick={() => goTo(current - 1)}
+                        onClick={() => scrollBy(-1)}
                     >
                         <ChevronLeft aria-hidden className="transition-transform group-active:-translate-x-0.5 motion-reduce:transition-none" />
                     </Button>
@@ -121,8 +136,7 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                         size="icon"
                         className={arrowClass}
                         aria-label={t('stories.next')}
-                        disabled={current === stories.length - 1}
-                        onClick={() => goTo(current + 1)}
+                        onClick={() => scrollBy(1)}
                     >
                         <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none" />
                     </Button>
