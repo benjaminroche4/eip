@@ -21,4 +21,20 @@ describe('CtaCard', () => {
 
         expect(await axe(container)).toHaveNoViolations();
     });
+
+    it('takes its own texts and destination (the « Vendre » page points to the valuation)', () => {
+        renderPage(
+            <CtaCard
+                title="Combien vaut votre bien à Paris ?"
+                text="Estimation sous 24 h."
+                button="Demander une estimation"
+                href="/estimation-immobiliere-paris"
+            />,
+        );
+
+        expect(screen.getByRole('region', { name: 'Combien vaut votre bien à Paris ?' })).toBeInTheDocument();
+        expect(screen.getByText('Estimation sous 24 h.')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Demander une estimation' })).toHaveAttribute('href', '/estimation-immobiliere-paris');
+        expect(screen.queryByRole('link', { name: 'Contacter un conseiller' })).toBeNull();
+    });
 });

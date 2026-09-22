@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
-const LEGAL = ['privacy', 'legal', 'terms'] as const;
+const LEGAL = ['privacy', 'legal', 'sitemap'] as const;
 
-/** Copyright + discreet legal links (12px, muted — AA contrast), in their own nav landmark, 60px bar under a gradient hairline (same as the header). Centred on mobile (user decision 2026-09-22), one row from `sm`. */
+/** Copyright + discreet legal links (privacy, legal notice, sitemap — the terms page was dropped on 2026-09-22) (12px, muted — AA contrast), in their own nav landmark, 60px bar under a gradient hairline (same as the header). Centred on mobile (user decision 2026-09-22), one row from `sm`. */
 export default function LegalBar({ year }: { year: number }) {
     const { seo } = usePage<SharedData>().props;
     const { t } = useTranslation();

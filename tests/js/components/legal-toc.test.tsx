@@ -57,4 +57,19 @@ describe('LegalToc', () => {
         window.dispatchEvent(new Event('scroll'));
         await waitFor(() => expect(links[2]).toHaveAttribute('aria-current', 'true'));
     });
+
+    it('activates the last section at the bottom of the page even when it never reaches the header (short tail sections)', () => {
+        // Page scrolled to its very end: the reading line has slid down to the bottom edge of the viewport.
+        Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true });
+        Object.defineProperty(window, 'scrollY', { value: 1200, configurable: true });
+        Object.defineProperty(document.documentElement, 'scrollHeight', { value: 2000, configurable: true });
+        mountSections([-900, -300, 500]); // the last section starts mid-screen and is only 300px tall
+        renderPage(<LegalToc headings={headings} />);
+
+        const links = within(screen.getByRole('navigation', { name: 'Sommaire' })).getAllByRole('link');
+        expect(links[2]).toHaveAttribute('aria-current', 'true');
+
+        Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+        Object.defineProperty(document.documentElement, 'scrollHeight', { value: 0, configurable: true });
+    });
 });

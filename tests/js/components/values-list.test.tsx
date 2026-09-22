@@ -10,12 +10,13 @@ describe('ValuesList', () => {
         vi.restoreAllMocks();
     });
 
-    it('renders the header, the advisor, the contact button and five numbered values as an ordered list', async () => {
+    it('renders the header, the contact button and five numbered values as an ordered list', async () => {
         page.props = sharedProps();
         const { container } = renderPage(<ValuesList />);
 
-        expect(screen.getByRole('heading', { level: 2, name: 'Ce qui guide chacune de nos missions' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: "Qu'est-ce qui guide nos missions ?" })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Contacter un conseiller' })).toHaveAttribute('href', '/contact');
+        expect(screen.queryByText('Votre interlocuteur unique')).toBeNull(); // advisor line removed (user decision 2026-09-22)
         const list = container.querySelector('ol')!;
         const values = within(list).getAllByRole('listitem');
         expect(values).toHaveLength(5);

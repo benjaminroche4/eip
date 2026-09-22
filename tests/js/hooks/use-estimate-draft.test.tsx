@@ -42,13 +42,25 @@ function Probe() {
 describe('useEstimateDraft', () => {
     beforeEach(() => window.sessionStorage.clear());
 
-    it('saves every change to the session, without the consent nor the honeypot', () => {
+    it('saves every change to the session, without the consent, the honeypot nor any personal identifier', () => {
         render(<Probe />);
-        act(() => api.setData({ full_name: 'Jean Dupont', consent: true, website: 'spam' }));
+        act(() =>
+            api.setData({
+                full_name: 'Jean Dupont',
+                email: 'jean@example.test',
+                phone: '+33600000000',
+                surface: '120',
+                consent: true,
+                website: 'spam',
+            }),
+        );
         const draft = JSON.parse(window.sessionStorage.getItem('estimate-draft')!);
-        expect(draft).toMatchObject({ full_name: 'Jean Dupont', property_type: 'apartment' });
+        expect(draft).toMatchObject({ property_type: 'apartment', surface: '120' });
         expect(draft).not.toHaveProperty('consent');
         expect(draft).not.toHaveProperty('website');
+        expect(draft).not.toHaveProperty('full_name'); // shared computer: no name, e-mail or phone in the draft (user decision 2026-09-22)
+        expect(draft).not.toHaveProperty('email');
+        expect(draft).not.toHaveProperty('phone');
     });
 
     it('restores the draft on mount, never the consent', () => {

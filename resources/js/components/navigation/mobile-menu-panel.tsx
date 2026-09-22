@@ -1,5 +1,4 @@
 import LanguageLinks from '@/components/i18n/language-links';
-import GradientHairline from '@/components/layout/gradient-hairline';
 import { type NavItem, useSecondaryNavItems } from '@/components/navigation/nav-items';
 import NavLink from '@/components/navigation/nav-link';
 import { Badge } from '@/components/ui/badge';
@@ -107,9 +106,8 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                 onPointerUp={onPointerUp}
                 className="bg-card text-card-foreground relative flex max-h-full flex-col overflow-y-auto overscroll-contain p-4"
             >
-                <nav key={openings.current} aria-label={t('nav.mobile')} className="flex flex-col gap-4 pt-2">
-                    {/* Divider between the bar and the first rows (user decision 2026-09-22, replaces « never on mobile » of 2026-09-16) */}
-                    {open && <GradientHairline />}
+                {/* No divider under the bar and a tighter stack (user decision 2026-09-22: the top hairline tried the same day is gone) */}
+                <nav key={openings.current} aria-label={t('nav.mobile')} className="flex flex-col gap-3">
                     <ul className="flex flex-col gap-1">
                         {open &&
                             items.map((item, i) => (
@@ -133,7 +131,7 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                     </ul>
                     {open && secondary.length > 0 && (
                         /* Blog / FAQ / about in a sand gradient well (ui.sh variant « Dégradé sable », user decision 2026-09-16). */
-                        <ul {...unfold('from-background-08 mt-4 flex flex-col gap-1 bg-linear-to-b to-transparent p-2')}>
+                        <ul {...unfold('from-background-08 mt-2 flex flex-col gap-1 bg-linear-to-b to-transparent p-2')}>
                             {secondary.map((item) => (
                                 <SecondaryItem key={item.key} item={item} {...secondaryProps(item)} />
                             ))}
@@ -144,7 +142,7 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                 {open && (
                     <div key={`cta-${openings.current}`} className="contents">
                         <>
-                            <div {...unfold('mt-5 flex flex-col items-center gap-5 pb-2 [&>*:first-child]:w-full [&>*:first-child>a]:w-full')}>
+                            <div {...unfold('mt-3 flex flex-col items-center gap-3 pb-1 [&>*:first-child]:w-full [&>*:first-child>a]:w-full')}>
                                 <div>{cta}</div>
                                 <LanguageLinks />
                             </div>

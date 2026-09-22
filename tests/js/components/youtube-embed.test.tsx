@@ -13,6 +13,8 @@ describe('YoutubeEmbed', () => {
         expect(container.querySelector('iframe')).toBeNull(); // nothing from YouTube before the click
         const play = screen.getByRole('button', { name: 'Lire la vidéo : Visite guidée' });
         expect(container.querySelector('img')).toHaveAttribute('src', 'https://i.ytimg.com/vi/abc123/hqdefault.jpg');
+        expect(container.querySelector('figcaption svg')).not.toBeNull(); // Info icon before the caption, as on the body images
+        expect(container.querySelector('figcaption')).toHaveTextContent('Visite guidée');
         expect(await axe(container)).toHaveNoViolations();
 
         await user.click(play);

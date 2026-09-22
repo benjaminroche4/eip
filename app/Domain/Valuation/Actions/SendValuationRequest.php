@@ -26,13 +26,16 @@ final class SendValuationRequest
             Mail::to($to)->send(new ValuationRequestMail($valuation, $request->reference));
             $request->update(['mail_sent_at' => now()]);
         } catch (Throwable $e) {
-            Log::error('Valuation request #'.$request->id.' saved but agency e-mail failed: '.$e->getMessage());
+            // Reported (not just logged) so the exception reaches the error tracker; `valuations:resend-mails` retries it hourly.
+            Log::error('Valuation request #'.$request->id.' saved but agency e-mail failed: '.$e->getMessage(), ['reference' => $request->reference, 'email' => $valuation->email]);
+            report($e);
         }
 
         try {
             Mail::to($valuation->email, $valuation->fullName)->send(new ValuationConfirmationMail($valuation, $request->reference));
         } catch (Throwable $e) {
-            Log::warning('Valuation request #'.$request->id.': confirmation e-mail failed: '.$e->getMessage());
+            Log::warning('Valuation request #'.$request->id.': confirmation e-mail failed: '.$e->getMessage(), ['reference' => $request->reference]);
+            report($e);
         }
 
         return $request;

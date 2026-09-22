@@ -8,7 +8,10 @@ import { type CSSProperties, Fragment, useRef } from 'react';
 
 export type AgencyStat = { value: string; title: string; text: string };
 
-type AgencyManifestoProps = { stats: AgencyStat[] };
+type AgencyManifestoProps = {
+    /** Key figures under the text (About). Omitted on the home (user decision 2026-09-22): the trust intro already carries the figure. */
+    stats?: AgencyStat[];
+};
 
 /**
  * « Plus qu'une agence immobilière » (Figma 712-23876 desktop / 712-24278 mobile), in the site's tone: the site's sand band
@@ -27,7 +30,7 @@ type AgencyManifestoProps = { stats: AgencyStat[] };
  * title and text rise in cascade under it (`animate-hero-rise`, 120 ms apart); `prefers-reduced-motion` shows the final
  * figures at once. Grid: stacked on mobile, 2×2 from `sm`, four columns from `lg`, gradient hairlines between.
  */
-export default function AgencyManifesto({ stats }: AgencyManifestoProps) {
+export default function AgencyManifesto({ stats = [] }: AgencyManifestoProps) {
     const { t } = useTranslation();
     const sectionRef = useRef<HTMLElement>(null);
     const revealed = useReveal(sectionRef, '-15%');
@@ -92,42 +95,44 @@ export default function AgencyManifesto({ stats }: AgencyManifestoProps) {
                     />
                 </div>
 
-                <ul ref={gridRef} role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 sm:gap-y-8 lg:grid-cols-4 lg:gap-y-0">
-                    {stats.map((stat, i) => (
-                        <Fragment key={stat.title}>
-                            {/* Separators: horizontal hairline between every figure on mobile, between the two rows from sm */}
-                            {i > 0 && <GradientHairline className={cn('via-border', i === 2 ? 'sm:col-span-2 lg:hidden' : 'sm:hidden')} />}
-                            <li
-                                style={{ '--stagger': `${i * 120}ms` } as CSSProperties}
-                                className={cn(
-                                    'relative flex flex-col gap-8 lg:gap-16',
-                                    // Vertical hairline on the left of the 2nd column (sm) / of every column but the first (lg)
-                                    'before:via-border before:absolute before:inset-y-0 before:left-0 before:hidden before:w-px before:bg-linear-to-b before:from-transparent before:to-transparent',
-                                    i % 2 === 1 ? 'sm:pl-8 sm:before:block' : 'sm:pr-8',
-                                    i === 0 && 'lg:pr-8 lg:pl-0',
-                                    i === 1 && 'lg:px-8',
-                                    i === 2 && 'lg:px-8 lg:before:block',
-                                    i === 3 && 'lg:pr-0 lg:pl-8',
-                                )}
-                            >
-                                <p className="font-heading text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
-                                    <StatValue value={stat.value} run={gridRevealed} />
-                                </p>
-                                <div
+                {stats.length > 0 && (
+                    <ul ref={gridRef} role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-0 sm:gap-y-8 lg:grid-cols-4 lg:gap-y-0">
+                        {stats.map((stat, i) => (
+                            <Fragment key={stat.title}>
+                                {/* Separators: horizontal hairline between every figure on mobile, between the two rows from sm */}
+                                {i > 0 && <GradientHairline className={cn('via-border', i === 2 ? 'sm:col-span-2 lg:hidden' : 'sm:hidden')} />}
+                                <li
+                                    style={{ '--stagger': `${i * 120}ms` } as CSSProperties}
                                     className={cn(
-                                        'flex flex-col gap-2',
-                                        gridRevealed
-                                            ? 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none'
-                                            : 'opacity-0 motion-reduce:opacity-100',
+                                        'relative flex flex-col gap-8 lg:gap-16',
+                                        // Vertical hairline on the left of the 2nd column (sm) / of every column but the first (lg)
+                                        'before:via-border before:absolute before:inset-y-0 before:left-0 before:hidden before:w-px before:bg-linear-to-b before:from-transparent before:to-transparent',
+                                        i % 2 === 1 ? 'sm:pl-8 sm:before:block' : 'sm:pr-8',
+                                        i === 0 && 'lg:pr-8 lg:pl-0',
+                                        i === 1 && 'lg:px-8',
+                                        i === 2 && 'lg:px-8 lg:before:block',
+                                        i === 3 && 'lg:pr-0 lg:pl-8',
                                     )}
                                 >
-                                    <h3 className="text-lg font-medium text-balance">{stat.title}</h3>
-                                    <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{stat.text}</p>
-                                </div>
-                            </li>
-                        </Fragment>
-                    ))}
-                </ul>
+                                    <p className="font-heading text-3xl font-semibold tracking-tight tabular-nums sm:text-4xl">
+                                        <StatValue value={stat.value} run={gridRevealed} />
+                                    </p>
+                                    <div
+                                        className={cn(
+                                            'flex flex-col gap-2',
+                                            gridRevealed
+                                                ? 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none'
+                                                : 'opacity-0 motion-reduce:opacity-100',
+                                        )}
+                                    >
+                                        <h3 className="text-lg font-medium text-balance">{stat.title}</h3>
+                                        <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{stat.text}</p>
+                                    </div>
+                                </li>
+                            </Fragment>
+                        ))}
+                    </ul>
+                )}
             </div>
         </section>
     );

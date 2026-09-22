@@ -18,7 +18,7 @@ const ROUTES: Record<string, string> = {
     'blog.index': '/blog',
     privacy: '/politique-de-confidentialite',
     legal: '/mentions-legales',
-    terms: '/conditions-generales',
+    sitemap: '/plan-du-site',
 };
 export function routeStub(name?: string, params?: Record<string, string | number>): string & { has: (n: string) => boolean } {
     if (name === undefined) return { has: (n: string) => n in ROUTES } as never;
@@ -34,7 +34,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
         auth: { user: null as never },
         locale: 'fr',
         year: 2026,
-        flash: { success: null, callbackPhone: null, newsletter: null, valuationReference: null },
+        flash: { success: null, callbackPhone: null, newsletter: null, estimate: null, valuationReference: null },
         localization: {
             current: 'fr',
             default: 'fr',
@@ -53,6 +53,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
             image: '/og-default.png',
             locale: 'fr_FR',
             twitter: null,
+            relocationUrl: 'https://relocation-in-paris.fr/',
             organization: {
                 name: 'Estate in Paris',
                 logo: '/brand/logo_dark_desktop.svg',
@@ -60,6 +61,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
                 email: 'contact@example.com',
                 phone: '+33 6 00 00 00 00',
                 whatsapp: '33600000000',
+                mapsUrl: null,
                 address: { street: '3 rue Grégoire de Tours', city: 'Paris', postal_code: '75006', country: 'FR' },
             },
             advisor: { name: 'Maris Moreau', role: 'Conseillère senior', photo: '/images/advisors/advisor-1.webp', experienceYears: 12 },

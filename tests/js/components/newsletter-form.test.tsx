@@ -21,7 +21,7 @@ describe('NewsletterForm', () => {
         expect(email).toHaveAttribute('aria-required', 'true');
         expect(screen.getByRole('button', { name: "S'inscrire" })).toBeEnabled();
         expect(screen.getByText('lundi 31 août')).toHaveAttribute('datetime', '2026-08-31');
-        expect(screen.getByText('Pas de spam. Désinscription à tout moment.')).toBeInTheDocument();
+        expect(screen.getByText('Pas de spam. Désinscription à tout moment.')).toHaveClass('self-center'); // centred under the form
     });
 
     it('is usable from the keyboard and posts to the newsletter route', async () => {
@@ -43,7 +43,7 @@ describe('NewsletterForm', () => {
         expect(screen.getByRole('status')).toHaveTextContent('Votre inscription est confirmée.');
         expect(screen.getByRole('heading', { level: 3, name: 'Bienvenue parmi nos abonnés' })).toHaveFocus();
         expect(screen.getByRole('status')).toHaveTextContent('Première édition le lundi 31 août.');
-        expect(screen.getByRole('link', { name: 'Lire nos analyses' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Lire nos articles' })).toBeInTheDocument();
     });
 
     it('has no axe violations', async () => {

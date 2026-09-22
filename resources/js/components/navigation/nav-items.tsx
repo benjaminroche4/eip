@@ -1,4 +1,5 @@
 import { useTranslation } from '@/hooks/use-translation';
+import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
 export type NavItem = {
@@ -8,6 +9,8 @@ export type NavItem = {
     badge?: string;
     /** Action-oriented label for the mobile menu (« Estimer mon bien »). */
     mobileLabel?: string;
+    /** Another site (opens in a new tab, plain <a>, no prefetch). */
+    external?: boolean;
 };
 
 /** Primary navigation entries (labels from lang/ui.php). */
@@ -25,13 +28,15 @@ export function useContactHref(): string {
     return route('contact');
 }
 
-/** Footer « Nos services » column: the three service pages. */
+/** Footer « Nos services » column: the three service pages, then the sister agency Relocation in Paris (external, user decision 2026-09-22). */
 export function useFooterNavItems(): NavItem[] {
     const { t } = useTranslation();
+    const { seo } = usePage<SharedData>().props;
     return [
         { key: 'buy', label: t('nav.buy'), href: route('buy') },
         { key: 'sell', label: t('nav.sell'), href: route('sell') },
         { key: 'estimate', label: t('nav.estimate'), href: route('estimate') },
+        ...(seo.relocationUrl ? [{ key: 'relocation', label: t('nav.relocation'), href: seo.relocationUrl, external: true }] : []),
     ];
 }
 

@@ -82,7 +82,7 @@ export default function BlogShow({ post, related, alternates }: Props) {
             />
             <PublicLayout className="max-w-6xl">
                 {/* Pulled up into the layout's top padding so the crumb hugs the header (user decision 2026-09-15). */}
-                <div className="-mt-10 sm:-mt-12">
+                <div className="-mt-6 sm:-mt-8 lg:-mt-12">
                     <SeoBreadcrumbs crumbs={crumbs} />
                 </div>
                 <ReadingProgress target={articleRef} />
@@ -95,17 +95,20 @@ export default function BlogShow({ post, related, alternates }: Props) {
                         {post.excerpt && <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{post.excerpt}</p>}
                     </header>
 
+                    {/* Main photo: edge to edge on mobile like the Sell page's first photo (`-mx-6`, user decision 2026-09-22), 16/9 there and 2/1 from lg */}
                     {post.image && (
-                        <SeoImage
-                            priority
-                            src={post.image.url}
-                            srcSet={post.image.srcset}
-                            sizes="(min-width: 1152px) 72rem, 100vw"
-                            width={post.image.width}
-                            height={post.image.height}
-                            alt={post.image.alt}
-                            className="aspect-[2/1] w-full object-cover"
-                        />
+                        <div className="-mx-6 lg:mx-0">
+                            <SeoImage
+                                priority
+                                src={post.image.url}
+                                srcSet={post.image.srcset}
+                                sizes="(min-width: 1152px) 72rem, 100vw"
+                                width={post.image.width}
+                                height={post.image.height}
+                                alt={post.image.alt}
+                                className="aspect-video w-full object-cover lg:aspect-[2/1]"
+                            />
+                        </div>
                     )}
 
                     <div className="grid gap-10 lg:grid-cols-3 lg:gap-16">

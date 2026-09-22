@@ -76,8 +76,8 @@ function Node({ node }: { node: PortableNode }) {
                 />
                 {/* Caption = the alt text, with an info icon on the left (user decision 2026-09-15). */}
                 {alt && (
-                    <figcaption className="text-muted-foreground mt-2 flex items-start gap-1.5 text-xs">
-                        <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" />
+                    <figcaption className="text-muted-foreground mt-2 flex items-center gap-1.5 text-xs">
+                        <Info aria-hidden className="size-3.5 shrink-0" />
                         {alt}
                     </figcaption>
                 )}
@@ -123,13 +123,16 @@ function Node({ node }: { node: PortableNode }) {
 
 /**
  * Pull quote (user decision 2026-09-15, ui.sh variant « Double carte »): sand outer block (p-2) with an inner white
- * card, quotation mark on the left of the text — the same double-card pattern as the quick answer and the conclusion.
+ * card, quotation mark in a white square tile on the left of the text (user decision 2026-09-22) — the same double-card pattern as the quick answer and the conclusion.
  */
 function PullQuote({ block }: { block: TextBlock }) {
     return (
         <blockquote className="bg-background-08 my-8 p-2">
             <div className="bg-card flex gap-4 p-5 sm:p-6">
-                <Quote aria-hidden className="text-secondary-50 mt-0.5 size-6 shrink-0 fill-current" />
+                {/* Quotation mark in a white square tile with the sand hairline, as the icons of the quick answer and conclusion blocks (ui.sh variant chosen among 10, user decision 2026-09-22) */}
+                <span aria-hidden className="border-secondary-30 flex size-9 shrink-0 items-center justify-center border">
+                    <Quote className="text-secondary-60 size-4 fill-current" strokeWidth={1.5} />
+                </span>
                 <p className="text-foreground text-base/7 text-pretty sm:text-sm/6">
                     <Spans block={block} />
                 </p>

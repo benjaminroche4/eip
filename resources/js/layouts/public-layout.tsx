@@ -34,7 +34,7 @@ export default function PublicLayout({ children, className, hero = false, backdr
                 tabIndex={-1}
                 className={cn(
                     'relative mx-auto w-full max-w-7xl flex-1 focus:outline-none',
-                    hero ? 'max-w-none px-0 pt-0 pb-10' : 'px-6 py-16 sm:py-20 lg:px-8',
+                    hero ? 'max-w-none px-0 pt-0 pb-10' : 'px-6 pt-10 pb-16 sm:pt-12 sm:pb-20 lg:px-8 lg:pt-20', // top: 40px on mobile, 48px on tablet, 80px on desktop (64/80px read as a hole under the bar — user decisions 2026-09-22)
                     className,
                 )}
             >

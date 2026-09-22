@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 /** A contact request submitted from the public contact page. */
 final readonly class ContactMessage
 {
-    /** Topics offered by the form (keys of ui.contact.topics). */
-    public const TOPICS = ['buy', 'sell', 'invest', 'valuation', 'off_market', 'other'];
+    /** Topics offered by the form (keys of ui.contact.topics): four at most (user decision 2026-09-22; `invest` and `off_market` were dropped, their labels stay in ui.php for the requests already stored). */
+    public const TOPICS = ['buy', 'sell', 'valuation', 'other'];
 
     public function __construct(
         public string $firstName,

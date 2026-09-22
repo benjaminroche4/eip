@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Domain\Contact\Models\ContactRequest;
+use App\Domain\Contact\Support\AgencyCard;
 use App\Mail\ContactConfirmationMail;
 use App\Mail\ContactMessageMail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -29,11 +30,22 @@ class ContactFormTest extends TestCase
         ], $overrides);
     }
 
+    public function test_the_google_business_link_replaces_the_maps_search_when_configured(): void
+    {
+        $this->withLocale('fr');
+        config(['seo.organization.maps_url' => 'https://maps.app.goo.gl/estate']);
+        $this->get('/contact')->assertInertia(fn (Assert $p) => $p->where('seo.organization.mapsUrl', 'https://maps.app.goo.gl/estate'));
+        $this->assertSame('https://maps.app.goo.gl/estate', AgencyCard::for('fr')['mapsUrl']);
+
+        config(['seo.organization.maps_url' => null]);
+        $this->assertStringStartsWith('https://www.google.com/maps/search/?api=1&query=', AgencyCard::for('fr')['mapsUrl']);
+    }
+
     public function test_contact_page_lists_the_topics_and_the_geo_answer_texts(): void
     {
         $this->get('/contact')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('contact')->where('topics', ['buy', 'sell', 'invest', 'valuation', 'off_market', 'other']));
+            ->assertInertia(fn (Assert $p) => $p->component('contact')->where('topics', ['buy', 'sell', 'valuation', 'other']));
 
         foreach (['fr', 'en'] as $locale) {
             app()->setLocale($locale);

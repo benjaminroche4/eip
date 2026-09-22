@@ -1,5 +1,5 @@
 import { useTranslation } from '@/hooks/use-translation';
-import { Play } from 'lucide-react';
+import { Info, Play } from 'lucide-react';
 import { useState } from 'react';
 
 type YoutubeEmbedProps = { id: string; title: string; caption?: string };
@@ -49,7 +49,13 @@ export default function YoutubeEmbed({ id, title, caption }: YoutubeEmbedProps) 
                     </span>
                 </button>
             )}
-            {caption && <figcaption className="text-muted-foreground mt-2 text-xs">{caption}</figcaption>}
+            {/* Same caption as the body images: an Info icon before the text (user decision 2026-09-22) */}
+            {caption && (
+                <figcaption className="text-muted-foreground mt-2 flex items-center gap-1.5 text-xs">
+                    <Info aria-hidden className="size-3.5 shrink-0" />
+                    <span>{caption}</span>
+                </figcaption>
+            )}
         </figure>
     );
 }

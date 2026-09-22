@@ -1,5 +1,6 @@
 import FaqTabs from '@/components/faq/faq-tabs';
 import { type FaqCategory } from '@/components/faq/types';
+import CtaCard from '@/components/home/cta-card';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
@@ -41,6 +42,10 @@ export default function FaqPage({ categories }: FaqProps) {
                         <p className="text-muted-foreground max-w-2xl text-base/7 text-balance sm:text-sm/6">{t('pages.faq.intro')}</p>
                     </div>
                     <FaqTabs categories={categories} />
+                </div>
+                {/* Same closing call to action as the home, About and Buy pages */}
+                <div className="mx-auto mt-20 w-full max-w-5xl sm:mt-28">
+                    <CtaCard />
                 </div>
             </PublicLayout>
         </>

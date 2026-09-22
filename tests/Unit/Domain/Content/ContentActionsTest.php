@@ -5,6 +5,7 @@ namespace Tests\Unit\Domain\Content;
 use App\Domain\Content\Actions\ExcerptFaqCategory;
 use App\Domain\Content\Actions\ListDistricts;
 use App\Domain\Content\Actions\ListFaqCategories;
+use App\Domain\Content\Actions\ListSellSteps;
 use App\Domain\Content\Actions\ListStats;
 use App\Domain\Content\Actions\ListStrategies;
 use App\Domain\Content\Actions\ListSuccessStories;
@@ -28,10 +29,11 @@ class ContentActionsTest extends TestCase
         $lists = [
             [ListTeamMembers::class, TeamMember::class, 6],
             [ListTestimonials::class, Testimonial::class, 10],
-            [ListSuccessStories::class, SuccessStory::class, 2],
+            [ListSuccessStories::class, SuccessStory::class, 6],
             [ListStats::class, Stat::class, 4],
             [ListDistricts::class, District::class, 4],
             [ListStrategies::class, Strategy::class, 3],
+            [ListSellSteps::class, Strategy::class, 3],
             [ListFaqCategories::class, FaqCategory::class, 4],
         ];
 
@@ -51,6 +53,8 @@ class ContentActionsTest extends TestCase
         $this->assertSame('Transactions réalisées', app(ListStats::class)('fr')[0]->title);
         $this->assertSame('Transactions facilitated', app(ListStats::class)('en')[0]->title);
         $this->assertSame('Saint-Germain-des-Prés', app(ListDistricts::class)('en')[0]->area);
+        $this->assertSame('Estimation', app(ListSellSteps::class)('fr')[0]->title);
+        $this->assertSame('Negotiation and signing', app(ListSellSteps::class)('en')[2]->title);
         $this->assertSame('Acheter un bien', app(ListFaqCategories::class)('fr')[0]->title);
         $this->assertSame('Buying property', app(ListFaqCategories::class)('en')[0]->title);
 

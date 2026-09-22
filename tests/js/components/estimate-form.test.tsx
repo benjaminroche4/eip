@@ -75,6 +75,14 @@ describe('EstimateForm', () => {
         expect(screen.getAllByRole('button', { name: 'Demander mon estimation' })).toHaveLength(2); // form + mobile bar (CSS hides one)
     });
 
+    it('informs about retention and links to the privacy policy under the consent box', () => {
+        render();
+        const box = screen.getByRole('checkbox', { name: /J'accepte/ });
+        expect(box.getAttribute('aria-describedby')).toContain('consent-privacy');
+        expect(screen.getByRole('link', { name: 'Politique de confidentialité' })).toHaveAttribute('href', '/politique-de-confidentialite');
+        expect(document.getElementById('consent-privacy')).toHaveTextContent('3 ans');
+    });
+
     it('lets you pick cards with the keyboard and count rooms with the steppers', async () => {
         const user = userEvent.setup();
         render();
@@ -213,14 +221,17 @@ describe('EstimateForm', () => {
     it('keeps a draft in the session and restores it', async () => {
         const user = userEvent.setup();
         const { unmount } = render();
+        await user.type(screen.getByLabelText(/^Où se situe votre bien/), '10 rue de Rennes');
         await user.type(screen.getByLabelText(/^Nom complet/), 'Jean Dupont');
         await user.click(screen.getByRole('checkbox', { name: /J'accepte/ }));
-        expect(JSON.parse(window.sessionStorage.getItem('estimate-draft')!)).toMatchObject({ full_name: 'Jean Dupont' });
+        expect(JSON.parse(window.sessionStorage.getItem('estimate-draft')!)).toMatchObject({ address: '10 rue de Rennes' });
         expect(JSON.parse(window.sessionStorage.getItem('estimate-draft')!)).not.toHaveProperty('consent');
+        expect(JSON.parse(window.sessionStorage.getItem('estimate-draft')!)).not.toHaveProperty('full_name'); // no personal identifier kept
         unmount();
 
         render();
-        expect(screen.getByLabelText(/^Nom complet/)).toHaveValue('Jean Dupont');
+        expect(screen.getByLabelText(/^Où se situe votre bien/)).toHaveValue('10 rue de Rennes');
+        expect(screen.getByLabelText(/^Nom complet/)).toHaveValue('');
         expect(screen.getByRole('checkbox', { name: /J'accepte/ })).not.toBeChecked(); // consent is never restored
     });
 
@@ -268,7 +279,13 @@ describe('EstimateForm', () => {
     it('shows the confirmation (reference, advisor, next steps) instead of the form once sent', async () => {
         const user = userEvent.setup();
         page.props = sharedProps({
-            flash: { success: 'Votre demande est bien reçue.', callbackPhone: null, newsletter: null, valuationReference: 'VAL-2026-0184' },
+            flash: {
+                success: null,
+                callbackPhone: null,
+                newsletter: null,
+                estimate: 'Votre demande est bien reçue.',
+                valuationReference: 'VAL-2026-0184',
+            },
         });
         render();
 

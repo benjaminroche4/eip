@@ -9,9 +9,7 @@ describe('Services', () => {
     it('renders the header and four service cards linking to the service pages', async () => {
         const { container } = renderPage(<Services />);
 
-        expect(
-            screen.getByRole('heading', { level: 2, name: 'Des services immobiliers sur mesure, à chaque étape de votre projet' }),
-        ).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: 'Que pouvons-nous faire pour votre projet immobilier à Paris ?' })).toBeInTheDocument();
         expect(screen.getByText('Ce que nous faisons')).toBeInTheDocument();
         const links = [
             ['Acheter', '/acheter-immobilier-paris'],

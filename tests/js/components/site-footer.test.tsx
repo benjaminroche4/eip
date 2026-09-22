@@ -14,7 +14,11 @@ describe('SiteFooter', () => {
             within(nav)
                 .getAllByRole('link')
                 .map((l) => l.textContent),
-        ).toEqual(['Acheter', 'Vendre', 'Estimation']);
+        ).toEqual(['Acheter', 'Vendre', 'Estimation', 'Relocation(nouvel onglet)']);
+        const relocation = within(nav).getByRole('link', { name: /Relocation/ }); // sister agency: external, new tab
+        expect(relocation).toHaveAttribute('href', 'https://relocation-in-paris.fr/');
+        expect(relocation).toHaveAttribute('target', '_blank');
+        expect(relocation).toHaveAttribute('rel', 'noopener noreferrer');
         const about = screen.getByRole('navigation', { name: 'À propos' });
         expect(
             within(about)
@@ -32,6 +36,9 @@ describe('SiteFooter', () => {
         const contactButtons = screen.getAllByRole('link', { name: 'Contactez-nous' }).filter((a) => /\bbg-card\b/.test(a.className));
         expect(contactButtons).toHaveLength(1); // the outline button, white on the sand footer
         expect(screen.getByText(sharedProps().seo.organization.phone!).className).toMatch(/whitespace-nowrap/); // phone on one line
+        const languages = screen.getByRole('navigation', { name: 'Langue' }); // inline EN | FR: real links in the HTML, not a menu
+        expect(within(languages).getByRole('link', { name: 'en' })).toHaveAttribute('hreflang', 'en');
+        expect(within(languages).getByRole('link', { name: 'fr' })).toHaveAttribute('aria-current', 'page');
         const legal = screen.getByRole('navigation', { name: /légaux|legal/i });
         expect(legal.parentElement!.className).toMatch(/\bitems-center\b.*\btext-center\b|\btext-center\b.*\bitems-center\b/); // centred on mobile
         expect(legal.querySelector('ul')!.className).toMatch(/justify-center/);

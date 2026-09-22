@@ -16,14 +16,15 @@ describe('Testimonials', () => {
         page.props = sharedProps();
         const { container } = renderPage(<Testimonials items={items} />);
 
-        expect(screen.getByRole('heading', { level: 2, name: 'Ce que disent nos clients' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: 'Que disent nos clients ?' })).toBeInTheDocument();
         expect(screen.getByText('4,9')).toBeInTheDocument();
         expect(screen.getByText('4,9').closest('div')!.querySelectorAll('svg.lucide-star')).toHaveLength(0); // no stars under the rating (they stay on the cards)
         expect(screen.getByText('4,9').className).toMatch(/\btext-5xl\b.*\bsm:text-7xl\b/); // giant on desktop, tamer on mobile
         expect(screen.getByText('4,9').className).toMatch(/\btext-5xl\b.*\bsm:text-7xl\b/); // giant on desktop, tamer on mobile
-        const reviewsLink = screen.getByText(/Basé sur 400 avis/).closest('a')!;
+        const reviewsLink = screen.getByText(/\+400 avis/).closest('a')!;
         expect(reviewsLink).toHaveAttribute('href', 'https://www.google.com/maps');
-        expect(reviewsLink).toHaveTextContent('Basé sur 400 avis Google'); // « Google » is the logo + sr-only text
+        expect(reviewsLink).toHaveTextContent('Sur +400 avis Google'); // the logo sits right before the visible word « Google »
+        expect(reviewsLink.querySelector('img')!.nextElementSibling).toHaveTextContent('Google');
         expect(container.querySelector('img[src="/images/social/google.svg"]')).not.toBeNull();
         expect(screen.getByText('+397')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Témoignage précédent' })).toBeInTheDocument();
@@ -46,7 +47,7 @@ describe('Testimonials', () => {
         page.props = sharedProps({ seo: { ...sharedProps().seo, reviews: null } });
         renderPage(<Testimonials items={items} />);
 
-        expect(screen.queryByText(/Basé sur/)).toBeNull();
+        expect(screen.queryByText(/\+400 avis/)).toBeNull();
         expect(screen.queryByRole('button', { name: /Témoignage/ })).toBeNull();
         expect(screen.getAllByRole('listitem')).toHaveLength(3); // the cards only (loop copies are aria-hidden)
     });

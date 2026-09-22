@@ -9,7 +9,7 @@ import { stripFaqMarkup } from '@/lib/faq-markup';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { Tabs as TabsPrimitive } from 'radix-ui';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type FaqTabsProps = { categories: FaqCategory[] };
 
@@ -35,6 +35,23 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
     );
     const [query, setQuery] = useState('');
     const searchId = 'faq-search';
+
+    // Shareable search (2026-09-22): `?q=` restores the query on load and follows it while typing (replaceState, no reload).
+    const hydrated = useRef(false);
+    useEffect(() => {
+        const q = new URLSearchParams(window.location.search).get('q');
+        if (q) setQuery(q);
+    }, []);
+    useEffect(() => {
+        if (!hydrated.current) {
+            hydrated.current = true;
+            return;
+        }
+        const url = new URL(window.location.href);
+        if (query.trim().length >= 2) url.searchParams.set('q', query.trim());
+        else url.searchParams.delete('q');
+        window.history.replaceState(window.history.state, '', url);
+    }, [query]);
 
     // Deep link: #topic-slug or #question-slug opens the right topic (and question) and scrolls to it.
     useEffect(() => {

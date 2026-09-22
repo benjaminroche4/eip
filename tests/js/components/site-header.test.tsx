@@ -13,6 +13,7 @@ describe('SiteHeader', () => {
         const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
         expect(within(nav).getAllByRole('link').length).toBeGreaterThanOrEqual(3);
         expect(screen.getByRole('link', { name: 'Nous contacter' })).toHaveAttribute('href', '/contact');
+        expect(screen.getByRole('link', { name: 'Nous contacter' }).querySelector('[aria-hidden]')!.className).toMatch(/animate-sweep-shimmer/); // discreet light sweep
     });
 
     it('marks the current page with aria-current', () => {
@@ -65,7 +66,7 @@ describe('SiteHeader', () => {
 });
 
 describe('SiteHeader mobile menu layout', () => {
-    it('lists the secondary links (blog, FAQ, about) with plain sand hover, then the CTA and the language links under a divider', async () => {
+    it('lists the secondary links (blog, FAQ, about) with plain sand hover, then the CTA and the language links, without a top divider', async () => {
         const user = userEvent.setup();
         renderPage(<SiteHeader />);
         await user.click(screen.getByRole('button', { name: 'Ouvrir le menu' }));
@@ -73,8 +74,8 @@ describe('SiteHeader mobile menu layout', () => {
         const mobileNav = screen.getByRole('navigation', { name: 'Navigation mobile' });
         const links = within(mobileNav).getAllByRole('link');
         expect(links.slice(-3).map((l) => l.textContent)).toEqual(['Blog', 'FAQ', 'À propos']);
-        // Divider between the bar and the first rows once open (user decision 2026-09-22)
-        expect(mobileNav.querySelector(':scope > span[aria-hidden]')).not.toBeNull();
+        // No divider between the bar and the first rows (tried and dropped the same day — user decision 2026-09-22)
+        expect(mobileNav.querySelector(':scope > span[aria-hidden]')).toBeNull(); // no hairline under the bar (tried and dropped the same day — user decision 2026-09-22)
         // First level: thin grey icon + vertical hairline before the label (ui.sh variant « Hairline verticale »).
         links.slice(0, 3).forEach((l) => {
             expect(l.querySelector('svg')).not.toBeNull();

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { axe } from 'vitest-axe';
 import { formPost, page, renderPage, sharedProps } from '../inertia';
 
-const TOPICS = ['buy', 'sell', 'invest', 'valuation', 'off_market', 'other'];
+const TOPICS = ['buy', 'sell', 'valuation', 'other'];
 
 describe('ContactForm', () => {
     beforeEach(() => {
@@ -23,6 +23,7 @@ describe('ContactForm', () => {
         }
         expect(screen.getByRole('combobox', { name: /Je suis intéressé par/ })).toHaveAttribute('aria-required', 'true');
         expect(screen.getByLabelText(/^Message/)).toHaveAttribute('aria-required', 'false');
+        expect(screen.getByText('Optionnel').previousElementSibling).toHaveTextContent('Message'); // mention at the right of the label
         expect(screen.getByRole('combobox', { name: 'Indicatif du pays' })).toHaveTextContent('FR');
         expect(screen.getByRole('checkbox', { name: /j'accepte l'utilisation de mes informations/ })).toHaveAttribute('aria-required', 'true');
         expect(screen.getByRole('button', { name: 'Envoyer ma demande' })).toBeEnabled();
@@ -91,7 +92,7 @@ describe('ContactForm', () => {
 
         await user.keyboard('{ArrowDown}{Enter}');
         expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: /Je suis intéressé par/ })).toHaveTextContent(/Acheter un bien|Vendre un bien/);
+        expect(screen.getByRole('combobox', { name: /Je suis intéressé par/ })).toHaveTextContent(/Acheter un bien|Vendre mon bien/);
     });
 
     it('is fully reachable with Tab, in reading order, and the honeypot is skipped', async () => {

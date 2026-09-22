@@ -32,10 +32,15 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
     // Mobile: slide the bar away while scrolling down, bring it back on the first upward scroll (never while the menu is open).
     const hidden = scrolled && direction === 'down' && !menuOpen;
 
+    // Discreet light sweep on the CTA so it stands out (user decision 2026-09-22): a narrow, slanted, soft white band crosses the button every 8 s.
     const cta = (
-        <Button asChild size="lg">
+        <Button asChild size="lg" className="relative overflow-hidden">
             <Link href={contactHref} prefetch>
-                {t('nav.contact')}
+                <span
+                    aria-hidden
+                    className="animate-sweep-shimmer pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-linear-to-r from-transparent via-white/30 to-transparent blur-[2px] motion-reduce:hidden"
+                />
+                <span className="relative">{t('nav.contact')}</span>
             </Link>
         </Button>
     );

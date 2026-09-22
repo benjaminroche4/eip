@@ -1,9 +1,11 @@
 import EstimateForm from '@/components/estimate/estimate-form';
+import EstimateProcess from '@/components/estimate/estimate-process';
+import CtaCard from '@/components/home/cta-card';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
-import { breadcrumbList } from '@/lib/json-ld';
+import { breadcrumbList, serviceNode } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
@@ -31,7 +33,19 @@ export default function Estimate({ propertyTypes, contactMethods, floors, featur
             <SeoHead
                 title={t('pages.estimate.seo_title')}
                 description={t('pages.estimate.seo_description')}
-                jsonLd={breadcrumbList(crumbs, origin)}
+                jsonLd={[
+                    // The free valuation as a Service of the organisation (2026-09-22)
+                    serviceNode(
+                        {
+                            name: t('pages.estimate.seo_title'),
+                            description: t('pages.estimate.intro'),
+                            url: route('estimate'),
+                            serviceType: t('pages.estimate.title'),
+                        },
+                        origin,
+                    ),
+                    breadcrumbList(crumbs, origin),
+                ]}
             />
             <PublicLayout>
                 <div className="flex flex-col gap-12 lg:gap-16 lg:px-10">
@@ -50,6 +64,12 @@ export default function Estimate({ propertyTypes, contactMethods, floors, featur
                         conditions={conditions}
                         googleMapsKey={googleMapsKey}
                     />
+                    {/* How a valuation goes (GEO content under the form, user decision 2026-09-22) */}
+                    <EstimateProcess />
+                </div>
+                {/* Same closing call to action as the home, About and Buy pages */}
+                <div className="mx-auto mt-20 w-full max-w-5xl sm:mt-28">
+                    <CtaCard />
                 </div>
             </PublicLayout>
         </>

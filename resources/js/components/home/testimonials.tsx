@@ -51,7 +51,7 @@ export default function Testimonials({ items }: TestimonialsProps) {
     const { t, tc } = useTranslation();
     const { seo } = usePage<SharedData>().props;
     const reviews = seo.reviews;
-    const count = reviews ? tc('testimonials.based_on', reviews.count, { count: reviews.count.toLocaleString('fr-FR') }) : '';
+    const count = reviews ? tc('testimonials.count_short', reviews.count, { count: reviews.count.toLocaleString('fr-FR') }) : '';
     const rowRef = useRef<HTMLUListElement>(null);
     // The row can be dragged with the mouse (touch scrolls natively). Below `lg` a card is always centred (snap to
     // centres, side padding = half the viewport minus half a card); from `lg` the snap settles on a card's start
@@ -225,16 +225,16 @@ type RatingColumnProps = {
 
 /**
  * Rating column (user decision 2026-09-16, ui.sh variant « Note géante »): the Google rating in `text-5xl sm:text-7xl` (smaller on mobile, user decision 2026-09-22),
- * « Basé sur N avis » with the Google logo (brand logo file, not an icon), then the round portraits + « +N » and the
+ * « Sur +N avis Google » with the Google logo before the word (brand logo file, not an icon), then the round portraits + « +N » and the
  * previous / next arrows on one line. Closes the block on mobile.
  */
 function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColumnProps) {
     const { t } = useTranslation();
+    // « Sur +N avis [G] Google »: the count, then the Google logo right before the visible word (user decision 2026-09-22)
     const google = (
         <span className="inline-flex items-center gap-1.5">
-            <img src="/images/social/google.svg" alt="" width={14} height={14} className="size-3.5 shrink-0" />
-            {count}
-            <span className="sr-only"> Google</span>
+            {count} <img src="/images/social/google.svg" alt="" width={14} height={14} className="size-3.5 shrink-0" />
+            <span>Google</span>
         </span>
     );
 

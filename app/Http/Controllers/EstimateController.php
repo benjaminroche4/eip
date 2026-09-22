@@ -27,6 +27,7 @@ class EstimateController extends Controller
     {
         $stored = $send(Valuation::fromRequest($request));
 
-        return back()->with('success', __('ui.estimate.sent'))->with('valuation_reference', $stored->reference);
+        // Own flash key (as the newsletter): a contact `success` left in the session must never read as a valuation.
+        return back()->with('estimate_success', __('ui.estimate.sent'))->with('valuation_reference', $stored->reference);
     }
 }

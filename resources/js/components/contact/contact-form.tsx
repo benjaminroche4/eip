@@ -175,7 +175,7 @@ export default function ContactForm({ topics }: ContactFormProps) {
                                 )}
                             </FormField>
 
-                            <FormField id="message" label={t('contact.message')} error={errors.message}>
+                            <FormField id="message" label={t('contact.message')} error={errors.message} optional>
                                 {(aria) => (
                                     <div className="relative">
                                         <Textarea

@@ -1,12 +1,10 @@
 import GradientHairline from '@/components/layout/gradient-hairline';
 import PageEyebrow from '@/components/page/page-eyebrow';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { type SharedData } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
 import { type CSSProperties, Fragment, useEffect, useRef, useState } from 'react';
 
@@ -14,7 +12,8 @@ const VALUES = [1, 2, 3, 4, 5] as const;
 
 /**
  * « Nos valeurs » (layout of Figma 712-24134 / 712-24468, turned into a values block on user decision 2026-09-16):
- * sticky left column with the header (eyebrow, h2, answer-first intro), the advisor and a contact button; on the right
+ * sticky left column with the header (eyebrow, h2, answer-first intro) and a contact button (the advisor line « Votre
+ * interlocuteur unique » was removed on user decision 2026-09-22); on the right
  * an `<ol>` of five values threaded by a vertical gradient hairline — big sand Montserrat number with its dot on the
  * thread, title and one sentence, gradient hairlines between them. The value closest to the middle of the viewport is
  * the active one (nearest to the middle line, measured on scroll — not an IntersectionObserver band, which skipped the
@@ -26,8 +25,6 @@ const VALUES = [1, 2, 3, 4, 5] as const;
  */
 export default function ValuesList() {
     const { t } = useTranslation();
-    const { seo } = usePage<SharedData>().props;
-    const advisor = seo.advisor;
     const listRef = useRef<HTMLOListElement>(null);
     const [active, setActive] = useState<number | null>(null);
     const revealed = useReveal(listRef);
@@ -83,20 +80,6 @@ export default function ValuesList() {
                     {/* GEO: a self-contained sentence (brand + what + where) */}
                     <p className="text-muted-foreground max-w-md text-base/7 text-pretty sm:text-sm/6">{t('values.intro')}</p>
                 </div>
-                {advisor && (
-                    <div className="flex items-center gap-3">
-                        <Avatar className="size-10">
-                            <AvatarImage src={advisor.photo} alt="" loading="lazy" />
-                            <AvatarFallback className="bg-background-10 text-foreground text-xs font-medium">
-                                {advisor.name.slice(0, 2)}
-                            </AvatarFallback>
-                        </Avatar>
-                        <p className="flex flex-col text-sm">
-                            <span className="font-medium">{advisor.name}</span>
-                            <span className="text-muted-foreground text-xs">{t('values.advisor_line')}</span>
-                        </p>
-                    </div>
-                )}
                 <Button asChild size="lg" className="w-fit">
                     <Link href={route('contact')} prefetch>
                         {t('values.cta')}

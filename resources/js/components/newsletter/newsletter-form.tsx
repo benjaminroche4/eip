@@ -1,4 +1,5 @@
 import FormField from '@/components/contact/form-field';
+import BorderShimmer from '@/components/page/border-shimmer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,10 +41,8 @@ export default function NewsletterForm({ nextIssue }: NewsletterFormProps) {
 
     return (
         <section aria-labelledby="newsletter-form-title" className="border-secondary-30 bg-card relative w-full max-w-xl border p-2">
-            {/* Border shimmer: a faint light arc gliding twice along the 1px outline on load, ring-mask hides the inside */}
-            <span aria-hidden className="ring-mask pointer-events-none absolute -inset-px overflow-hidden motion-reduce:hidden">
-                <span className="animate-border-shimmer via-foreground/20 absolute -inset-full bg-conic from-transparent from-40% to-transparent to-60%" />
-            </span>
+            {/* Border shimmer: light gliding twice along the 1px outline on load (shared with the blog's featured frame) */}
+            <BorderShimmer />
             {/* Same surface as the contact / valuation / blog cards: sand hairline outside, sand gradient inside. */}
             <div className="from-background-05 flex flex-col items-center gap-4 bg-linear-to-b to-transparent px-4 pt-5 pb-4 sm:gap-6 sm:px-6 sm:pt-6 sm:pb-5">
                 <h2 id="newsletter-form-title" className="sr-only">
@@ -145,7 +144,8 @@ export default function NewsletterForm({ nextIssue }: NewsletterFormProps) {
                     </form>
                 )}
 
-                <p className="bg-background-05 text-muted-foreground flex items-center gap-2 px-3 py-1.5 text-xs">
+                {/* Centred « no spam » pill alone (the Google rating line was removed the same day it was added — user decision 2026-09-22) */}
+                <p className="bg-background-05 text-muted-foreground flex items-center gap-2 self-center px-3 py-1.5 text-xs">
                     <ShieldCheck aria-hidden className="size-3.5 shrink-0" />
                     {t('newsletter.no_spam')}
                 </p>

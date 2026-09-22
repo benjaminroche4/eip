@@ -184,3 +184,46 @@ export function contactPage(seo: SeoShared, origin: string, url: string, name: s
         },
     };
 }
+
+/** Language codes (BCP 47) behind the team members' flags. */
+const FLAG_LANGUAGES: Record<string, string> = { FR: 'fr', GB: 'en', US: 'en' };
+
+/**
+ * `Person` nodes for the advisors of the About page (E-E-A-T, 2026-09-22): one per team member, `worksFor` the
+ * organisation node, `knowsLanguage` derived from the flags, `jobTitle` from the role. The organisation lists them as
+ * `employee` through `teamOrganizationNode()`.
+ */
+export function teamNodes(members: { name: string; role: string; flags: string[]; photo: string }[], origin: string): JsonLd[] {
+    return members.map((member, i) => ({
+        '@type': 'Person',
+        '@id': `${origin}/#person-${i + 1}`,
+        name: member.name,
+        jobTitle: member.role,
+        image: member.photo.startsWith('http') ? member.photo : `${origin}${member.photo}`,
+        knowsLanguage: Array.from(new Set(member.flags.map((flag) => FLAG_LANGUAGES[flag]).filter(Boolean))),
+        worksFor: { '@id': `${origin}/#organization` },
+    }));
+}
+
+/** The organisation node with its `employee` references to the team's `Person` nodes. */
+export function teamOrganizationNode(seo: SeoShared, origin: string, teamCount: number): JsonLd {
+    return { ...organizationNode(seo, origin), employee: Array.from({ length: teamCount }, (_, i) => ({ '@id': `${origin}/#person-${i + 1}` })) };
+}
+
+/**
+ * `Service` node of a free service offered by the agency (valuation page, 2026-09-22): provider = the organisation
+ * node, served in Paris, offered at no charge.
+ */
+export function serviceNode(input: { name: string; description: string; url: string; serviceType: string }, origin: string): JsonLd {
+    return {
+        '@type': 'Service',
+        '@id': `${input.url}#service`,
+        name: input.name,
+        serviceType: input.serviceType,
+        description: input.description,
+        url: input.url,
+        provider: { '@id': `${origin}/#organization` },
+        areaServed: { '@type': 'City', name: 'Paris' },
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+    };
+}

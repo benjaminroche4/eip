@@ -36,21 +36,35 @@ export function useDragScroll(
 
         let dragging = false;
         let lastX = 0;
+        let startScroll = 0;
+        /** A drag past this many pixels always moves at least one item in its direction (2026-09-22: snapping back to the nearest item read as « the image comes back »). */
+        const STEP_THRESHOLD = 24;
 
-        const nearestItem = () => {
-            const items = Array.from(el.children) as HTMLElement[];
-            const reference = align === 'center' ? el.scrollLeft + el.clientWidth / 2 : el.scrollLeft;
-            let best = el.scrollLeft;
+        /** Scroll position that puts each item at its snap point (start or centre), in row order. */
+        const snapPoints = () =>
+            (Array.from(el.children) as HTMLElement[]).map((item) =>
+                align === 'center' ? item.offsetLeft + item.offsetWidth / 2 - el.clientWidth / 2 : item.offsetLeft,
+            );
+        const nearestItem = (from: number = el.scrollLeft) => {
+            let best = from;
             let bestDistance = Infinity;
-            for (const item of items) {
-                const edge = align === 'center' ? item.offsetLeft + item.offsetWidth / 2 : item.offsetLeft;
-                const distance = Math.abs(edge - reference);
+            for (const point of snapPoints()) {
+                const distance = Math.abs(point - from);
                 if (distance < bestDistance) {
                     bestDistance = distance;
-                    best = align === 'center' ? edge - el.clientWidth / 2 : edge;
+                    best = point;
                 }
             }
             return best;
+        };
+        /** Release target: the nearest item, but never the one we started from when the drag went further than the threshold. */
+        const releaseTarget = () => {
+            const delta = el.scrollLeft - startScroll;
+            const target = nearestItem();
+            if (Math.abs(delta) < STEP_THRESHOLD || Math.abs(target - nearestItem(startScroll)) > 1) return target;
+            const points = snapPoints().sort((a, b) => a - b);
+            const next = delta > 0 ? points.find((p) => p > target + 1) : [...points].reverse().find((p) => p < target - 1);
+            return next ?? target;
         };
 
         const onPointerDown = (e: PointerEvent) => {
@@ -59,6 +73,7 @@ export function useDragScroll(
             e.preventDefault();
             dragging = true;
             lastX = e.clientX;
+            startScroll = el.scrollLeft;
             el.setPointerCapture(e.pointerId);
             el.dataset.dragging = 'true';
         };
@@ -72,7 +87,7 @@ export function useDragScroll(
             if (!dragging) return;
             dragging = false;
             if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
-            const target = nearestItem();
+            const target = releaseTarget();
             delete el.dataset.dragging;
             el.scrollTo({ left: target, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
         };

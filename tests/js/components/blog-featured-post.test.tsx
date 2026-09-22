@@ -27,6 +27,8 @@ describe('BlogFeaturedPost', () => {
 
         expect(screen.getByRole('article', { name: 'Acheter à Paris en 2026' })).toHaveClass('border', 'hover:border-foreground/40'); // same frame as the cards
         expect(screen.getByText('Dernier article')).toHaveClass('text-center', 'uppercase'); // label centred on the outer sand frame (Relocation in Paris pattern)
+        expect(container.querySelector('.animate-border-shimmer')).not.toBeNull(); // border shimmer lifting the frame (like the newsletter card)
+        expect(container.querySelector('.ring-mask')).toHaveAttribute('aria-hidden'); // decorative, hidden in motion-reduce
         expect(screen.getByRole('article', { name: 'Acheter à Paris en 2026' }).querySelector('.bg-card')).not.toBeNull(); // inner white card
         expect(container.querySelector('time')!.parentElement).toHaveTextContent('Par Élodie Garnier1 sept. 2026'); // same meta block as the cards
         expect(screen.getByText('Acheter')).toHaveClass('rounded-full'); // category pill on the photo

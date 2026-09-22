@@ -16,7 +16,7 @@ describe('AgencyManifesto', () => {
         page.props = sharedProps();
         const { container } = renderPage(<AgencyManifesto stats={stats} />);
 
-        expect(screen.getByRole('heading', { level: 2, name: "Plus qu'une agence immobilière" })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: 'Qui sommes-nous ?' })).toBeInTheDocument();
         // GEO statement: brand + street + district, no stray space before the comma
         expect(container.querySelector('p')).toHaveTextContent(/^Estate in Paris, agence installée rue Grégoire de Tours à Paris 6e, allie/);
         container.querySelectorAll('p > span.font-semibold').forEach((w) => expect(['Estate', 'in', 'Paris']).toContain(w.textContent));
@@ -40,13 +40,13 @@ describe('AgencyManifesto', () => {
 
         // Reveal, word by word: every word is its own span staggered 40 ms after the previous one (title → statements),
         // the mark closes the sequence; jsdom has no IntersectionObserver so the reveal is immediate here.
-        const title = screen.getByRole('heading', { level: 2, name: "Plus qu'une agence immobilière" });
+        const title = screen.getByRole('heading', { level: 2, name: 'Qui sommes-nous ?' });
         const titleWords = title.querySelectorAll('span');
-        expect(titleWords).toHaveLength(4);
+        expect(titleWords).toHaveLength(3); // « Qui sommes-nous ? » = three words written one by one
         expect(titleWords[0]).toHaveClass('animate-manifesto-in', 'motion-reduce:animate-none');
         expect(titleWords[0].style.getPropertyValue('--stagger')).toBe('0ms');
-        expect(titleWords[3].style.getPropertyValue('--stagger')).toBe('120ms');
-        expect(screen.getByText('Estate').style.getPropertyValue('--stagger')).toBe('160ms'); // brand right after the title
+        expect(titleWords[2].style.getPropertyValue('--stagger')).toBe('80ms');
+        expect(screen.getByText('Estate').style.getPropertyValue('--stagger')).toBe('120ms'); // brand right after the title
         const wordCount = title.parentElement!.querySelectorAll('h2 span, p > span').length;
         expect((mark as HTMLElement).style.getPropertyValue('--stagger')).toBe(`${wordCount * 40}ms`);
 
@@ -106,5 +106,13 @@ describe('AgencyManifesto', () => {
             '120+',
         ]);
         expect(raf).not.toHaveBeenCalled();
+    });
+
+    it('renders the text alone, without the figures grid, when no stats are given (home)', () => {
+        page.props = sharedProps();
+        const { container } = renderPage(<AgencyManifesto />);
+
+        expect(screen.getByRole('heading', { level: 2, name: 'Qui sommes-nous ?' })).toBeInTheDocument();
+        expect(container.querySelector('ul')).toBeNull();
     });
 });

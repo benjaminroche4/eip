@@ -47,6 +47,7 @@ final class LlmsTxt
             '## Ressources',
             '',
             "- [Plan du site / Sitemap]({$sitemap})",
+            '- ['.__('ui.pages.sitemap.title', [], 'fr').']('.url('/plan-du-site').') / ['.__('ui.pages.sitemap.title', [], 'en').']('.url('/en/sitemap').') : toutes les pages et tous les articles du site.',
             '- ['.__('legal.legal.title', [], 'fr').']('.url('/mentions-legales').')',
             '- ['.__('legal.privacy.title', [], 'fr').']('.url('/politique-de-confidentialite').')',
         ];

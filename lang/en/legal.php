@@ -1,15 +1,24 @@
 <?php
 
-// Legal pages — placeholder content, replace with legally reviewed copy.
+// Legal pages — legal notice and privacy policy written on 2026-09-22 (to be reviewed by a lawyer). The terms page was dropped on 2026-09-22 (replaced by the HTML sitemap).
 return [
     'privacy' => [
         'title' => 'Privacy Policy',
         'description' => 'Learn how Estate in Paris collects, uses and protects your personal data, what your GDPR rights are and how to exercise them with us.',
         'updated' => 'Last updated: :date',
         'sections' => [
-            ['heading' => 'Data controller', 'body' => 'To complete: company name, address, data protection contact.'],
-            ['heading' => 'Data we collect', 'body' => 'To complete: contact forms, valuation requests, cookies and analytics.'],
-            ['heading' => 'Your rights', 'body' => 'To complete: access, rectification, erasure, objection — how to exercise them.'],
+            ['heading' => 'Introduction', 'body' => "This privacy policy explains how Estate in Paris collects, uses and protects the personal data of visitors to estate-in-paris.fr.\n\nEstate in Paris is committed to the security, confidentiality and transparency of your data, in accordance with the General Data Protection Regulation (GDPR) and French data protection law."],
+            ['heading' => 'Data controller', 'body' => "The data controller is Estate in Paris, a trading name of Veylam OÜ (17548179).\n\nAddress: :address\nEmail: :email\nPhone: :phone\n\nNo data protection officer has been appointed; any question about your data can be sent to :email."],
+            ['heading' => 'Personal data we collect', 'body' => "We only collect the data strictly necessary to provide our services:\n\n- Contact form: first name, last name, email address, phone number, subject and message.\n- Valuation request: name, email address, phone number, preferred contact method, the property's address and characteristics (type, surface, floor, rooms, condition, assets, expected value) and your optional message.\n- Newsletter sign-up: email address.\n- Browsing data: IP address, device type, browser and anonymised traffic statistics.\n\nThis data is provided voluntarily through the site's forms or collected automatically while browsing."],
+            ['heading' => 'Purposes of processing', 'body' => "Your data is used only for the services offered by Estate in Paris:\n\n- Answering your contact and information requests.\n- Valuing your property and supporting your purchase, sale or investment project.\n- Sending you our weekly newsletter (market news, analyses, opportunities), subject to your consent.\n- Keeping the site secure and preventing abuse (rate limiting, bot detection).\n- Measuring the site's audience to improve its performance and user experience."],
+            ['heading' => 'Legal basis', 'body' => "We process your data on the following legal bases:\n\n- Pre-contractual steps taken at your request (answering a contact or valuation request) and, where applicable, the performance of a contract.\n- Your free, specific and informed consent, in particular for the newsletter and the handling of your valuation request.\n- Estate in Paris's legitimate interest in securing its site and improving its services and client relationship.\n- Compliance with our legal obligations, in particular those applying to real estate intermediaries."],
+            ['heading' => 'Retention period', 'body' => "Your data is kept only as long as necessary for the purposes it was collected for:\n\n- Contact and valuation requests: up to 3 years after the last exchange.\n- Client data: for the duration of the contractual relationship, then archived for the statutory limitation period (5 years).\n- Newsletter: until you unsubscribe; your address is then kept on a suppression list.\n- Cookie data: 13 months at most from the time it is set."],
+            ['heading' => 'Recipients and processors', 'body' => "Estate in Paris never sells or rents your personal data. It is handled by our advisors and may be passed to the technical providers strictly necessary to run the site:\n\n- Laravel Cloud (Laravel Holdings Inc.), hosting of the site and its database, servers located in Munich, Germany (European Union).\n- Resend, delivery of transactional emails (acknowledgements, newsletter welcome email).\n- Google (Google Ireland Ltd.), audience measurement through Google Tag Manager and address suggestions through Google Places, only when you use the address field.\n- Our real estate partners (notaries, surveyors, mortgage brokers) involved in your project, only with your agreement.\n- Administrative or judicial authorities, upon a lawful request.\n\nSome of these providers may process data outside the European Union; such transfers are governed by the European Commission's standard contractual clauses or an equivalent mechanism."],
+            ['heading' => 'Security and confidentiality', 'body' => "We apply the technical and organisational measures needed to keep your data secure: encrypted connections (HTTPS), access control, form rate limiting and secure backups.\n\nEstate in Paris makes sure all its providers meet equivalent data protection standards."],
+            ['heading' => 'Your rights', 'body' => "Under the GDPR you have the following rights:\n\n- Right of access to your personal data.\n- Right to rectification or erasure of your data.\n- Right to restriction of or objection to processing.\n- Right to data portability.\n- Right to withdraw your consent at any time, in particular for the newsletter (by writing to us or replying to any of our emails).\n- Right to set instructions on what happens to your data after your death.\n\nTo exercise these rights, send your request to :email. We undertake to reply within one month.\n\nYou may also lodge a complaint with the CNIL (www.cnil.fr), the French supervisory authority, if you believe your rights are not respected."],
+            ['heading' => 'Cookies and trackers', 'body' => "The site uses cookies to operate and to measure its audience:\n\n- Technical cookies: essential to the site's operation (session, form security). They do not require consent.\n- Audience measurement cookies: traffic statistics through Google Tag Manager.\n\nYou can refuse or delete cookies at any time in your browser settings. The site uses no advertising cookies."],
+            ['heading' => 'Changes to this policy', 'body' => 'Estate in Paris may update this privacy policy at any time, in particular to follow changes in the law. The date of the last update appears at the top of this page.'],
+            ['heading' => 'Contact', 'body' => "For any question about this policy or the handling of your personal data, you can contact us:\n\nEmail: :email\nPostal address: Estate in Paris, :address\nPhone: :phone"],
         ],
     ],
     'legal' => [
@@ -17,19 +26,15 @@ return [
         'description' => 'Legal notice for the Estate in Paris website: publisher identity, hosting provider, intellectual property and contact for any legal question.',
         'updated' => 'Last updated: :date',
         'sections' => [
-            ['heading' => 'Publisher', 'body' => 'To complete: company name, legal form, capital, registration, head office, professional licence.'],
-            ['heading' => 'Hosting', 'body' => 'To complete: host name and contact details.'],
-            ['heading' => 'Intellectual property', 'body' => 'To complete.'],
-        ],
-    ],
-    'terms' => [
-        'title' => 'Terms & Conditions',
-        'description' => 'Read the terms and conditions of use of the Estate in Paris website and services: access, responsibilities, personal data and governing law.',
-        'updated' => 'Last updated: :date',
-        'sections' => [
-            ['heading' => 'Purpose', 'body' => 'To complete.'],
-            ['heading' => 'Fees', 'body' => 'To complete: fee schedule (mandatory disclosure).'],
-            ['heading' => 'Mediation', 'body' => 'To complete: consumer mediator contact details.'],
+            ['heading' => 'Publisher', 'body' => "This website, available at estate-in-paris.fr, is published by Estate in Paris, a trading name of Veylam OÜ (17548179).\n\nAddress: :address\nPhone: :phone\nEmail: :email\nWebsite: estate-in-paris.fr\nPublishing director: Mr Leroy, as the person responsible for publication."],
+            ['heading' => 'Hosting provider', 'body' => "The estate-in-paris.fr website is hosted by Laravel Cloud, a service operated by Laravel Holdings Inc., 2810 North Church Street, Wilmington, DE 19802, United States.\nServer location: Munich, Germany (European Union).\nWebsite: cloud.laravel.com"],
+            ['heading' => 'Design and development', 'body' => "Design and art direction: Estate in Paris.\nWeb development: Estate in Paris.\nDesigned and built with modern web technologies."],
+            ['heading' => 'Intellectual property', 'body' => "All content on this website (texts, images, graphics, logo, videos, icons, structure, source code, etc.) is the exclusive property of Estate in Paris, unless otherwise stated.\n\nAny reproduction, representation, modification, publication, adaptation or use, in whole or in part, of these elements, by any means or process whatsoever, is prohibited without prior written authorisation.\n\nAny unauthorised use of the website or its content may give rise to legal proceedings under articles L.335-2 et seq. of the French Intellectual Property Code."],
+            ['heading' => 'GDPR', 'body' => "Estate in Paris undertakes to collect and process your data in accordance with the General Data Protection Regulation (GDPR) and the French Data Protection Act.\n\n- Data collected: contact form (first name, last name, email, phone, subject, message); valuation form (property address and characteristics, name, email, phone); newsletter sign-up (email).\n- Purposes: the data collected is used solely to answer your requests, manage our commercial relationship and offer you personalised support.\n- Retention: data is kept for a maximum of 3 years from the last contact.\n- Your rights: under the GDPR you have the right to access, rectify, erase or restrict the processing of your data, the right to data portability and the right to object to processing. To exercise your rights, write to :email."],
+            ['heading' => 'Cookies', 'body' => "The website may set cookies required for its operation and for audience measurement (Google Tag Manager). You can manage your preferences in your browser settings.\n\nTypes of cookies used:\n\n- Technical cookies: essential to the operation of the website.\n- Analytics cookies: anonymous traffic statistics."],
+            ['heading' => 'Liability', 'body' => 'Estate in Paris strives to ensure the accuracy and regular updating of the information published on its website. It cannot, however, be held liable for unintentional errors or omissions, temporary unavailability of the website, or direct or indirect damage arising from consulting or using the website.'],
+            ['heading' => 'External links', 'body' => 'The website may contain links to external websites. Estate in Paris accepts no liability for the content or privacy practices of these third-party websites.'],
+            ['heading' => 'Governing law', 'body' => 'This legal notice is governed by French law. Any dispute relating to the use of the website shall be subject to the exclusive jurisdiction of the courts of Paris.'],
         ],
     ],
 ];

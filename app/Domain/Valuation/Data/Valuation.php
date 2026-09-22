@@ -2,6 +2,7 @@
 
 namespace App\Domain\Valuation\Data;
 
+use App\Domain\Valuation\Models\ValuationRequest;
 use Illuminate\Http\Request;
 
 /** A valuation request submitted from the public estimate page (Figma 696-13105). */
@@ -73,6 +74,33 @@ final readonly class Valuation
     }
 
     /** @return array<string, mixed> */
+    /** Rebuilds the DTO from a stored request (mail retries). */
+    public static function fromModel(ValuationRequest $request): self
+    {
+        return new self(
+            propertyType: $request->property_type,
+            fullName: $request->full_name,
+            email: $request->email,
+            phone: $request->phone,
+            address: $request->address,
+            surface: (int) $request->surface,
+            floor: $request->floor,
+            elevator: (bool) $request->elevator,
+            rooms: (int) $request->rooms,
+            bedrooms: (int) $request->bedrooms,
+            features: $request->features ?? [],
+            condition: $request->condition,
+            estimatedValue: $request->estimated_value !== null ? (int) $request->estimated_value : null,
+            contactMethod: $request->contact_method,
+            message: $request->message,
+            locale: $request->locale,
+            ip: $request->ip,
+            userAgent: $request->user_agent,
+            referer: $request->referer,
+            consentAt: $request->consent_at ? \DateTimeImmutable::createFromInterface($request->consent_at) : null,
+        );
+    }
+
     public function toArray(): array
     {
         return [

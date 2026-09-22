@@ -10,9 +10,9 @@
 
 @theme {
     /* Border shimmer: a faint light arc gliding along an outline (newsletter card; removed from the footer "Open" badge). */
-    --animate-border-shimmer: border-shimmer 8s linear 2; /* two passes on load, then still (user decision 2026-08-27) */
-    /* Price chip (Buy districts): a faint sand light band sweeps across the chip, then rests — one pass every 6 s (user decision 2026-09-22). */
-    --animate-price-shimmer: price-shimmer 6s linear infinite;
+    --animate-border-shimmer: border-shimmer 6s linear 2; /* two passes on load, then still (user decision 2026-08-27; 8 s → 6 s and sand glow + bright core in `page/border-shimmer.tsx`, rework 2026-09-22) */
+    /* Sweep shimmer: a narrow, slanted, soft light band (half the element's width, skewed, blurred) crosses an element in ~1.8 s, then rests — one pass every 8 s (price chip of the Buy districts, header « Nous contacter » button; user decisions 2026-09-22, « premium » refinement the same day). */
+    --animate-sweep-shimmer: sweep-shimmer 8s linear infinite;
     /* shadcn Accordion (Radix exposes the content height as a CSS variable). */
     /* Valuation recap: a group's disc pops into a check once complete; fade-in dims the page behind the mobile recap sheet. */
     --animate-fade-in: fade-in 0.2s ease-out both;
@@ -229,13 +229,13 @@
             transform: rotate(1turn);
         }
     }
-    @keyframes price-shimmer {
+    @keyframes sweep-shimmer {
         0% {
-            transform: translateX(-100%);
+            transform: translateX(-200%) skewX(-12deg);
         }
-        30%,
+        22%,
         100% {
-            transform: translateX(100%);
+            transform: translateX(300%) skewX(-12deg);
         }
     }
 }

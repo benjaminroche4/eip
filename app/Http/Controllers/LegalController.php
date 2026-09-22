@@ -6,7 +6,7 @@ use App\Domain\Legal\Data\LegalPage;
 use Inertia\Inertia;
 use Inertia\Response;
 
-/** Privacy policy, legal notice and terms — one Inertia page, content from lang/{locale}/legal.php. */
+/** Privacy policy and legal notice — one Inertia page, content from lang/{locale}/legal.php. */
 class LegalController extends Controller
 {
     public function __invoke(string $key): Response

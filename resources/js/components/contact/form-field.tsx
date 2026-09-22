@@ -8,6 +8,8 @@ type FormFieldProps = {
     label: string;
     error?: string;
     required?: boolean;
+    /** Show an « Optionnel » mention at the right of the label (justify-between). */
+    optional?: boolean;
     /** Visually hide the label (single-field forms) — it stays announced by assistive tech. */
     hideLabel?: boolean;
     /** Render the error yourself (e.g. under a field + button row): the ARIA wiring still points to `${id}-error`. */
@@ -24,6 +26,7 @@ export default function FormField({
     label,
     error,
     required = false,
+    optional = false,
     hideLabel = false,
     externalError = false,
     onLabelClick,
@@ -34,17 +37,21 @@ export default function FormField({
 
     return (
         <div className="flex w-full flex-col gap-2">
-            <Label htmlFor={id} onClick={onLabelClick} className={cn('gap-0.5', hideLabel && 'sr-only')}>
-                {label}
-                {required && (
-                    <>
-                        <span aria-hidden className="text-destructive">
-                            *
-                        </span>
-                        <span className="sr-only"> ({t('contact.required')})</span>
-                    </>
-                )}
-            </Label>
+            <div className={cn('flex items-center justify-between gap-4', hideLabel && 'sr-only')}>
+                <Label htmlFor={id} onClick={onLabelClick} className="gap-0.5">
+                    {label}
+                    {required && (
+                        <>
+                            <span aria-hidden className="text-destructive">
+                                *
+                            </span>
+                            <span className="sr-only"> ({t('contact.required')})</span>
+                        </>
+                    )}
+                </Label>
+                {/* « Optionnel » at the right of the label (user decision 2026-09-22); the control already carries aria-required=false */}
+                {optional && !required && <span className="text-muted-foreground text-xs">{t('contact.optional')}</span>}
+            </div>
             {children({ id, 'aria-invalid': Boolean(error), 'aria-describedby': error ? errorId : undefined, 'aria-required': required })}
             {error && !externalError && (
                 <p id={errorId} className="text-destructive text-sm">

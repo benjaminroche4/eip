@@ -1,3 +1,4 @@
+import BorderShimmer from '@/components/page/border-shimmer';
 import SeoImage from '@/components/seo/seo-image';
 import { useTranslation } from '@/hooks/use-translation';
 import { Link } from '@inertiajs/react';
@@ -19,8 +20,10 @@ export default function BlogFeaturedPost({ post }: BlogFeaturedPostProps) {
     return (
         <article
             aria-labelledby="featured-post-title"
-            className="group border-border from-background-08 to-background-05 hover:border-foreground/40 focus-within:border-foreground/40 border bg-linear-to-b p-2 transition-colors duration-300 motion-reduce:transition-none"
+            className="group border-border from-background-08 to-background-05 hover:border-foreground/40 focus-within:border-foreground/40 relative border bg-linear-to-b p-2 transition-colors duration-300 motion-reduce:transition-none"
         >
+            {/* Border shimmer lifting the frame (shared with the newsletter card, user decision 2026-09-22) */}
+            <BorderShimmer />
             <p className="text-muted-foreground pt-1 pb-2 text-center text-xs font-medium tracking-wider uppercase">{t('blog.featured')}</p>
             <div className="bg-card grid lg:grid-cols-5 lg:gap-4">
                 <div className="order-2 flex flex-col gap-4 p-4 lg:order-1 lg:col-span-2 lg:p-6">

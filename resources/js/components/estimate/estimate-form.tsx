@@ -77,7 +77,7 @@ export default function EstimateForm({ propertyTypes, contactMethods, floors, fe
         });
     };
 
-    if (flash.success) return <EstimateSuccess message={flash.success} />;
+    if (flash.estimate) return <EstimateSuccess message={flash.estimate} />;
 
     const step = { data, setData, errors };
 

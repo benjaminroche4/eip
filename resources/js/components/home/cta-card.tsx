@@ -17,8 +17,17 @@ const ADVISORS = [
  * variant « Carte sable du site »): the site's card (sand hairline, inner sand gradient, square corners), the three
  * advisors' portraits, a Montserrat title, one sentence and a primary « Contacter un conseiller » button.
  * No dashed waves, no « 2 500+ owners » pill; behind them, faint concentric sand circles that turn and breathe imperceptibly (`RingsBackdrop`, shared with the about manifesto).
+ * Texts and destination can be overridden (`title`, `text`, `button`, `href`) — the « Vendre » page sends to the valuation (2026-09-22).
  */
-export default function CtaCard() {
+type CtaCardProps = {
+    /** Override of the default `cta.*` texts and contact destination (2026-09-22: the « Vendre » page points to the valuation). */
+    title?: string;
+    text?: string;
+    button?: string;
+    href?: string;
+};
+
+export default function CtaCard({ title, text, button, href }: CtaCardProps) {
     const { t } = useTranslation();
 
     return (
@@ -38,14 +47,14 @@ export default function CtaCard() {
                     </ul>
                     <div className="flex flex-col items-center gap-3">
                         <h2 id="cta-card-title" className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-                            {t('cta.title')}
+                            {title ?? t('cta.title')}
                         </h2>
-                        <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{t('cta.text')}</p>
+                        <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{text ?? t('cta.text')}</p>
                     </div>
                 </div>
                 <Button asChild size="lg">
-                    <Link href={route('contact')} prefetch>
-                        {t('cta.button')}
+                    <Link href={href ?? route('contact')} prefetch>
+                        {button ?? t('cta.button')}
                         <ArrowRight aria-hidden />
                     </Link>
                 </Button>

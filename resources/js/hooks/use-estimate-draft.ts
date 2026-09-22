@@ -19,9 +19,14 @@ export function useEstimateDraft(data: EstimateFormData, setData: EstimateSetDat
 
     useEffect(() => {
         try {
-            const { consent, website, ...draft } = data;
+            // Never the consent nor the honeypot, and no personal identifier either (shared computer: a later visitor must not
+            // see a name, e-mail or phone come back — user decision 2026-09-22); the property fields are enough to resume.
+            const { consent, website, full_name, email, phone, ...draft } = data;
             void consent;
             void website;
+            void full_name;
+            void email;
+            void phone;
             window.sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
         } catch {
             /* ignore */

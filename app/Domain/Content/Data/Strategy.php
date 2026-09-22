@@ -5,7 +5,7 @@ namespace App\Domain\Content\Data;
 use App\Domain\Content\Support\ArrayShape;
 use Illuminate\Contracts\Support\Arrayable;
 
-/** An investment strategy of the Buy page (`buy.strategies.items`). */
+/** A titled step of a numbered list: an investment strategy of the Buy page (`buy.strategies.items`) or a step of the sale on the Sell page (`sell.process.items`). */
 final readonly class Strategy implements Arrayable
 {
     public function __construct(

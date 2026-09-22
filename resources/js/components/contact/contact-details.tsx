@@ -14,7 +14,10 @@ export default function ContactDetails() {
     const { t } = useTranslation();
     const { phone, whatsapp, email, address } = seo.organization;
     const hasAddress = Boolean(address.street && address.city);
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([address.street, address.postal_code, address.city].filter(Boolean).join(' '))}`;
+    // The Google Business Profile link when configured (user decision 2026-09-22), else a Maps search on the address
+    const mapsUrl =
+        seo.organization.mapsUrl ??
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([address.street, address.postal_code, address.city].filter(Boolean).join(' '))}`;
 
     return (
         <div className="flex flex-col gap-7">

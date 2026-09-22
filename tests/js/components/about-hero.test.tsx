@@ -15,7 +15,7 @@ describe('AboutHero', () => {
         expect(screen.getByText(/Basé sur 400 avis/)).toBeInTheDocument();
         expect(container.querySelector('img[src="/images/about/hero-1400.jpg"]')).not.toBeNull();
         // Photo flush with the header and the next band: the section cancels the layout's top padding and the gap below
-        expect(container.querySelector('section')).toHaveClass('-mt-16', 'sm:-mt-20', '-mb-12', 'lg:-mb-16');
+        expect(container.querySelector('section')).toHaveClass('-mt-10', 'sm:-mt-12', 'lg:-mt-20', '-mb-12', 'lg:-mb-16');
         expect(container.querySelector('img[src="/images/about/hero-1400.jpg"]')!.parentElement!.className).not.toMatch(/border|ring|rounded/);
         const card = container.querySelector('[aria-live="polite"]')!;
         expect(card).toHaveClass('backdrop-blur-md', 'bg-black/40'); // dark glass, readable on the bright façade

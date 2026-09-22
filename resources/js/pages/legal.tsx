@@ -1,3 +1,4 @@
+import LegalBody from '@/components/legal/legal-body';
 import LegalToc from '@/components/legal/legal-toc';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoHead from '@/components/seo/seo-head';
@@ -36,9 +37,9 @@ export default function Legal({ page }: LegalProps) {
                             <PageEyebrow>{t('legal_pages.eyebrow')}</PageEyebrow>
                             <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{page.title}</h1>
                         </div>
-                        {/* No intro paragraph (user decision 2026-08-31): the description only feeds the meta; the date sits in a bordered pill */}
-                        <p className="border-border text-muted-foreground flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs">
-                            <CalendarDays aria-hidden className="size-3.5" />
+                        {/* No intro paragraph (user decision 2026-08-31): the description only feeds the meta; the date sits in a white square chip with the sand hairline (user decision 2026-09-22, replaces the grey pill) */}
+                        <p className="border-secondary-30 bg-card text-text-heading flex items-center gap-2 border px-3 py-1.5 text-xs font-medium">
+                            <CalendarDays aria-hidden className="text-muted-foreground size-3.5" strokeWidth={1.5} />
                             {page.updated}
                         </p>
                     </div>
@@ -48,8 +49,14 @@ export default function Legal({ page }: LegalProps) {
                             {/* No divider between sections (user decision 2026-09-15): whitespace alone separates them. */}
                             {page.sections.map((section, index) => (
                                 <section key={section.heading} id={`legal-section-${index}`} className="flex scroll-mt-24 flex-col gap-2">
-                                    <h2 className="text-lg font-medium">{section.heading}</h2>
-                                    <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{section.body}</p>
+                                    {/* Sand Montserrat number before the title, like the About values (ui.sh variant « Numéro sable » chosen among 10, user decision 2026-09-22) */}
+                                    <h2 className="flex items-baseline gap-3 text-xl font-medium">
+                                        <span aria-hidden className="font-heading text-secondary-50 text-2xl font-semibold tabular-nums">
+                                            {String(index + 1).padStart(2, '0')}
+                                        </span>
+                                        {section.heading}
+                                    </h2>
+                                    <LegalBody body={section.body} />
                                 </section>
                             ))}
                         </div>

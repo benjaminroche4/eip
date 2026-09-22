@@ -17,8 +17,10 @@ describe('BuyHero', () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyHero stats={STATS} video={null} />);
 
-        expect(screen.getByRole('heading', { level: 1, name: 'Bâtissez un patrimoine durable à Paris' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Découvrir nos opportunités' })).toHaveAttribute('href', '/contact');
+        expect(
+            screen.getByRole('heading', { level: 1, name: "Trouvez l'appartement ou l'hôtel particulier qui vous ressemble à Paris" }),
+        ).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Parler à un conseiller' })).toHaveAttribute('href', '/contact');
         expect(screen.getByRole('img', { name: /haussmannienne/ })).toHaveAttribute('src', '/images/home/hero-2000.jpg');
         expect(screen.queryByRole('button')).toBeNull();
         expect(screen.getAllByText('25+')).toHaveLength(2); // desktop (over the photo) + mobile (under it), one hidden per breakpoint

@@ -167,7 +167,7 @@ final class SitemapBuilder
             ['path' => 'routes.blog', 'priority' => 0.7, 'freq' => Url::CHANGE_FREQUENCY_DAILY],
             ['path' => 'routes.privacy', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
             ['path' => 'routes.legal', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
-            ['path' => 'routes.terms', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
+            ['path' => 'routes.sitemap', 'priority' => 0.3, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
         ];
     }
 

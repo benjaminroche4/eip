@@ -27,7 +27,13 @@ export interface SharedData {
     auth: Auth;
     locale: string;
     year: number;
-    flash: { success: string | null; callbackPhone: string | null; newsletter: string | null; valuationReference: string | null };
+    flash: {
+        success: string | null;
+        callbackPhone: string | null;
+        newsletter: string | null;
+        estimate: string | null;
+        valuationReference: string | null;
+    };
     localization: Localization;
     translations: Translations;
     seo: SeoShared;
@@ -53,6 +59,8 @@ export interface SeoShared {
     image: string;
     locale: string;
     twitter: string | null;
+    /** Sister agency Relocation in Paris, linked from the footer services column (external). */
+    relocationUrl: string | null;
     organization: {
         name: string;
         logo: string;
@@ -61,6 +69,8 @@ export interface SeoShared {
         phone: string | null;
         /** International number without spaces (wa.me link); null hides the WhatsApp link. */
         whatsapp: string | null;
+        /** Google Business Profile / Maps place link; null = search the address on Google Maps. */
+        mapsUrl: string | null;
         address: { street?: string; city?: string; postal_code?: string; country?: string };
     };
     social: Partial<Record<'linkedin' | 'instagram', string>>;

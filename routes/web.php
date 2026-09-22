@@ -12,6 +12,7 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SellController;
 use App\Http\Controllers\SeoController;
+use App\Http\Controllers\SitemapPageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -50,7 +51,9 @@ Route::group([
     Route::get(LaravelLocalization::transRoute('routes.buy'), BuyController::class)->name('buy');
     Route::get(LaravelLocalization::transRoute('routes.sell'), SellController::class)->name('sell');
 
-    foreach (['privacy', 'legal', 'terms'] as $key) {
+    Route::get(LaravelLocalization::transRoute('routes.sitemap'), SitemapPageController::class)->name('sitemap');
+
+    foreach (['privacy', 'legal'] as $key) {
         Route::get(LaravelLocalization::transRoute("routes.$key"), fn () => app(LegalController::class)($key))->name($key);
     }
 });

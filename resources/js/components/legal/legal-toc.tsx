@@ -19,15 +19,21 @@ export default function LegalToc({ headings }: LegalTocProps) {
     const { t } = useTranslation();
     const [active, setActive] = useState(0);
 
-    // Scrollspy: the current section is the last one whose top passed under the sticky header.
+    // Scrollspy: the current section is the last one whose top passed the reading line. That line sits under the sticky
+    // header at the top of the page and slides down to the bottom edge of the viewport as the page reaches its end, so
+    // the short last sections (which never get under the header) still take their turn and the last one is active at
+    // the very bottom (bug 2026-09-22: the highlight stopped on the 6th of 9 sections).
     useEffect(() => {
         let raf = 0;
         const spy = () => {
             raf = 0;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = maxScroll > 0 ? Math.min(1, Math.max(0, window.scrollY / maxScroll)) : 0;
+            const line = SPY_OFFSET + (window.innerHeight - SPY_OFFSET) * progress;
             let current = 0;
             headings.forEach((_, index) => {
                 const section = document.getElementById(`legal-section-${index}`);
-                if (section && section.getBoundingClientRect().top <= SPY_OFFSET) current = index;
+                if (section && section.getBoundingClientRect().top <= line) current = index;
             });
             setActive(current);
         };

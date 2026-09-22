@@ -62,7 +62,7 @@ describe('BuyDistricts', () => {
         expect(chip.className).toMatch(/border/);
         expect(chip.className).not.toMatch(/rounded/); // square corners
         const price = within(cards[0]).getByText('≈ 14 500 €/m²');
-        expect(price.closest('li')!.querySelector('[aria-hidden]')!.className).toMatch(/animate-price-shimmer/); // discreet shimmer
+        expect(price.closest('li')!.querySelector('[aria-hidden]')!.className).toMatch(/animate-sweep-shimmer/); // discreet shimmer
         const source = document.getElementById(price.closest('li')!.getAttribute('aria-describedby')!)!;
         expect(source).toHaveTextContent(/Notaires du Grand Paris \(2026\)/); // GEO: dated, named source, once under the grid
         expect(container.querySelectorAll('#' + CSS.escape(source.id))).toHaveLength(1);

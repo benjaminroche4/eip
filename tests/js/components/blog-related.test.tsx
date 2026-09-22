@@ -30,6 +30,23 @@ describe('BlogRelated', () => {
         expect(await axe(container)).toHaveNoViolations();
     });
 
+    it('becomes the home preview with a centred header and a button to the blog', async () => {
+        const { container } = renderPage(
+            <BlogRelated
+                posts={[post('a', 'Article A')]}
+                header={{ eyebrow: 'Blog', title: 'Nos derniers conseils', intro: 'Estate in Paris publie chaque semaine des guides.' }}
+                cta={{ href: '/blog', label: 'Voir tous les articles' }}
+            />,
+        );
+
+        expect(screen.getByRole('region', { name: 'Nos derniers conseils' })).toBeInTheDocument();
+        expect(screen.getByText('Blog')).toBeInTheDocument();
+        expect(screen.getByText(/Estate in Paris publie/)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Voir tous les articles' })).toHaveAttribute('href', '/blog');
+
+        expect(await axe(container)).toHaveNoViolations();
+    });
+
     it('renders nothing without posts', () => {
         const { container } = renderPage(<BlogRelated posts={[]} />);
         expect(container).toBeEmptyDOMElement();

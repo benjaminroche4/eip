@@ -15,5 +15,5 @@ return [
     'search' => 'search',
     'privacy' => 'privacy-policy',
     'legal' => 'legal-notice',
-    'terms' => 'terms-and-conditions',
+    'sitemap' => 'sitemap',
 ];

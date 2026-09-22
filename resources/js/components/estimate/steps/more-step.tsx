@@ -1,6 +1,7 @@
 import FormField from '@/components/contact/form-field';
 import StepHeading from '@/components/estimate/step-heading';
 import { type EstimateStepProps, MESSAGE_MAX } from '@/components/estimate/types';
+import FaqAnswer from '@/components/faq/faq-answer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -52,7 +53,7 @@ export default function MoreStep({ data, setData, errors, complete, processing, 
                         onCheckedChange={(checked) => setData('consent', checked === true)}
                         aria-required
                         aria-invalid={Boolean(errors.consent)}
-                        aria-describedby={errors.consent ? 'consent-error' : undefined}
+                        aria-describedby={errors.consent ? 'consent-error consent-privacy' : 'consent-privacy'}
                         className="mt-0.5"
                     />
                     <Label htmlFor="consent" className="text-base/6 font-normal sm:text-sm/5">
@@ -64,6 +65,10 @@ export default function MoreStep({ data, setData, errors, complete, processing, 
                         {errors.consent}
                     </p>
                 )}
+                {/* GDPR information at collection time (user decision 2026-09-22): retention + link to the privacy policy, outside the label so the link never toggles the box */}
+                <div id="consent-privacy" className="text-muted-foreground pl-7 text-xs">
+                    <FaqAnswer text={t('estimate.consent_privacy')} />
+                </div>
             </div>
 
             {/* Honeypot: invisible to people, filled by bots, rejected server-side */}

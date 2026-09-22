@@ -53,7 +53,7 @@ class EstimateFormTest extends TestCase
 
         foreach (['fr', 'en'] as $locale) {
             app()->setLocale($locale);
-            foreach (['headline', 'subtitle', 'step_type', 'submit', 'sent', 'property_types.apartment', 'contact_methods.whatsapp'] as $key) {
+            foreach (['headline', 'step_type', 'submit', 'sent', 'consent_privacy', 'process_title', 'property_types.apartment', 'contact_methods.whatsapp'] as $key) {
                 $this->assertNotSame("ui.estimate.$key", __("ui.estimate.$key"), "[$locale] missing ui.estimate.$key");
             }
         }
@@ -66,7 +66,7 @@ class EstimateFormTest extends TestCase
 
         $this->from('/estimation-immobiliere-paris')->post('/estimation-immobiliere-paris', $this->payload())
             ->assertRedirect('/estimation-immobiliere-paris')
-            ->assertSessionHas('success', __('ui.estimate.sent'))
+            ->assertSessionHas('estimate_success', __('ui.estimate.sent'))
             ->assertSessionHas('valuation_reference', 'VAL-'.now()->format('Y').'-0001');
 
         $this->assertDatabaseHas('valuation_requests', [
@@ -152,7 +152,7 @@ class EstimateFormTest extends TestCase
         $this->artisan('migrate');
         Mail::fake();
 
-        $this->post('/en/property-valuation-paris', $this->payload())->assertRedirect()->assertSessionHas('success', __('ui.estimate.sent'));
+        $this->post('/en/property-valuation-paris', $this->payload())->assertRedirect()->assertSessionHas('estimate_success', __('ui.estimate.sent'));
         Mail::assertSent(ValuationConfirmationMail::class, fn (ValuationConfirmationMail $mail) => $mail->valuation->locale === 'en' && str_contains($mail->render(), 'Within 24 business hours'));
     }
 }

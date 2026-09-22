@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Domain\Localization\Support\LocalizedUrls;
+use App\Domain\Localization\Support\SharedTranslations;
 use App\Domain\Seo\Support\OpeningHours;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
@@ -54,10 +55,12 @@ class HandleInertiaRequests extends Middleware
                 'success' => $request->session()->get('success'),
                 'callbackPhone' => $request->session()->get('callback_phone'),
                 'newsletter' => $request->session()->get('newsletter_success'),
+                'estimate' => $request->session()->get('estimate_success'),
                 'valuationReference' => $request->session()->get('valuation_reference'),
             ],
             'localization' => fn () => app(LocalizedUrls::class)->forCurrentRequest(),
-            'translations' => fn () => trans('ui'),
+            // Only the `ui.php` sections this route's components read (see SharedTranslations): ~48 KB otherwise on every page
+            'translations' => fn () => SharedTranslations::forRoute($request->route()?->getName()),
             'seo' => fn () => [
                 'siteName' => config('seo.site_name'),
                 'separator' => config('seo.title_separator'),
@@ -65,6 +68,7 @@ class HandleInertiaRequests extends Middleware
                 'image' => url(config('seo.default_image')),
                 'locale' => config('laravellocalization.supportedLocales.'.app()->getLocale().'.regional', config('seo.locale')),
                 'twitter' => config('seo.twitter'),
+                'relocationUrl' => config('seo.relocation_url') ?: null,
                 'organization' => [
                     'name' => config('seo.organization.name'),
                     'logo' => url(config('seo.organization.logo')),
@@ -72,6 +76,7 @@ class HandleInertiaRequests extends Middleware
                     'email' => config('seo.organization.email'),
                     'phone' => config('seo.organization.phone'),
                     'whatsapp' => config('seo.organization.whatsapp'),
+                    'mapsUrl' => config('seo.organization.maps_url') ?: null,
                     'address' => array_filter(config('seo.organization.address')),
                 ],
                 'social' => array_filter(config('seo.social')),

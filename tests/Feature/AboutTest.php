@@ -21,7 +21,7 @@ class AboutTest extends TestCase
                 ->has('stats', 4)
                 ->where('stats.0.value', '250 M€+')
                 ->where('stats.0.title', 'Transactions réalisées')
-                ->where('translations.about.manifesto_title', "Plus qu'une agence immobilière")
+                ->where('translations.about.manifesto_title', 'Qui sommes-nous ?')
                 ->where('translations.values.value_1_title', 'Confidentialité')
                 ->where('translations.pages.about.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris 6e')));
 

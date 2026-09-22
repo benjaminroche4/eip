@@ -15,5 +15,5 @@ return [
     'search' => 'recherche',
     'privacy' => 'politique-de-confidentialite',
     'legal' => 'mentions-legales',
-    'terms' => 'conditions-generales',
+    'sitemap' => 'plan-du-site',
 ];

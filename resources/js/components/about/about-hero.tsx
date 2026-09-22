@@ -1,20 +1,11 @@
 import PageEyebrow from '@/components/page/page-eyebrow';
+import ProofLine from '@/components/page/proof-line';
 import SeoImage from '@/components/seo/seo-image';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { type SharedData } from '@/types';
-import { usePage } from '@inertiajs/react';
-import { ArrowUpRight, Award, EyeOff, Globe, type LucideIcon, Star } from 'lucide-react';
+import { ArrowUpRight, Award, EyeOff, Globe, type LucideIcon } from 'lucide-react';
 import { type CSSProperties, type KeyboardEvent, type PointerEvent, type Ref, useEffect, useRef, useState } from 'react';
-
-/** Advisor portraits (public/images/advisors), the same trio as the footer and the CTA card. */
-const ADVISORS = [
-    { id: 1, initials: 'AB' },
-    { id: 2, initials: 'CD' },
-    { id: 3, initials: 'EF' },
-] as const;
 
 /** The three messages of the glass card, each with its lucide icon (user decision 2026-09-16: icons, not portraits). */
 const SLIDES: { n: 1 | 2 | 3; icon: LucideIcon }[] = [
@@ -33,9 +24,7 @@ const SLIDES: { n: 1 | 2 | 3; icon: LucideIcon }[] = [
  * flush with the header above and the manifesto band below (no page padding, no frame) — user decision 2026-09-16.
  */
 export default function AboutHero() {
-    const { t, tc } = useTranslation();
-    const { seo } = usePage<SharedData>().props;
-    const reviews = seo.reviews;
+    const { t } = useTranslation();
     // Reel transition (user decision 2026-09-16, same pattern as the valuation stepper): the leaving message is kept
     // in `from` while it slides out in the direction of travel (blur + fade) and the new one slides in from the other
     // side; `direction` follows the arrows / dots (next = up), wrapping included. `from` is state, not a ref.
@@ -116,7 +105,7 @@ export default function AboutHero() {
             aria-labelledby="about-title"
             // Flush photo (user decision 2026-09-16): the hero cancels the layout's top padding and the gap below it, so the
             // photo panel touches the header and the manifesto band; the text column carries its own vertical padding.
-            className="-mt-16 -mb-12 grid gap-10 sm:-mt-20 lg:-mb-16 lg:grid-cols-2 lg:gap-16"
+            className="-mt-10 -mb-12 grid gap-10 sm:-mt-12 lg:-mt-20 lg:-mb-16 lg:grid-cols-2 lg:gap-16"
         >
             <div className="flex flex-col items-center justify-center gap-10 pt-16 text-center sm:pt-20 lg:items-start lg:py-20 lg:text-left">
                 <div className="flex flex-col items-center gap-6 lg:items-start">
@@ -136,36 +125,8 @@ export default function AboutHero() {
                     </Button>
                 </div>
 
-                {/* Proof line (Figma 712-23818): portraits, stars, the real Google rating — hidden without real figures */}
-                {reviews && (
-                    <div className="flex flex-col">
-                        <div className="flex items-center justify-center gap-4 lg:justify-start">
-                            <ul role="list" aria-label={t('footer.advisors')} className="flex -space-x-3">
-                                {ADVISORS.map((a) => (
-                                    <li key={a.id}>
-                                        <Avatar className="ring-card size-11 ring-2">
-                                            <AvatarImage src={`/images/advisors/advisor-${a.id}.webp`} alt="" loading="lazy" />
-                                            <AvatarFallback className="bg-background-10 text-foreground text-xs font-medium">
-                                                {a.initials}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                    </li>
-                                ))}
-                            </ul>
-                            <div className="flex flex-col items-start gap-1">
-                                <span aria-hidden className="text-secondary-60 flex items-center gap-1">
-                                    {Array.from({ length: 5 }, (_, i) => (
-                                        <Star key={i} className="size-4 fill-current" strokeWidth={0} />
-                                    ))}
-                                </span>
-                                <p className="text-muted-foreground text-sm">
-                                    <span className="text-foreground font-semibold tabular-nums">{reviews.rating.toLocaleString('fr-FR')}/5</span>{' '}
-                                    {tc('testimonials.based_on', reviews.count, { count: reviews.count.toLocaleString('fr-FR') })} Google
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {/* Proof line (Figma 712-23818): portraits, stars, the real Google rating — hidden without real figures (shared `ProofLine`, 2026-09-22) */}
+                <ProofLine align="start" />
             </div>
 
             {/* Photo panel (Figma 712-23841), pushed 12px right on desktop so its edge lines up with the header's « Nous contacter » button (header inner padding 20px vs layout 32px — user decision 2026-09-16): team photo, dark bottom veil, glass message card with its vertical controls */}

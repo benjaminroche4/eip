@@ -16,6 +16,8 @@ return [
     'locale' => 'fr_FR',
     'language' => 'fr',
     'twitter' => env('SEO_TWITTER', null), // '@handle'
+    // Sister agency (same group): linked from the footer « Nos services » column (user decision 2026-09-22).
+    'relocation_url' => env('SEO_RELOCATION_URL', 'https://relocation-in-paris.fr/'),
     'theme_color' => '#202832',
 
     'organization' => [
@@ -25,6 +27,7 @@ return [
         'email' => env('SEO_ORG_EMAIL'),
         'phone' => env('SEO_ORG_PHONE'),
         'whatsapp' => env('SEO_ORG_WHATSAPP'), // international number without spaces (e.g. 33659253695) — empty = link hidden
+        'maps_url' => env('SEO_GOOGLE_MAPS_URL'), // Google Business Profile / Maps place link (« Voir sur Google Maps », mail footer) — empty = address search on Google Maps
         'same_as' => array_values(array_filter(explode(',', (string) env('SEO_ORG_SAME_AS', '')))), // social/profile URLs
         'address' => [
             'street' => env('SEO_ORG_STREET'),
@@ -63,6 +66,7 @@ return [
     // until the visitor clicks: the page shows the photo, the privacy-enhanced iframe loads on demand.
     'videos' => [
         'buy' => env('SEO_VIDEO_BUY'),
+        'sell' => env('SEO_VIDEO_SELL'),
     ],
 
     // Social profiles shown in the footer (leave empty to hide). Also merged into Organization.sameAs.

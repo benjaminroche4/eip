@@ -1,13 +1,26 @@
+import PageEyebrow from '@/components/page/page-eyebrow';
+import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
-import { router } from '@inertiajs/react';
+import { cn } from '@/lib/utils';
+import { Link, router } from '@inertiajs/react';
+import { ArrowRight } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import BlogPostCard from './blog-post-card';
 import { type BlogPostSummary } from './types';
 
-type BlogRelatedProps = { posts: BlogPostSummary[] };
+type BlogRelatedProps = {
+    posts: BlogPostSummary[];
+    /** Home preview (2026-09-22): a centred header (eyebrow + h2 + answer-first intro) instead of the plain h2. */
+    header?: { eyebrow: string; title: string; intro: string };
+    /** Home preview: a button under the cards (« Voir tous les articles » → blog index). */
+    cta?: { href: string; label: string };
+};
 
-/** « Nos derniers articles »: the three latest other articles (never the current one), listing cards; horizontal snap scroll on mobile. */
-export default function BlogRelated({ posts }: BlogRelatedProps) {
+/**
+ * « Nos derniers articles »: the three latest other articles (never the current one), listing cards; horizontal snap
+ * scroll on mobile. With `header` / `cta` it becomes the home's blog preview (same cards, centred header, button).
+ */
+export default function BlogRelated({ posts, header, cta }: BlogRelatedProps) {
     const { t } = useTranslation();
     const list = useRef<HTMLUListElement>(null);
 
@@ -33,10 +46,21 @@ export default function BlogRelated({ posts }: BlogRelatedProps) {
     if (posts.length === 0) return null;
 
     return (
-        <section aria-labelledby="related-posts-title" className="flex flex-col gap-6">
-            <h2 id="related-posts-title" className="text-2xl font-medium tracking-tight">
-                {t('blog.related')}
-            </h2>
+        <section aria-labelledby="related-posts-title" className={cn('flex flex-col', header ? 'gap-10 lg:gap-14' : 'gap-6')}>
+            {header ? (
+                <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
+                    <PageEyebrow>{header.eyebrow}</PageEyebrow>
+                    <h2 id="related-posts-title" className="text-2xl font-medium tracking-tight text-balance sm:text-3xl">
+                        {header.title}
+                    </h2>
+                    {/* GEO: a self-contained sentence (brand + what + where) */}
+                    <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{header.intro}</p>
+                </div>
+            ) : (
+                <h2 id="related-posts-title" className="text-2xl font-medium tracking-tight">
+                    {t('blog.related')}
+                </h2>
+            )}
             {/* Mobile: one row that scrolls sideways (snap, hidden scrollbar, cards at 85 % of the viewport); `scroll-px-6` keeps the snapped card off the screen edge (snap-start otherwise aligns it to the padding box, ignoring `px-6`); grid from sm. */}
             <ul
                 ref={list}
@@ -49,6 +73,16 @@ export default function BlogRelated({ posts }: BlogRelatedProps) {
                     </li>
                 ))}
             </ul>
+            {cta && (
+                <div className="flex justify-center">
+                    <Button asChild variant="outline" size="lg">
+                        <Link href={cta.href} prefetch>
+                            {cta.label}
+                            <ArrowRight aria-hidden />
+                        </Link>
+                    </Button>
+                </div>
+            )}
         </section>
     );
 }

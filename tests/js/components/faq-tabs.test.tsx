@@ -99,6 +99,22 @@ describe('FAQ page', () => {
         expect(screen.getByRole('tabpanel')).toBeInTheDocument();
     });
 
+    it('restores the search from ?q= and keeps the URL in sync while typing', async () => {
+        const user = userEvent.setup();
+        window.history.replaceState({}, '', '/questions-frequentes?q=etranger');
+        render();
+
+        expect(screen.getByRole('searchbox', { name: 'Rechercher une question' })).toHaveValue('etranger');
+        expect(screen.getByRole('status')).toHaveTextContent('1 question correspond');
+
+        await user.clear(screen.getByRole('searchbox'));
+        await user.type(screen.getByRole('searchbox'), 'frais');
+        expect(window.location.search).toBe('?q=frais');
+        await user.clear(screen.getByRole('searchbox'));
+        expect(window.location.search).toBe(''); // an empty search leaves a clean URL
+        window.history.replaceState({}, '', '/questions-frequentes');
+    });
+
     it('switches topics from the mobile "Sommaire" dropdown', async () => {
         const user = userEvent.setup();
         render();

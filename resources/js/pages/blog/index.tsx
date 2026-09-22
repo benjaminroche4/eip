@@ -3,6 +3,7 @@ import BlogFeaturedPost from '@/components/blog/blog-featured-post';
 import BlogPagination from '@/components/blog/blog-pagination';
 import BlogPostCard from '@/components/blog/blog-post-card';
 import { type BlogFilter, type BlogPostSummary } from '@/components/blog/types';
+import CtaCard from '@/components/home/cta-card';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
@@ -152,6 +153,10 @@ export default function BlogIndex({ posts, featured, filter, indexing }: Props) 
                         next={indexing.next}
                         context={pageContext}
                     />
+                </div>
+                {/* Same closing call to action as the home, About and Buy pages */}
+                <div className="mx-auto mt-20 w-full max-w-5xl sm:mt-28">
+                    <CtaCard />
                 </div>
             </PublicLayout>
         </>

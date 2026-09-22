@@ -5,7 +5,7 @@ import FooterNav from '@/components/footer/footer-nav';
 import LegalBar from '@/components/footer/legal-bar';
 import OpenBadge from '@/components/footer/open-badge';
 import SocialLinks from '@/components/footer/social-links';
-import LanguageSwitcher from '@/components/i18n/language-switcher';
+import LanguageLinks from '@/components/i18n/language-links';
 import BrandLogo from '@/components/layout/brand-logo';
 import GradientHairline from '@/components/layout/gradient-hairline';
 import { useContactHref, useFooterAboutItems, useFooterNavItems } from '@/components/navigation/nav-items';
@@ -27,12 +27,13 @@ export default function SiteFooter({ year }: { year: number }) {
 
     return (
         <footer className="from-background-10 to-background-02 after:via-border relative overflow-hidden bg-gradient-to-b after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent">
-            <div className={`${container} pt-12 lg:pt-16`}>
+            {/* Mobile: tighter vertical rhythm (wordmark → contact → nav → brand were 48px apart, read as gaps — user decision 2026-09-22) */}
+            <div className={`${container} pt-8 sm:pt-12 lg:pt-16`}>
                 {/* Mobile / tablet: edge to edge (the column keeps its gutters), a touch more present than on desktop */}
                 <BrandWordmark className="-mx-6 lg:mx-0" />
             </div>
 
-            <div className={`${container} grid grid-cols-2 gap-12 py-12 lg:grid-cols-[1.4fr_0.7fr_0.7fr_1.3fr] lg:gap-15 lg:py-16`}>
+            <div className={`${container} grid grid-cols-2 gap-8 py-8 sm:gap-12 sm:py-12 lg:grid-cols-[1.4fr_0.7fr_0.7fr_1.3fr] lg:gap-15 lg:py-16`}>
                 <div className="col-span-2 flex flex-col items-center gap-5 text-center sm:items-start sm:text-left lg:col-span-1">
                     <Link href={route('home')} aria-label="Homepage" className="focus-ring inline-flex w-fit rounded-none">
                         <BrandLogo />
@@ -45,7 +46,8 @@ export default function SiteFooter({ year }: { year: number }) {
                     <div className="flex items-center gap-4">
                         <SocialLinks />
                         <span aria-hidden className="bg-grey-30 h-5 w-px" />
-                        <LanguageSwitcher />
+                        {/* Real <a hreflang lang> links to the twin page, present in the SSR HTML for crawlers and screen readers (the desktop header keeps its dropdown) — user decision 2026-09-22 */}
+                        <LanguageLinks className="-my-3 -mr-4" />
                     </div>
                 </div>
                 {/* The two nav columns share a row at every width (user decision 2026-09-22); brand and contact take the full row below lg */}

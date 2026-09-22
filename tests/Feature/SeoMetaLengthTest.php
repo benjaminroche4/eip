@@ -26,7 +26,7 @@ class SeoMetaLengthTest extends TestCase
             'buy' => ['ui.pages.buy.seo_title', 'ui.pages.buy.seo_description', true],
             'privacy' => ['legal.privacy.title', 'legal.privacy.description', true],
             'legal' => ['legal.legal.title', 'legal.legal.description', true],
-            'terms' => ['legal.terms.title', 'legal.terms.description', true],
+            'sitemap' => ['ui.pages.sitemap.seo_title', 'ui.pages.sitemap.seo_description', true],
         ];
     }
 

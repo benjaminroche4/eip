@@ -8,13 +8,13 @@ import Testimonials, { type Testimonial } from '@/components/home/testimonials';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
-import { breadcrumbList, organizationNode } from '@/lib/json-ld';
+import { breadcrumbList, teamNodes, teamOrganizationNode } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
 /**
  * « À propos »: hero (`AboutHero`: eyebrow, h1, answer-first intro, button to the team, proof line + team photo panel with a message carousel), the manifesto + key figures
- * (Figma 712-23876 / 712-24278, sand band) then the team grid (Figma 712-23908), the home's testimonials block, the values block (layout of Figma 712-24134) and the closing CTA card of the
+ * (Figma 712-23876 / 712-24278, sand band), the values block (layout of Figma 712-24134), then the team grid (Figma 712-23908), the home's testimonials block and the closing CTA card of the
  * home page — the four content sections (who / how / advisor / where) were built then removed (user decision
  * 2026-09-16). JSON-LD: AboutPage about the Organization node + breadcrumb.
  */
@@ -36,7 +36,9 @@ export default function About({ team, testimonials, stats }: AboutProps) {
                 description={t('pages.about.seo_description')}
                 jsonLd={[
                     { '@type': 'AboutPage', name: t('pages.about.seo_title'), url: route('about'), about: { '@id': `${origin}/#organization` } },
-                    organizationNode(seo, origin),
+                    // E-E-A-T (2026-09-22): the organisation lists its advisors as `employee`, one `Person` node each
+                    teamOrganizationNode(seo, origin, team.length),
+                    ...teamNodes(team, origin),
                     breadcrumbList(crumbs, origin),
                 ]}
             />
@@ -57,6 +59,10 @@ export default function About({ team, testimonials, stats }: AboutProps) {
                         <AgencyManifesto stats={stats} />
                     </div>
 
+                    {/* Order (user decision 2026-09-22): what (manifesto) → why (values) → who (team) → proof (reviews) → action (CTA).
+                        Values on the page's white background, no band (user decision 2026-09-16) */}
+                    <ValuesList />
+
                     <TeamGrid members={team} />
 
                     {/* The home's reviews block: its sand band spans the whole viewport as on the home (breakout: 100vw
@@ -64,9 +70,6 @@ export default function About({ team, testimonials, stats }: AboutProps) {
                     <div className="relative left-1/2 w-screen -translate-x-1/2">
                         <Testimonials items={testimonials} />
                     </div>
-
-                    {/* Values on the page's white background, no band (user decision 2026-09-16) */}
-                    <ValuesList />
 
                     {/* Same closing call to action as the home page, at the home's width (user decision 2026-09-16) */}
                     <div className="mx-auto w-full max-w-5xl">

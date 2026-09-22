@@ -21,6 +21,8 @@ describe('BlogBody quick answer', () => {
 
         const blocks = screen.getAllByRole('complementary');
         expect(blocks[0]).toHaveClass('bg-background-08', 'p-2');
+        expect(blocks[0].querySelector('h2 > span[aria-hidden] svg')).not.toBeNull(); // icon in a white square tile before the title
+        expect(blocks[0].querySelector('h2 > span[aria-hidden]')!.className).toMatch(/bg-card/);
         expect(blocks[0].querySelector('.bg-card')).not.toBeNull(); // inner white card (Relocation in Paris pattern)
         expect(blocks[0]).toHaveAttribute('id', 'q1');
         expect(screen.getAllByText('Réponse rapide')).toHaveLength(1); // only the untitled block's h2 (no eyebrow any more)
