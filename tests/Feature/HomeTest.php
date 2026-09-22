@@ -15,6 +15,8 @@ class HomeTest extends TestCase
             ->assertInertia(fn (Assert $p) => $p->component('home')
                 ->where('translations.home.hero_title_1', "L'agence de l'exceptionnel")
                 ->where('translations.home.hero_text', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'off-market'))
+                ->where('figure', '500+')
+                ->where('translations.home.trust_text', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
                 ->has('testimonials', 10)
                 ->has('stories', 2)
                 ->where('stories.0.place', 'Paris 16e')

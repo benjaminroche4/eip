@@ -58,7 +58,7 @@ export default function SiteFooter({ year }: { year: number }) {
                 <FooterColumn title={t('footer.contact')} badge={<OpenBadge />} className="order-first col-span-2 lg:order-none lg:col-span-1">
                     <ContactCard />
                     <GradientHairline />
-                    <Button asChild variant="outline" size="lg" className="hover:bg-background-05 w-full bg-transparent dark:bg-transparent">
+                    <Button asChild variant="outline" size="lg" className="bg-card w-full">
                         <Link href={contactHref} prefetch>
                             {t('nav.contact_page')}
                         </Link>

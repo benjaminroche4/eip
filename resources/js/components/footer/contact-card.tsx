@@ -36,10 +36,10 @@ export default function ContactCard() {
                     </li>
                 ))}
             </ul>
-            {/* Phone under the avatars (user decision 2026-09-16), self-start so the drawn underline spans the number only. */}
+            {/* Phone under the avatars (user decision 2026-09-16), self-start so the drawn underline spans the number only, never wrapped (user decision 2026-09-22). */}
             <p
                 className={cn(
-                    'text-foreground relative self-start text-base font-medium tabular-nums',
+                    'text-foreground relative self-start text-base font-medium whitespace-nowrap tabular-nums',
                     // same drawn underline as the nav links, driven by the whole block's hover/focus
                     'after:bg-foreground after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-right after:scale-x-0 after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:after:origin-left group-hover:after:scale-x-100 group-focus-visible:after:origin-left group-focus-visible:after:scale-x-100 motion-reduce:after:transition-none',
                 )}

@@ -3,7 +3,7 @@ import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { axe } from 'vitest-axe';
-import { renderPage } from '../inertia';
+import { renderPage, sharedProps } from '../inertia';
 
 describe('SiteFooter', () => {
     it('renders navigation, contact, social links and the legal bar', () => {
@@ -29,7 +29,12 @@ describe('SiteFooter', () => {
         expect(screen.getByText('Ouvert')).toBeInTheDocument();
         expect(screen.getByText('© 2026 Estate in Paris')).toBeInTheDocument();
 
+        const contactButtons = screen.getAllByRole('link', { name: 'Contactez-nous' }).filter((a) => /\bbg-card\b/.test(a.className));
+        expect(contactButtons).toHaveLength(1); // the outline button, white on the sand footer
+        expect(screen.getByText(sharedProps().seo.organization.phone!).className).toMatch(/whitespace-nowrap/); // phone on one line
         const legal = screen.getByRole('navigation', { name: /légaux|legal/i });
+        expect(legal.parentElement!.className).toMatch(/\bitems-center\b.*\btext-center\b|\btext-center\b.*\bitems-center\b/); // centred on mobile
+        expect(legal.querySelector('ul')!.className).toMatch(/justify-center/);
         expect(within(legal).getByRole('link', { name: 'Mentions légales' })).toHaveAttribute('href', '/mentions-legales');
         expect(within(legal).getByRole('link', { name: 'Politique de confidentialité' })).toHaveAttribute('href', '/politique-de-confidentialite');
     });

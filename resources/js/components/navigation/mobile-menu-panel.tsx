@@ -1,4 +1,5 @@
 import LanguageLinks from '@/components/i18n/language-links';
+import GradientHairline from '@/components/layout/gradient-hairline';
 import { type NavItem, useSecondaryNavItems } from '@/components/navigation/nav-items';
 import NavLink from '@/components/navigation/nav-link';
 import { Badge } from '@/components/ui/badge';
@@ -106,7 +107,9 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                 onPointerUp={onPointerUp}
                 className="bg-card text-card-foreground relative flex max-h-full flex-col overflow-y-auto overscroll-contain p-4"
             >
-                <nav key={openings.current} aria-label={t('nav.mobile')} className="pt-4">
+                <nav key={openings.current} aria-label={t('nav.mobile')} className="flex flex-col gap-4 pt-2">
+                    {/* Divider between the bar and the first rows (user decision 2026-09-22, replaces « never on mobile » of 2026-09-16) */}
+                    {open && <GradientHairline />}
                     <ul className="flex flex-col gap-1">
                         {open &&
                             items.map((item, i) => (

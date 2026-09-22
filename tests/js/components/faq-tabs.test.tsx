@@ -108,7 +108,11 @@ describe('FAQ page', () => {
         await user.click(trigger);
 
         const menu = screen.getByRole('menu');
-        expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Acheter un bien02', 'Vendre un bien01']);
+        expect(
+            within(menu)
+                .getAllByRole('menuitem')
+                .map((i) => i.textContent),
+        ).toEqual(['Acheter un bien02', 'Vendre un bien01']);
         await user.click(within(menu).getByRole('menuitem', { name: /Vendre un bien/ }));
 
         expect(screen.queryByRole('menu')).not.toBeInTheDocument(); // picking closes the dropdown

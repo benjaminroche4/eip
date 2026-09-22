@@ -19,6 +19,8 @@ describe('Testimonials', () => {
         expect(screen.getByRole('heading', { level: 2, name: 'Ce que disent nos clients' })).toBeInTheDocument();
         expect(screen.getByText('4,9')).toBeInTheDocument();
         expect(screen.getByText('4,9').closest('div')!.querySelectorAll('svg.lucide-star')).toHaveLength(0); // no stars under the rating (they stay on the cards)
+        expect(screen.getByText('4,9').className).toMatch(/\btext-5xl\b.*\bsm:text-7xl\b/); // giant on desktop, tamer on mobile
+        expect(screen.getByText('4,9').className).toMatch(/\btext-5xl\b.*\bsm:text-7xl\b/); // giant on desktop, tamer on mobile
         const reviewsLink = screen.getByText(/Basé sur 400 avis/).closest('a')!;
         expect(reviewsLink).toHaveAttribute('href', 'https://www.google.com/maps');
         expect(reviewsLink).toHaveTextContent('Basé sur 400 avis Google'); // « Google » is the logo + sr-only text

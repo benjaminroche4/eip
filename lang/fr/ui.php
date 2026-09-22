@@ -703,5 +703,11 @@ return [
         'hero_value_3' => 'Un accompagnement de A à Z',
         'headline' => 'Immobilier de prestige à Paris',
         'intro' => 'Appartements, hôtels particuliers et biens off-market, sélectionnés par nos conseillers.',
+        // Trust intro under the hero (Figma 712-25112 / 712-25584): the figure comes from about.stats (real numbers only)
+        'trust_title_1' => 'biens vendus à Paris.',
+        'trust_title_2' => 'Un interlocuteur unique.',
+        'trust_text' => "Depuis plus de 25 ans, Estate in Paris accompagne acquéreurs, vendeurs et investisseurs vers des opportunités d'exception à Paris grâce à sa connaissance du terrain, une stratégie sur mesure et un réseau de confiance.",
+        'trust_cta_buy' => 'Découvrir nos biens',
+        'trust_cta_contact' => 'Contacter un conseiller',
     ],
 ];

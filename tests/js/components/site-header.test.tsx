@@ -73,6 +73,8 @@ describe('SiteHeader mobile menu layout', () => {
         const mobileNav = screen.getByRole('navigation', { name: 'Navigation mobile' });
         const links = within(mobileNav).getAllByRole('link');
         expect(links.slice(-3).map((l) => l.textContent)).toEqual(['Blog', 'FAQ', 'À propos']);
+        // Divider between the bar and the first rows once open (user decision 2026-09-22)
+        expect(mobileNav.querySelector(':scope > span[aria-hidden]')).not.toBeNull();
         // First level: thin grey icon + vertical hairline before the label (ui.sh variant « Hairline verticale »).
         links.slice(0, 3).forEach((l) => {
             expect(l.querySelector('svg')).not.toBeNull();

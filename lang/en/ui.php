@@ -668,6 +668,7 @@ return [
         'tagline_1' => 'Luxury Real Estate in Paris',
         'tagline_2' => 'Exceptional properties and exclusive opportunities for international buyers and investors.',
         'navigation' => 'Services',
+        'about_column' => 'About',
         'contact' => 'Contact Us',
         'follow' => 'Follow us',
         'new_tab' => '(opens in a new tab)',
@@ -700,5 +701,11 @@ return [
         'hero_value_3' => 'End-to-end support',
         'headline' => 'Prestige real estate in Paris',
         'intro' => 'Apartments, townhouses and off-market properties, hand-picked by our advisors.',
+        // Trust intro under the hero (Figma 712-25112 / 712-25584): the figure comes from about.stats (real numbers only)
+        'trust_title_1' => 'properties sold in Paris.',
+        'trust_title_2' => 'One trusted advisor.',
+        'trust_text' => 'For more than 25 years, Estate in Paris has helped buyers, sellers and investors access exceptional opportunities in Paris through local knowledge, tailored strategy and a trusted network.',
+        'trust_cta_buy' => 'Discover our properties',
+        'trust_cta_contact' => 'Contact an advisor',
     ],
 ];

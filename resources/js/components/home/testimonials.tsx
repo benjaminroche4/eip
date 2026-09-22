@@ -224,7 +224,7 @@ type RatingColumnProps = {
 };
 
 /**
- * Rating column (user decision 2026-09-16, ui.sh variant « Note géante »): the Google rating in `text-7xl`,
+ * Rating column (user decision 2026-09-16, ui.sh variant « Note géante »): the Google rating in `text-5xl sm:text-7xl` (smaller on mobile, user decision 2026-09-22),
  * « Basé sur N avis » with the Google logo (brand logo file, not an icon), then the round portraits + « +N » and the
  * previous / next arrows on one line. Closes the block on mobile.
  */
@@ -242,7 +242,9 @@ function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColum
         <div className="flex flex-col gap-8 lg:w-72 lg:shrink-0 lg:justify-between lg:py-2">
             <div className="flex flex-col gap-3">
                 <p className="flex items-baseline gap-1.5">
-                    <span className="font-heading text-7xl font-semibold tracking-tight tabular-nums">{reviews.rating.toLocaleString('fr-FR')}</span>
+                    <span className="font-heading text-5xl font-semibold tracking-tight tabular-nums sm:text-7xl">
+                        {reviews.rating.toLocaleString('fr-FR')}
+                    </span>
                     <span className="text-muted-foreground text-lg font-medium">/5</span>
                 </p>
                 {/* Count with the Google logo right under the rating, no stars here (user decision 2026-09-16: the stars stay on the cards) */}
