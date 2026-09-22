@@ -30,7 +30,9 @@ class BuyTest extends TestCase
                 ->has('districts', 4)
                 ->where('districts.0.area', 'Saint-Germain-des-Prés')
                 ->where('translations.buy.districts.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
-                ->where('translations.buy.strategies.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris')));
+                ->where('translations.buy.strategies.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
+                ->where('translations.buy.record.title', 'La confiance des propriétaires et acquéreurs à Paris')
+                ->where('translations.buy.record.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris')));
 
         $this->withLocale('en')->get('/en/buy-property-paris')
             ->assertOk()

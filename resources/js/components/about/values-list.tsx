@@ -2,6 +2,7 @@ import GradientHairline from '@/components/layout/gradient-hairline';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
@@ -29,7 +30,7 @@ export default function ValuesList() {
     const advisor = seo.advisor;
     const listRef = useRef<HTMLOListElement>(null);
     const [active, setActive] = useState<number | null>(null);
-    const [revealed, setRevealed] = useState(false);
+    const revealed = useReveal(listRef);
 
     useEffect(() => {
         const list = listRef.current;
@@ -64,27 +65,10 @@ export default function ValuesList() {
         window.addEventListener('resize', onScroll, { passive: true });
         follow(); // the page may load already scrolled
 
-        if (typeof IntersectionObserver === 'undefined') {
-            setRevealed(true);
-        }
-        const reveal =
-            typeof IntersectionObserver === 'undefined'
-                ? null
-                : new IntersectionObserver(
-                      (entries) => {
-                          if (entries.some((e) => e.isIntersecting)) {
-                              setRevealed(true);
-                              reveal?.disconnect();
-                          }
-                      },
-                      { rootMargin: '0px 0px -10% 0px' },
-                  );
-        reveal?.observe(list);
         return () => {
             window.removeEventListener('scroll', onScroll);
             window.removeEventListener('resize', onScroll);
             if (frame) cancelAnimationFrame(frame);
-            reveal?.disconnect();
         };
     }, []);
 

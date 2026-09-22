@@ -3,11 +3,12 @@ import PageEyebrow from '@/components/page/page-eyebrow';
 import StatValue from '@/components/page/stat-value';
 import SeoImage from '@/components/seo/seo-image';
 import { Button } from '@/components/ui/button';
+import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ArrowUpRight, Play } from 'lucide-react';
-import { type CSSProperties, Fragment, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, Fragment, useRef, useState } from 'react';
 
 export type BuyStat = { value: string; title: string; text: string };
 
@@ -32,26 +33,7 @@ export default function BuyHero({ stats, video }: BuyHeroProps) {
     const { t } = useTranslation();
     const [playing, setPlaying] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
-    const [revealed, setRevealed] = useState(false);
-
-    useEffect(() => {
-        const el = panelRef.current;
-        if (!el || typeof IntersectionObserver === 'undefined') {
-            setRevealed(true);
-            return;
-        }
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries.some((e) => e.isIntersecting)) {
-                    setRevealed(true);
-                    observer.disconnect();
-                }
-            },
-            { rootMargin: '0px 0px -15% 0px' },
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
+    const revealed = useReveal(panelRef, '-15%');
 
     const riseClass = revealed
         ? 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none'

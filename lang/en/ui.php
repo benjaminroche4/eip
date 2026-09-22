@@ -385,8 +385,11 @@ return [
         'form_title' => 'Request a callback',
         'form_text' => 'Your advisor calls you back within 30 minutes.',
         'first_name' => 'First name',
+        'first_name_placeholder' => 'John',
         'last_name' => 'Last name',
+        'last_name_placeholder' => 'Smith',
         'email' => 'Email address',
+        'email_placeholder' => 'john.smith@email.com',
         'phone' => 'Phone number',
         'country' => 'Country code',
         'country_search' => 'Search a country…',
@@ -466,6 +469,16 @@ return [
     'a11y' => [
         'skip_to_content' => 'Skip to content',
     ],
+    'sell' => [
+        'photo_alt' => 'Living room of a luxury apartment overlooking the Eiffel Tower, the kind of property Estate in Paris sells in Paris',
+        'gallery_label' => 'Properties sold by Estate in Paris',
+        'gallery' => [
+            'Living room of a luxury apartment in Saint-Germain-des-Prés, Paris 6th',
+            'Bright bedroom of a Haussmann apartment sold by Estate in Paris',
+            'Kitchen open onto the living room in a renovated apartment in Paris',
+            'Terrace overlooking the rooftops of Paris at sunset',
+        ],
+    ],
     'buy' => [
         'eyebrow' => 'Investing in Paris',
         'headline' => 'Build lasting wealth in Paris',
@@ -505,12 +518,25 @@ return [
             'intro' => 'Timelines, costs, financing from abroad: Estate in Paris answers the questions buyers in Paris ask most.',
             'all' => 'See all questions',
         ],
+        'record' => [
+            'eyebrow' => 'Our track record',
+            'title' => 'Trusted by property owners and buyers across Paris',
+            // GEO: a self-contained answer (brand + what + where)
+            'intro' => 'Estate in Paris guides buyers and sellers of exceptional properties in Paris with a dedicated advisor, qualified buyers and deep knowledge of the Paris luxury market.',
+            'commitment_title' => 'Our commitment',
+            'commitment_text' => 'We help every owner maximise the value of their property through a tailored strategy, qualified buyers and expert support through to signature.',
+            // :count = real Google review count (seo.reviews), the line is hidden without figures
+            'trusted' => '{1} Recommended by :count client on Google|[2,*] Recommended by :count clients on Google',
+            'trusted_sub' => 'From valuation to final signature.',
+        ],
         'districts' => [
             'eyebrow' => 'Explore Paris',
             'title' => 'Which Paris districts to invest in?',
             // GEO: a self-contained answer (brand + what + where)
             'intro' => 'Estate in Paris guides its clients in the Paris districts combining strong rental demand, long-term appreciation and luxury properties: the Left Bank, the Golden Triangle, Champ-de-Mars and the 16th.',
             'price_label' => 'Average price',
+            // GEO: dated, named source shown once under the grid and linked to each price by aria-describedby
+            'price_source' => 'Rounded average prices per m², based on the latest figures published by the Notaires du Grand Paris (2026).',
             // Prices: rounded averages per m² (to check against the latest notaires figures before each release)
             'items' => [
                 ['name' => 'Paris 6th', 'area' => 'Saint-Germain-des-Prés', 'text' => 'Where timeless Parisian elegance meets refined city living.', 'price' => '≈ €14,500/m²', 'tags' => ['High demand', 'Stable yield'], 'photo_alt' => 'Living room of a luxury apartment in Saint-Germain-des-Prés, Paris 6th'],

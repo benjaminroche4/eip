@@ -252,6 +252,19 @@ describe('EstimateForm', () => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
 
+    it('brings the mobile bar back to the screen bottom when the recap opens past the end of the form', async () => {
+        const user = userEvent.setup();
+        const scrollBy = vi.mocked(window.scrollBy).mockClear();
+        render();
+
+        // jsdom lays the bar out at the top of the viewport (rect.bottom = 0): it sits a whole screen above its stuck position
+        await user.click(screen.getByRole('button', { name: 'Voir le récapitulatif' }));
+        expect(scrollBy).toHaveBeenCalledWith({ top: -window.innerHeight, behavior: 'smooth' });
+        scrollBy.mockClear();
+        await user.click(screen.getByRole('button', { name: 'Voir le récapitulatif' }));
+        expect(scrollBy).not.toHaveBeenCalled(); // closing never moves the page
+    });
+
     it('shows the confirmation (reference, advisor, next steps) instead of the form once sent', async () => {
         const user = userEvent.setup();
         page.props = sharedProps({

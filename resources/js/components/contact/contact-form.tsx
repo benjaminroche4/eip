@@ -113,6 +113,7 @@ export default function ContactForm({ topics }: ContactFormProps) {
                                             {...aria}
                                             name="first_name"
                                             autoComplete="given-name"
+                                            placeholder={t('contact.first_name_placeholder')}
                                             value={data.first_name}
                                             onChange={(e) => setData('first_name', e.target.value)}
                                         />
@@ -124,6 +125,7 @@ export default function ContactForm({ topics }: ContactFormProps) {
                                             {...aria}
                                             name="last_name"
                                             autoComplete="family-name"
+                                            placeholder={t('contact.last_name_placeholder')}
                                             value={data.last_name}
                                             onChange={(e) => setData('last_name', e.target.value)}
                                         />
@@ -139,6 +141,7 @@ export default function ContactForm({ topics }: ContactFormProps) {
                                         name="email"
                                         autoComplete="email"
                                         inputMode="email"
+                                        placeholder={t('contact.email_placeholder')}
                                         value={data.email}
                                         onChange={(e) => setData('email', e.target.value)}
                                     />

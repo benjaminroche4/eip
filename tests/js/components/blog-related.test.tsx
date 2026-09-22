@@ -25,7 +25,7 @@ describe('BlogRelated', () => {
 
         expect(screen.getByRole('region', { name: 'Nos derniers articles' })).toBeInTheDocument();
         expect(screen.getAllByRole('article')).toHaveLength(3);
-        expect(container.querySelector('ul')).toHaveClass('overflow-x-auto', 'snap-x', 'sm:grid');
+        expect(container.querySelector('ul')).toHaveClass('overflow-x-auto', 'snap-x', 'scroll-px-6', 'sm:grid'); // scroll-px: a snapped card never touches the screen edge
 
         expect(await axe(container)).toHaveNoViolations();
     });

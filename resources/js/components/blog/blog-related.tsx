@@ -37,11 +37,11 @@ export default function BlogRelated({ posts }: BlogRelatedProps) {
             <h2 id="related-posts-title" className="text-2xl font-medium tracking-tight">
                 {t('blog.related')}
             </h2>
-            {/* Mobile: one row that scrolls sideways (snap, hidden scrollbar, cards at 85 % of the viewport); grid from sm. */}
+            {/* Mobile: one row that scrolls sideways (snap, hidden scrollbar, cards at 85 % of the viewport); `scroll-px-6` keeps the snapped card off the screen edge (snap-start otherwise aligns it to the padding box, ignoring `px-6`); grid from sm. */}
             <ul
                 ref={list}
                 role="list"
-                className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden max-sm:[&>li]:w-[85vw] max-sm:[&>li]:shrink-0"
+                className="-mx-6 flex snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto px-6 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden max-sm:[&>li]:w-[85vw] max-sm:[&>li]:shrink-0"
             >
                 {posts.map((post) => (
                     <li key={post.id} data-url={post.url} className="flex snap-start">

@@ -1,9 +1,10 @@
-import GradientHairline from '@/components/layout/gradient-hairline';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoImage from '@/components/seo/seo-image';
+import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { MapPin } from 'lucide-react';
+import { type CSSProperties, useId, useRef } from 'react';
 
 export type BuyDistrict = {
     /** « Paris 6e » */
@@ -18,22 +19,16 @@ export type BuyDistrict = {
     photo_alt: string;
 };
 
-type Ctx = { item: BuyDistrict; i: number; t: (key: string) => string };
-
-/** Pieces of the card body. */
-const Photo = ({ item, i, className, aspect = 'aspect-[3/2] lg:aspect-[4/3]' }: Ctx & { className?: string; aspect?: string }) => (
+/** The district photo: 3/2, zooms on hover like the blog cards. */
+const Photo = ({ item, i }: { item: BuyDistrict; i: number }) => (
     <SeoImage
         src={`/images/buy/district-${i + 1}-1600.jpg`}
         srcSet={`/images/buy/district-${i + 1}-800.jpg 800w, /images/buy/district-${i + 1}-1600.jpg 1600w`}
-        sizes="(min-width: 80rem) 38rem, (min-width: 64rem) 50vw, 100vw"
+        sizes="(min-width: 80rem) 36rem, (min-width: 40rem) 50vw, 100vw"
         alt={item.photo_alt}
         width={1600}
         height={1067}
-        className={cn(
-            'w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03] motion-reduce:transition-none',
-            aspect,
-            className,
-        )}
+        className="aspect-[3/2] w-full object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none"
     />
 );
 
@@ -43,20 +38,28 @@ type BuyDistrictsProps = {
 };
 
 /**
- * « Quartiers prisés pour investir » (Figma 712-18574 desktop / 712-18884 mobile), under the strategies, **kept in the
- * Figma's own style** (user decision 2026-09-21): a bare photo (square corners instead of the Figma's rounded ones, zooms
- * on hover like the blog cards, slower here), then under it, with no frame and a lot of air (luxury-house tone, user
- * decision 2026-09-21 after two ui.sh rounds): the arrondissement as a small tracked uppercase label with a thin pin, the
- * area as a large light Montserrat title, the sentence, a gradient hairline, then the facts line — short facts in small
- * tracked capitals separated by thin rules, the price on the right in plain text (no chip, no tile, no frame); the whole section on the
- * Figma's soft sand-to-white gradient, breaking out to the full screen width (its decorative wave SVG is dropped).
- * Centred header (eyebrow, h2 as a question, answer-first intro). Stacked on mobile like the Figma; on desktop a
- * 2×2 grid of **equal** cards (the Figma's wide / narrow rhythm gave photos of different heights — user decision
- * 2026-09-21). Nothing is interactive (no district pages yet). Prices are data
- * (`ui.php`) to keep real.
+ * « Quartiers prisés pour investir » (Figma 712-18574 desktop / 712-18884 mobile), under the strategies.
+ * Centred header (eyebrow, h2 as a question, answer-first intro), then the four district cards on the Figma's soft
+ * sand-to-white gradient, breaking out to the full screen width. Nothing is interactive (no district pages yet).
+ * Prices are data (`ui.php`) to keep real.
+ *
+ * Card style = **the blog card** (user decision 2026-09-22, ui.sh variant « Carte blog » chosen over the Figma's bare
+ * luxury-house layout, the site's sand card, a success-story veil and numbered editorial rows): light `border-border`
+ * frame that darkens on hover, photo inset by `p-2` (3/2, zooms on hover) with the arrondissement **inlaid** in its
+ * top-left corner (white square-cornered tile, Montserrat small capitals — user request 2026-09-22), then the area as
+ * the `text-lg font-medium` title preceded by a framed pin (the services' icon tile, user request 2026-09-22), the
+ * sentence, and right under it (no reserved height, no push to the bottom: the gap was judged too large, user decision
+ * 2026-09-22) the facts line = one row of square outline chips like the blog tags, the average price as the last, bold chip (ui.sh variant
+ * « Rangée de chips, prix compris » chosen among 15 on 2026-09-22; a version with the price on the right under a
+ * visible label was tried and reverted the same day, user decision); the prices' dated, named source is printed once
+ * under the grid and linked to each price by `aria-describedby` (GEO rule). The cards rise in cascade when the grid enters the viewport (`animate-hero-rise`,
+ * `--stagger` 80 ms, `motion-reduce` cancels). Two columns from `sm`, stacked on mobile.
  */
 export default function BuyDistricts({ items }: BuyDistrictsProps) {
     const { t } = useTranslation();
+    const sourceId = useId();
+    const gridRef = useRef<HTMLUListElement>(null);
+    const revealed = useReveal(gridRef);
 
     return (
         <section
@@ -73,48 +76,73 @@ export default function BuyDistricts({ items }: BuyDistrictsProps) {
                     <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{t('buy.districts.intro')}</p>
                 </div>
 
-                <ul role="list" className="grid gap-14 lg:grid-cols-2 lg:gap-x-10 lg:gap-y-20">
+                <ul ref={gridRef} role="list" className="grid gap-6 sm:grid-cols-2 lg:gap-8">
                     {items.map((item, i) => (
-                        <li key={item.name} className="group flex flex-col">
-                            <div className="overflow-hidden">
-                                <Photo item={item} i={i} t={t} />
+                        <li
+                            key={item.name}
+                            style={{ '--stagger': `${i * 80}ms` } as CSSProperties}
+                            className={cn(
+                                'group border-border hover:border-foreground/40 bg-card flex flex-col border transition-colors duration-300 motion-reduce:transition-none',
+                                revealed
+                                    ? 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none'
+                                    : 'opacity-0 motion-reduce:opacity-100',
+                            )}
+                        >
+                            <div className="relative p-2">
+                                <div className="relative overflow-hidden">
+                                    <Photo item={item} i={i} />
+                                </div>
+                                {/* Arrondissement inlaid in the top-left corner of the photo: a white square-cornered tile flush with the photo (decorative, the h3 carries the name) */}
+                                <span
+                                    aria-hidden
+                                    className="bg-card text-text-heading font-heading absolute top-2 left-2 px-3 py-1.5 text-xs font-medium tracking-wider uppercase"
+                                >
+                                    {item.name}
+                                </span>
                             </div>
-                            <div className="flex flex-col gap-6 pt-8">
-                                <div className="flex flex-col gap-3">
-                                    {/* Arrondissement as a small tracked label with a thin pin; the area is the title, in a light Montserrat */}
-                                    <h3 className="flex flex-col gap-3">
-                                        <span className="text-muted-foreground font-heading flex items-center gap-2 text-xs font-medium tracking-[0.2em] uppercase">
-                                            <MapPin aria-hidden className="size-3.5" strokeWidth={1.5} />
-                                            {item.name}
-                                        </span>
-                                        <span className="sr-only">, </span>
-                                        <span className="font-heading text-2xl font-normal tracking-tight text-balance sm:text-3xl">{item.area}</span>
-                                    </h3>
-                                    <p className="text-muted-foreground max-w-md text-sm/7 text-pretty">{item.text}</p>
-                                </div>
-                                <GradientHairline />
-                                {/* Facts line: short facts in small tracked capitals separated by thin rules, the price on the right — text only, no chip, no frame */}
-                                <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-                                    <ul
-                                        role="list"
-                                        className="text-muted-foreground font-heading flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tracking-wider uppercase"
+                            <div className="flex flex-1 flex-col gap-3 p-5 pt-3">
+                                {/* A framed pin (the services' icon tile) before the area name; the arrondissement stays in the h3 for screen readers */}
+                                <h3 className="flex items-center gap-3 text-lg font-medium">
+                                    <span
+                                        aria-hidden
+                                        className="border-secondary-30 bg-background-08 flex size-9 shrink-0 items-center justify-center border"
                                     >
-                                        {item.tags.map((tag, k) => (
-                                            <li key={tag} className="flex items-center gap-3">
-                                                {k > 0 && <span aria-hidden className="bg-border h-3 w-px" />}
-                                                {tag}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <p className="text-sm tabular-nums">
+                                        <MapPin className="size-4" strokeWidth={1.5} />
+                                    </span>
+                                    <span>
+                                        <span className="sr-only">{item.name}, </span>
+                                        {item.area}
+                                    </span>
+                                </h3>
+                                <p className="text-muted-foreground line-clamp-2 text-base/7 text-pretty sm:text-sm/6">{item.text}</p>
+                                {/* Facts line: one row of square-cornered outline chips (as the blog tags), the average price as the last, bold chip, described by the dated source under the grid */}
+                                <ul role="list" className="flex flex-wrap items-center gap-1.5 pt-2">
+                                    {item.tags.map((tag) => (
+                                        <li key={tag} className="border-border text-muted-foreground border px-2 py-0.5 text-xs">
+                                            {tag}
+                                        </li>
+                                    ))}
+                                    <li
+                                        className="border-border text-text-heading relative overflow-hidden border px-2 py-0.5 text-xs font-medium tabular-nums"
+                                        aria-describedby={sourceId}
+                                    >
+                                        {/* Discreet shimmer: a faint sand light band sweeps across the price chip (user decision 2026-09-22) */}
+                                        <span
+                                            aria-hidden
+                                            className="via-secondary-30/60 animate-price-shimmer pointer-events-none absolute inset-0 bg-linear-to-r from-transparent to-transparent motion-reduce:hidden"
+                                        />
                                         <span className="sr-only">{t('buy.districts.price_label')} </span>
-                                        {item.price}
-                                    </p>
-                                </div>
+                                        <span className="relative">{item.price}</span>
+                                    </li>
+                                </ul>
                             </div>
                         </li>
                     ))}
                 </ul>
+                {/* GEO: the prices' dated, named source, once under the grid */}
+                <p id={sourceId} className="text-muted-foreground -mt-4 text-xs text-pretty lg:-mt-8">
+                    {t('buy.districts.price_source')}
+                </p>
             </div>
         </section>
     );

@@ -386,8 +386,11 @@ return [
         'form_title' => 'Demandez un rappel',
         'form_text' => 'Votre conseiller vous rappelle sous 30 minutes.',
         'first_name' => 'Prénom',
+        'first_name_placeholder' => 'Jean',
         'last_name' => 'Nom',
+        'last_name_placeholder' => 'Dupont',
         'email' => 'Adresse e-mail',
+        'email_placeholder' => 'jean.dupont@exemple.fr',
         'phone' => 'Téléphone',
         'country' => 'Indicatif du pays',
         'country_search' => 'Rechercher un pays…',
@@ -467,6 +470,16 @@ return [
     'a11y' => [
         'skip_to_content' => 'Aller au contenu',
     ],
+    'sell' => [
+        'photo_alt' => "Séjour d'un appartement de prestige avec vue sur la tour Eiffel, un bien comme ceux qu'Estate in Paris vend à Paris",
+        'gallery_label' => 'Biens vendus par Estate in Paris',
+        'gallery' => [
+            "Salon d'un appartement de prestige à Saint-Germain-des-Prés, Paris 6e",
+            "Chambre lumineuse d'un appartement haussmannien vendu par Estate in Paris",
+            'Cuisine ouverte sur le séjour dans un appartement rénové à Paris',
+            'Terrasse avec vue sur les toits de Paris au coucher du soleil',
+        ],
+    ],
     'buy' => [
         'eyebrow' => 'Investir à Paris',
         'headline' => 'Bâtissez un patrimoine durable à Paris',
@@ -506,12 +519,25 @@ return [
             'intro' => 'Délais, frais, financement depuis l\'étranger : Estate in Paris répond aux questions les plus posées par les acquéreurs à Paris.',
             'all' => 'Voir toutes les questions',
         ],
+        'record' => [
+            'eyebrow' => 'Notre bilan',
+            'title' => 'La confiance des propriétaires et acquéreurs à Paris',
+            // GEO: a self-contained answer (brand + what + where)
+            'intro' => "Estate in Paris accompagne acquéreurs et vendeurs de biens d'exception à Paris, avec un conseiller dédié, des acheteurs qualifiés et une connaissance fine du marché de prestige parisien.",
+            'commitment_title' => 'Notre engagement',
+            'commitment_text' => "Nous aidons chaque propriétaire à valoriser son bien grâce à une stratégie sur mesure, des acquéreurs qualifiés et un accompagnement expert jusqu'à la signature.",
+            // :count = real Google review count (seo.reviews), the line is hidden without figures
+            'trusted' => '{1} Recommandé par :count client sur Google|[2,*] Recommandé par :count clients sur Google',
+            'trusted_sub' => "De l'estimation à la signature finale.",
+        ],
         'districts' => [
             'eyebrow' => 'Explorer Paris',
             'title' => 'Dans quels quartiers de Paris investir ?',
             // GEO: a self-contained answer (brand + what + where)
             'intro' => "Estate in Paris accompagne ses clients dans les quartiers de Paris qui allient forte demande locative, valorisation à long terme et biens de prestige : Rive gauche, Triangle d'or, Champ-de-Mars et 16e.",
             'price_label' => 'Prix moyen',
+            // GEO: dated, named source shown once under the grid and linked to each price by aria-describedby
+            'price_source' => "Prix moyens au m² arrondis, d'après les dernières données publiées par les Notaires du Grand Paris (2026).",
             // Prices: rounded averages per m² (to check against the latest notaires figures before each release)
             'items' => [
                 ['name' => 'Paris 6e', 'area' => 'Saint-Germain-des-Prés', 'text' => "L'élégance parisienne intemporelle et une vie de quartier raffinée.", 'price' => '≈ 14 500 €/m²', 'tags' => ['Forte demande', 'Rendement stable'], 'photo_alt' => "Salon d'un appartement de prestige à Saint-Germain-des-Prés, Paris 6e"],

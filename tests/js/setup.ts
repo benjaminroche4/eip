@@ -11,6 +11,7 @@ vi.stubGlobal('route', routeStub);
 
 // jsdom lacks these APIs Radix relies on.
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
+window.scrollBy = vi.fn();
 window.HTMLElement.prototype.hasPointerCapture = vi.fn();
 window.HTMLElement.prototype.setPointerCapture = vi.fn();
 window.HTMLElement.prototype.releasePointerCapture = vi.fn();

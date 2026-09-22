@@ -28,11 +28,12 @@ export default function SiteFooter({ year }: { year: number }) {
     return (
         <footer className="from-background-10 to-background-02 after:via-border relative overflow-hidden bg-gradient-to-b after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent">
             <div className={`${container} pt-12 lg:pt-16`}>
-                <BrandWordmark />
+                {/* Mobile / tablet: edge to edge (the column keeps its gutters), a touch more present than on desktop */}
+                <BrandWordmark className="-mx-6 lg:mx-0" />
             </div>
 
-            <div className={`${container} grid gap-12 py-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.7fr_0.7fr_1.3fr] lg:gap-15 lg:py-16`}>
-                <div className="flex flex-col items-center gap-5 text-center sm:col-span-2 sm:items-start sm:text-left lg:col-span-1">
+            <div className={`${container} grid grid-cols-2 gap-12 py-12 lg:grid-cols-[1.4fr_0.7fr_0.7fr_1.3fr] lg:gap-15 lg:py-16`}>
+                <div className="col-span-2 flex flex-col items-center gap-5 text-center sm:items-start sm:text-left lg:col-span-1">
                     <Link href={route('home')} aria-label="Homepage" className="focus-ring inline-flex w-fit rounded-none">
                         <BrandLogo />
                     </Link>
@@ -47,13 +48,14 @@ export default function SiteFooter({ year }: { year: number }) {
                         <LanguageSwitcher />
                     </div>
                 </div>
+                {/* The two nav columns share a row at every width (user decision 2026-09-22); brand and contact take the full row below lg */}
                 <FooterColumn title={t('footer.navigation')}>
                     <FooterNav items={items} label={t('footer.navigation')} />
                 </FooterColumn>
                 <FooterColumn title={t('footer.about_column')}>
                     <FooterNav items={aboutItems} label={t('footer.about_column')} />
                 </FooterColumn>
-                <FooterColumn title={t('footer.contact')} badge={<OpenBadge />} className="order-first sm:col-span-2 lg:order-none lg:col-span-1">
+                <FooterColumn title={t('footer.contact')} badge={<OpenBadge />} className="order-first col-span-2 lg:order-none lg:col-span-1">
                     <ContactCard />
                     <GradientHairline />
                     <Button asChild variant="outline" size="lg" className="hover:bg-background-05 w-full bg-transparent dark:bg-transparent">

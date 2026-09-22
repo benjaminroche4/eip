@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SellController;
 use App\Http\Controllers\SeoController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,7 +48,7 @@ Route::group([
     Route::post(LaravelLocalization::transRoute('routes.estimate'), [EstimateController::class, 'store'])->middleware('throttle:estimate')->name('estimate.store');
 
     Route::get(LaravelLocalization::transRoute('routes.buy'), BuyController::class)->name('buy');
-    Route::get(LaravelLocalization::transRoute('routes.sell'), fn () => Inertia::render('sell'))->name('sell');
+    Route::get(LaravelLocalization::transRoute('routes.sell'), SellController::class)->name('sell');
 
     foreach (['privacy', 'legal', 'terms'] as $key) {
         Route::get(LaravelLocalization::transRoute("routes.$key"), fn () => app(LegalController::class)($key))->name($key);

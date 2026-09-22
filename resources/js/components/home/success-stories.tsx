@@ -1,6 +1,7 @@
 import SeoImage from '@/components/seo/seo-image';
 import { Button } from '@/components/ui/button';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
+import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
@@ -26,28 +27,9 @@ export default function SuccessStories({ stories }: SuccessStoriesProps) {
     const rowRef = useRef<HTMLUListElement>(null);
     const [current, setCurrent] = useState(0);
     const quoteRef = useRef<HTMLDivElement>(null);
-    const [revealed, setRevealed] = useState(false);
+    const revealed = useReveal(quoteRef, '-15%');
 
     // The quote is written word by word when it enters the viewport, the same reveal as the about manifesto
-    // (`animate-manifesto-in`, 40 ms per word, then the button — user decision 2026-09-16).
-    useEffect(() => {
-        const el = quoteRef.current;
-        if (!el || typeof IntersectionObserver === 'undefined') {
-            setRevealed(true);
-            return;
-        }
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries.some((e) => e.isIntersecting)) {
-                    setRevealed(true);
-                    observer.disconnect();
-                }
-            },
-            { rootMargin: '0px 0px -15% 0px' },
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
     const WORD_MS = 40;
     const animClass = revealed
         ? 'animate-manifesto-in [animation-delay:var(--stagger)] motion-reduce:animate-none'

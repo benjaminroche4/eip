@@ -1,9 +1,10 @@
 import GradientHairline from '@/components/layout/gradient-hairline';
 import RingsBackdrop from '@/components/page/rings-backdrop';
 import StatValue from '@/components/page/stat-value';
+import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { type CSSProperties, Fragment, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, Fragment, useRef } from 'react';
 
 export type AgencyStat = { value: string; title: string; text: string };
 
@@ -29,47 +30,10 @@ type AgencyManifestoProps = { stats: AgencyStat[] };
 export default function AgencyManifesto({ stats }: AgencyManifestoProps) {
     const { t } = useTranslation();
     const sectionRef = useRef<HTMLElement>(null);
-    const [revealed, setRevealed] = useState(false);
-
-    useEffect(() => {
-        const el = sectionRef.current;
-        if (!el || typeof IntersectionObserver === 'undefined') {
-            setRevealed(true);
-            return;
-        }
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries.some((e) => e.isIntersecting)) {
-                    setRevealed(true);
-                    observer.disconnect();
-                }
-            },
-            { rootMargin: '0px 0px -15% 0px' },
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
+    const revealed = useReveal(sectionRef, '-15%');
 
     const gridRef = useRef<HTMLUListElement>(null);
-    const [gridRevealed, setGridRevealed] = useState(false);
-    useEffect(() => {
-        const el = gridRef.current;
-        if (!el || typeof IntersectionObserver === 'undefined') {
-            setGridRevealed(true);
-            return;
-        }
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries.some((e) => e.isIntersecting)) {
-                    setGridRevealed(true);
-                    observer.disconnect();
-                }
-            },
-            { rootMargin: '0px 0px -15% 0px' },
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
+    const gridRevealed = useReveal(gridRef, '-15%');
 
     // Word by word, as if written (user decision 2026-09-16): every word of the title then of the two statements
     // settles 40 ms after the previous one, the mark closes the sequence. `offset` chains the counters.

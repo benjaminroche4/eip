@@ -2,37 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
+use App\Domain\Content\Actions\ExcerptFaqCategory;
+use App\Domain\Content\Actions\ListDistricts;
+use App\Domain\Content\Actions\ListStats;
+use App\Domain\Content\Actions\ListStrategies;
+use App\Domain\Content\Support\ContentList;
 use Inertia\Inertia;
 use Inertia\Response;
 
-/** « Acheter »: hero (Figma 712-18453 / 712-18766) with the agency's key figures (`about.stats`, same real numbers as the About page) and an optional presentation video (`seo.videos.buy`), then the three investment strategies (`buy.strategies.items`) and the four prime districts (`buy.districts.items`). */
+/** « Acheter »: hero (Figma 712-18453 / 712-18766) with the agency's key figures (same real numbers as the About page) and an optional presentation video (`seo.videos.buy`), the three investment strategies, the four prime districts and a teaser of the FAQ's « buying » topic. Content from `Domain/Content`. */
 class BuyController extends Controller
 {
-    public function __invoke(): Response
+    public function __invoke(ListStats $stats, ListStrategies $strategies, ExcerptFaqCategory $faq, ListDistricts $districts): Response
     {
         return Inertia::render('buy', [
-            'stats' => __('ui.about.stats'),
+            'stats' => ContentList::toArray($stats()),
             'video' => config('seo.videos.buy') ?: null,
-            'strategies' => __('ui.buy.strategies.items'),
-            'faq' => $this->faq(),
-            'districts' => __('ui.buy.districts.items'),
+            'strategies' => ContentList::toArray($strategies()),
+            'faq' => $faq('buying', 6)->toArray(),
+            'districts' => ContentList::toArray($districts()),
         ]);
-    }
-
-    /**
-     * The first six questions of the FAQ page's « buying » topic (single source of truth in `ui.faq.categories`),
-     * with the topic slug so the block can link to that anchor on the FAQ page.
-     *
-     * @return array{slug: string, items: array<int, array{question: string, answer: string, slug: string}>}
-     */
-    private function faq(): array
-    {
-        $category = collect(__('ui.faq.categories'))->firstWhere('key', 'buying') ?? ['title' => '', 'items' => []];
-
-        return [
-            'slug' => Str::slug($category['title']),
-            'items' => array_map(fn (array $item) => [...$item, 'slug' => Str::slug($item['question'])], array_slice($category['items'], 0, 6)),
-        ];
     }
 }

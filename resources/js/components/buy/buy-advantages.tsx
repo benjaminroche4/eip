@@ -1,10 +1,11 @@
 import PageEyebrow from '@/components/page/page-eyebrow';
 import { Button } from '@/components/ui/button';
+import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ArrowRight, ChartLine, Globe, House, type LucideIcon, UserCheck } from 'lucide-react';
-import { type CSSProperties, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useRef } from 'react';
 
 /** The four reasons (Figma 712-18480, reworked 2026-09-21): sourcing, figures-based analysis, negotiation, international buyers. */
 const ADVANTAGES: { key: 'sourcing' | 'analysis' | 'negotiation' | 'international'; icon: LucideIcon }[] = [
@@ -29,26 +30,7 @@ const ADVANTAGES: { key: 'sourcing' | 'analysis' | 'negotiation' | 'internationa
 export default function BuyAdvantages() {
     const { t } = useTranslation();
     const gridRef = useRef<HTMLUListElement>(null);
-    const [revealed, setRevealed] = useState(false);
-
-    useEffect(() => {
-        const el = gridRef.current;
-        if (!el || typeof IntersectionObserver === 'undefined') {
-            setRevealed(true);
-            return;
-        }
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries.some((e) => e.isIntersecting)) {
-                    setRevealed(true);
-                    observer.disconnect();
-                }
-            },
-            { rootMargin: '0px 0px -10% 0px' },
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
+    const revealed = useReveal(gridRef);
 
     return (
         <section

@@ -29,6 +29,13 @@ describe('ContactForm', () => {
         expect(screen.getByRole('heading', { level: 2, name: 'Demandez un rappel' })).toBeInTheDocument();
     });
 
+    it('shows example placeholders on first name, last name and email', () => {
+        renderPage(<ContactForm topics={TOPICS} />);
+        expect(screen.getByLabelText(/^Prénom/)).toHaveAttribute('placeholder', 'Jean');
+        expect(screen.getByLabelText(/^Nom/)).toHaveAttribute('placeholder', 'Dupont');
+        expect(screen.getByLabelText(/^Adresse e-mail/)).toHaveAttribute('placeholder', 'jean.dupont@exemple.fr');
+    });
+
     it('posts to the contact route with the typed values', async () => {
         const user = userEvent.setup();
         renderPage(<ContactForm topics={TOPICS} />);

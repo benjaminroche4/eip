@@ -43,7 +43,7 @@ function Portrait({ item, className }: { item: Testimonial; className?: string }
  * (user decision 2026-09-16): sand gradient band, centred header, then the rating column (Google rating from
  * `seo.reviews`: giant rating, count with the Google logo linking to the reviews, round portraits + « +N », previous / next arrows) separated by a vertical gradient hairline
  * from a row of quote cards (site card: sand hairline, inner sand gradient, square corners, no shadow; sand quotation
- * mark, stars, Montserrat quote, round portrait) that scrolls sideways with a right-edge fade. On mobile the rating
+ * mark, stars, Montserrat quote, round portrait) that scrolls sideways with a right-edge fade (desktop only: on mobile the centred card is not veiled). On mobile the rating
  * opens the block, the portraits / stars / arrows close it, as in the Figma. The rating column only renders with real
  * figures.
  */
@@ -157,7 +157,7 @@ export default function Testimonials({ items }: TestimonialsProps) {
 
                     {/* Quote cards: one row that scrolls sideways at every width, fading out on the right edge */}
                     <div
-                        className="after:from-background relative min-w-0 flex-1 after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:w-20 after:bg-linear-to-l after:to-transparent lg:after:-right-8"
+                        className="lg:after:from-background relative min-w-0 flex-1 after:pointer-events-none after:absolute after:inset-y-0 after:-right-8 after:hidden after:w-20 after:bg-linear-to-l after:to-transparent lg:after:block"
                         onPointerEnter={(e) => e.pointerType !== 'touch' && setResting(true)}
                         onPointerLeave={(e) => e.pointerType !== 'touch' && setResting(false)}
                         onTouchStart={() => setResting(true)}

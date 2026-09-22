@@ -11,6 +11,8 @@
 @theme {
     /* Border shimmer: a faint light arc gliding along an outline (newsletter card; removed from the footer "Open" badge). */
     --animate-border-shimmer: border-shimmer 8s linear 2; /* two passes on load, then still (user decision 2026-08-27) */
+    /* Price chip (Buy districts): a faint sand light band sweeps across the chip, then rests — one pass every 6 s (user decision 2026-09-22). */
+    --animate-price-shimmer: price-shimmer 6s linear infinite;
     /* shadcn Accordion (Radix exposes the content height as a CSS variable). */
     /* Valuation recap: a group's disc pops into a check once complete; fade-in dims the page behind the mobile recap sheet. */
     --animate-fade-in: fade-in 0.2s ease-out both;
@@ -227,6 +229,15 @@
             transform: rotate(1turn);
         }
     }
+    @keyframes price-shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+        30%,
+        100% {
+            transform: translateX(100%);
+        }
+    }
 }
 
 /* Fades a decorative backdrop into the page: solid at the top, gone at the bottom, softened on both sides (PageBackdrop). */
@@ -385,6 +396,7 @@
     --sidebar-accent-foreground: #202832;
     --sidebar-border: #dcdee1;
     --sidebar-ring: #2f6cf9;
+    --sidebar: hsl(0 0% 98%);
 }
 
 .dark {
@@ -426,6 +438,7 @@
     --sidebar-accent-foreground: #f0f1f3;
     --sidebar-border: #1b222b;
     --sidebar-ring: #5486fa;
+    --sidebar: hsl(240 5.9% 10%);
 }
 
 @layer base {
@@ -442,4 +455,15 @@
         /* Full-bleed backdrops (newsletter gradient) use w-screen: clip the odd pixel of overflow instead of a horizontal scrollbar. */
         overflow-x: clip;
     }
+}
+
+@theme inline {
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
 }
