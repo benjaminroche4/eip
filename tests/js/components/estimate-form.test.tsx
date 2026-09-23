@@ -95,7 +95,7 @@ describe('EstimateForm', () => {
 
         const rooms = screen.getByLabelText(/^Nombre de pièces/);
         const [decrease, increase] = within(rooms.closest<HTMLElement>('[data-slot=stepper]')!).getAllByRole('button');
-        expect(decrease).toBeDisabled(); // min 1
+        expect(decrease).toHaveAttribute('aria-disabled', 'true'); // min 1 (aria-disabled: the button keeps the focus)
         await user.click(increase);
         await user.click(increase);
         expect(rooms).toHaveValue(3);
@@ -103,7 +103,55 @@ describe('EstimateForm', () => {
         expect(rooms).toHaveValue(2);
         for (let i = 0; i < 12; i++) await user.click(increase);
         expect(rooms).toHaveValue(10); // capped at 10
-        expect(increase).toBeDisabled();
+        expect(increase).toHaveAttribute('aria-disabled', 'true');
+        expect(increase).toHaveFocus(); // never `disabled`: reaching the end of the range does not throw the keyboard user out
+        await user.keyboard('{Enter}');
+        expect(rooms).toHaveValue(10); // a no-op at the end of the range
+    });
+
+    it('lets you clear the stepper and type a number directly (committed and clamped on blur)', async () => {
+        const user = userEvent.setup();
+        render();
+
+        const rooms = screen.getByLabelText(/^Nombre de pièces/);
+        await user.click(rooms);
+        await user.clear(rooms);
+        expect(rooms).toHaveValue(null); // an emptied field stays empty instead of snapping back to the minimum
+        await user.type(rooms, '4');
+        expect(rooms).toHaveValue(4);
+        expect(recap().getByRole('button', { name: 'Modifier : Pièces' })).toHaveTextContent('4');
+        await user.clear(rooms);
+        await user.tab(); // leaving an empty field commits the minimum
+        expect(rooms).toHaveValue(1);
+        await user.click(rooms);
+        await user.clear(rooms);
+        await user.type(rooms, '15{Enter}'); // Enter commits too, clamped to the maximum
+        expect(rooms).toHaveValue(10);
+        expect(rooms).toHaveFocus();
+    });
+
+    it('keeps the bedrooms under the rooms: capped when typed, pulled down when the rooms decrease', async () => {
+        const user = userEvent.setup();
+        render();
+
+        const rooms = screen.getByLabelText(/^Nombre de pièces/);
+        const bedrooms = screen.getByLabelText(/^Nombre de chambres/);
+        const [, moreRooms] = within(rooms.closest<HTMLElement>('[data-slot=stepper]')!).getAllByRole('button');
+        const [, moreBedrooms] = within(bedrooms.closest<HTMLElement>('[data-slot=stepper]')!).getAllByRole('button');
+        await user.click(moreRooms);
+        await user.click(moreRooms); // rooms 3
+        await user.click(moreBedrooms);
+        await user.click(moreBedrooms);
+        await user.click(moreBedrooms); // asks for 4, capped at the 3 rooms
+        expect(bedrooms).toHaveValue(3);
+        expect(moreBedrooms).toHaveAttribute('aria-disabled', 'true');
+        expect(bedrooms).toHaveAttribute('max', '3');
+
+        const [lessRooms] = within(rooms.closest<HTMLElement>('[data-slot=stepper]')!).getAllByRole('button');
+        await user.click(lessRooms);
+        await user.click(lessRooms); // rooms 1
+        expect(rooms).toHaveValue(1);
+        expect(bedrooms).toHaveValue(1); // pulled down with the rooms
     });
 
     it('rolls the stepper digit like a slot reel and keeps square buttons', async () => {

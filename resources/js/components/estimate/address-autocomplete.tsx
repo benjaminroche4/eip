@@ -40,11 +40,13 @@ export default function AddressAutocomplete({ aria, value, onChange, valid, apiK
     const tokenRef = useRef<google.maps.places.AutocompleteSessionToken | null>(null);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const requestRef = useRef(0);
+    const inputRef = useRef<HTMLInputElement>(null);
     const listboxId = `${aria.id}-suggestions`;
 
     useEffect(() => () => clearTimeout(debounceRef.current ?? undefined), []);
 
     const close = () => {
+        requestRef.current++; // a response still in flight (clear, blur, Escape, pick) must not reopen the list
         setOpen(false);
         setActive(-1);
     };
@@ -64,7 +66,8 @@ export default function AddressAutocomplete({ aria, value, onChange, valid, apiK
                 locationRestriction: PARIS_AREA,
                 language: locale,
             });
-            if (request !== requestRef.current) return; // a newer keystroke superseded this one
+            if (request !== requestRef.current) return; // a newer keystroke superseded this one, or the field was closed meanwhile
+            if (document.activeElement !== inputRef.current) return; // the reader left the field: no list without focus
 
             const list = found.flatMap(({ placePrediction: p }): Suggestion[] =>
                 p ? [{ id: p.placeId, main: p.mainText?.text ?? p.text.text, secondary: p.secondaryText?.text ?? '', full: p.text.text }] : [],
@@ -132,6 +135,7 @@ export default function AddressAutocomplete({ aria, value, onChange, valid, apiK
         <div className="relative">
             <Input
                 {...aria}
+                ref={inputRef}
                 role="combobox"
                 name="address"
                 autoComplete="off"

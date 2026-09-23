@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BuyController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DistrictsController;
 use App\Http\Controllers\EstimateController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
@@ -43,6 +44,7 @@ Route::group([
     Route::post(LaravelLocalization::transRoute('routes.newsletter'), [NewsletterController::class, 'store'])->middleware('throttle:newsletter')->name('newsletter.store');
 
     Route::get(LaravelLocalization::transRoute('routes.about'), AboutController::class)->name('about');
+    Route::get(LaravelLocalization::transRoute('routes.districts'), DistrictsController::class)->name('districts');
     Route::get(LaravelLocalization::transRoute('routes.faq'), FaqController::class)->name('faq');
 
     Route::get(LaravelLocalization::transRoute('routes.estimate'), [EstimateController::class, 'show'])->name('estimate');

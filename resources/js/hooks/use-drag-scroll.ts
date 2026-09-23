@@ -67,10 +67,23 @@ export function useDragScroll(
             return next ?? target;
         };
 
+        // Release (2026-09-22): `data-dragging` (snap suspended, grabbing cursor) is only removed once the smooth scroll
+        // to the target has ended — on `scrollend` where supported, otherwise after 400 ms — so re-enabling the snap
+        // never interrupts the glide to the next item. Dropped at once if a new drag starts meanwhile.
+        const RELEASE_MS = 400;
+        let releaseTimer = 0;
+        const settle = () => {
+            window.clearTimeout(releaseTimer);
+            el.removeEventListener('scrollend', settle);
+            if (!dragging) delete el.dataset.dragging;
+        };
+
         const onPointerDown = (e: PointerEvent) => {
             // Touch scrolls natively; the mouse (or a pen) drags. Nothing to drag when the row fits.
             if (e.pointerType === 'touch' || !overflowing()) return;
             e.preventDefault();
+            window.clearTimeout(releaseTimer);
+            el.removeEventListener('scrollend', settle);
             dragging = true;
             lastX = e.clientX;
             startScroll = el.scrollLeft;
@@ -88,20 +101,29 @@ export function useDragScroll(
             dragging = false;
             if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId);
             const target = releaseTarget();
-            delete el.dataset.dragging;
+            if ('onscrollend' in window) el.addEventListener('scrollend', settle);
+            releaseTimer = window.setTimeout(settle, RELEASE_MS);
             el.scrollTo({ left: target, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        };
+        // Images and links inside the row would otherwise start a native drag (ghost image) under the mouse drag (2026-09-22)
+        const onDragStart = (e: DragEvent) => {
+            if (dragging) e.preventDefault();
         };
 
         el.addEventListener('pointerdown', onPointerDown);
         el.addEventListener('pointermove', onPointerMove);
         el.addEventListener('pointerup', onPointerUp);
         el.addEventListener('pointercancel', onPointerUp);
+        el.addEventListener('dragstart', onDragStart);
         return () => {
+            window.clearTimeout(releaseTimer);
+            el.removeEventListener('scrollend', settle);
             window.removeEventListener('resize', centre);
             el.removeEventListener('pointerdown', onPointerDown);
             el.removeEventListener('pointermove', onPointerMove);
             el.removeEventListener('pointerup', onPointerUp);
             el.removeEventListener('pointercancel', onPointerUp);
+            el.removeEventListener('dragstart', onDragStart);
         };
     }, [ref, align, open]);
 }

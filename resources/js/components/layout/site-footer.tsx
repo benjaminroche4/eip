@@ -26,7 +26,10 @@ export default function SiteFooter({ year }: { year: number }) {
     const aboutItems = useFooterAboutItems();
 
     return (
-        <footer className="from-background-10 to-background-02 after:via-border relative overflow-hidden bg-gradient-to-b after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent">
+        <footer
+            id="footer"
+            className="from-background-10 to-background-02 after:via-border relative overflow-hidden bg-gradient-to-b after:pointer-events-none after:absolute after:inset-x-0 after:top-0 after:h-px after:bg-gradient-to-r after:from-transparent after:to-transparent"
+        >
             {/* Mobile: tighter vertical rhythm (wordmark → contact → nav → brand were 48px apart, read as gaps — user decision 2026-09-22) */}
             <div className={`${container} pt-8 sm:pt-12 lg:pt-16`}>
                 {/* Mobile / tablet: edge to edge (the column keeps its gutters), a touch more present than on desktop */}

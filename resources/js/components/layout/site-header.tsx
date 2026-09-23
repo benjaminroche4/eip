@@ -27,7 +27,10 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
     const toggleRef = useRef<HTMLButtonElement>(null);
     const closeMenu = useCallback(() => {
         setMenuOpen(false);
-        toggleRef.current?.focus({ preventScroll: true });
+        // Focus back on the toggle only while it is displayed (`lg:hidden` applies once the menu closes on a resize to desktop;
+        // computed `display`, not `offsetParent`, which jsdom never sets)
+        const toggle = toggleRef.current;
+        if (toggle && getComputedStyle(toggle).display !== 'none') toggle.focus({ preventScroll: true });
     }, []);
     // Mobile: slide the bar away while scrolling down, bring it back on the first upward scroll (never while the menu is open).
     const hidden = scrolled && direction === 'down' && !menuOpen;

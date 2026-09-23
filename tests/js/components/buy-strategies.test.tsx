@@ -1,7 +1,7 @@
 import BuyStrategies, { type BuyStrategy } from '@/components/buy/buy-strategies';
 import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
@@ -12,9 +12,8 @@ const ITEMS: BuyStrategy[] = [
 ];
 
 describe('BuyStrategies', () => {
-    const nativeObserver = globalThis.IntersectionObserver;
     afterEach(() => {
-        globalThis.IntersectionObserver = nativeObserver;
+        vi.restoreAllMocks();
     });
 
     it('renders the centred header, the bare photo and the three numbered strategies', async () => {
@@ -42,23 +41,29 @@ describe('BuyStrategies', () => {
         expect(await axe(container)).toHaveNoViolations();
     });
 
-    it('locks the number of the strategy that reaches the middle of the viewport (nothing active before scrolling)', () => {
-        const callbacks: IntersectionObserverCallback[] = [];
-        globalThis.IntersectionObserver = class {
-            constructor(cb: IntersectionObserverCallback) {
-                callbacks.push(cb);
-            }
-            observe() {}
-            disconnect() {}
-        } as unknown as typeof IntersectionObserver;
+    it('locks the number of the strategy that reaches the middle of the viewport (nothing active before scrolling)', async () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyStrategies items={ITEMS} />);
+        const list = container.querySelector('ol')!;
         const rows = Array.from(container.querySelectorAll('ol > li'));
 
         expect(container.querySelector('.animate-value-lock')).toBeNull();
         expect(screen.queryByTestId('strategy-ring')).toBeNull();
 
-        act(() => callbacks[0]([{ isIntersecting: true, target: rows[1] } as IntersectionObserverEntry], {} as IntersectionObserver));
+        // Viewport 1000px high (middle line at 500): the second strategy sits under the middle line (measured on scroll).
+        vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(1000);
+        const rects = new Map<Element, [number, number]>([
+            [list, [0, 1000]],
+            [rows[0], [100, 300]],
+            [rows[1], [400, 600]],
+            [rows[2], [700, 900]],
+        ]);
+        vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+            const [top, bottom] = rects.get(this) ?? [0, 0];
+            return { top, bottom, height: bottom - top, left: 0, right: 0, width: 0, x: 0, y: top, toJSON: () => ({}) } as DOMRect;
+        });
+        window.dispatchEvent(new Event('scroll'));
+        await act(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
 
         expect(rows[1].querySelector('.animate-value-lock')).not.toBeNull();
         expect(rows[0].querySelector('.animate-value-lock')).toBeNull();

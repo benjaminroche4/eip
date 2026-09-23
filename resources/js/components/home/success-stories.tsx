@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, Fragment, useEffect, useRef, useState } from 'react';
 
 export type SuccessStory = { title: string; place: string; duration: string; result: string; photo: string; alt: string };
 
@@ -25,7 +25,7 @@ const arrowClass = 'group transition-transform active:scale-90 motion-reduce:tra
  * « Success stories » (Figma 712-25407 desktop / 712-25844 mobile): photos only (user decision 2026-09-22 — the
  * eyebrow / title / place · duration · result overlay was removed, the story stays in the `alt`), one horizontal
  * snap row at every width, photos in the former card format (`w-80 sm:w-96 lg:w-104`, `h-96 sm:h-112 lg:h-120`), one centred at a time below `lg` and a row starting at the left edge from `lg` (`snap-start`), draggable with the mouse or the finger (`useDragScroll`)
- * with previous / next arrows under the row, in an infinite loop (three copies, recentred invisibly — user decision 2026-09-22); then a centred Montserrat quote written word by word when it enters
+ * with previous / next arrows under the row, disabled at both ends (the infinite loop tried the same day was dropped — user decision 2026-09-22); then a centred Montserrat quote written word by word when it enters
  * the viewport (the about manifesto's reveal) and one button to the blog, where the case studies live. Also used on « Vendre » (2026-09-22) with `quote={false}`
  * and `embedded` in place of the former photo mosaic.
  */
@@ -53,46 +53,43 @@ export default function SuccessStories({ stories, quote = true, embedded = false
     const quoteWords = t('stories.quote').split(' ');
     useDragScroll(rowRef, { align: desktop ? 'start' : 'center', open: 'first' });
 
-    // Infinite loop (user decision 2026-09-22, the testimonials' mechanics): the row is rendered three times and kept
-    // inside the middle copy, so arrows, drag and touch never meet an end. `span()` = width of one copy; a jump of
-    // exactly one span is invisible. Copies outside the middle set are `aria-hidden`.
-    const loop = stories.length > 1;
-    const rendered = loop ? [...stories, ...stories, ...stories] : stories;
-    const span = useCallback(() => {
-        const el = rowRef.current;
-        if (!el || !loop) return 0;
-        const first = el.children[0] as HTMLElement | undefined;
-        const mid = el.children[stories.length] as HTMLElement | undefined;
-        return first && mid ? mid.offsetLeft - first.offsetLeft : 0;
-    }, [loop, stories.length]);
+    // Finite row (user decision 2026-09-22, replaces the infinite loop: with the arrows an end is reached, so it is
+    // shown): the arrows move the row by one photo and are disabled (dimmed by the button's disabled style) when the
+    // row is at its start / at its end — measured on the scroll position itself, not on a "current card" index, which
+    // never reached the last photos on desktop where several fit in the viewport (bug 2026-09-22). From `lg` the last
+    // photo snaps on its end (`lg:last:snap-end`): with `snap-start` only, its start lies past the maximum scroll and
+    // the row rested on the previous photo, leaving the last one cut (bug 2026-09-22).
+    // `overflowing` (2026-09-22): the grab cursor only when the row actually scrolls (`data-overflowing`), and « next »
+    // is off as soon as the whole row fits (max = 0). Without layout (jsdom, `scrollWidth` = 0) nothing is measurable:
+    // the arrows are left as they are rather than switched off on a guess.
+    const [edges, setEdges] = useState({ start: true, end: false, overflowing: false });
     useEffect(() => {
         const el = rowRef.current;
-        if (!el || !loop) return;
-        const s = span();
-        if (s) el.scrollLeft = s;
-        const onScroll = () => {
-            const s = span();
-            if (!s) return;
-            if (el.scrollLeft >= s * 1.5) el.scrollLeft -= s;
-            else if (el.scrollLeft < s * 0.5) el.scrollLeft += s;
+        if (!el) return;
+        const measure = () => {
+            const measurable = el.scrollWidth > 0;
+            const max = el.scrollWidth - el.clientWidth;
+            setEdges({
+                start: el.scrollLeft <= 1,
+                end: measurable && el.scrollLeft >= max - 1,
+                overflowing: el.scrollWidth > el.clientWidth + 1,
+            });
         };
-        el.addEventListener('scroll', onScroll, { passive: true });
-        return () => el.removeEventListener('scroll', onScroll);
-    }, [loop, span]);
-    // Arrows scroll by one photo (its width + the 20px gap); scroll-snap settles it. A smooth scroll that would cross a
-    // loop threshold is preceded by an invisible recentre so it is never interrupted.
+        measure();
+        el.addEventListener('scroll', measure, { passive: true });
+        window.addEventListener('resize', measure, { passive: true });
+        return () => {
+            el.removeEventListener('scroll', measure);
+            window.removeEventListener('resize', measure);
+        };
+    }, []);
     const scrollBy = (direction: 1 | -1) => {
         const el = rowRef.current;
-        const card = el?.firstElementChild as HTMLElement | null;
-        if (!el || !card) return;
-        const step = direction * (card.offsetWidth + 20);
-        const s = span();
-        if (s) {
-            const target = el.scrollLeft + step;
-            if (target >= s * 1.5) el.scrollLeft -= s;
-            else if (target < s * 0.5) el.scrollLeft += s;
-        }
-        el.scrollBy({ left: step, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        const cards = el ? (Array.from(el.children) as HTMLElement[]) : [];
+        if (!el || cards.length === 0) return;
+        // One photo = the distance between two cards (width + gap); a single card falls back to its width
+        const step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
+        el.scrollBy({ left: direction * step, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     };
 
     return (
@@ -107,14 +104,11 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                 <ul
                     ref={rowRef}
                     role="list"
-                    className="-mx-6 flex w-[calc(100%+3rem)] cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-[calc(50%-10rem)] pb-1 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none sm:px-[calc(50%-12rem)] lg:mx-0 lg:w-full lg:px-0 [&::-webkit-scrollbar]:hidden"
+                    data-overflowing={edges.overflowing}
+                    className="-mx-6 flex w-[calc(100%+3rem)] snap-x snap-mandatory gap-5 overflow-x-auto px-[calc(50%-10rem)] pb-1 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none data-[overflowing=true]:cursor-grab sm:px-[calc(50%-12rem)] lg:mx-0 lg:w-full lg:px-0 [&::-webkit-scrollbar]:hidden"
                 >
-                    {rendered.map((story, index) => (
-                        <li
-                            key={`${story.title}-${index}`}
-                            className="w-80 shrink-0 snap-center sm:w-96 lg:w-104 lg:snap-start"
-                            aria-hidden={loop && (index < stories.length || index >= stories.length * 2) ? true : undefined}
-                        >
+                    {stories.map((story) => (
+                        <li key={story.title} className="w-80 shrink-0 snap-center sm:w-96 lg:w-104 lg:snap-start lg:last:snap-end">
                             <StoryPhoto story={story} />
                         </li>
                     ))}
@@ -126,6 +120,7 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                         size="icon"
                         className={arrowClass}
                         aria-label={t('stories.previous')}
+                        disabled={edges.start}
                         onClick={() => scrollBy(-1)}
                     >
                         <ChevronLeft aria-hidden className="transition-transform group-active:-translate-x-0.5 motion-reduce:transition-none" />
@@ -136,6 +131,7 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                         size="icon"
                         className={arrowClass}
                         aria-label={t('stories.next')}
+                        disabled={edges.end}
                         onClick={() => scrollBy(1)}
                     >
                         <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none" />

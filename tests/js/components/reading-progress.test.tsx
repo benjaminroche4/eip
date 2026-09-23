@@ -30,4 +30,19 @@ describe('ReadingProgress', () => {
         expect(await axe(container)).toHaveNoViolations();
         article.remove();
     });
+
+    it('stays at 0 for an article shorter than the viewport (nothing to read through)', () => {
+        const target = createRef<HTMLElement>();
+        const article = document.createElement('article');
+        Object.defineProperty(article, 'offsetHeight', { value: 600 });
+        article.getBoundingClientRect = () => ({ top: 0, height: 600 }) as DOMRect;
+        document.body.appendChild(article);
+        (target as { current: HTMLElement | null }).current = article;
+        Object.defineProperty(window, 'innerHeight', { value: 1000, configurable: true });
+        window.scrollY = 0;
+
+        renderPage(<ReadingProgress target={target} />);
+        expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
+        article.remove();
+    });
 });

@@ -42,9 +42,9 @@ class SitemapPageTest extends TestCase
                 ->where('groups.0.links.0.label', 'Acheter')
                 ->where('groups.0.links.0.href', url('/acheter-immobilier-paris'))
                 ->where('groups.1.title', 'Pages du site')
-                ->has('groups.1.links', 5) // home first, no search page (placeholder dataset)
+                ->has('groups.1.links', 6) // home first, no search page (placeholder dataset)
                 ->where('groups.1.links.0.href', url('/'))
-                ->where('groups.1.links.2.href', url('/blog'))
+                ->where('groups.1.links.3.href', url('/blog')) // home, about, arrondissements, blog…
                 ->has('groups.2.links', 3)
                 ->where('groups.2.links.2.href', url('/plan-du-site'))
                 ->has('blog.categories', 1) // the empty category is left out

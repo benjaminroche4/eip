@@ -119,11 +119,28 @@ export default function DetailsStep({
             </div>
             <div className="flex flex-col gap-6 sm:flex-row sm:gap-8">
                 <FormField id="rooms" label={t('estimate.rooms')} error={errors.rooms} required>
-                    {(aria) => <StepperInput {...aria} name="rooms" min={1} max={10} value={data.rooms} onChange={(v) => setData('rooms', v)} />}
+                    {(aria) => (
+                        <StepperInput
+                            {...aria}
+                            name="rooms"
+                            min={1}
+                            max={10}
+                            value={data.rooms}
+                            // Bedrooms never exceed rooms (same rule as the server): lowering the rooms pulls the bedrooms down in the same update
+                            onChange={(v) => setData((prev) => ({ ...prev, rooms: v, bedrooms: Math.min(prev.bedrooms, v) }))}
+                        />
+                    )}
                 </FormField>
                 <FormField id="bedrooms" label={t('estimate.bedrooms')} error={errors.bedrooms} required>
                     {(aria) => (
-                        <StepperInput {...aria} name="bedrooms" min={0} max={10} value={data.bedrooms} onChange={(v) => setData('bedrooms', v)} />
+                        <StepperInput
+                            {...aria}
+                            name="bedrooms"
+                            min={0}
+                            max={data.rooms}
+                            value={data.bedrooms}
+                            onChange={(v) => setData('bedrooms', v)}
+                        />
                     )}
                 </FormField>
             </div>

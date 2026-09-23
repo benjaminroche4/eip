@@ -35,6 +35,7 @@ class SitemapPageController extends Controller
                 ['title' => __('ui.pages.sitemap.group_pages'), 'links' => [
                     $link('ui.nav.home', 'home'),
                     $link('ui.nav.about', 'about'),
+                    $link('ui.nav.districts', 'districts'),
                     $link('ui.nav.blog', 'blog.index'),
                     $link('ui.nav.faq', 'faq'),
                     $link('ui.nav.newsletter', 'newsletter'),

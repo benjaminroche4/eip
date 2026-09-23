@@ -94,9 +94,11 @@ export default function Testimonials({ items }: TestimonialsProps) {
     const scrollBy = useCallback(
         (direction: 1 | -1) => {
             const el = rowRef.current;
-            const card = el?.firstElementChild as HTMLElement | null;
-            if (!el || !card) return;
-            const step = direction * (card.offsetWidth + 20);
+            const cards = el ? (Array.from(el.children) as HTMLElement[]) : [];
+            if (!el || cards.length === 0) return;
+            // One card = the distance between two cards (width + the row's gap, which differs below / from `lg`);
+            // a single card falls back to its width (2026-09-22: the fixed `+ 20` drifted off the snap points below lg).
+            const step = direction * (cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth);
             const s = span();
             if (s) {
                 const target = el.scrollLeft + step;
@@ -169,7 +171,7 @@ export default function Testimonials({ items }: TestimonialsProps) {
                         <ul
                             ref={rowRef}
                             role="list"
-                            className="-mx-6 flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-10rem)] pb-2 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none lg:mx-0 lg:gap-5 lg:px-0 [&::-webkit-scrollbar]:hidden"
+                            className="-mx-6 flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto px-[calc(50%-10rem)] pb-2 [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none data-[dragging=true]:select-none lg:mx-0 lg:gap-5 lg:px-0 [&::-webkit-scrollbar]:hidden"
                         >
                             {rendered.map((item, index) => (
                                 // Copies outside the middle set are decorative duplicates: hidden from assistive tech
@@ -182,6 +184,12 @@ export default function Testimonials({ items }: TestimonialsProps) {
                                 </li>
                             ))}
                         </ul>
+                        {/* Without real Google figures the rating column (and its arrows) is not rendered: the arrows sit under the row instead, so the row stays keyboard-operable (2026-09-22) */}
+                        {!reviews && (
+                            <div className="mt-6 flex justify-center">
+                                <Arrows onPrevious={() => move(-1)} onNext={() => move(1)} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -272,23 +280,24 @@ function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColum
                         </span>
                     </li>
                 </ul>
-                <div className="flex items-center gap-2">
-                    {/* Press feedback: the button contracts and the chevron nudges in the scroll direction (user decision 2026-09-16) */}
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className={arrowClass}
-                        aria-label={t('testimonials.previous')}
-                        onClick={onPrevious}
-                    >
-                        <ChevronLeft aria-hidden className="transition-transform group-active:-translate-x-0.5 motion-reduce:transition-none" />
-                    </Button>
-                    <Button type="button" variant="outline" size="icon" className={arrowClass} aria-label={t('testimonials.next')} onClick={onNext}>
-                        <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none" />
-                    </Button>
-                </div>
+                <Arrows onPrevious={onPrevious} onNext={onNext} />
             </div>
+        </div>
+    );
+}
+
+/** Previous / next arrows: in the rating column, or under the row when there is no rating column. */
+function Arrows({ onPrevious, onNext }: { onPrevious: () => void; onNext: () => void }) {
+    const { t } = useTranslation();
+    return (
+        <div className="flex items-center gap-2">
+            {/* Press feedback: the button contracts and the chevron nudges in the scroll direction (user decision 2026-09-16) */}
+            <Button type="button" variant="outline" size="icon" className={arrowClass} aria-label={t('testimonials.previous')} onClick={onPrevious}>
+                <ChevronLeft aria-hidden className="transition-transform group-active:-translate-x-0.5 motion-reduce:transition-none" />
+            </Button>
+            <Button type="button" variant="outline" size="icon" className={arrowClass} aria-label={t('testimonials.next')} onClick={onNext}>
+                <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none" />
+            </Button>
         </div>
     );
 }

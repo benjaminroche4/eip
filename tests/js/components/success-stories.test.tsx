@@ -1,5 +1,5 @@
 import SuccessStories, { type SuccessStory } from '@/components/home/success-stories';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
@@ -31,17 +31,47 @@ describe('SuccessStories', () => {
         expect(screen.queryAllByRole('article')).toHaveLength(0); // photos only, no text overlay (user decision 2026-09-22)
         expect(screen.queryByText('28 jours')).not.toBeInTheDocument();
         expect(screen.getAllByRole('img')).toHaveLength(2);
-        expect(container.querySelector('ul')).toHaveClass('snap-x', 'cursor-grab', 'lg:px-0'); // one draggable row at every width, flush left from lg
+        expect(container.querySelector('ul')).toHaveClass('snap-x', 'data-[overflowing=true]:cursor-grab', 'lg:px-0'); // one draggable row at every width, flush left from lg
         expect(container.querySelector('ul > li')).toHaveClass('snap-center', 'lg:snap-start');
         expect(screen.getByRole('button', { name: 'Réussite suivante' }).parentElement).not.toHaveClass('lg:hidden');
         expect(container.querySelector('img[src="/images/stories/story-1-1600.jpg"]')).toHaveAttribute('alt', 'Séjour lumineux');
         expect(container.querySelector('ul li > div')?.className).not.toMatch(/rounded|shadow/); // square, no shadow
         expect(screen.getByRole('link', { name: 'Explorer nos réussites' })).toHaveAttribute('href', '/blog');
         expect(container.querySelector('p.font-heading span')?.className).toMatch(/animate-manifesto-in|opacity-0/); // word-by-word reveal
-        expect(screen.getByRole('button', { name: 'Réussite précédente' })).toBeEnabled(); // infinite loop: never an end
-        expect(container.querySelectorAll('ul > li')).toHaveLength(6); // three copies of the two stories, outer ones aria-hidden
-        expect(container.querySelectorAll('ul > li[aria-hidden="true"]')).toHaveLength(4);
+        expect(screen.getByRole('button', { name: 'Réussite précédente' })).toBeDisabled(); // finite row: at the start, the previous arrow is off (dimmed)
+        expect(screen.getByRole('button', { name: 'Réussite suivante' })).toBeEnabled();
+        // The arrows follow the scroll edges: at the far end the next arrow switches off, the previous one comes back
+        const row = container.querySelector('ul')!;
+        Object.defineProperty(row, 'scrollWidth', { value: 1200, configurable: true });
+        Object.defineProperty(row, 'clientWidth', { value: 400, configurable: true });
+        row.scrollLeft = 800;
+        row.dispatchEvent(new Event('scroll'));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Réussite suivante' })).toBeDisabled());
+        expect(screen.getByRole('button', { name: 'Réussite précédente' })).toBeEnabled();
+        expect(container.querySelectorAll('ul > li')).toHaveLength(2); // one copy, no loop (user decision 2026-09-22)
+        expect(container.querySelector('ul > li:last-child')!.className).toMatch(/lg:last:snap-end/); // the last photo shows in full at the end
 
         expect(await axe(container)).toHaveNoViolations();
+    });
+
+    it('switches « next » off and drops the grab cursor when the whole row fits on screen (2026-09-22)', async () => {
+        const { container } = renderPage(<SuccessStories stories={stories} />);
+        const row = container.querySelector('ul')!;
+        expect(row).toHaveAttribute('data-overflowing', 'false'); // jsdom: nothing measurable, nothing claimed
+        expect(screen.getByRole('button', { name: 'Réussite suivante' })).toBeEnabled();
+
+        // Layout available, the row fits: no overflow, both arrows off
+        Object.defineProperty(row, 'scrollWidth', { value: 800, configurable: true });
+        Object.defineProperty(row, 'clientWidth', { value: 800, configurable: true });
+        window.dispatchEvent(new Event('resize'));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Réussite suivante' })).toBeDisabled());
+        expect(screen.getByRole('button', { name: 'Réussite précédente' })).toBeDisabled();
+        expect(row).toHaveAttribute('data-overflowing', 'false');
+
+        // The row overflows again (narrower viewport): the grab cursor and « next » come back
+        Object.defineProperty(row, 'clientWidth', { value: 400, configurable: true });
+        window.dispatchEvent(new Event('resize'));
+        await waitFor(() => expect(row).toHaveAttribute('data-overflowing', 'true'));
+        expect(screen.getByRole('button', { name: 'Réussite suivante' })).toBeEnabled();
     });
 });

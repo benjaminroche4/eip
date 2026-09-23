@@ -39,9 +39,10 @@ type NumberedStepsProps = {
  * and on the right the three strategies numbered like the About values (ui.sh variant « Numéros sable », user decision
  * 2026-09-21 — the Figma's flat sand cards would have doubled the advantages cards above): sand vertical thread with a
  * dot per strategy, big sand Montserrat number, title with a small lucide icon, one sentence, generously spaced. The
- * strategy crossing the middle of the viewport is the active one (IntersectionObserver): its number locks in
- * (`animate-value-lock`) and the dot emits a ring (`animate-value-ring`), exactly like the About values; nothing is
- * active before the first scroll. Each row is also a button: a click (or Enter / Space) activates it, with
+ * strategy under the middle line of the viewport (else the nearest to it, measured on every scroll frame — not an
+ * IntersectionObserver band, which skipped a short step crossed between two callbacks, as on the About values) is the
+ * active one: its number locks in (`animate-value-lock`) and the dot emits a ring (`animate-value-ring`), exactly like
+ * the About values; nothing is active until the list has reached the middle of the viewport. Each row is also a button: a click (or Enter / Space) activates it, with
  * `aria-current` on the active one (user decision 2026-09-21). On mobile everything stacks, the photo first.
  */
 export default function NumberedSteps({ id, texts: header, items, photos: pictures, icons }: NumberedStepsProps) {
@@ -50,21 +51,42 @@ export default function NumberedSteps({ id, texts: header, items, photos: pictur
 
     useEffect(() => {
         const list = listRef.current;
-        if (!list || typeof IntersectionObserver === 'undefined') {
-            setActive(0);
-            return;
-        }
-        // The active strategy is the one crossing the middle band of the viewport.
+        if (!list) return;
         const rows = Array.from(list.querySelectorAll('li'));
-        const follow = new IntersectionObserver(
-            (entries) => {
-                const hit = entries.find((e) => e.isIntersecting);
-                if (hit) setActive(rows.indexOf(hit.target as HTMLLIElement));
-            },
-            { rootMargin: '-45% 0px -45% 0px' },
-        );
-        rows.forEach((row) => follow.observe(row));
-        return () => follow.disconnect();
+
+        // Active step = the one under the middle line of the viewport, else the nearest one to it, computed from the
+        // geometry on every scroll frame (one frame at a time). Same measure as the About values (bug 2026-09-21: an
+        // IntersectionObserver on a thin middle band missed a short row crossed between two callbacks).
+        let frame = 0;
+        const follow = () => {
+            frame = 0;
+            const center = window.innerHeight / 2;
+            const bounds = list.getBoundingClientRect();
+            if (bounds.top > center || bounds.bottom < center) return; // the list has not reached the middle yet: nothing active
+            let best = 0;
+            let bestDistance = Infinity;
+            rows.forEach((row, i) => {
+                const rect = row.getBoundingClientRect();
+                const distance = center < rect.top ? rect.top - center : center > rect.bottom ? center - rect.bottom : 0;
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    best = i;
+                }
+            });
+            setActive(best);
+        };
+        const onScroll = () => {
+            if (!frame) frame = requestAnimationFrame(follow);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+        follow(); // the page may load already scrolled
+
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+            if (frame) cancelAnimationFrame(frame);
+        };
     }, []);
 
     return (

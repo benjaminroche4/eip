@@ -49,6 +49,7 @@ export function useFooterAboutItems(): NavItem[] {
         { key: 'faq', label: t('nav.faq'), href: route('faq') },
         { key: 'blog', label: t('nav.blog'), href: route('blog.index') },
         { key: 'about', label: t('nav.about'), href: route('about') },
+        { key: 'districts', label: t('nav.districts'), href: route('districts') },
     ];
 }
 

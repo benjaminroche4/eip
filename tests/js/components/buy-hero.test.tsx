@@ -44,6 +44,7 @@ describe('BuyHero', () => {
         const frame = screen.getByTitle('Estate in Paris, acheter un bien de prestige à Paris');
         expect(frame).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/abc123?autoplay=1');
         expect(screen.queryByRole('button')).toBeNull();
+        expect(frame).toHaveFocus(); // the button is gone: the keyboard reader lands on the player, not on the body
         expect(screen.getAllByText('25+')).toHaveLength(1); // the figures stay, under the video
     });
 });

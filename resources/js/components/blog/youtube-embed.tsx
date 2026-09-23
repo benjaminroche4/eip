@@ -1,21 +1,28 @@
 import { useTranslation } from '@/hooks/use-translation';
 import { Info, Play } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type YoutubeEmbedProps = { id: string; title: string; caption?: string };
 
 /**
  * Click-to-load YouTube facade (Core Web Vitals): the poster + a play button until the reader clicks,
  * then the privacy-enhanced iframe with autoplay. The poster is YouTube's own thumbnail for the video.
+ * The play button unmounts once clicked, so the focus moves to the iframe (a keyboard reader is not dropped at the body).
  */
 export default function YoutubeEmbed({ id, title, caption }: YoutubeEmbedProps) {
     const { t } = useTranslation();
     const [playing, setPlaying] = useState(false);
+    const frameRef = useRef<HTMLIFrameElement>(null);
+
+    useEffect(() => {
+        if (playing) frameRef.current?.focus({ preventScroll: true });
+    }, [playing]);
 
     return (
         <figure className="my-8">
             {playing ? (
                 <iframe
+                    ref={frameRef}
                     src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1`}
                     title={t('blog.video', { title })}
                     className="aspect-video w-full"

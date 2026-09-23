@@ -7,7 +7,7 @@ import { useReveal } from '@/hooks/use-reveal';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ArrowUpRight, Play } from 'lucide-react';
-import { type CSSProperties, Fragment, type Ref, useRef, useState } from 'react';
+import { type CSSProperties, Fragment, type ReactNode, type Ref, useEffect, useRef, useState } from 'react';
 
 export type BuyStat = { value: string; title: string; text: string };
 
@@ -30,11 +30,13 @@ type ServiceHeroProps = {
     /** Target of the single full button. */
     href: string;
     /** Photo of the panel (`{w}` in `src` is replaced by each width of `widths`; `width` is the default `src` and the intrinsic size). */
-    photo: { src: string; widths: number[]; width: number; height: number };
+    photo?: { src: string; widths: number[]; width: number; height: number };
+    /** Replaces the photo panel (and its figures / video) with custom content — the arrondissements page puts its 3D map here (2026-09-23). */
+    panel?: ReactNode;
     /** Key figures (same real numbers as the About page). */
-    stats: BuyStat[];
+    stats?: BuyStat[];
     /** YouTube id of the presentation video; null = photo only, no play button. */
-    video: string | null;
+    video?: string | null;
     /** Observed by a page's mobile bar (Sell). */
     ref?: Ref<HTMLElement>;
 };
@@ -51,10 +53,15 @@ type ServiceHeroProps = {
  * plays) under the panel in a 2×2 grid. They count up (`StatValue`) and rise in cascade when the panel enters the
  * viewport — UI review, user decision 2026-09-21.
  */
-export default function ServiceHero({ id, texts, href, photo, stats, video, ref }: ServiceHeroProps) {
+export default function ServiceHero({ id, texts, href, photo, stats = [], video = null, panel, ref }: ServiceHeroProps) {
     const [playing, setPlaying] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
     const revealed = useReveal(panelRef, '-15%');
+    // The play button unmounts once clicked: the focus moves to the iframe so a keyboard reader is not dropped at the body.
+    const frameRef = useRef<HTMLIFrameElement>(null);
+    useEffect(() => {
+        if (playing) frameRef.current?.focus({ preventScroll: true });
+    }, [playing]);
 
     const riseClass = revealed
         ? 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none'
@@ -97,74 +104,84 @@ export default function ServiceHero({ id, texts, href, photo, stats, video, ref 
                 </div>
             </div>
 
-            {/* Photo panel: edge to edge on mobile, 21/9 on desktop; video facade when a video is configured */}
-            <div ref={panelRef} className="flex flex-col gap-8">
-                {video && playing ? (
-                    <iframe
-                        src={`https://www.youtube-nocookie.com/embed/${video}?autoplay=1`}
-                        title={texts.video_title}
-                        className="-mx-6 aspect-video w-[calc(100%+3rem)] lg:mx-0 lg:w-full"
-                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    />
-                ) : (
-                    <div className="relative -mx-6 aspect-video overflow-hidden lg:mx-0 lg:aspect-[21/9]">
-                        <SeoImage
-                            src={photo.src.replace('{w}', String(photo.width))}
-                            srcSet={photo.widths.map((w) => `${photo.src.replace('{w}', String(w))} ${w}w`).join(', ')}
-                            sizes="(min-width: 80rem) 76rem, 100vw"
-                            alt={texts.photo_alt}
-                            width={photo.width}
-                            height={photo.height}
-                            priority
-                            className="animate-hero-photo absolute inset-0 size-full object-cover motion-reduce:animate-none"
-                        />
-                        {/* Short bottom veil (30 %) so the glass card reads, the photo stays bright above */}
-                        <span aria-hidden className="absolute inset-x-0 bottom-0 h-[30%] bg-linear-to-t from-black/60 to-transparent" />
-                        {video && (
-                            <button
-                                type="button"
-                                onClick={() => setPlaying(true)}
-                                aria-label={texts.play_video}
-                                className="focus-ring bg-background text-foreground hover:bg-background-05 absolute top-1/2 left-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-colors duration-300 motion-reduce:transition-none lg:size-20"
-                            >
-                                <Play aria-hidden className="ml-0.5 size-7 fill-current lg:size-9" />
-                            </button>
-                        )}
-                        {/* Desktop: the figures in a dark glass card at the bottom of the photo (square corners, like the about hero) */}
-                        <div className="absolute inset-x-10 bottom-10 hidden lg:block">
-                            <ul
-                                role="list"
-                                aria-label={texts.stats_label}
-                                className="flex items-center gap-10 bg-black/40 px-8 py-5 text-white backdrop-blur-md"
-                            >
-                                {stats.map((stat, i) => (
-                                    <Fragment key={stat.title}>
-                                        {i > 0 && (
-                                            <li
-                                                aria-hidden
-                                                className="block h-10 w-px shrink-0 bg-linear-to-b from-transparent via-white/60 to-transparent"
-                                            />
-                                        )}
-                                        {figure(stat, i, true)}
+            {panel ? (
+                /* Custom panel in place of the photo (the arrondissements map), same slot and spacing */
+                <div ref={panelRef}>{panel}</div>
+            ) : (
+                photo && (
+                    <>
+                        {/* Photo panel: edge to edge on mobile, 21/9 on desktop; video facade when a video is configured */}
+                        <div ref={panelRef} className="flex flex-col gap-8">
+                            {video && playing ? (
+                                <iframe
+                                    ref={frameRef}
+                                    src={`https://www.youtube-nocookie.com/embed/${video}?autoplay=1`}
+                                    title={texts.video_title}
+                                    className="-mx-6 aspect-video w-[calc(100%+3rem)] lg:mx-0 lg:w-full"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            ) : (
+                                <div className="relative -mx-6 aspect-video overflow-hidden lg:mx-0 lg:aspect-[21/9]">
+                                    <SeoImage
+                                        src={photo.src.replace('{w}', String(photo.width))}
+                                        srcSet={photo.widths.map((w) => `${photo.src.replace('{w}', String(w))} ${w}w`).join(', ')}
+                                        sizes="(min-width: 80rem) 76rem, 100vw"
+                                        alt={texts.photo_alt}
+                                        width={photo.width}
+                                        height={photo.height}
+                                        priority
+                                        className="animate-hero-photo absolute inset-0 size-full object-cover motion-reduce:animate-none"
+                                    />
+                                    {/* Short bottom veil (30 %) so the glass card reads, the photo stays bright above */}
+                                    <span aria-hidden className="absolute inset-x-0 bottom-0 h-[30%] bg-linear-to-t from-black/60 to-transparent" />
+                                    {video && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setPlaying(true)}
+                                            aria-label={texts.play_video}
+                                            className="focus-ring bg-background text-foreground hover:bg-background-05 absolute top-1/2 left-1/2 flex size-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-colors duration-300 motion-reduce:transition-none lg:size-20"
+                                        >
+                                            <Play aria-hidden className="ml-0.5 size-7 fill-current lg:size-9" />
+                                        </button>
+                                    )}
+                                    {/* Desktop: the figures in a dark glass card at the bottom of the photo (square corners, like the about hero) */}
+                                    <div className="absolute inset-x-10 bottom-10 hidden lg:block">
+                                        <ul
+                                            role="list"
+                                            aria-label={texts.stats_label}
+                                            className="flex items-center gap-10 bg-black/40 px-8 py-5 text-white backdrop-blur-md"
+                                        >
+                                            {stats.map((stat, i) => (
+                                                <Fragment key={stat.title}>
+                                                    {i > 0 && (
+                                                        <li
+                                                            aria-hidden
+                                                            className="block h-10 w-px shrink-0 bg-linear-to-b from-transparent via-white/60 to-transparent"
+                                                        />
+                                                    )}
+                                                    {figure(stat, i, true)}
+                                                </Fragment>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
+                            {/* Mobile / tablet (and desktop while the video plays): 2×2 grid under the panel, gradient hairlines between the rows */}
+                            <div className={cn('flex flex-col gap-6', stacked && 'lg:hidden')}>
+                                {[stats.slice(0, 2), stats.slice(2)].map((row, r) => (
+                                    <Fragment key={r}>
+                                        {r > 0 && <GradientHairline />}
+                                        <ul role="list" aria-label={r === 0 ? texts.stats_label : undefined} className="grid grid-cols-2 gap-8">
+                                            {row.map((stat, i) => figure(stat, r * 2 + i, false))}
+                                        </ul>
                                     </Fragment>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
-                    </div>
-                )}
-                {/* Mobile / tablet (and desktop while the video plays): 2×2 grid under the panel, gradient hairlines between the rows */}
-                <div className={cn('flex flex-col gap-6', stacked && 'lg:hidden')}>
-                    {[stats.slice(0, 2), stats.slice(2)].map((row, r) => (
-                        <Fragment key={r}>
-                            {r > 0 && <GradientHairline />}
-                            <ul role="list" aria-label={r === 0 ? texts.stats_label : undefined} className="grid grid-cols-2 gap-8">
-                                {row.map((stat, i) => figure(stat, r * 2 + i, false))}
-                            </ul>
-                        </Fragment>
-                    ))}
-                </div>
-            </div>
+                    </>
+                )
+            )}
         </section>
     );
 }

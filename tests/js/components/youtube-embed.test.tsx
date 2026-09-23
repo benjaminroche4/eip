@@ -17,10 +17,12 @@ describe('YoutubeEmbed', () => {
         expect(container.querySelector('figcaption')).toHaveTextContent('Visite guidée');
         expect(await axe(container)).toHaveNoViolations();
 
-        await user.click(play);
+        play.focus();
+        await user.keyboard('{Enter}');
         const iframe = container.querySelector('iframe')!;
         expect(iframe).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/abc123?autoplay=1');
         expect(iframe).toHaveAttribute('title', 'Vidéo : Visite guidée');
         expect(screen.queryByRole('button')).toBeNull();
+        expect(iframe).toHaveFocus(); // the button is gone: the keyboard reader lands on the player, not on the body
     });
 });

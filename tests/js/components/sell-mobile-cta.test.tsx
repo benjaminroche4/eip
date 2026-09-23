@@ -19,8 +19,8 @@ function Page() {
     );
 }
 
-function entry(target: Element, isIntersecting: boolean, bottom: number): IntersectionObserverEntry {
-    return { target, isIntersecting, boundingClientRect: { bottom } as DOMRectReadOnly } as IntersectionObserverEntry;
+function entry(target: Element, isIntersecting: boolean, bottom: number, top = bottom - 100): IntersectionObserverEntry {
+    return { target, isIntersecting, boundingClientRect: { bottom, top } as DOMRectReadOnly } as IntersectionObserverEntry;
 }
 
 describe('SellMobileCta', () => {
@@ -51,6 +51,8 @@ describe('SellMobileCta', () => {
         expect(cta).toHaveAttribute('href', '/estimation-immobiliere-paris');
         expect(cta.className).toContain('bg-primary');
         expect(cta.parentElement).toHaveClass('fixed', 'bottom-0', 'z-60', 'lg:hidden', 'bg-card/95');
+        // A spacer reserves the bar's height under the content while the bar is mounted (2026-09-22)
+        expect(cta.parentElement!.previousElementSibling).toHaveClass('h-20', 'lg:hidden');
 
         await userEvent.tab();
         expect(cta).toHaveFocus();
@@ -58,8 +60,15 @@ describe('SellMobileCta', () => {
 
         act(() => watchEnd([entry(end, true, 500)], {} as IntersectionObserver));
         expect(screen.queryByRole('link')).toBeNull(); // the card carries the same button
+        expect(container.querySelector('.h-20')).toBeNull(); // no spacer without the bar
 
-        act(() => watchEnd([entry(end, false, 900)], {} as IntersectionObserver));
+        act(() => watchEnd([entry(end, false, 900, 2000)], {} as IntersectionObserver)); // card back below the viewport
+        expect(screen.getByRole('link', { name: 'Faire estimer mon bien' })).toBeInTheDocument();
+
+        // Card scrolled past (above the viewport): the bar stays away instead of coming back over the footer (bug 2026-09-22)
+        act(() => watchEnd([entry(end, false, -300, -800)], {} as IntersectionObserver));
+        expect(screen.queryByRole('link')).toBeNull();
+        act(() => watchEnd([entry(end, false, 900, window.innerHeight)], {} as IntersectionObserver)); // back below: the bar returns
         expect(screen.getByRole('link', { name: 'Faire estimer mon bien' })).toBeInTheDocument();
 
         act(() => watchHero([entry(hero, false, 300)], {} as IntersectionObserver)); // hero back below the viewport top (scrolled up)

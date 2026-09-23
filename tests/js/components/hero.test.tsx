@@ -25,14 +25,15 @@ describe('Hero', () => {
         expect(screen.getByRole('list', { name: 'Nos engagements' })).toHaveClass('overflow-x-auto', 'snap-x', 'snap-mandatory', 'cursor-grab'); // one line: snap carousel, draggable with the mouse on mobile
         expect(values[0]).toHaveClass('snap-center');
         expect(values[1].querySelector('span[aria-hidden]')).toHaveClass('via-white/60', 'bg-linear-to-b'); // gradient hairline separators, at every width
-        expect(container.querySelector('img')).toHaveAttribute('fetchpriority', 'high'); // LCP
+        expect(container.querySelector('video')).toHaveAttribute('poster', '/images/home/hero-1200.jpg'); // the photo only as the video's poster
+        expect(container.querySelector('img')).toBeNull(); // no separate photo fading into the video
         // Reveal on load: the photo settles from a zoom, the content rises in cascade with increasing delays.
-        expect(container.querySelector('img')).toHaveClass('animate-hero-photo');
+        expect(container.querySelector('video')).toHaveClass('animate-hero-photo');
         expect(screen.getByRole('heading', { level: 1 })).toHaveClass('animate-hero-rise');
         expect(screen.getByRole('heading', { level: 1 }).style.getPropertyValue('--stagger')).toBe('420ms');
         expect(screen.getByRole('list', { name: 'Nos engagements' }).style.getPropertyValue('--stagger')).toBe('780ms');
         expect(container.querySelector('section')).toHaveClass('min-h-svh'); // fills the first screen at every width
 
-        expect(await axe(container)).toHaveNoViolations();
+        expect(await axe(container, { preload: false })).toHaveNoViolations(); // preload: axe waits for the background video's metadata, which jsdom never loads
     });
 });

@@ -27,7 +27,8 @@ type MobileMenuPanelProps = {
  * On opening, every row unfolds into place like a stack (rise + fade, 35 ms apart, expo-out:
  * `animate-menu-in` + `--stagger`, the tolerated dynamic style — user decision 2026-09-16). Links have no drawn underline (plain sand hover),
  * then the secondary links (blog, FAQ, about) in a sand gradient well, and the CTA + "EN | FR" right after — user decisions 2026-09-16.
- * Locks body scroll, closes on Escape / swipe-up / resize to desktop, moves focus to the first link.
+ * Locks body scroll, closes on Escape / swipe-up / resize to desktop, moves focus to the first link. While open, the page
+ * behind the veil (`#main` and `#footer`) is `inert`, so Tab never leaves the menu for the content behind it.
  */
 export default function MobileMenuPanel({ id, open, compact, items, isActive, cta, onClose }: MobileMenuPanelProps) {
     const { t } = useTranslation();
@@ -38,6 +39,8 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
     useEffect(() => {
         if (!open) return;
         document.body.style.overflow = 'hidden';
+        const behind = ['main', 'footer'].flatMap((id) => document.getElementById(id) ?? []);
+        behind.forEach((el) => el.setAttribute('inert', ''));
         firstLink.current?.focus({ preventScroll: true });
 
         const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -48,6 +51,7 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
         query.addEventListener('change', onResize);
         return () => {
             document.body.style.overflow = '';
+            behind.forEach((el) => el.removeAttribute('inert'));
             document.removeEventListener('keydown', onKey);
             query.removeEventListener('change', onResize);
         };

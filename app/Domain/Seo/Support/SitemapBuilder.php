@@ -163,6 +163,7 @@ final class SitemapBuilder
             ['path' => 'routes.contact', 'priority' => 0.6, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
             ['path' => 'routes.newsletter', 'priority' => 0.5, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
             ['path' => 'routes.about', 'priority' => 0.6, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
+            ['path' => 'routes.districts', 'priority' => 0.7, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['path' => 'routes.faq', 'priority' => 0.6, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['path' => 'routes.blog', 'priority' => 0.7, 'freq' => Url::CHANGE_FREQUENCY_DAILY],
             ['path' => 'routes.privacy', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],

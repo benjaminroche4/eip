@@ -1,7 +1,7 @@
 import FaqPage from '@/pages/faq';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
@@ -37,6 +37,9 @@ describe('FAQ page', () => {
     beforeEach(() => {
         page.props = sharedProps();
         window.location.hash = '';
+    });
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it('renders the topics as tabs, the first question open and links in answers', () => {
@@ -97,6 +100,38 @@ describe('FAQ page', () => {
         await user.click(screen.getByRole('tab', { name: 'Vendre un bien' })); // picking a topic clears the search
         expect(screen.getByRole('searchbox')).toHaveValue('');
         expect(screen.getByRole('tabpanel')).toBeInTheDocument();
+    });
+
+    it('opens every result again when the query widens, with ids distinct from the mounted topic panels', async () => {
+        const user = userEvent.setup();
+        render();
+
+        await user.type(screen.getByRole('searchbox', { name: 'Rechercher une question' }), 'etranger');
+        expect(screen.getAllByRole('button', { expanded: true }).filter((b) => b.getAttribute('data-slot') === 'accordion-trigger')).toHaveLength(1);
+        await user.clear(screen.getByRole('searchbox'));
+        await user.type(screen.getByRole('searchbox'), 'combien'); // a wider query: both new results open, not only the first ones
+        const open = screen.getAllByRole('button', { expanded: true }).filter((b) => b.getAttribute('data-slot') === 'accordion-trigger');
+        expect(open.map((b) => b.textContent)).toEqual([
+            'Acheter un bienCombien de temps pour acheter ?',
+            'Vendre un bienCombien de temps pour vendre ?',
+        ]);
+        // The topic panels stay mounted with the plain slugs: the results carry their own ids, never duplicated
+        expect(document.querySelectorAll('#combien-de-temps-pour-acheter')).toHaveLength(1);
+        expect(document.getElementById('search-combien-de-temps-pour-acheter')).not.toBeNull();
+    });
+
+    it('jumps to the anchored question without smooth scrolling when the reader prefers reduced motion', async () => {
+        vi.spyOn(window, 'matchMedia').mockImplementation(
+            (query: string) =>
+                ({ matches: query.includes('reduce'), media: query, addEventListener() {}, removeEventListener() {} }) as unknown as MediaQueryList,
+        );
+        const scrollIntoView = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+        window.location.hash = '#combien-de-temps-pour-vendre';
+        render();
+
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        expect(scrollIntoView).toHaveBeenCalledWith({ block: 'start', behavior: 'auto' });
+        expect(scrollIntoView.mock.contexts).toContain(document.getElementById('combien-de-temps-pour-vendre'));
     });
 
     it('restores the search from ?q= and keeps the URL in sync while typing', async () => {

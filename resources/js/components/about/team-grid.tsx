@@ -43,8 +43,15 @@ export default function TeamGrid({ members }: TeamGridProps) {
             });
             setCurrent(best);
         };
+        // Measured now and again on resize: after mobile → desktop (grid, no scroll) → mobile the row is back at its
+        // start while `current` still pointed at the last card scrolled to (bug 2026-09-22).
+        onScroll();
         el.addEventListener('scroll', onScroll, { passive: true });
-        return () => el.removeEventListener('scroll', onScroll);
+        window.addEventListener('resize', onScroll, { passive: true });
+        return () => {
+            el.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+        };
     }, []);
 
     const goTo = (index: number) => {
@@ -123,7 +130,7 @@ export default function TeamGrid({ members }: TeamGridProps) {
                         size="icon"
                         className={arrowClass}
                         aria-label={t('team.next')}
-                        disabled={current === members.length - 1}
+                        disabled={members.length === 0 || current >= members.length - 1}
                         onClick={() => goTo(current + 1)}
                     >
                         <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none" />

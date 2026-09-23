@@ -19,7 +19,7 @@ export default function ReadingProgress({ target }: ReadingProgressProps) {
             if (!el) return;
             const top = el.getBoundingClientRect().top + window.scrollY;
             const span = el.offsetHeight - window.innerHeight;
-            const ratio = span <= 0 ? 1 : (window.scrollY - top) / span;
+            const ratio = span <= 0 ? 0 : (window.scrollY - top) / span; // an article shorter than the viewport has nothing to read through: 0, not 100
             setProgress(Math.round(Math.min(1, Math.max(0, ratio)) * 100));
         };
         const onScroll = () => {

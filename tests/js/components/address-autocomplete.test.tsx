@@ -94,6 +94,30 @@ describe('AddressAutocomplete', () => {
         expect(input).toHaveAttribute('aria-expanded', 'false');
     });
 
+    it('never reopens the list from a late response after the field was cleared or left', async () => {
+        const user = userEvent.setup();
+        let resolveLate: (value: { suggestions: unknown[] }) => void = () => {};
+        fetchAutocompleteSuggestions.mockReset().mockImplementation(() => new Promise((resolve) => (resolveLate = resolve)));
+        render();
+
+        const input = screen.getByRole('combobox', { name: /Où se situe votre bien/ });
+        await user.type(input, '10 rue');
+        await waitFor(() => expect(fetchAutocompleteSuggestions).toHaveBeenCalledTimes(1));
+        await user.clear(input); // the reader emptied the field before Google answered
+        resolveLate({ suggestions: [prediction('p1', '10 Rue de Rivoli', 'Paris, France')] });
+        await new Promise((r) => setTimeout(r, 0));
+        expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+        expect(input).toHaveAttribute('aria-expanded', 'false');
+
+        await user.type(input, '10 rue');
+        await waitFor(() => expect(fetchAutocompleteSuggestions).toHaveBeenCalledTimes(2));
+        await user.tab(); // the reader moved on before Google answered
+        expect(input).not.toHaveFocus();
+        resolveLate({ suggestions: [prediction('p1', '10 Rue de Rivoli', 'Paris, France')] });
+        await new Promise((r) => setTimeout(r, 0));
+        expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    });
+
     it('stays a plain input when no API key is configured', async () => {
         const user = userEvent.setup();
         render(null);

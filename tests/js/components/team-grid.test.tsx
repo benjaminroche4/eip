@@ -1,5 +1,5 @@
 import TeamGrid, { type TeamMember } from '@/components/about/team-grid';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
@@ -49,5 +49,29 @@ describe('TeamGrid', () => {
         expect(screen.queryByRole('link')).toBeNull(); // no « view full team » button
 
         expect(await axe(container)).toHaveNoViolations();
+    });
+
+    it('keeps both arrows off without members and recomputes the current card on resize (2026-09-22)', async () => {
+        const { unmount } = renderPage(<TeamGrid members={[]} />);
+        expect(screen.getByRole('button', { name: 'Membre précédent' })).toBeDisabled();
+        expect(screen.getByRole('button', { name: 'Membre suivant' })).toBeDisabled();
+        unmount();
+
+        const { container } = renderPage(<TeamGrid members={members} />);
+        const row = container.querySelector('ul.snap-x') as HTMLElement;
+        const cards = Array.from(row.children) as HTMLElement[];
+        Object.defineProperty(row, 'clientWidth', { value: 400, configurable: true });
+        cards.forEach((card, i) => {
+            Object.defineProperty(card, 'offsetLeft', { value: i * 308, configurable: true });
+            Object.defineProperty(card, 'offsetWidth', { value: 288, configurable: true });
+        });
+        row.scrollLeft = 560; // the last card centred
+        window.dispatchEvent(new Event('resize'));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Membre suivant' })).toBeDisabled());
+        expect(screen.getByRole('button', { name: 'Membre précédent' })).toBeEnabled();
+
+        row.scrollLeft = 0; // back at the start after a layout change: « previous » is off again
+        window.dispatchEvent(new Event('resize'));
+        await waitFor(() => expect(screen.getByRole('button', { name: 'Membre précédent' })).toBeDisabled());
     });
 });

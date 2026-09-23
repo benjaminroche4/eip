@@ -26,6 +26,8 @@ describe('BlogRelated', () => {
         expect(screen.getByRole('region', { name: 'Nos derniers articles' })).toBeInTheDocument();
         expect(screen.getAllByRole('article')).toHaveLength(3);
         expect(container.querySelector('ul')).toHaveClass('overflow-x-auto', 'snap-x', 'scroll-px-6', 'sm:grid'); // scroll-px: a snapped card never touches the screen edge
+        // The last card is reachable on mobile: it snaps on its end (its start lies past the maximum scroll) — 2026-09-22
+        expect(container.querySelector('ul > li:last-child')).toHaveClass('snap-start', 'max-sm:last:snap-end');
 
         expect(await axe(container)).toHaveNoViolations();
     });

@@ -1,4 +1,4 @@
-import SeoImage from '@/components/seo/seo-image';
+import HeroVideo from '@/components/home/hero-video';
 import { Button } from '@/components/ui/button';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { useTranslation } from '@/hooks/use-translation';
@@ -33,16 +33,8 @@ export default function Hero() {
             aria-labelledby="hero-title"
             className="relative -mt-16 flex min-h-svh flex-col justify-between overflow-hidden text-white lg:-mt-19"
         >
-            <SeoImage
-                priority
-                src="/images/home/hero-1200.jpg"
-                srcSet="/images/home/hero-800.jpg 800w, /images/home/hero-1200.jpg 1200w, /images/home/hero-2000.jpg 2000w, /images/home/hero-2800.jpg 2800w"
-                sizes="100vw"
-                alt=""
-                width={2800}
-                height={1776}
-                className="animate-hero-photo absolute inset-0 size-full object-cover motion-reduce:animate-none"
-            />
+            {/* The owner's clip as the background, rendered server-side with the photo as poster (user decision 2026-09-23: no photo-first fade) */}
+            <HeroVideo />
             <div aria-hidden className="absolute inset-0 bg-black/30" />
             {/* Extra darkening behind the central block only (transparent at the edges), so the text stays legible on a bright sky */}
             <div aria-hidden className="absolute inset-0 bg-linear-to-b from-transparent via-black/45 to-transparent" />

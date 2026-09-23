@@ -36,6 +36,11 @@ export default function AboutHero() {
         setReel({ current: next, from: current, direction: direction ?? (next > current ? 'up' : 'down') });
     };
     const settle = () => setReel((r) => (r.from === null ? r : { ...r, from: null }));
+    // Under `prefers-reduced-motion` the leaving copy is `hidden` and never fires `animationend`: settle at once, or
+    // `from` would stay set and the incoming message would keep its reel class forever (bug 2026-09-22).
+    useEffect(() => {
+        if (reel.from !== null && window.matchMedia('(prefers-reduced-motion: reduce)').matches) settle();
+    }, [reel.from]);
     // The glass background follows the incoming message (user decision 2026-09-16): its height is measured
     // (ResizeObserver) and transitioned, so the card never jumps between a short and a long message.
     const currentRef = useRef<HTMLDivElement>(null);
@@ -50,18 +55,27 @@ export default function AboutHero() {
         observer.observe(el);
         return () => observer.disconnect();
     }, [current]);
-    // ↑ / ↓ move between messages when one of the controls has the focus
+    // ↑ / ↓ move between messages when one of the dots has the focus — roving tabindex: only the current dot is in the
+    // tab order and the focus follows the new message (2026-09-22: `aria-current` moved but the focus stayed behind).
+    const dotsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const onKeyDown = (e: KeyboardEvent<HTMLUListElement>) => {
         if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
             e.preventDefault();
-            go(current + (e.key === 'ArrowUp' ? -1 : 1), e.key === 'ArrowUp' ? 'down' : 'up');
+            const next = (current + (e.key === 'ArrowUp' ? -1 : 1) + SLIDES.length) % SLIDES.length;
+            go(next, e.key === 'ArrowUp' ? 'down' : 'up');
+            dotsRef.current[next]?.focus();
         }
     };
     // Swipe on the card (user decision 2026-09-16, no arrows): a vertical drag with the mouse or the finger of at least
     // 40px moves to the next message (drag up) or the previous one (drag down); the dots remain for the keyboard.
-    const swipeStart = useRef<number | null>(null);
+    // Compromise on touch (2026-09-22): the card is `touch-pan-y` and never calls `preventDefault`, so a finger on it
+    // scrolls the page as anywhere else instead of being trapped; only a quick flick (≥ 40px in under 300 ms) that the
+    // browser has not claimed for scrolling (it then fires `pointercancel`) changes the message. The dots stay the
+    // reliable way to switch on touch screens.
+    const TOUCH_SWIPE_MS = 300;
+    const swipeStart = useRef<{ y: number; at: number; touch: boolean } | null>(null);
     const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
-        swipeStart.current = e.clientY;
+        swipeStart.current = { y: e.clientY, at: Date.now(), touch: e.pointerType === 'touch' };
         if (e.pointerType !== 'touch') {
             // Mouse / pen: no text selection while dragging, and the release is received even outside the card
             e.preventDefault();
@@ -69,18 +83,22 @@ export default function AboutHero() {
         }
     };
     const onPointerUp = (e: PointerEvent<HTMLDivElement>) => {
-        if (swipeStart.current === null) return;
-        const delta = swipeStart.current - e.clientY;
+        const start = swipeStart.current;
+        if (start === null) return;
+        const delta = start.y - e.clientY;
         swipeStart.current = null;
         if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
         if (Math.abs(delta) < 40) return;
+        if (start.touch && Date.now() - start.at > TOUCH_SWIPE_MS) return;
         go(current + (delta > 0 ? 1 : -1), delta > 0 ? 'up' : 'down');
     };
     const onPointerCancel = () => {
         swipeStart.current = null;
     };
     // Mouse wheel over the card (user decision 2026-09-16): one notch down = next message, up = previous, with a
-    // 600 ms cooldown so a flick moves one message only. Non-passive listener: the page must not scroll meanwhile.
+    // 600 ms cooldown so a flick moves one message only. Non-passive listener: the page must not scroll meanwhile —
+    // except at the ends (2026-09-22): the wheel does not wrap around, so past the last message (or before the first)
+    // the event goes through and the page scrolls on; the dots, the keyboard and the swipe keep the loop.
     const cardRef = useRef<HTMLDivElement>(null);
     const wheelLock = useRef(0);
     const goRef = useRef(go);
@@ -90,11 +108,13 @@ export default function AboutHero() {
         if (!el) return;
         const onWheel = (e: WheelEvent) => {
             if (Math.abs(e.deltaY) < 8 || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+            const next = current + (e.deltaY > 0 ? 1 : -1);
+            if (next < 0 || next >= SLIDES.length) return;
             e.preventDefault();
             const now = Date.now();
             if (now - wheelLock.current < 600) return;
             wheelLock.current = now;
-            goRef.current(current + (e.deltaY > 0 ? 1 : -1), e.deltaY > 0 ? 'up' : 'down');
+            goRef.current(next, e.deltaY > 0 ? 'up' : 'down');
         };
         el.addEventListener('wheel', onWheel, { passive: false });
         return () => el.removeEventListener('wheel', onWheel);
@@ -152,7 +172,7 @@ export default function AboutHero() {
                         onPointerDown={onPointerDown}
                         onPointerUp={onPointerUp}
                         onPointerCancel={onPointerCancel}
-                        className="grid h-(--card-h) min-w-0 flex-1 cursor-grab touch-pan-x items-start overflow-hidden bg-black/40 text-white backdrop-blur-md transition-[height] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none active:cursor-grabbing motion-reduce:transition-none [&>*]:[grid-area:1/1]"
+                        className="grid h-(--card-h) min-w-0 flex-1 cursor-grab touch-pan-y items-start overflow-hidden bg-black/40 text-white backdrop-blur-md transition-[height] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none active:cursor-grabbing motion-reduce:transition-none [&>*]:[grid-area:1/1]"
                     >
                         {/* Leaving message: decorative copy sliding out, dropped once its animation ends (hidden at once under motion-reduce) */}
                         {reel.from !== null && (
@@ -183,6 +203,10 @@ export default function AboutHero() {
                             <li key={n} className="flex">
                                 <button
                                     type="button"
+                                    ref={(node) => {
+                                        dotsRef.current[i] = node;
+                                    }}
+                                    tabIndex={i === current ? 0 : -1}
                                     onClick={() => go(i)}
                                     aria-label={t('about.hero_go_to', { number: i + 1, total: SLIDES.length })}
                                     aria-current={i === current ? 'true' : undefined}

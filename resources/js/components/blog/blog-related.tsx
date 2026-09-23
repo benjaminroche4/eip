@@ -68,7 +68,8 @@ export default function BlogRelated({ posts, header, cta }: BlogRelatedProps) {
                 className="-mx-6 flex snap-x snap-mandatory scroll-px-6 gap-4 overflow-x-auto px-6 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden max-sm:[&>li]:w-[85vw] max-sm:[&>li]:shrink-0"
             >
                 {posts.map((post) => (
-                    <li key={post.id} data-url={post.url} className="flex snap-start">
+                    // Mobile: the last card snaps on its end, otherwise its start lies past the maximum scroll and it stays cut (2026-09-22)
+                    <li key={post.id} data-url={post.url} className="flex snap-start max-sm:last:snap-end">
                         <BlogPostCard post={post} />
                     </li>
                 ))}

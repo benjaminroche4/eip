@@ -89,4 +89,13 @@ class HomeTest extends TestCase
 
         $this->get('/')->assertOk()->assertInertia(fn (Assert $p) => $p->component('home')->where('posts', []));
     }
+
+    public function test_hero_video_files_are_present_and_light(): void
+    {
+        foreach (['hero-1280.webm', 'hero-1280.mp4', 'hero-720.webm', 'hero-720.mp4'] as $file) {
+            $path = public_path("videos/home/$file");
+            $this->assertFileExists($path);
+            $this->assertLessThan(3 * 1024 * 1024, filesize($path), "$file must stay under 3 MB (hero background, performance)");
+        }
+    }
 }

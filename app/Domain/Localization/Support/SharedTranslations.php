@@ -26,6 +26,7 @@ final class SharedTranslations
         'newsletter' => ['newsletter', 'contact'],
         'about' => ['about', 'team', 'values', 'testimonials'],
         'faq' => ['faq'],
+        'districts' => ['districts'],
         'blog' => ['blog', 'faq'],
         'search' => ['search'],
         'privacy' => [],

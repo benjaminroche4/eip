@@ -36,20 +36,46 @@ describe('Testimonials', () => {
         expect(screen.getAllByText('Sophie M.')).toHaveLength(3);
         expect(within(container.querySelector('figure')!).getByText('Sophie M.')).toBeInTheDocument();
         expect(container.querySelector('figure')).toHaveClass('border-secondary-30', 'bg-card', 'p-2'); // site card surface
-        expect(container.querySelector('ul.snap-x')).toHaveClass('cursor-grab'); // draggable with the mouse
+        expect(container.querySelector('ul.snap-x')).toHaveClass('cursor-grab', 'data-[dragging=true]:select-none'); // draggable with the mouse; quotes selectable otherwise (2026-09-22)
+        expect(container.querySelector('ul.snap-x')!.className).not.toMatch(/(^|\s)select-none(\s|$)/);
         expect(container.querySelector('figure')?.className).not.toMatch(/shadow/);
         expect(container.querySelector('figcaption span[data-slot="avatar"], figcaption > span')).toHaveClass('rounded-full'); // round portraits
 
         expect(await axe(container)).toHaveNoViolations();
     });
 
-    it('hides the rating column without real Google figures', () => {
+    it('hides the rating column without real Google figures but keeps the arrows under the row (2026-09-22)', async () => {
         page.props = sharedProps({ seo: { ...sharedProps().seo, reviews: null } });
-        renderPage(<Testimonials items={items} />);
+        const scrollBy = vi.fn();
+        window.HTMLElement.prototype.scrollBy = scrollBy;
+        const { container } = renderPage(<Testimonials items={items} />);
 
         expect(screen.queryByText(/\+400 avis/)).toBeNull();
-        expect(screen.queryByRole('button', { name: /Témoignage/ })).toBeNull();
         expect(screen.getAllByRole('listitem')).toHaveLength(3); // the cards only (loop copies are aria-hidden)
+        // The row stays keyboard-operable: one pair of arrows, under the row
+        expect(screen.getAllByRole('button', { name: 'Témoignage précédent' })).toHaveLength(1);
+        const next = screen.getByRole('button', { name: 'Témoignage suivant' });
+        expect(next.compareDocumentPosition(container.querySelector('ul.snap-x')!) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+        next.focus();
+        await userEvent.keyboard('{Enter}');
+        expect(scrollBy).toHaveBeenCalledTimes(1);
+        expect(await axe(container)).toHaveNoViolations();
+    });
+
+    it('moves the row by the distance between two cards, not by a fixed gap (2026-09-22)', async () => {
+        page.props = sharedProps();
+        const scrollBy = vi.fn();
+        window.HTMLElement.prototype.scrollBy = scrollBy;
+        const { container } = renderPage(<Testimonials items={items} />);
+        const cards = Array.from(container.querySelector('ul.snap-x')!.children) as HTMLElement[];
+        Object.defineProperty(cards[0], 'offsetLeft', { value: 0, configurable: true });
+        Object.defineProperty(cards[0], 'offsetWidth', { value: 320, configurable: true });
+        Object.defineProperty(cards[1], 'offsetLeft', { value: 336, configurable: true }); // 320 + gap-4
+
+        await userEvent.click(screen.getByRole('button', { name: 'Témoignage suivant' }));
+        expect(scrollBy).toHaveBeenLastCalledWith(expect.objectContaining({ left: 336 }));
+        await userEvent.click(screen.getByRole('button', { name: 'Témoignage précédent' }));
+        expect(scrollBy).toHaveBeenLastCalledWith(expect.objectContaining({ left: -336 }));
     });
 });
 

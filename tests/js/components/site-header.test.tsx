@@ -1,11 +1,14 @@
 import SiteHeader from '@/components/layout/site-header';
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
 
 describe('SiteHeader', () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
     it('renders the brand link, the main navigation and the CTA', () => {
         renderPage(<SiteHeader />);
 
@@ -53,6 +56,55 @@ describe('SiteHeader', () => {
         await user.keyboard('{Escape}');
         expect(screen.getByRole('button', { name: 'Ouvrir le menu' })).toHaveAttribute('aria-expanded', 'false');
         expect(screen.getByRole('button', { name: 'Ouvrir le menu' })).toHaveFocus();
+    });
+
+    it('makes the page behind the veil inert while the menu is open, so Tab never leaves the menu', async () => {
+        const user = userEvent.setup();
+        const main = document.createElement('main');
+        main.id = 'main';
+        main.innerHTML = '<a href="/x">Page link</a>';
+        const footer = document.createElement('footer');
+        footer.id = 'footer';
+        document.body.append(main, footer);
+        const { unmount } = renderPage(<SiteHeader />);
+
+        await user.click(screen.getByRole('button', { name: 'Ouvrir le menu' }));
+        expect(main).toHaveAttribute('inert');
+        expect(footer).toHaveAttribute('inert');
+        await user.keyboard('{Escape}');
+        expect(main).not.toHaveAttribute('inert');
+        expect(footer).not.toHaveAttribute('inert');
+
+        await user.click(screen.getByRole('button', { name: 'Ouvrir le menu' }));
+        expect(main).toHaveAttribute('inert');
+        unmount(); // unmounting while open releases the page too
+        expect(main).not.toHaveAttribute('inert');
+        main.remove();
+        footer.remove();
+    });
+
+    it('does not send the focus to the hidden toggle when the menu closes on a resize to desktop', async () => {
+        const user = userEvent.setup();
+        let onChange: ((e: { matches: boolean }) => void) | null = null;
+        vi.spyOn(window, 'matchMedia').mockImplementation(
+            (query: string) =>
+                ({
+                    matches: false,
+                    media: query,
+                    addEventListener: (_: string, cb: (e: { matches: boolean }) => void) => (onChange = cb),
+                    removeEventListener() {},
+                }) as unknown as MediaQueryList,
+        );
+        renderPage(<SiteHeader />);
+        const toggle = screen.getByRole('button', { name: 'Ouvrir le menu' });
+        await user.click(toggle);
+        expect(onChange).not.toBeNull();
+
+        vi.spyOn(window, 'getComputedStyle').mockReturnValue({ display: 'none' } as CSSStyleDeclaration); // `lg:hidden` applies: the toggle is not displayed any more
+        await act(() => onChange!({ matches: true }));
+        expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        expect(toggle).not.toHaveFocus();
+        expect(document.body).toHaveFocus();
     });
 
     it('has no axe violations (closed and open)', async () => {

@@ -5,6 +5,7 @@ return [
     'contact' => 'contact',
     'newsletter' => 'newsletter',
     'about' => 'a-propos',
+    'districts' => 'arrondissements-paris',
     'faq' => 'questions-frequentes',
     'estimate' => 'estimation-immobiliere-paris',
     'sell' => 'vendre-immobilier-paris',

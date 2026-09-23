@@ -24,7 +24,7 @@ describe('SiteFooter', () => {
             within(about)
                 .getAllByRole('link')
                 .map((l) => l.textContent),
-        ).toEqual(['Contactez-nous', 'Newsletter', 'FAQ', 'Blog', 'À propos']);
+        ).toEqual(['Contactez-nous', 'Newsletter', 'FAQ', 'Blog', 'À propos', 'Arrondissements']);
         expect(within(about).getByRole('link', { name: 'Newsletter' })).toHaveAttribute('href', '/newsletter');
         expect(within(about).getByRole('link', { name: 'À propos' })).toHaveAttribute('href', '/a-propos');
         const card = screen.getByRole('link', { name: /Nos conseillers sont à votre écoute/ });

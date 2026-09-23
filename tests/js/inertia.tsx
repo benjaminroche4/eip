@@ -15,6 +15,7 @@ const ROUTES: Record<string, string> = {
     newsletter: '/newsletter',
     faq: '/questions-frequentes',
     about: '/a-propos',
+    districts: '/arrondissements-paris',
     'blog.index': '/blog',
     privacy: '/politique-de-confidentialite',
     legal: '/mentions-legales',

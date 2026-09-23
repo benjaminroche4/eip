@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useTranslation } from '@/hooks/use-translation';
 import { stripFaqMarkup } from '@/lib/faq-markup';
+import { scrollBehavior } from '@/lib/focus-field';
 import { cn } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { Tabs as TabsPrimitive } from 'radix-ui';
@@ -62,7 +63,7 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
         if (!category) return;
         setActive(category.key);
         if (byQuestion) setOpen((o) => ({ ...o, [category.key]: [...new Set([...(o[category.key] ?? []), slug])] }));
-        window.requestAnimationFrame(() => document.getElementById(slug)?.scrollIntoView({ block: 'start', behavior: 'smooth' }));
+        window.requestAnimationFrame(() => document.getElementById(slug)?.scrollIntoView({ block: 'start', behavior: scrollBehavior() }));
     }, [categories]);
 
     /** Shareable URL: the last opened question, else the topic — without adding history entries. */
@@ -160,10 +161,12 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
             {/* Search results take the panel slot; the topic panels stay mounted (hidden) for crawlers */}
             {results && (
                 <div className="flex min-w-0 flex-1 flex-col gap-6">
+                    {/* `key={query}`: every result opens again when the query changes (an uncontrolled accordion would keep its first
+                        `defaultValue`); `search-` prefix: the topic panels stay mounted (`forceMount`) with the plain slugs as ids */}
                     {results.length > 0 ? (
-                        <Accordion type="multiple" defaultValue={results.map((r) => r.item.slug)}>
+                        <Accordion key={query} type="multiple" defaultValue={results.map((r) => r.item.slug)}>
                             {results.map(({ item, category }) => (
-                                <AccordionItem key={item.slug} value={item.slug} id={item.slug}>
+                                <AccordionItem key={item.slug} value={item.slug} id={`search-${item.slug}`}>
                                     <AccordionTrigger>
                                         <span className="flex flex-col gap-1">
                                             <span className="text-muted-foreground text-xs font-medium">{category.title}</span>
