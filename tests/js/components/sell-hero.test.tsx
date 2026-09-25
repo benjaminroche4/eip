@@ -12,7 +12,7 @@ const STATS = [
 ];
 
 describe('SellHero', () => {
-    it('is the Buy header with the Sell wording: eyebrow, h1, intro, valuation button, Sell photo and the key figures', async () => {
+    it('is the Buy header with the Sell wording: eyebrow, h1, intro, valuation button, the background clip and the key figures', async () => {
         page.props = sharedProps();
         const { container } = renderPage(<SellHero stats={STATS} video={null} />);
 
@@ -22,14 +22,18 @@ describe('SellHero', () => {
         const cta = screen.getByRole('link', { name: 'Faire estimer mon bien' });
         expect(cta).toHaveAttribute('href', '/estimation-immobiliere-paris');
         expect(cta.className).toContain('bg-primary'); // the page's single full button (with the closing card)
-        const photo = screen.getByRole('img', { name: /tour Eiffel/ });
-        expect(photo).toHaveAttribute('src', '/images/sell/photo-1600.jpg');
-        expect(photo.getAttribute('srcset')).toContain('/images/sell/photo-800.jpg 800w');
+        // The owner's clip in place of the photo (2026-09-23): decorative, poster = its first frame, the alt kept as a hidden caption
+        const clip = container.querySelector('video')!;
+        expect(clip).toHaveAttribute('aria-hidden');
+        expect(clip).toHaveAttribute('poster', '/images/sell/hero-poster-1280.jpg');
+        expect(clip.querySelectorAll('source')[2]).toHaveAttribute('src', '/videos/sell/hero-1280.webm');
+        expect(container.querySelector('img')).toBeNull();
+        expect(screen.getByText(/tour Eiffel/)).toHaveClass('sr-only');
         expect(within(screen.getAllByRole('list', { name: 'Chiffres clés' })[0]).getAllByRole('listitem').length).toBeGreaterThanOrEqual(2);
         expect(screen.queryByRole('button')).toBeNull(); // no video configured: no play button
         expect(screen.queryByText('Confidentiel')).toBeNull(); // the earlier trust / proof lines are gone (exact Buy header)
         expect(container.querySelectorAll('a')).toHaveLength(1);
 
-        expect(await axe(container)).toHaveNoViolations();
+        expect(await axe(container, { preload: false })).toHaveNoViolations(); // preload: axe waits for the clip's metadata, which jsdom never loads
     });
 });

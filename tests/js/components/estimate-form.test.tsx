@@ -303,7 +303,10 @@ describe('EstimateForm', () => {
         const user = userEvent.setup();
         render();
 
-        await user.click(screen.getByRole('button', { name: 'Voir le récapitulatif' }));
+        const arrow = screen.getByRole('button', { name: 'Voir le récapitulatif' });
+        expect(arrow.querySelector('svg')).not.toHaveClass('rotate-x-180');
+        await user.click(arrow);
+        expect(arrow.querySelector('svg')).toHaveClass('rotate-x-180'); // the chevron flips over while the recap is up
         const sheet = screen.getByRole('dialog', { name: 'Votre demande' });
         expect(within(sheet).getByRole('complementary', { name: 'Votre demande' })).toBeInTheDocument();
         expect(sheet.querySelector('.shadow-lg')).toBeNull(); // no card inside the sheet

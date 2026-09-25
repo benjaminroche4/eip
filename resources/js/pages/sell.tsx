@@ -92,10 +92,11 @@ export default function Sell({ stories, steps, testimonials, faq, stats, video }
                 intro={t('sell.confidential.intro')}
                 points={[1, 2, 3].map((n) => t(`sell.confidential.point_${n}`))}
                 image={{
-                    src: '/images/stories/story-2-1600.jpg',
-                    srcSet: '/images/stories/story-2-800.jpg 800w, /images/stories/story-2-1600.jpg 1600w',
+                    src: '/images/stories/story-5-960.webp',
+                    srcSet: '/images/stories/story-5-480.webp 480w, /images/stories/story-5-960.webp 960w',
                     alt: t('sell.confidential.photo_alt'),
-                    height: 1142,
+                    width: 960,
+                    height: 1446,
                 }}
             />
 

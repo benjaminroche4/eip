@@ -35,7 +35,7 @@ class SellTest extends TestCase
                 ->where('translations.sell.confidential.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
                 ->where('steps.0.title', 'Estimation')
                 ->where('steps.2.title', 'Négociation et signature')
-                ->has('stories', 6) // the home's photo row
+                ->has('stories', 10) // the home's photo row
                 ->has('testimonials', 10)
                 // FAQ: the first six questions of the « selling » topic
                 ->where('translations.sell.faq.title', 'Vos questions avant de vendre à Paris')
@@ -59,5 +59,11 @@ class SellTest extends TestCase
         foreach ([800, 1600] as $w) {
             $this->assertFileExists(public_path("images/sell/photo-$w.jpg"));
         }
+        foreach (['hero-1280.webm', 'hero-1280.mp4', 'hero-720.webm', 'hero-720.mp4'] as $file) {
+            $path = public_path("videos/sell/$file");
+            $this->assertFileExists($path);
+            $this->assertLessThan(3 * 1024 * 1024, filesize($path), "$file must stay under 3 MB (hero background, performance)");
+        }
+        $this->assertFileExists(public_path('images/sell/hero-poster-1280.jpg'));
     }
 }

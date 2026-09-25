@@ -51,13 +51,23 @@ describe('BuyDistricts', () => {
             .filter((li) => li.classList.contains('group'));
         expect(cards).toHaveLength(4);
         expect(within(cards[0]).getByRole('heading', { level: 3, name: /^Paris 6e,\s?Saint-Germain-des-Prés$/ })).toBeInTheDocument();
-        expect(within(cards[0]).getByRole('img', { name: 'Salon à Saint-Germain' })).toHaveAttribute('src', '/images/buy/district-1-1600.jpg');
+        expect(within(cards[0]).getByRole('img', { name: 'Salon à Saint-Germain' })).toHaveAttribute('src', '/images/buy/district-1-1600.webp');
         expect(within(cards[0]).getByRole('img')).toHaveAttribute('loading', 'lazy');
         // Facts line: one row of square outline chips (blog tags), the price as the last, bold chip, described by the dated source
         const chips = within(cards[0])
             .getAllByRole('listitem')
             .map((li) => li.textContent);
         expect(chips).toEqual(['Forte demande', 'Rendement stable', 'Prix moyen ≈ 14 500 €/m²']);
+        // The arrondissement's real silhouette inlaid bottom right, read from the card's name (decorative, 2026-09-25)
+        expect(cards.map((card) => card.querySelector('svg[data-arrondissement]')?.getAttribute('data-arrondissement'))).toEqual([
+            '6',
+            '8',
+            '7',
+            '16',
+        ]);
+        expect(cards[0].querySelector('svg[data-arrondissement] path')).toHaveClass('fill-none', 'stroke-secondary-60'); // outline only, overflowing and clipped by the card
+        expect(cards[0]).toHaveClass('overflow-hidden', 'isolate');
+        expect(cards[0].querySelector('svg[data-arrondissement]')).toHaveAttribute('aria-hidden', 'true');
         const chip = within(cards[0]).getByText('Forte demande');
         expect(chip.className).toMatch(/border/);
         expect(chip.className).not.toMatch(/rounded/); // square corners

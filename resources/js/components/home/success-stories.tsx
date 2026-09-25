@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { type CSSProperties, Fragment, useEffect, useRef, useState } from 'react';
+import { type CSSProperties, Fragment, useCallback, useEffect, useRef, useState } from 'react';
 
 export type SuccessStory = { title: string; place: string; duration: string; result: string; photo: string; alt: string };
 
@@ -19,6 +19,9 @@ type SuccessStoriesProps = {
 };
 
 /** Same press feedback as the other carousels' arrows. */
+/** One photo every 4 s (a touch faster than the testimonials' 5 s — user decision 2026-09-23). */
+const AUTOPLAY_MS = 4000;
+
 const arrowClass = 'group transition-transform active:scale-90 motion-reduce:transition-none';
 
 /**
@@ -83,24 +86,60 @@ export default function SuccessStories({ stories, quote = true, embedded = false
             window.removeEventListener('resize', measure);
         };
     }, []);
-    const scrollBy = (direction: 1 | -1) => {
+    const scrollBy = useCallback((direction: 1 | -1) => {
         const el = rowRef.current;
         const cards = el ? (Array.from(el.children) as HTMLElement[]) : [];
         if (!el || cards.length === 0) return;
         // One photo = the distance between two cards (width + gap); a single card falls back to its width
         const step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
         el.scrollBy({ left: direction * step, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }, []);
+
+    // Autoplay (user decision 2026-09-23, the testimonials' pattern): one photo every 4 s, stopped while the pointer
+    // is over the row or the arrows — also while a control has the focus, during a touch, when the tab is hidden or
+    // the block is out of view, and never under `prefers-reduced-motion`. Every arrow press restarts the delay.
+    const autoplay = stories.length > 1;
+    const [resting, setResting] = useState(false);
+    const [inView, setInView] = useState(true);
+    const [tick, setTick] = useState(0);
+    const sectionRef = useRef<HTMLElement>(null);
+    useEffect(() => {
+        const el = sectionRef.current;
+        if (!el || !autoplay || typeof IntersectionObserver === 'undefined') return;
+        const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [autoplay]);
+    useEffect(() => {
+        if (!autoplay || resting || !inView) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const id = window.setInterval(() => {
+            if (!document.hidden) scrollBy(1);
+        }, AUTOPLAY_MS);
+        return () => window.clearInterval(id);
+    }, [autoplay, resting, inView, tick, scrollBy]);
+    const move = (direction: 1 | -1) => {
+        scrollBy(direction);
+        setTick((n) => n + 1);
     };
 
     return (
         <section
+            ref={sectionRef}
             aria-labelledby="stories-title"
             className={cn('flex flex-col gap-10 lg:gap-14', !embedded && 'mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8')}
         >
             <h2 id="stories-title" className="sr-only">
                 {t('stories.title')}
             </h2>
-            <div className="flex flex-col items-center gap-6">
+            <div
+                className="flex flex-col items-center gap-6"
+                onPointerEnter={(e) => e.pointerType !== 'touch' && setResting(true)}
+                onPointerLeave={(e) => e.pointerType !== 'touch' && setResting(false)}
+                onTouchStart={() => setResting(true)}
+                onFocus={() => setResting(true)}
+                onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node | null) && setResting(false)}
+            >
                 <ul
                     ref={rowRef}
                     role="list"
@@ -121,7 +160,7 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                         className={arrowClass}
                         aria-label={t('stories.previous')}
                         disabled={edges.start}
-                        onClick={() => scrollBy(-1)}
+                        onClick={() => move(-1)}
                     >
                         <ChevronLeft aria-hidden className="transition-transform group-active:-translate-x-0.5 motion-reduce:transition-none" />
                     </Button>
@@ -132,7 +171,7 @@ export default function SuccessStories({ stories, quote = true, embedded = false
                         className={arrowClass}
                         aria-label={t('stories.next')}
                         disabled={edges.end}
-                        onClick={() => scrollBy(1)}
+                        onClick={() => move(1)}
                     >
                         <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none" />
                     </Button>
@@ -167,17 +206,17 @@ export default function SuccessStories({ stories, quote = true, embedded = false
     );
 }
 
-/** One photo: bare, square corners, no veil, no text — the story is in the `alt`. */
+/** One photo: bare, square corners, no veil, no text — the story is in the `alt`. Portrait WebP 480 / 960 px (the card is at most 416 px wide: 960 covers 2× screens). */
 function StoryPhoto({ story }: { story: SuccessStory }) {
     return (
         <div className="relative h-96 overflow-hidden sm:h-112 lg:h-120">
             <SeoImage
-                src={story.photo.replace('{w}', '1600')}
-                srcSet={`${story.photo.replace('{w}', '800')} 800w, ${story.photo.replace('{w}', '1600')} 1600w`}
+                src={story.photo.replace('{w}', '960')}
+                srcSet={`${story.photo.replace('{w}', '480')} 480w, ${story.photo.replace('{w}', '960')} 960w`}
                 sizes="(min-width: 64rem) 26rem, (min-width: 40rem) 24rem, 20rem"
                 alt={story.alt}
-                width={1600}
-                height={1067}
+                width={960}
+                height={1446}
                 className="absolute inset-0 size-full object-cover"
             />
         </div>

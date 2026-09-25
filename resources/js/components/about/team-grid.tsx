@@ -6,13 +6,16 @@ import { Button } from '@/components/ui/button';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { useTranslation } from '@/hooks/use-translation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { type Country } from 'react-phone-number-input';
 
 /** `languages` = readable label (« Français et anglais », sr-only), `flags` = the flags shown in the chip (user decision 2026-09-16). */
 export type TeamMember = { name: string; role: string; languages: string; flags: Country[]; photo: string };
 
 type TeamGridProps = { members: TeamMember[] };
+
+/** Mobile autoplay: one card every 5 s, like the testimonials (user decision 2026-09-25). */
+const AUTOPLAY_MS = 5000;
 
 /** Same press feedback as the other carousels' arrows. */
 const arrowClass = 'group transition-transform active:scale-90 motion-reduce:transition-none';
@@ -21,13 +24,18 @@ const arrowClass = 'group transition-transform active:scale-90 motion-reduce:tra
  * « Notre équipe » (Figma 712-23908 desktop / 712-24310 mobile), in the site's tone: header with the eyebrow + h2 on
  * the left and the intro on the right (stacked and centred on mobile), then one **site card** per person (sand hairline, `p-2`, inner sand
  * gradient — user decision 2026-09-16) holding the square portrait (3:4 in the Figma, square on user decision 2026-09-16), the name in Montserrat, the role, and the spoken languages as flags in a sand chip. Desktop = grid of three; mobile /
- * tablet = one centred card at a time, draggable with the mouse, previous / next arrows. The Figma « View full team »
- * button has no destination on this site and was left out.
+ * tablet = one centred card at a time, draggable with the mouse, previous / next arrows, and **autoplay** as the
+ * testimonials (user decision 2026-09-25): the row advances one card every 5 s (back to the first after the last) and
+ * rests while the pointer hovers the cards, while a card has the focus, during a touch, when the tab is hidden, when
+ * the block is out of view, from `lg` (grid, nothing scrolls) and never under `prefers-reduced-motion`; every arrow
+ * press restarts the delay. The Figma « View full team » button has no destination on this site and was left out.
  */
 export default function TeamGrid({ members }: TeamGridProps) {
     const { t } = useTranslation();
     const rowRef = useRef<HTMLUListElement>(null);
     const [current, setCurrent] = useState(0);
+    // Mirror of `current` for the autoplay interval (no re-subscription at every card)
+    const currentRef = useRef(0);
     useDragScroll(rowRef, { align: 'center', open: 'first' });
 
     useEffect(() => {
@@ -41,6 +49,7 @@ export default function TeamGrid({ members }: TeamGridProps) {
             cards.forEach((card, i) => {
                 if (distance(card) < distance(cards[best])) best = i;
             });
+            currentRef.current = best;
             setCurrent(best);
         };
         // Measured now and again on resize: after mobile → desktop (grid, no scroll) → mobile the row is back at its
@@ -54,7 +63,7 @@ export default function TeamGrid({ members }: TeamGridProps) {
         };
     }, []);
 
-    const goTo = (index: number) => {
+    const goTo = useCallback((index: number) => {
         const el = rowRef.current;
         const card = el?.children[index] as HTMLElement | undefined;
         if (!el || !card) return;
@@ -62,10 +71,44 @@ export default function TeamGrid({ members }: TeamGridProps) {
             left: card.offsetLeft + card.offsetWidth / 2 - el.clientWidth / 2,
             behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
         });
+    }, []);
+
+    // Autoplay below `lg` only (from `lg` the row is a grid): same rests as the testimonials' row.
+    const [desktop, setDesktop] = useState(false);
+    useEffect(() => {
+        const mq = window.matchMedia('(min-width: 64rem)');
+        const update = () => setDesktop(mq.matches);
+        update();
+        mq.addEventListener('change', update);
+        return () => mq.removeEventListener('change', update);
+    }, []);
+    const autoplay = members.length > 1 && !desktop;
+    const [resting, setResting] = useState(false);
+    const [inView, setInView] = useState(true);
+    const [tick, setTick] = useState(0);
+    const sectionRef = useRef<HTMLElement>(null);
+    useEffect(() => {
+        const el = sectionRef.current;
+        if (!el || !autoplay || typeof IntersectionObserver === 'undefined') return;
+        const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [autoplay]);
+    useEffect(() => {
+        if (!autoplay || resting || !inView) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const id = window.setInterval(() => {
+            if (!document.hidden) goTo((currentRef.current + 1) % members.length);
+        }, AUTOPLAY_MS);
+        return () => window.clearInterval(id);
+    }, [autoplay, resting, inView, tick, members.length, goTo]);
+    const move = (index: number) => {
+        goTo(index);
+        setTick((n) => n + 1);
     };
 
     return (
-        <section aria-labelledby="team-title" className="flex flex-col gap-10 lg:gap-16">
+        <section ref={sectionRef} aria-labelledby="team-title" className="flex flex-col gap-10 lg:gap-16">
             <div className="flex flex-col items-center gap-4 text-center lg:flex-row lg:items-end lg:justify-between lg:gap-12 lg:text-left">
                 <div className="flex flex-col items-center gap-4 lg:items-start">
                     <PageEyebrow>{t('team.eyebrow')}</PageEyebrow>
@@ -76,7 +119,16 @@ export default function TeamGrid({ members }: TeamGridProps) {
                 <p className="text-muted-foreground max-w-md text-base/7 text-pretty sm:text-sm/6">{t('team.intro')}</p>
             </div>
 
-            <div className="flex flex-col items-center gap-6">
+            <div
+                className="flex flex-col items-center gap-6"
+                onPointerEnter={(e) => e.pointerType !== 'touch' && setResting(true)}
+                onPointerLeave={(e) => e.pointerType !== 'touch' && setResting(false)}
+                onTouchStart={() => setResting(true)}
+                onTouchEnd={() => setResting(false)}
+                onTouchCancel={() => setResting(false)}
+                onFocus={() => setResting(true)}
+                onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node | null) && setResting(false)}
+            >
                 <ul
                     ref={rowRef}
                     role="list"
@@ -120,7 +172,7 @@ export default function TeamGrid({ members }: TeamGridProps) {
                         className={arrowClass}
                         aria-label={t('team.previous')}
                         disabled={current === 0}
-                        onClick={() => goTo(current - 1)}
+                        onClick={() => move(current - 1)}
                     >
                         <ChevronLeft aria-hidden className="transition-transform group-active:-translate-x-0.5 motion-reduce:transition-none" />
                     </Button>
@@ -131,7 +183,7 @@ export default function TeamGrid({ members }: TeamGridProps) {
                         className={arrowClass}
                         aria-label={t('team.next')}
                         disabled={members.length === 0 || current >= members.length - 1}
-                        onClick={() => goTo(current + 1)}
+                        onClick={() => move(current + 1)}
                     >
                         <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none" />
                     </Button>

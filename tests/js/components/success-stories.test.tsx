@@ -1,6 +1,6 @@
 import SuccessStories, { type SuccessStory } from '@/components/home/success-stories';
-import { screen, waitFor } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
 
@@ -10,7 +10,7 @@ const stories: SuccessStory[] = [
         place: 'Paris 16e',
         duration: '28 jours',
         result: '+12 % vs estimation',
-        photo: '/images/stories/story-1-{w}.jpg',
+        photo: '/images/stories/story-1-{w}.webp',
         alt: 'Séjour lumineux',
     },
     {
@@ -18,12 +18,31 @@ const stories: SuccessStory[] = [
         place: 'Paris 7e',
         duration: '42 jours',
         result: 'Vente confidentielle',
-        photo: '/images/stories/story-2-{w}.jpg',
+        photo: '/images/stories/story-2-{w}.webp',
         alt: 'Chambre contemporaine',
     },
 ];
 
 describe('SuccessStories', () => {
+    afterEach(() => vi.useRealTimers());
+
+    it('advances one photo every 4 s by itself and pauses while the pointer is over the row', async () => {
+        vi.useFakeTimers();
+        const scrollBy = vi.fn();
+        window.HTMLElement.prototype.scrollBy = scrollBy;
+        const { container } = renderPage(<SuccessStories stories={stories} quote={false} embedded />);
+        const row = container.querySelector('ul')!;
+
+        act(() => vi.advanceTimersByTime(4000));
+        expect(scrollBy).toHaveBeenCalledTimes(1); // one photo forward
+        fireEvent.pointerEnter(row, { pointerType: 'mouse' });
+        act(() => vi.advanceTimersByTime(10000));
+        expect(scrollBy).toHaveBeenCalledTimes(1); // paused under the pointer
+        fireEvent.pointerLeave(row, { pointerType: 'mouse' });
+        act(() => vi.advanceTimersByTime(4000));
+        expect(scrollBy).toHaveBeenCalledTimes(2); // resumed
+    });
+
     it('renders the photos only, the quote and the button to the blog, with arrows at every width', async () => {
         const { container } = renderPage(<SuccessStories stories={stories} />);
 
@@ -34,7 +53,7 @@ describe('SuccessStories', () => {
         expect(container.querySelector('ul')).toHaveClass('snap-x', 'data-[overflowing=true]:cursor-grab', 'lg:px-0'); // one draggable row at every width, flush left from lg
         expect(container.querySelector('ul > li')).toHaveClass('snap-center', 'lg:snap-start');
         expect(screen.getByRole('button', { name: 'Réussite suivante' }).parentElement).not.toHaveClass('lg:hidden');
-        expect(container.querySelector('img[src="/images/stories/story-1-1600.jpg"]')).toHaveAttribute('alt', 'Séjour lumineux');
+        expect(container.querySelector('img[src="/images/stories/story-1-960.webp"]')).toHaveAttribute('alt', 'Séjour lumineux');
         expect(container.querySelector('ul li > div')?.className).not.toMatch(/rounded|shadow/); // square, no shadow
         expect(screen.getByRole('link', { name: 'Explorer nos réussites' })).toHaveAttribute('href', '/blog');
         expect(container.querySelector('p.font-heading span')?.className).toMatch(/animate-manifesto-in|opacity-0/); // word-by-word reveal

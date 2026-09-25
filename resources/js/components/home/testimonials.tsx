@@ -13,7 +13,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 /** Autoplay: one card every 5 s (user decision 2026-09-16). */
 const AUTOPLAY_MS = 5000;
 
-export type Testimonial = { name: string; context: string; quote: string; photo?: string | null };
+export type ReviewSource = 'google' | 'trustpilot';
+export type Testimonial = { name: string; context: string; quote: string; photo?: string | null; source?: ReviewSource };
 
 type TestimonialsProps = { items: Testimonial[] };
 
@@ -28,12 +29,25 @@ function Stars({ className, size = 'size-4' }: { className?: string; size?: stri
     );
 }
 
-/** Round client portrait with the card ring, initials while the photo loads. */
-function Portrait({ item, className }: { item: Testimonial; className?: string }) {
+/** « Sophie M. » → « SM »: the initials of the first name and the last name, upper case (never a client photo — user decision 2026-09-23). */
+const initials = (name: string) =>
+    name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0].toUpperCase())
+        .join('');
+
+/**
+ * Round disc with the card ring: the client's initials on the quote cards (never a photo there — user decision
+ * 2026-09-23), and with `withPhoto` the owner's three avatars (`public/images/testimonials/client-{1,2,3}.webp`,
+ * 160 px WebP, ~4 KB each) in the rating column, initials as the fallback.
+ */
+function Portrait({ item, className, withPhoto = false }: { item: Testimonial; className?: string; withPhoto?: boolean }) {
     return (
         <Avatar className={cn('ring-card ring-2', className)}>
-            {item.photo && <AvatarImage src={item.photo} alt="" loading="lazy" />}
-            <AvatarFallback className="bg-background-10 text-foreground text-xs font-medium">{item.name.slice(0, 2)}</AvatarFallback>
+            {withPhoto && item.photo && <AvatarImage src={item.photo} alt="" loading="lazy" width={160} height={160} />}
+            <AvatarFallback className="bg-background-10 text-foreground text-xs font-medium">{initials(item.name)}</AvatarFallback>
         </Avatar>
     );
 }
@@ -41,7 +55,7 @@ function Portrait({ item, className }: { item: Testimonial; className?: string }
 /**
  * Testimonials (Figma 712-25299 desktop / 712-25738 mobile), kept in its structure and reworked in the site's tone
  * (user decision 2026-09-16): sand gradient band, centred header, then the rating column (Google rating from
- * `seo.reviews`: giant rating, count with the Google logo linking to the reviews, round portraits + « +N », previous / next arrows) separated by a vertical gradient hairline
+ * `seo.reviews`: giant rating, count with the Google logo linking to the reviews, the three avatars + « +N », previous / next arrows) separated by a vertical gradient hairline
  * from a row of quote cards (site card: sand hairline, inner sand gradient, square corners, no shadow; sand quotation
  * mark, stars, Montserrat quote, round portrait) that scrolls sideways with a right-edge fade (desktop only: on mobile the centred card is not veiled). On mobile the rating
  * opens the block, the portraits / stars / arrows close it, as in the Figma. The rating column only renders with real
@@ -197,13 +211,26 @@ export default function Testimonials({ items }: TestimonialsProps) {
     );
 }
 
-/** Quote card: site surface (sand hairline, inner sand gradient), sand quotation mark, stars, Montserrat quote, round portrait. */
+/** Quote card: site surface (sand hairline, inner sand gradient), sand quotation mark with the Google / Trustpilot logo top right (source of the review), stars, Montserrat quote, initials disc. */
 function QuoteCard({ item }: { item: Testimonial }) {
+    const { t } = useTranslation();
     return (
         <figure className="border-secondary-30 bg-card flex h-full border p-2">
             <div className="from-background-05 flex min-h-96 w-full flex-col justify-between gap-8 bg-linear-to-b to-transparent p-6">
                 <div className="flex flex-col gap-6">
-                    <Quote aria-hidden className="text-secondary-50 size-8 fill-current" strokeWidth={0} />
+                    <div className="flex items-start justify-between gap-4">
+                        <Quote aria-hidden className="text-secondary-50 size-8 fill-current" strokeWidth={0} />
+                        {/* Source of the review, top right (user decision 2026-09-23): the Google or Trustpilot logo (brand marks as `<img>`, `item.source`) with its label for assistive tech */}
+                        <span className="flex items-center" title={t(`testimonials.source_${item.source ?? 'google'}`)}>
+                            {item.source === 'trustpilot' ? (
+                                /* Trustpilot = the full wordmark (star + name), Google = its mark alone — both 16px high (user decision 2026-09-23) */
+                                <img src="/images/social/trustpilot-wordmark.svg" alt="" width={230} height={48} className="h-4 w-auto shrink-0" />
+                            ) : (
+                                <img src="/images/social/google.svg" alt="" width={16} height={16} className="size-4 shrink-0" />
+                            )}
+                            <span className="sr-only">{t(`testimonials.source_${item.source ?? 'google'}`)}</span>
+                        </span>
+                    </div>
                     <div className="flex flex-col gap-4">
                         <Stars className="text-foreground" size="size-3.5" />
                         <blockquote className="font-heading text-lg/7 font-medium text-pretty">{item.quote}</blockquote>
@@ -271,7 +298,7 @@ function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColum
                 <ul role="list" className="flex -space-x-3">
                     {items.slice(0, 3).map((item) => (
                         <li key={item.name}>
-                            <Portrait item={item} className="size-10" />
+                            <Portrait item={item} className="size-10" withPhoto />
                         </li>
                     ))}
                     <li>

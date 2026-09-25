@@ -19,7 +19,7 @@ type TrustIntroProps = {
 
 /**
  * Trust intro under the home hero (Figma 712-25112 desktop / 712-25584 mobile, 2026-09-22): on the left a two-line
- * Montserrat statement (the real figure in semibold + « Un interlocuteur unique. ») and the proof line (the three
+ * Montserrat statement — the page's h1 since the hero lost its text block (2026-09-25) — (the real figure in semibold + « Un interlocuteur unique. ») and the proof line (the three
  * advisor portraits, the Google logo, the real Google rating and review count from `seo.reviews` — hidden without
  * figures); on the right the answer-first paragraph and two buttons (primary → buy, outline → contact). Centred and
  * stacked on mobile with full-width buttons, two columns from `lg`.
@@ -35,11 +35,11 @@ export default function TrustIntro({ figure }: TrustIntroProps) {
             className="mx-auto grid max-w-7xl gap-10 px-6 py-16 text-center sm:py-20 lg:grid-cols-2 lg:gap-24 lg:px-8 lg:text-left"
         >
             <div className="flex flex-col items-center gap-6 lg:items-start">
-                <h2 id="trust-intro-title" className="text-2xl font-medium tracking-tight text-balance sm:text-3xl lg:text-4xl">
+                <h1 id="trust-intro-title" className="text-2xl font-medium tracking-tight text-balance sm:text-3xl lg:text-4xl">
                     <span className="font-semibold tabular-nums">{figure}</span> {t('home.trust_title_1')}
                     <br />
                     {t('home.trust_title_2')}
-                </h2>
+                </h1>
                 {/* Proof line: portraits + the real Google rating (hidden without figures) */}
                 {reviews && (
                     <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-start">

@@ -10,7 +10,7 @@ describe('TrustIntro', () => {
         page.props = sharedProps();
         const { container } = renderPage(<TrustIntro figure="500+" />);
 
-        expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('500+ biens vendus à Paris.Un interlocuteur unique.');
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('500+ biens vendus à Paris.Un interlocuteur unique.'); // the page's h1 since the hero lost its text (2026-09-25)
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).querySelectorAll('li')).toHaveLength(3);
         expect(screen.getByText('4,9/5')).toBeInTheDocument();
         expect(screen.getByText(/Basé sur 400 avis/)).toBeInTheDocument(); // seo.reviews, never a made-up count

@@ -1,4 +1,5 @@
 import GradientHairline from '@/components/layout/gradient-hairline';
+import BackgroundVideo from '@/components/page/background-video';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import StatValue from '@/components/page/stat-value';
 import SeoImage from '@/components/seo/seo-image';
@@ -31,6 +32,8 @@ type ServiceHeroProps = {
     href: string;
     /** Photo of the panel (`{w}` in `src` is replaced by each width of `widths`; `width` is the default `src` and the intrinsic size). */
     photo?: { src: string; widths: number[]; width: number; height: number };
+    /** Owner's clip played in place of the photo (Buy, 2026-09-23): `base` of the four encodings + `poster` still; the YouTube facade and the figures stay on top. */
+    backgroundVideo?: { base: string; poster: string };
     /** Replaces the photo panel (and its figures / video) with custom content — the arrondissements page puts its 3D map here (2026-09-23). */
     panel?: ReactNode;
     /** Key figures (same real numbers as the About page). */
@@ -53,7 +56,7 @@ type ServiceHeroProps = {
  * plays) under the panel in a 2×2 grid. They count up (`StatValue`) and rise in cascade when the panel enters the
  * viewport — UI review, user decision 2026-09-21.
  */
-export default function ServiceHero({ id, texts, href, photo, stats = [], video = null, panel, ref }: ServiceHeroProps) {
+export default function ServiceHero({ id, texts, href, photo, backgroundVideo, stats = [], video = null, panel, ref }: ServiceHeroProps) {
     const [playing, setPlaying] = useState(false);
     const panelRef = useRef<HTMLDivElement>(null);
     const revealed = useReveal(panelRef, '-15%');
@@ -123,16 +126,24 @@ export default function ServiceHero({ id, texts, href, photo, stats = [], video 
                                 />
                             ) : (
                                 <div className="relative -mx-6 aspect-video overflow-hidden lg:mx-0 lg:aspect-[21/9]">
-                                    <SeoImage
-                                        src={photo.src.replace('{w}', String(photo.width))}
-                                        srcSet={photo.widths.map((w) => `${photo.src.replace('{w}', String(w))} ${w}w`).join(', ')}
-                                        sizes="(min-width: 80rem) 76rem, 100vw"
-                                        alt={texts.photo_alt}
-                                        width={photo.width}
-                                        height={photo.height}
-                                        priority
-                                        className="animate-hero-photo absolute inset-0 size-full object-cover motion-reduce:animate-none"
-                                    />
+                                    {backgroundVideo ? (
+                                        /* The clip under the veil, the play button and the glass card; the photo alt moves to a visually hidden caption */
+                                        <>
+                                            <BackgroundVideo base={backgroundVideo.base} poster={backgroundVideo.poster} />
+                                            <p className="sr-only">{texts.photo_alt}</p>
+                                        </>
+                                    ) : (
+                                        <SeoImage
+                                            src={photo.src.replace('{w}', String(photo.width))}
+                                            srcSet={photo.widths.map((w) => `${photo.src.replace('{w}', String(w))} ${w}w`).join(', ')}
+                                            sizes="(min-width: 80rem) 76rem, 100vw"
+                                            alt={texts.photo_alt}
+                                            width={photo.width}
+                                            height={photo.height}
+                                            priority
+                                            className="animate-hero-photo absolute inset-0 size-full object-cover motion-reduce:animate-none"
+                                        />
+                                    )}
                                     {/* Short bottom veil (30 %) so the glass card reads, the photo stays bright above */}
                                     <span aria-hidden className="absolute inset-x-0 bottom-0 h-[30%] bg-linear-to-t from-black/60 to-transparent" />
                                     {video && (

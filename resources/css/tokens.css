@@ -90,6 +90,29 @@
     --color-background-10: #ece7dd; /* footer gradient start */
     --color-background-02: #fffdf9; /* footer gradient end */
 
+    /* Paris transit line colours (RATP / Île-de-France Mobilités brand colours, as the social logos): metro and RER badges of the arrondissement profiles */
+    --color-metro-1: #ffcd00;
+    --color-metro-2: #003ca6;
+    --color-metro-3: #837902;
+    --color-metro-3bis: #6ec4e8;
+    --color-metro-4: #cf009e;
+    --color-metro-5: #ff7e2e;
+    --color-metro-6: #6eca97;
+    --color-metro-7: #fa9aba;
+    --color-metro-7bis: #6eca97;
+    --color-metro-8: #e19bdf;
+    --color-metro-9: #b6bd00;
+    --color-metro-10: #c9910d;
+    --color-metro-11: #704b1c;
+    --color-metro-12: #007852;
+    --color-metro-13: #6ec4e8;
+    --color-metro-14: #62259d;
+    --color-rer-a: #e3051c;
+    --color-rer-b: #5291ce;
+    --color-rer-c: #ffcc30;
+    --color-rer-d: #00814f;
+    --color-rer-e: #c04191;
+
     /* Text (Figma variables) */
     --color-text-heading: #0f1b29;
     --color-text-body: #545b67;

@@ -3,6 +3,7 @@
 namespace Tests\Unit\Domain\Content;
 
 use App\Domain\Content\Actions\ExcerptFaqCategory;
+use App\Domain\Content\Actions\ListArrondissements;
 use App\Domain\Content\Actions\ListDistricts;
 use App\Domain\Content\Actions\ListFaqCategories;
 use App\Domain\Content\Actions\ListSellSteps;
@@ -11,6 +12,7 @@ use App\Domain\Content\Actions\ListStrategies;
 use App\Domain\Content\Actions\ListSuccessStories;
 use App\Domain\Content\Actions\ListTeamMembers;
 use App\Domain\Content\Actions\ListTestimonials;
+use App\Domain\Content\Data\Arrondissement;
 use App\Domain\Content\Data\District;
 use App\Domain\Content\Data\FaqCategory;
 use App\Domain\Content\Data\Stat;
@@ -29,9 +31,10 @@ class ContentActionsTest extends TestCase
         $lists = [
             [ListTeamMembers::class, TeamMember::class, 6],
             [ListTestimonials::class, Testimonial::class, 10],
-            [ListSuccessStories::class, SuccessStory::class, 6],
+            [ListSuccessStories::class, SuccessStory::class, 10],
             [ListStats::class, Stat::class, 4],
             [ListDistricts::class, District::class, 4],
+            [ListArrondissements::class, Arrondissement::class, 20],
             [ListStrategies::class, Strategy::class, 3],
             [ListSellSteps::class, Strategy::class, 3],
             [ListFaqCategories::class, FaqCategory::class, 4],
@@ -67,7 +70,7 @@ class ContentActionsTest extends TestCase
     public function test_stories_and_testimonials_keep_their_photos_when_ui_php_has_them(): void
     {
         $testimonials = app(ListTestimonials::class)('fr');
-        $this->assertSame('/images/testimonials/client-1.jpg', $testimonials[0]->photo);
+        $this->assertSame('/images/testimonials/client-1.webp', $testimonials[0]->photo);
         $this->assertNull($testimonials[9]->photo, 'the last reviews have no portrait yet');
         $this->assertArrayNotHasKey('photo', $testimonials[9]->toArray());
 

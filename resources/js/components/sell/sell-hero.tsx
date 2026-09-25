@@ -6,7 +6,7 @@ type SellHeroProps = { stats: BuyStat[]; video: string | null; ref?: Ref<HTMLEle
 
 /**
  * « Vendre » hero = exactly the Buy header (user decision 2026-09-22): the shared `ServiceHero` with the Sell wording,
- * the Sell photo (`public/images/sell/photo-*`), the same real key figures and the valuation as the single full button.
+ * the owner's clip (`public/videos/sell/hero-*`, 2026-09-23, poster = its first frame; the Sell photo stays the fallback), the same real key figures and the valuation as the single full button.
  * The earlier trust line and proof line were dropped with it. `ref` is observed by the mobile valuation bar.
  */
 export default function SellHero({ stats, video, ref }: SellHeroProps) {
@@ -17,6 +17,7 @@ export default function SellHero({ stats, video, ref }: SellHeroProps) {
             id="sell-title"
             href={route('estimate')}
             photo={{ src: '/images/sell/photo-{w}.jpg', widths: [800, 1600], width: 1600, height: 630 }}
+            backgroundVideo={{ base: '/videos/sell/hero', poster: '/images/sell/hero-poster-1280.jpg' }}
             stats={stats}
             video={video}
             texts={{

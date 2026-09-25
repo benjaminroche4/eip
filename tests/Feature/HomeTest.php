@@ -55,32 +55,34 @@ class HomeTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('home')
-                ->where('translations.home.hero_title_1', "L'agence de l'exceptionnel")
-                ->where('translations.home.hero_text', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'off-market'))
+                ->where('translations.home.trust_title_2', 'Un interlocuteur unique.') // the h1 since the hero lost its text block (2026-09-25)
+                ->where('translations.home.trust_text', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
                 ->where('figure', '500+')
                 ->has('posts', 3)
                 ->where('posts.0.slug', 'fr-1')
                 ->where('translations.home.blog_intro', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
                 ->where('translations.home.trust_text', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
                 ->has('testimonials', 10)
-                ->has('stories', 6)
+                ->has('stories', 10)
                 ->where('faq.slug', 'travailler-avec-estate-in-paris')
                 ->has('faq.items', 6)
                 ->where('translations.about.manifesto_title', 'Qui sommes-nous ?')
                 ->where('translations.home.faq.intro', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
                 ->where('stories.0.place', 'Paris 16e')
                 ->where('testimonials.0.name', 'Sophie M.')
-                ->where('testimonials.0.photo', '/images/testimonials/client-1.jpg'));
+                ->where('testimonials.0.photo', '/images/testimonials/client-1.webp')
+                ->where('testimonials.0.source', 'google')
+                ->where('testimonials.3.source', 'trustpilot'));
 
         foreach (['client-1', 'client-2', 'client-3'] as $portrait) {
-            $this->assertFileExists(public_path("images/testimonials/$portrait.jpg"));
+            $this->assertFileExists(public_path("images/testimonials/$portrait.webp")); // the owner's avatars, WebP 160 px
         }
 
         $this->withLocale('en'); // re-creates the app: fake Sanity again
         $this->fakeSanity();
         $this->get('/en')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('home')->where('translations.home.hero_title_2', 'Exceptional in Paris.')->where('testimonials.1.context', 'Sold a penthouse in Paris 16'));
+            ->assertInertia(fn (Assert $p) => $p->component('home')->where('translations.home.trust_title_2', 'One trusted advisor.')->where('testimonials.1.context', 'Sold a penthouse in Paris 16'));
     }
 
     public function test_home_hides_the_blog_preview_when_sanity_fails(): void

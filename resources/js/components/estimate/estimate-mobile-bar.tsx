@@ -3,7 +3,8 @@ import { type EstimateFormData, FORM_ID } from '@/components/estimate/types';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslation } from '@/hooks/use-translation';
-import { ArrowUpRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { ArrowUpRight, ChevronUp } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type EstimateMobileBarProps = {
@@ -14,7 +15,7 @@ type EstimateMobileBarProps = {
 /**
  * Mobile only (`lg:hidden`): the submit bar sticks to the bottom of the screen while the form is on screen, then scrolls
  * away with it (no second button: the in-form one is desktop only). Its arrow opens the recap in a non-modal bottom
- * sheet that stops above the bar; a dim over the page closes it on tap. Closed as soon as the viewport reaches `lg`.
+ * sheet that stops above the bar (the chevron flips over as it opens); a dim over the page closes it on tap. Closed as soon as the viewport reaches `lg`.
  */
 export default function EstimateMobileBar({ values, processing }: EstimateMobileBarProps) {
     const { t } = useTranslation();
@@ -69,7 +70,14 @@ export default function EstimateMobileBar({ values, processing }: EstimateMobile
                             aria-expanded={recapOpen}
                             className="px-3"
                         >
-                            {recapOpen ? <ChevronDown aria-hidden /> : <ChevronUp aria-hidden />}
+                            {/* One chevron that flips over (rotateX) as the recap opens / closes — user decision 2026-09-25 */}
+                            <ChevronUp
+                                aria-hidden
+                                className={cn(
+                                    'transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+                                    recapOpen && 'rotate-x-180',
+                                )}
+                            />
                         </Button>
                     </SheetTrigger>
                     <SheetContent

@@ -31,7 +31,7 @@ class BuyController extends Controller
      * « Notre bilan »: four facts distinct from the hero's key figures (rating, reply time, languages, address). The
      * Google rating tile only exists with real figures in `seo.reviews`; `:rating` / `:count` are replaced here.
      *
-     * @return list<array{value: string, title: string, text: string}>
+     * @return list<array{key: string, value: string, title: string, text: string}>
      */
     private function facts(): array
     {
@@ -39,7 +39,7 @@ class BuyController extends Controller
         $count = config('seo.reviews.count');
         $facts = array_values((array) __('ui.buy.record.facts'));
         if (! $rating || ! $count) {
-            $facts = array_values(array_filter($facts, fn (array $f) => ! str_contains($f['value'], ':rating')));
+            $facts = array_values(array_filter($facts, fn (array $f) => $f['key'] !== 'rating'));
         }
         $replace = [':rating' => number_format((float) $rating, 1, ',', ''), ':count' => number_format((int) $count, 0, ',', ' ')];
 

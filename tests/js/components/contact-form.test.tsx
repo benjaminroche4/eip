@@ -30,6 +30,15 @@ describe('ContactForm', () => {
         expect(screen.getByRole('heading', { level: 2, name: 'Demandez un rappel' })).toBeInTheDocument();
     });
 
+    it('starts with the topic and message of an arrondissement profile when prefilled (2026-09-25)', () => {
+        renderPage(
+            <ContactForm topics={TOPICS} prefill={{ topic: 'buy', message: 'Je souhaite être conseillé sur Paris 14e (Montparnasse, Alésia).' }} />,
+        );
+
+        expect(screen.getByLabelText(/^Message/)).toHaveValue('Je souhaite être conseillé sur Paris 14e (Montparnasse, Alésia).');
+        expect(screen.getByRole('combobox', { name: /Je suis intéressé par/ })).toHaveTextContent('Acheter un bien');
+    });
+
     it('shows example placeholders on first name, last name and email', () => {
         renderPage(<ContactForm topics={TOPICS} />);
         expect(screen.getByLabelText(/^Prénom/)).toHaveAttribute('placeholder', 'Jean');

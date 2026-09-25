@@ -38,7 +38,7 @@ final class SharedTranslations
      * Content arrays the controllers already pass as page props (FAQ categories, team, testimonials…): never read
      * through `t()`, so they are stripped from the shared strings (the FAQ's 12 KB of questions were sent twice).
      */
-    public const EXCLUDE = ['faq.categories', 'testimonials.items', 'team.members', 'stories.items', 'about.stats', 'buy.strategies.items', 'buy.districts.items', 'sell.process.items', 'sell.gallery'];
+    public const EXCLUDE = ['faq.categories', 'testimonials.items', 'team.members', 'stories.items', 'about.stats', 'buy.strategies.items', 'buy.districts.items', 'districts.items', 'sell.process.items', 'sell.gallery'];
 
     /** @return list<string> */
     public static function sectionsFor(?string $routeName): array

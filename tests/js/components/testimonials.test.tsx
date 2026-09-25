@@ -6,9 +6,10 @@ import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
 const items: Testimonial[] = [
-    { name: 'Sophie M.', context: "Achat d'un loft, Paris 17e", quote: 'Un accompagnement exemplaire.', photo: '/images/testimonials/client-1.jpg' },
-    { name: 'Thomas L.', context: 'Vente, Paris 16e', quote: 'Une offre solide, vite.', photo: '/images/testimonials/client-2.jpg' },
-    { name: 'Claire R.', context: 'Vente, Paris 7e', quote: 'Sans accroc du début à la fin.', photo: '/images/testimonials/client-3.jpg' },
+    { name: 'Sophie M.', context: "Achat d'un loft, Paris 17e", quote: 'Un accompagnement exemplaire.', photo: '/images/testimonials/client-1.webp' },
+    { name: 'Thomas L.', context: 'Vente, Paris 16e', quote: 'Une offre solide, vite.', photo: '/images/testimonials/client-2.webp' },
+    { name: 'Claire R.', context: 'Vente, Paris 7e', quote: 'Sans accroc du début à la fin.', photo: '/images/testimonials/client-3.webp' },
+    { name: 'Julien B.', context: "Achat d'un appartement familial, Paris 6e", quote: 'Vu avant tout le monde.', source: 'trustpilot' },
 ];
 
 describe('Testimonials', () => {
@@ -30,9 +31,23 @@ describe('Testimonials', () => {
         expect(screen.getByRole('button', { name: 'Témoignage précédent' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Témoignage suivant' })).toBeInTheDocument();
         expect(container.querySelector('img[src="/brand/logo-mark.svg"]')).toBeNull(); // no logo
+        // Radix renders the avatar <img> only once it has loaded (never under jsdom): count the three avatar discs of the rating column instead
+        const stack = container.querySelector('ul[role="list"]')!; // the rating column's stack comes first in the DOM
+        expect(stack.querySelectorAll('li > span.rounded-full')).toHaveLength(4); // three avatar discs (photo, initials fallback) + « +N »
+        expect(container.querySelectorAll('figure img:not([src^="/images/social/"])')).toHaveLength(0); // never a photo on the quote cards, initials only
+        // Source of the review top right of each card (2026-09-23): the Google or Trustpilot logo next to the quotation mark, labelled for assistive tech
+        const [first, , , trustpilot] = Array.from(container.querySelectorAll('figure'));
+        expect(first.querySelector('img[src="/images/social/google.svg"]')).toHaveAttribute('alt', ''); // no `source` = Google
+        expect(within(first).getByText('Avis Google')).toHaveClass('sr-only');
+        expect(first.querySelector('img[src="/images/social/google.svg"]')!.closest('div')).toHaveClass('justify-between'); // same row as the quotation mark, pushed right
+        expect(trustpilot.querySelector('img')).toHaveAttribute('src', '/images/social/trustpilot-wordmark.svg'); // full name for Trustpilot
+        expect(trustpilot.querySelector('img')).toHaveClass('h-4'); // both logos 16px high
+        expect(first.querySelector('img[src="/images/social/google.svg"]')).toHaveClass('size-4');
+        expect(within(trustpilot).getByText('Avis Trustpilot')).toHaveClass('sr-only');
+        expect(screen.getAllByText('SM').length).toBeGreaterThan(0); // « Sophie M. » → SM, upper case
         // Infinite loop: three copies of the row, only the middle one exposed to assistive tech
-        expect(container.querySelectorAll('blockquote')).toHaveLength(9);
-        expect(container.querySelectorAll('ul.snap-x > li:not([aria-hidden])')).toHaveLength(3);
+        expect(container.querySelectorAll('blockquote')).toHaveLength(12);
+        expect(container.querySelectorAll('ul.snap-x > li:not([aria-hidden])')).toHaveLength(4);
         expect(screen.getAllByText('Sophie M.')).toHaveLength(3);
         expect(within(container.querySelector('figure')!).getByText('Sophie M.')).toBeInTheDocument();
         expect(container.querySelector('figure')).toHaveClass('border-secondary-30', 'bg-card', 'p-2'); // site card surface
@@ -51,7 +66,7 @@ describe('Testimonials', () => {
         const { container } = renderPage(<Testimonials items={items} />);
 
         expect(screen.queryByText(/\+400 avis/)).toBeNull();
-        expect(screen.getAllByRole('listitem')).toHaveLength(3); // the cards only (loop copies are aria-hidden)
+        expect(screen.getAllByRole('listitem')).toHaveLength(4); // the cards only (loop copies are aria-hidden)
         // The row stays keyboard-operable: one pair of arrows, under the row
         expect(screen.getAllByRole('button', { name: 'Témoignage précédent' })).toHaveLength(1);
         const next = screen.getByRole('button', { name: 'Témoignage suivant' });

@@ -6,24 +6,34 @@ import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
 describe('AboutHero', () => {
-    it('renders the header, the proof line, the photo and the message card with its controls', async () => {
+    it('renders the header, the proof line, the background clip and the message card with its controls', async () => {
         page.props = sharedProps();
         const { container } = renderPage(<AboutHero />);
 
         expect(screen.getByRole('heading', { level: 1, name: "L'agence immobilière de prestige à Paris" })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Rencontrer nos conseillers' })).toHaveAttribute('href', '#team-title');
         expect(screen.getByText(/Basé sur 400 avis/)).toBeInTheDocument();
-        expect(container.querySelector('img[src="/images/about/hero-1400.jpg"]')).not.toBeNull();
+        // The owner's portrait clip in place of the photo (2026-09-23): decorative, poster = its first frame, alt kept as a hidden caption
+        const clip = container.querySelector('video')!;
+        expect(clip).toHaveAttribute('aria-hidden');
+        expect(clip).toHaveAttribute('poster', '/images/about/hero-poster-856.jpg');
+        expect(Array.from(clip.querySelectorAll('source')).map((s) => s.getAttribute('src'))).toEqual([
+            '/videos/about/hero-640.webm',
+            '/videos/about/hero-640.mp4',
+            '/videos/about/hero-856.webm',
+            '/videos/about/hero-856.mp4',
+        ]);
+        expect(screen.getByText(/Façade haussmannienne/)).toHaveClass('sr-only');
         // Photo flush with the header and the next band: the section cancels the layout's top padding and the gap below
         expect(container.querySelector('section')).toHaveClass('-mt-10', 'sm:-mt-12', 'lg:-mt-20', '-mb-12', 'lg:-mb-16');
-        expect(container.querySelector('img[src="/images/about/hero-1400.jpg"]')!.parentElement!.className).not.toMatch(/border|ring|rounded/);
+        expect(clip.parentElement!.className).not.toMatch(/border|ring|rounded/);
         const card = container.querySelector('[aria-live="polite"]')!;
         expect(card).toHaveClass('backdrop-blur-md', 'bg-black/40'); // dark glass, readable on the bright façade
         expect(card.querySelector('img')).toBeNull(); // icon tile, not a portrait
         expect(card.className).not.toMatch(/rounded/); // square corners
         expect(within(card as HTMLElement).getByRole('heading', { level: 2 })).toHaveTextContent("25 ans d'expertise du marché");
 
-        expect(await axe(container)).toHaveNoViolations();
+        expect(await axe(container, { preload: false })).toHaveNoViolations(); // preload: axe waits for the clip's metadata, which jsdom never loads
     });
 
     it('cycles the messages with the dots, a swipe or the wheel on the card (mouse or finger) and the keyboard, without arrows', async () => {

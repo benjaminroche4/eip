@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Domain\Content;
 
+use App\Domain\Content\Data\Arrondissement;
 use App\Domain\Content\Data\District;
 use App\Domain\Content\Data\FaqCategory;
 use App\Domain\Content\Data\FaqExcerpt;
@@ -24,22 +25,23 @@ class ContentDataTest extends TestCase
     {
         return [
             'team member' => [TeamMember::class, ['name' => 'Alexandre Moreau', 'role' => 'Conseiller senior', 'languages' => 'Parle français et anglais', 'flags' => ['FR', 'GB'], 'photo' => '/images/team/member-1.jpg']],
-            'testimonial with photo' => [Testimonial::class, ['name' => 'Sophie M.', 'context' => "Achat d'un loft", 'quote' => 'Parfait.', 'photo' => '/images/testimonials/client-1.jpg']],
+            'testimonial with photo' => [Testimonial::class, ['name' => 'Sophie M.', 'context' => "Achat d'un loft", 'quote' => 'Parfait.', 'source' => 'trustpilot', 'photo' => '/images/testimonials/client-1.webp']],
             'success story' => [SuccessStory::class, ['title' => '12 % au-dessus', 'place' => 'Paris 16e', 'duration' => '28 jours', 'result' => '+12 %', 'photo' => '/images/stories/story-1-{w}.jpg', 'alt' => 'Séjour']],
             'stat' => [Stat::class, ['value' => '250 M€+', 'title' => 'Transactions réalisées', 'text' => 'Dans Paris.']],
             'district' => [District::class, ['name' => 'Paris 6e', 'area' => 'Saint-Germain-des-Prés', 'text' => 'Élégance.', 'price' => '≈ 14 500 €/m²', 'tags' => ['Forte demande'], 'photo_alt' => 'Salon']],
             'strategy' => [Strategy::class, ['title' => 'Plus-value', 'text' => 'Acquérez.']],
+            'arrondissement' => [Arrondissement::class, ['n' => 6, 'name' => 'Paris 6e', 'areas' => 'Saint-Germain-des-Prés', 'profile' => 'Prestige', 'price' => '14 500', 'extra' => 'Adresse', 'positives' => ['A', 'B', 'C'], 'audience' => 'Prestige.', 'housing' => 'Haussmannien.', 'summary' => 'Résumé.', 'metro' => ['4', '10'], 'rer' => ['B'], 'stations' => [], 'attractions' => ['Luxembourg'], 'dining' => ['Flore'], 'parks' => ['Luxembourg'], 'education' => ['Fénelon']]],
         ];
     }
 
-    /** @param class-string<TeamMember|Testimonial|SuccessStory|Stat|District|Strategy> $class */
+    /** @param class-string<TeamMember|Testimonial|SuccessStory|Stat|District|Strategy|Arrondissement> $class */
     #[DataProvider('completeItems')]
     public function test_to_array_gives_back_exactly_the_ui_php_item(string $class, array $item): void
     {
         $this->assertSame($item, $class::fromArray($item)->toArray());
     }
 
-    /** @param class-string<TeamMember|Testimonial|SuccessStory|Stat|District|Strategy> $class */
+    /** @param class-string<TeamMember|Testimonial|SuccessStory|Stat|District|Strategy|Arrondissement> $class */
     #[DataProvider('completeItems')]
     public function test_a_missing_key_is_reported_by_name(string $class, array $item): void
     {
@@ -76,8 +78,18 @@ class ContentDataTest extends TestCase
         $withoutPhoto = Testimonial::fromArray(['name' => 'Marc V.', 'context' => 'Investissement', 'quote' => 'Précis.']);
 
         $this->assertNull($withoutPhoto->photo);
-        $this->assertSame(['name' => 'Marc V.', 'context' => 'Investissement', 'quote' => 'Précis.'], $withoutPhoto->toArray());
+        $this->assertSame(['name' => 'Marc V.', 'context' => 'Investissement', 'quote' => 'Précis.', 'source' => 'google'], $withoutPhoto->toArray());
         $this->assertArrayNotHasKey('photo', $withoutPhoto->toArray());
+    }
+
+    public function test_testimonial_source_defaults_to_google_and_only_accepts_google_or_trustpilot(): void
+    {
+        $trustpilot = Testimonial::fromArray(['name' => 'Julien B.', 'context' => 'Achat', 'quote' => 'Vu avant tout le monde.', 'source' => 'trustpilot']);
+        $this->assertSame('trustpilot', $trustpilot->toArray()['source']);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('unknown review source "yelp"');
+        Testimonial::fromArray(['name' => 'X', 'context' => 'Y', 'quote' => 'Z', 'source' => 'yelp']);
     }
 
     public function test_faq_category_and_items_get_their_anchor_slugs_and_can_be_taken(): void

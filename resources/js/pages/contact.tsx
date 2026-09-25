@@ -8,10 +8,16 @@ import { breadcrumbList, contactPage } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
-type ContactProps = { topics: string[] };
+type ContactProps = {
+    topics: string[];
+    /** From an arrondissement profile (`?district=N`): topic + message already written (2026-09-25). */ prefill: {
+        topic: string;
+        message: string;
+    } | null;
+};
 
 /** Contact page (Figma 261-7354 desktop / 131-5711 mobile): intro + details on the left, consultation form on the right. */
-export default function Contact({ topics }: ContactProps) {
+export default function Contact({ topics, prefill }: ContactProps) {
     const { t } = useTranslation();
     const { ziggy, seo } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
@@ -36,7 +42,7 @@ export default function Contact({ topics }: ContactProps) {
                         <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{t('pages.contact.intro')}</p>
                     </div>
                     <div className="lg:col-span-3 lg:col-start-3 lg:row-span-2 lg:row-start-1">
-                        <ContactForm topics={topics} />
+                        <ContactForm topics={topics} prefill={prefill} />
                     </div>
                     <div className="lg:col-span-2 lg:col-start-1 lg:row-start-2">
                         <ContactDetails />

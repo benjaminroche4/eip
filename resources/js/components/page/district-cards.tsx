@@ -1,8 +1,9 @@
+import ArrondissementGlyph from '@/components/page/arrondissement-glyph';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoImage from '@/components/seo/seo-image';
 import { useReveal } from '@/hooks/use-reveal';
 import { cn } from '@/lib/utils';
-import { MapPin } from 'lucide-react';
+import { Info, MapPin } from 'lucide-react';
 import { type CSSProperties, useId, useRef } from 'react';
 
 export type BuyDistrict = {
@@ -21,12 +22,12 @@ export type BuyDistrict = {
 /** The district photo: 3/2, zooms on hover like the blog cards. */
 const Photo = ({ item, i }: { item: BuyDistrict; i: number }) => (
     <SeoImage
-        src={`/images/buy/district-${i + 1}-1600.jpg`}
-        srcSet={`/images/buy/district-${i + 1}-800.jpg 800w, /images/buy/district-${i + 1}-1600.jpg 1600w`}
+        src={`/images/buy/district-${i + 1}-1600.webp`}
+        srcSet={`/images/buy/district-${i + 1}-800.webp 800w, /images/buy/district-${i + 1}-1600.webp 1600w`}
         sizes="(min-width: 80rem) 36rem, (min-width: 40rem) 50vw, 100vw"
         alt={item.photo_alt}
         width={1600}
-        height={1067}
+        height={1063}
         className="aspect-[3/2] w-full object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none"
     />
 );
@@ -59,7 +60,8 @@ type DistrictCardsProps = {
  * « Rangée de chips, prix compris » chosen among 15 on 2026-09-22; a version with the price on the right under a
  * visible label was tried and reverted the same day, user decision); the prices' dated, named source is printed once
  * under the grid and linked to each price by `aria-describedby` (GEO rule). The cards rise in cascade when the grid enters the viewport (`animate-hero-rise`,
- * `--stagger` 80 ms, `motion-reduce` cancels). Two columns from `sm`, stacked on mobile.
+ * `--stagger` 80 ms, `motion-reduce` cancels). Two columns from `sm`, stacked on mobile. The arrondissement's real
+ * outline (`ArrondissementGlyph`, read from the card's name) is inlaid large bottom right of each card, overflowing and clipped (user request 2026-09-25).
  */
 export default function DistrictCards({ id, texts, items }: DistrictCardsProps) {
     const sourceId = useId();
@@ -68,7 +70,7 @@ export default function DistrictCards({ id, texts, items }: DistrictCardsProps) 
 
     return (
         <section aria-labelledby={id} className="from-background-05 to-background relative left-1/2 w-screen -translate-x-1/2 bg-linear-to-b to-60%">
-            <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-16 sm:py-20 lg:gap-16 lg:px-8">
+            <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 pt-16 sm:pt-20 lg:gap-16 lg:px-8">
                 <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center">
                     <PageEyebrow>{texts.eyebrow}</PageEyebrow>
                     <h2 id={id} className="text-2xl font-medium tracking-tight text-balance sm:text-3xl">
@@ -84,7 +86,7 @@ export default function DistrictCards({ id, texts, items }: DistrictCardsProps) 
                             key={item.name}
                             style={{ '--stagger': `${i * 80}ms` } as CSSProperties}
                             className={cn(
-                                'group border-border hover:border-foreground/40 bg-card flex flex-col border transition-colors duration-300 motion-reduce:transition-none',
+                                'group border-border hover:border-foreground/40 bg-card relative isolate flex flex-col overflow-hidden border transition-colors duration-300 motion-reduce:transition-none',
                                 revealed
                                     ? 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none'
                                     : 'opacity-0 motion-reduce:opacity-100',
@@ -138,12 +140,18 @@ export default function DistrictCards({ id, texts, items }: DistrictCardsProps) 
                                     </li>
                                 </ul>
                             </div>
+                            {/* The arrondissement's outline, large, overflowing the bottom-right corner and clipped by the card, behind the text (`-z-10` under the card's `isolate`) — decorative, user decision 2026-09-25 */}
+                            <ArrondissementGlyph
+                                arrondissement={item.name}
+                                className="absolute -right-10 -bottom-12 -z-10 size-48 opacity-60 transition-opacity duration-300 group-hover:opacity-100 motion-reduce:transition-none"
+                            />
                         </li>
                     ))}
                 </ul>
                 {/* GEO: the prices' dated, named source, once under the grid */}
-                <p id={sourceId} className="text-muted-foreground -mt-4 text-xs text-pretty lg:-mt-8">
-                    {texts.price_source}
+                <p id={sourceId} className="text-muted-foreground -mt-4 flex items-start gap-2 text-xs text-pretty lg:-mt-8">
+                    <Info aria-hidden="true" className="mt-0.5 size-3.5 shrink-0" />
+                    <span>{texts.price_source}</span>
                 </p>
             </div>
         </section>

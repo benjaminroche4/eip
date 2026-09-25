@@ -1,10 +1,12 @@
 import RingsBackdrop from '@/components/page/rings-backdrop';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
+import { scrollBehavior } from '@/lib/focus-field';
+import { linkClass } from '@/lib/hover-surface';
 import { PARIS_ARRONDISSEMENTS, PARIS_BOIS, PARIS_OUTLINE, PARIS_SEINE, PARIS_VIEWBOX } from '@/lib/paris-arrondissements';
 import { cn } from '@/lib/utils';
-import { ZoomIn, ZoomOut } from 'lucide-react';
-import { type CSSProperties, type PointerEvent, useEffect, useId, useRef, useState } from 'react';
+import { Pointer, ZoomIn, ZoomOut } from 'lucide-react';
+import { type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent, useEffect, useId, useRef, useState } from 'react';
 
 export type District = {
     n: number;
@@ -16,6 +18,15 @@ export type District = {
     positives: string[];
     audience: string;
     housing: string;
+    /** Detailed profile (2026-09-25): summary, metro / RER line ids, railway stations, sights, food, green spaces, schools. */
+    summary: string;
+    metro: string[];
+    rer: string[];
+    stations: string[];
+    attractions: string[];
+    dining: string[];
+    parks: string[];
+    education: string[];
 };
 
 type ParisMapProps = {
@@ -29,6 +40,20 @@ type ParisMapProps = {
 
 /** « 14 500 » → 14500 (the price strings keep their locale grouping). */
 const priceValue = (price: string) => Number(price.replace(/[^\d]/g, '')) || 0;
+
+/** Shared width transition of the gauge fill: 700 ms on the site's expo-out curve, in and out. */
+const fillEase = 'transition-[width] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none';
+/** Heights of the eight steps of the gauge, 1/8 to 8/8 (full class names so Tailwind keeps them). */
+const STEP_HEIGHTS = ['h-1/8', 'h-2/8', 'h-3/8', 'h-4/8', 'h-5/8', 'h-6/8', 'h-7/8', 'h-full'] as const;
+const BANDS = STEP_HEIGHTS.length;
+/** Arrow keys of the roving tabindex: right / down = next arrondissement, left / up = previous (wrapping 20 → 1). */
+const ARROW_STEP: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+const COUNT = PARIS_ARRONDISSEMENTS.length;
+
+/** Number label offsets (viewBox units): the 16e's official centroid falls inside the hatched Bois de Boulogne, so its
+ *  number is pushed east onto the built-up part (user decision 2026-09-25). The generated centroids stay untouched. */
+const NUMBER_DX: Partial<Record<number, number>> = { 16: 60 };
+const numberX = (shape: { n: number; cx: number }) => shape.cx + (NUMBER_DX[shape.n] ?? 0);
 
 /** The 6e (the agency's own arrondissement) lifts by itself once, 1.4 s after mount (after the 20 × 40 ms reveal cascade), for 1 s. */
 const DEMO_ARRONDISSEMENT = 6;
@@ -64,12 +89,61 @@ const numberSize = (area: number) => (area < MAX_AREA * 0.12 ? 'text-[1.1rem]' :
  *   removed the same day); the Seine as a white ribbon over a wider sand bank; the two bois hatched.
  * - Reveal: the arrondissements rise in cascade on load (`animate-hero-rise`, `--stagger` 40 ms); then, once, the 6e
  *   lifts alone for a second as a hint that the map answers (skipped under reduced motion, cancelled by interaction).
+ * - UX round of 2026-09-25 (user decision): roving tabindex (one Tab stop, arrows, Home / End, Escape) with a dark
+ *   focus ring on the lifted twin; the legend's steps are buttons for a price band that fade the others (hover / focus,
+ *   click pins); a summary with a link to the sheet below lg. (A profile filter above the map was built then removed
+ *   the same day, user decision.)
  * The detail panel under the map (page) is the accessible, keyboard and touch surface for the content.
  */
 export default function ParisMap({ items, selected, onSelect, className }: ParisMapProps) {
-    const { t } = useTranslation();
+    const { t, tc } = useTranslation();
     const hatchId = useId();
+    const keyboardHintId = useId();
     const [hovered, setHovered] = useState<number | null>(null);
+    // Touch never hovers (2026-09-25): on iOS a tap first emulates a hover, and when that hover changes the DOM (the
+    // lifted twin) the click is swallowed — a second arrondissement could not be selected. A finger only selects;
+    // the focus a tap may give the piece is ignored too (`lastPointer`), the keyboard focus still lights it.
+    const lastPointer = useRef<string>('keyboard');
+    // Roving tabindex (2026-09-25): one Tab stop for the whole map (the selected piece, else the last focused, else
+    // the 1er), arrows move between arrondissements, Home / End jump, Escape clears the selection. A keyboard focus
+    // draws a dark ring on the lifted twin (the piece in the loop is transparent while lit, so a CSS outline on it
+    // would be invisible — that ring is the visible focus the site's rule asks for).
+    const [roving, setRoving] = useState<number | null>(null);
+    const [keyboard, setKeyboard] = useState(false);
+    const tabStop = roving ?? selected ?? 1;
+    const pathRefs = useRef(new Map<number, SVGPathElement>());
+    const focusShape = (n: number) => {
+        lastPointer.current = 'keyboard';
+        pathRefs.current.get(((n - 1 + COUNT) % COUNT) + 1)?.focus();
+    };
+    const onShapeKeyDown = (e: KeyboardEvent<SVGPathElement>, n: number, isSelected: boolean) => {
+        const step = ARROW_STEP[e.key];
+        if (step !== undefined) {
+            e.preventDefault();
+            focusShape(n + step);
+        } else if (e.key === 'Home' || e.key === 'End') {
+            e.preventDefault();
+            focusShape(e.key === 'Home' ? 1 : COUNT);
+        } else if (e.key === 'Escape' && selected !== null) {
+            e.preventDefault();
+            onSelect(null);
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect(isSelected ? null : n);
+        }
+    };
+    const onShapeFocus = (el: SVGPathElement, n: number) => {
+        setRoving(n);
+        if (lastPointer.current === 'touch') return;
+        setHovered(n);
+        let visible = lastPointer.current === 'keyboard';
+        try {
+            visible ||= el.matches(':focus-visible');
+        } catch {
+            // engines without :focus-visible: the last input kind alone decides
+        }
+        setKeyboard(visible);
+    };
     // Demonstration on load (user decision 2026-09-23): once the reveal cascade is over, the 6e lifts alone for a
     // second and settles, one time only — skipped under prefers-reduced-motion and cancelled by any interaction.
     const [demo, setDemo] = useState<number | null>(null);
@@ -103,6 +177,31 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
         const d = byNumber.get(n);
         if (!d || max === min) return 0.6;
         return 0.2 + 0.8 * ((priceValue(d.price) - min) / (max - min));
+    };
+
+    // Interactive legend (2026-09-25): each step of the gauge is a button for a price band; hovering or focusing it
+    // fades every arrondissement outside the band, a click / tap pins it (a second one releases).
+    const bandOf = (n: number) => Math.min(BANDS - 1, Math.floor(((shade(n) - 0.2) / 0.8) * BANDS));
+    const [hoverBand, setHoverBand] = useState<number | null>(null);
+    const [pinnedBand, setPinnedBand] = useState<number | null>(null);
+    const band = hoverBand ?? pinnedBand;
+    const bandPrice = (i: number) => Math.round(min + ((max - min) * i) / BANDS);
+    /** Groups the thousands like the localized price strings do (« 14 500 » in French, « 14,500 » in English). */
+    const separator = items[0]?.price.replace(/\d/g, '')[0] ?? ' ';
+    const group = (value: number) => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+    const bandCount = (i: number) => items.filter((d) => bandOf(d.n) === i).length;
+
+    /** Faded by the legend band (stronger than the hover dimming). */
+    const muted = (n: number) => band !== null && bandOf(n) !== band;
+
+    // Mobile summary under the map: the selected arrondissement's name and price with a link to its sheet (the sheet
+    // sits under the hero, out of view when tapping — 2026-09-25)
+    const selectedDistrict = selected === null ? null : (byNumber.get(selected) ?? null);
+    const scrollToSheet = (e: MouseEvent<HTMLAnchorElement>) => {
+        const target = document.getElementById(`arrondissement-${selected}`);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
     };
 
     // Cursor tooltip (desktop): position kept in CSS variables on the wrapper, hidden as soon as the pointer leaves
@@ -155,8 +254,13 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
         setTip({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     };
 
+    const pct = current ? Math.round(shade(current.n) * 100) : 0;
+
     return (
         <div className={cn('mx-auto flex w-full max-w-4xl flex-col gap-4', className)}>
+            <p id={keyboardHintId} className="sr-only">
+                {t('districts.keyboard_hint')}
+            </p>
             {/* Sand well under the map (square corners, air around; edge to edge below lg like the other photo panels — user decision 2026-09-23), animated by the site's concentric rings turning and
                 breathing behind the map (`RingsBackdrop`, shared with the CTA card — user decision 2026-09-22) */}
             <div
@@ -186,8 +290,10 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                     onPointerUp={onPinchEnd}
                     onPointerCancel={onPinchEnd}
                     className={cn(
-                        'relative',
-                        zoom > 0 && 'touch-pan-x touch-pan-y overflow-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+                        // `touch-pan-y` at 100 %: the page still scrolls over the map, but two fingers are ours (a browser pinch
+                        // would cancel the pointer events before the level changed — bug 2026-09-25)
+                        'relative touch-pan-y',
+                        zoom > 0 && 'touch-pan-x overflow-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
                     )}
                 >
                     <div
@@ -200,6 +306,7 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                             viewBox={`-6 -6 ${PARIS_VIEWBOX.width + 12} ${PARIS_VIEWBOX.height + 12}`}
                             role="group"
                             aria-label={t('districts.map_label')}
+                            aria-describedby={keyboardHintId}
                             className="relative w-full select-none"
                             onPointerMove={onPointerMove}
                             onPointerLeave={() => setTip(null)}
@@ -238,36 +345,41 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                                         {/* The interactive piece stays in DOM order (tab order); while active it turns transparent and its lifted
                                         twin is drawn in the overlay after the loop, above every neighbour */}
                                         <path
+                                            ref={(el) => {
+                                                if (el) pathRefs.current.set(shape.n, el);
+                                                else pathRefs.current.delete(shape.n);
+                                            }}
                                             d={shape.d}
                                             role="button"
-                                            tabIndex={0}
+                                            tabIndex={tabStop === shape.n ? 0 : -1}
                                             aria-pressed={isSelected}
                                             aria-label={
                                                 district ? `${district.name} : ${district.areas}, ${district.price} €/m²` : `Paris ${shape.n}`
                                             }
                                             fillOpacity={shade(shape.n)}
-                                            onPointerEnter={() => setHovered(shape.n)}
-                                            onPointerLeave={() => setHovered(null)}
-                                            onFocus={() => setHovered(shape.n)}
-                                            onBlur={() => setHovered(null)}
-                                            onClick={() => onSelect(isSelected ? null : shape.n)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter' || e.key === ' ') {
-                                                    e.preventDefault();
-                                                    onSelect(isSelected ? null : shape.n);
-                                                }
+                                            onPointerDown={(e) => (lastPointer.current = e.pointerType)}
+                                            onPointerEnter={(e) => e.pointerType !== 'touch' && setHovered(shape.n)}
+                                            onPointerLeave={(e) => e.pointerType !== 'touch' && setHovered(null)}
+                                            onFocus={(e) => onShapeFocus(e.currentTarget, shape.n)}
+                                            onBlur={() => {
+                                                setHovered(null);
+                                                setKeyboard(false);
                                             }}
+                                            onClick={() => onSelect(isSelected ? null : shape.n)}
+                                            onKeyDown={(e) => onShapeKeyDown(e, shape.n, isSelected)}
                                             className={cn(
+                                                // no CSS outline: the keyboard focus ring is drawn on the lifted twin in the overlay
                                                 'cursor-pointer transition-[opacity,stroke-width,stroke] duration-300 outline-none motion-reduce:transition-none',
                                                 isSelected
                                                     ? 'fill-secondary-60 stroke-secondary-80 stroke-[4]'
                                                     : 'fill-secondary-60 stroke-card stroke-2',
-                                                isActive && 'opacity-0',
                                                 dimmed && 'opacity-60',
+                                                muted(shape.n) && 'opacity-25',
+                                                isActive && 'opacity-0',
                                             )}
                                         />
                                         <text
-                                            x={shape.cx}
+                                            x={numberX(shape)}
                                             y={shape.cy}
                                             textAnchor="middle"
                                             dominantBaseline="central"
@@ -275,7 +387,9 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                                             className={cn(
                                                 'font-heading fill-foreground pointer-events-none font-medium transition-opacity duration-300 motion-reduce:transition-none',
                                                 numberSize(shape.area),
-                                                (isActive || dimmed) && (isActive ? 'opacity-0' : 'opacity-60'),
+                                                dimmed && 'opacity-60',
+                                                muted(shape.n) && 'opacity-25',
+                                                isActive && 'opacity-0',
                                             )}
                                         >
                                             {shape.n}
@@ -283,29 +397,6 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                                     </g>
                                 );
                             })}
-                            {/* Levitation overlay: the active arrondissement drawn again above every neighbour (thickness, lifted piece, number) */}
-                            {activeShape && (
-                                <g
-                                    key={activeShape.n}
-                                    aria-hidden
-                                    className="animate-hero-rise pointer-events-none [animation-duration:400ms] motion-reduce:animate-none"
-                                >
-                                    <path d={activeShape.d} transform="translate(0 6)" className="fill-primary opacity-30" />
-                                    <path
-                                        d={activeShape.d}
-                                        className="fill-secondary-80 stroke-card origin-center -translate-y-2 scale-[1.04] stroke-[3] [transform-box:fill-box]"
-                                    />
-                                    <text
-                                        x={activeShape.cx}
-                                        y={activeShape.cy - 8}
-                                        textAnchor="middle"
-                                        dominantBaseline="central"
-                                        className={cn('font-heading fill-primary-foreground font-semibold', numberSize(activeShape.area))}
-                                    >
-                                        {activeShape.n}
-                                    </text>
-                                </g>
-                            )}
                             {/* Contour over the map, then the landmarks (revealed after the cascade) */}
                             <path
                                 d={PARIS_OUTLINE}
@@ -342,6 +433,33 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                                     />
                                 ))}
                             </g>
+                            {/* Levitation overlay, last in the SVG: the active arrondissement drawn again above every neighbour, the Seine, the bois and the contour (thickness, lifted piece, number — user decision 2026-09-25) */}
+                            {activeShape && (
+                                <g
+                                    key={activeShape.n}
+                                    aria-hidden
+                                    className="animate-hero-rise pointer-events-none [animation-duration:400ms] motion-reduce:animate-none"
+                                >
+                                    <path d={activeShape.d} transform="translate(0 6)" className="fill-primary opacity-30" />
+                                    <path
+                                        d={activeShape.d}
+                                        className={cn(
+                                            'fill-secondary-80 origin-center -translate-y-2 scale-[1.04] [transform-box:fill-box]',
+                                            // keyboard focus: the dark ring replaces the white edge (the visible focus of the map)
+                                            keyboard && hovered === activeShape.n ? 'stroke-primary stroke-[4]' : 'stroke-card stroke-[3]',
+                                        )}
+                                    />
+                                    <text
+                                        x={numberX(activeShape)}
+                                        y={activeShape.cy - 8}
+                                        textAnchor="middle"
+                                        dominantBaseline="central"
+                                        className={cn('font-heading fill-primary-foreground font-semibold', numberSize(activeShape.area))}
+                                    >
+                                        {activeShape.n}
+                                    </text>
+                                </g>
+                            )}
                         </svg>
                     </div>
                 </div>
@@ -381,23 +499,94 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                     </div>
                 )}
             </div>
-            {/* Legend of the price gradient, doubling as a gauge: the dark fill grows to the active arrondissement's
-                position between the cheapest and the dearest (`--progress`) */}
-            <div
-                className="text-muted-foreground flex items-center justify-center gap-3 text-xs"
-                style={{ '--progress': `${current ? Math.round(shade(current.n) * 100) : 0}%` } as CSSProperties}
-            >
-                <span>{t('districts.legend_low')}</span>
-                <span aria-hidden className="from-secondary-60/20 to-secondary-60 relative h-2 w-32 bg-linear-to-r sm:w-48">
-                    <span className="bg-primary absolute inset-y-0 left-0 w-[var(--progress)] transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none" />
-                </span>
-                <span>{t('districts.legend_high')}</span>
-                <span className="sr-only">{t('districts.legend')}</span>
-                {current && (
-                    <span role="status" className="sr-only">
-                        {t('districts.gauge', { name: current.name, price: current.price })}
-                    </span>
+            {/* Legend of the price gradient, doubling as a gauge: the dark fill grows (and recedes) smoothly to the active
+                arrondissement's position between the cheapest and the dearest (`--progress`). ui.sh variant « Surtitre » chosen
+                among 21 on 2026-09-25; hint in a lighter grey (grey-40) with a pointer icon (works for touch and mouse) (user decision the same day). */}
+            {/* Mobile summary (below lg, where there is no cursor tooltip and the sheet sits out of view): the selected
+                arrondissement's name and price, and a link that scrolls to its sheet */}
+            <div className="border-secondary-30 bg-card flex min-h-11 items-center justify-between gap-3 border px-3 py-2 text-xs lg:hidden">
+                {selectedDistrict ? (
+                    <>
+                        <span className="tabular-nums">
+                            <span className="font-medium">{selectedDistrict.name}</span>
+                            <span className="text-muted-foreground"> · {selectedDistrict.price} €/m²</span>
+                        </span>
+                        <a href={`#arrondissement-${selectedDistrict.n}`} onClick={scrollToSheet} className={cn(linkClass, 'shrink-0 font-medium')}>
+                            {t('districts.see_profile')}
+                        </a>
+                    </>
+                ) : (
+                    <span className="text-muted-foreground">{t('districts.card_placeholder')}</span>
                 )}
+            </div>
+            <div className="flex flex-col items-center gap-2" style={{ '--progress': `${pct}%` } as CSSProperties}>
+                <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">{t('districts.price_label')}</p>
+                <div className="text-muted-foreground flex items-center gap-3 text-xs">
+                    <span>{t('districts.legend_low')}</span>
+                    {/* « Marches » (ui.sh style chosen among 21 on 2026-09-25): eight rising sand steps, the dark copy on top
+                        is clipped to `--progress` so the steps light up one by one as the price climbs. Each step is a
+                        button for its price band (24px tall hit area, the visual sits at the bottom). */}
+                    <span className="relative w-52 sm:w-64">
+                        <div role="group" aria-label={t('districts.legend')} className="flex h-6 items-end gap-0.5">
+                            {STEP_HEIGHTS.map((h, i) => (
+                                <button
+                                    key={h}
+                                    type="button"
+                                    aria-pressed={pinnedBand === i}
+                                    aria-label={tc('districts.legend_band', bandCount(i), {
+                                        from: group(bandPrice(i)),
+                                        to: group(bandPrice(i + 1)),
+                                        count: bandCount(i),
+                                    })}
+                                    onPointerEnter={(e) => e.pointerType !== 'touch' && setHoverBand(i)}
+                                    onPointerLeave={(e) => e.pointerType !== 'touch' && setHoverBand(null)}
+                                    onFocus={() => setHoverBand(i)}
+                                    onBlur={() => setHoverBand(null)}
+                                    onClick={() => setPinnedBand((p) => (p === i ? null : i))}
+                                    className="focus-ring flex h-full flex-1 items-end"
+                                >
+                                    {/* 12px visual box at the bottom of the 24px hit area: same scale as the dark copy */}
+                                    <span aria-hidden className="flex h-3 w-full items-end">
+                                        <span
+                                            className={cn(
+                                                'w-full transition-colors duration-300 motion-reduce:transition-none',
+                                                h,
+                                                band === i ? 'bg-secondary-80' : 'bg-secondary-30',
+                                            )}
+                                        />
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                        <span
+                            aria-hidden
+                            className={cn('pointer-events-none absolute bottom-0 left-0 h-3 w-[var(--progress)] overflow-hidden', fillEase)}
+                        >
+                            <span className="absolute inset-y-0 left-0 flex w-52 items-end gap-0.5 sm:w-64">
+                                {STEP_HEIGHTS.map((h) => (
+                                    <span key={h} className={cn('bg-primary flex-1', h)} />
+                                ))}
+                            </span>
+                        </span>
+                    </span>
+                    <span>{t('districts.legend_high')}</span>
+                    {current && (
+                        <span role="status" className="sr-only">
+                            {t('districts.gauge', { name: current.name, price: current.price })}
+                        </span>
+                    )}
+                </div>
+                {/* The hint fades out as soon as the map is hovered or an arrondissement is selected (user decision 2026-09-25),
+                    keeping its line so nothing shifts */}
+                <p
+                    className={cn(
+                        'text-grey-40 flex items-center justify-center gap-2 text-center text-xs transition-opacity duration-300 motion-reduce:transition-none',
+                        (hovered !== null || selected !== null) && 'opacity-0',
+                    )}
+                >
+                    <Pointer aria-hidden className="size-3.5 shrink-0" />
+                    {t('districts.hint')}
+                </p>
             </div>
         </div>
     );

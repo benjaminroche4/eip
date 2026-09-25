@@ -1,9 +1,8 @@
+import HeroSearch from '@/components/home/hero-search';
 import HeroVideo from '@/components/home/hero-video';
-import { Button } from '@/components/ui/button';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { Link } from '@inertiajs/react';
 import { Building2, type LucideIcon, MessageCircleQuestion, Navigation } from 'lucide-react';
 import { type CSSProperties, useRef } from 'react';
 
@@ -15,13 +14,15 @@ const VALUES: { key: 'hero_value_1' | 'hero_value_2' | 'hero_value_3'; icon: Luc
 ];
 
 /**
- * Home hero (Figma 712-26754): fills the first screen (`min-h-svh`), full-width photo running behind the sticky header
- * (pulled up by the header's height, `PublicLayout hero` + `SiteHeader overlay`), revealed on load (photo settles from a
- * 1.05 zoom, then eyebrow / title / text / button / trust row rise in cascade — `motion-reduce` cancels), 30 % dark veil + bottom-up black gradient, everything centred — uppercase eyebrow, bold Montserrat
- * headline on two lines, answer-first sentence (GEO), white « Contacter un conseiller » button — and the three trust
- * items with icons and hairline separators along the bottom edge.
+ * Home hero (Figma 712-26754): fills the first screen (`min-h-svh`), the owner's clip running behind the sticky header
+ * (pulled up by the header's height, `PublicLayout hero` + `SiteHeader overlay`), settling from a 1.05 zoom on load, 30 %
+ * dark veil + bottom-up black gradient, and the three trust items with icons and hairline separators along the bottom
+ * edge. The central block (eyebrow, h1 « L'agence de l'exceptionnel à Paris. », answer sentence, « Contacter un
+ * conseiller ») was removed on 2026-09-25 (user decision): the page's h1 and answer-first paragraph are now the trust
+ * intro right under the clip. The same day the Figma search bar (`HeroSearch`) took its place: at the top of the screen
+ * on mobile, just above the trust row from `sm`.
  */
-export default function Hero() {
+export default function Hero({ listings = null }: { listings?: number | null }) {
     const { t } = useTranslation();
     const row = useRef<HTMLUListElement>(null);
     // Mobile: the trust row is a snap carousel — opens on the middle item, a light swipe / wheel moves to the next item
@@ -30,8 +31,8 @@ export default function Hero() {
 
     return (
         <section
-            aria-labelledby="hero-title"
-            className="relative -mt-16 flex min-h-svh flex-col justify-between overflow-hidden text-white lg:-mt-19"
+            aria-label={t('home.values_label')}
+            className="relative -mt-16 flex min-h-svh flex-col justify-between overflow-hidden text-white sm:justify-end lg:-mt-19"
         >
             {/* The owner's clip as the background, rendered server-side with the photo as poster (user decision 2026-09-23: no photo-first fade) */}
             <HeroVideo />
@@ -40,7 +41,17 @@ export default function Hero() {
             <div aria-hidden className="absolute inset-0 bg-linear-to-b from-transparent via-black/45 to-transparent" />
             <div aria-hidden className="absolute inset-0 bg-linear-to-t from-black via-black/0 via-30% to-transparent" />
 
-            <HeroContent />
+            {/* Search bar (Figma 712-25068 / 712-25576, no logic yet — user decision 2026-09-25): at the top of the screen under the
+                header on mobile, centred in the screen between the header and the trust row from `sm` (user decision 2026-09-25) */}
+            <div
+                style={rise(0).style}
+                className={cn(
+                    'relative mx-auto flex w-full max-w-7xl px-6 pt-28 sm:flex-1 sm:items-center sm:pt-16 sm:pb-6 lg:px-8',
+                    rise(0).className,
+                )}
+            >
+                <HeroSearch listings={listings} />
+            </div>
 
             {/* Trust row (Figma 712-26763): one line with hairline separators at every width — on mobile it scrolls sideways
                 (snap carousel centred on each item, draggable, hidden scrollbar) instead of stacking (user decisions 2026-09-16). */}
@@ -48,11 +59,11 @@ export default function Hero() {
                 ref={row}
                 role="list"
                 aria-label={t('home.values_label')}
-                style={rise(4).style}
+                style={rise(1).style}
                 className={cn(
                     // Mobile: 40vw side padding lets the first / last item sit in the middle when snapped; snap is suspended while dragging.
                     'relative flex w-full cursor-grab snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[40vw] pb-8 text-white/90 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none sm:cursor-auto sm:snap-none sm:justify-center sm:gap-8 sm:overflow-visible sm:px-6 sm:select-auto lg:gap-14 [&::-webkit-scrollbar]:hidden',
-                    rise(4).className,
+                    rise(1).className,
                 )}
             >
                 {VALUES.map(({ key, icon: Icon }, index) => (
@@ -75,50 +86,3 @@ export const rise = (step: number): { className: string; style: CSSProperties } 
     className: 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none',
     style: { '--stagger': `${300 + step * 120}ms` } as CSSProperties,
 });
-
-/**
- * Central block (user decision 2026-09-16, ui.sh variant « Surtitre avec traits »): eyebrow framed by two short white
- * rules, bold Montserrat title on two lines, one short answer-first sentence (GEO), white button.
- */
-function HeroContent() {
-    const { t } = useTranslation();
-
-    return (
-        <div className="relative flex flex-1 flex-col items-center justify-center gap-8 px-6 pt-36 pb-20 text-center sm:px-10 lg:pt-44 lg:pb-24">
-            <div className="flex max-w-3xl flex-col items-center gap-4">
-                <p
-                    style={rise(0).style}
-                    className={cn(
-                        'flex items-center gap-3 text-xs font-medium tracking-wider text-white/90 uppercase drop-shadow-sm sm:text-sm',
-                        rise(0).className,
-                    )}
-                >
-                    <span aria-hidden className="h-px w-8 bg-white/50" />
-                    {t('home.hero_eyebrow')}
-                    <span aria-hidden className="h-px w-8 bg-white/50" />
-                </p>
-                <h1
-                    id="hero-title"
-                    style={rise(1).style}
-                    className={cn('font-heading text-3xl font-bold text-balance drop-shadow-md sm:text-4xl lg:text-5xl', rise(1).className)}
-                >
-                    {t('home.hero_title_1')}
-                    <br />
-                    {t('home.hero_title_2')}
-                </h1>
-                {/* GEO: the first paragraph under the h1 is a self-contained, citable sentence (brand + subject + place). */}
-                <p
-                    style={rise(2).style}
-                    className={cn('max-w-2xl text-base/7 font-medium text-pretty text-white drop-shadow-sm sm:text-lg/8', rise(2).className)}
-                >
-                    {t('home.hero_text')}
-                </p>
-            </div>
-            <Button asChild variant="neutral" size="lg" style={rise(3).style} className={cn('w-full sm:w-auto', rise(3).className)}>
-                <Link href={route('contact')} prefetch>
-                    {t('home.hero_cta')}
-                </Link>
-            </Button>
-        </div>
-    );
-}

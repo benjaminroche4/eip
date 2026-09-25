@@ -30,7 +30,7 @@ class BuyTest extends TestCase
                 ->where('strategies.2.title', 'Opportunités hors marché')
                 ->has('districts', 4)
                 ->has('testimonials', 10)
-                ->where('testimonials.0.photo', '/images/testimonials/client-1.jpg')
+                ->where('testimonials.0.photo', '/images/testimonials/client-1.webp')
                 ->where('districts.0.area', 'Saint-Germain-des-Prés')
                 ->where('translations.buy.districts.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
                 ->where('translations.buy.strategies.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
@@ -51,9 +51,19 @@ class BuyTest extends TestCase
             $this->assertFileExists(public_path("images/buy/strategies-$i-800.jpg"));
         }
         foreach ([1, 2, 3, 4] as $i) {
-            $this->assertFileExists(public_path("images/buy/district-$i-1600.jpg"));
-            $this->assertFileExists(public_path("images/buy/district-$i-800.jpg"));
+            $this->assertFileExists(public_path("images/buy/district-$i-1600.webp"));
+            $this->assertFileExists(public_path("images/buy/district-$i-800.webp"));
         }
+    }
+
+    public function test_buy_hero_clip_files_are_present_and_light(): void
+    {
+        foreach (['hero-1280.webm', 'hero-1280.mp4', 'hero-720.webm', 'hero-720.mp4'] as $file) {
+            $path = public_path("videos/buy/$file");
+            $this->assertFileExists($path);
+            $this->assertLessThan(3 * 1024 * 1024, filesize($path), "$file must stay under 3 MB (hero background, performance)");
+        }
+        $this->assertFileExists(public_path('images/buy/hero-poster-1280.jpg'));
     }
 
     public function test_buy_page_exposes_the_configured_video_id(): void

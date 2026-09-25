@@ -1,10 +1,11 @@
 import { type BuyStat } from '@/components/buy/buy-hero';
+import CountryFlag from '@/components/i18n/country-flag';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useReveal } from '@/hooks/use-reveal';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { Clock, Languages, type LucideIcon, MapPin, Star } from 'lucide-react';
+import { Clock, Languages, type LucideIcon, MapPin } from 'lucide-react';
 import { type CSSProperties, useRef } from 'react';
 
 /** Advisor portraits (public/images/advisors), the same trio as the footer, the CTA card and the About hero. */
@@ -14,10 +15,13 @@ const ADVISORS = [
     { id: 3, initials: 'EF' },
 ] as const;
 
-/** One lucide icon per fact, in the order of `buy.record.facts` (rating, reply time, languages, address). */
-const ICONS: LucideIcon[] = [Star, Clock, Languages, MapPin];
+/** A fact of « Notre bilan »: `key` picks the corner mark and the value's rendering (rating = Google logo, languages = flags). */
+export type BuyFact = BuyStat & { key: 'rating' | 'reply' | 'languages' | 'address' };
 
-type BuyRecordProps = { facts: BuyStat[] };
+/** One lucide icon per fact key; the rating tile shows the Google logo (a brand logo = SVG file, not an icon) instead. */
+const ICONS: Record<Exclude<BuyFact['key'], 'rating'>, LucideIcon> = { reply: Clock, languages: Languages, address: MapPin };
+
+type BuyRecordProps = { facts: BuyFact[] };
 
 /**
  * « Notre bilan » (Figma 712-19621 desktop / 712-20151 mobile, 2026-09-22): header with the eyebrow and h2 on the
@@ -86,7 +90,7 @@ export default function BuyRecord({ facts }: BuyRecordProps) {
                 {/* Facts (Figma 712-19656): 2×2 from sm, stacked on mobile */}
                 <ul role="list" className="grid gap-5 sm:grid-cols-2">
                     {facts.map((stat, i) => {
-                        const Icon = ICONS[i % ICONS.length];
+                        const Icon = stat.key === 'rating' ? null : ICONS[stat.key];
                         return (
                             <li
                                 key={stat.title}
@@ -94,8 +98,27 @@ export default function BuyRecord({ facts }: BuyRecordProps) {
                                 className={cn('border-secondary-30 bg-card flex border p-2', rise(i + 1).className)}
                             >
                                 <div className="from-background-05 relative flex w-full flex-col justify-between gap-10 bg-linear-to-b to-transparent p-6">
-                                    <Icon aria-hidden strokeWidth={1.25} className="text-secondary-60 absolute top-6 right-6 size-7" />
-                                    <p className="font-heading text-2xl font-semibold tabular-nums sm:text-3xl">{stat.value}</p>
+                                    {Icon ? (
+                                        <Icon aria-hidden strokeWidth={1.25} className="text-secondary-60 absolute top-6 right-6 size-7" />
+                                    ) : (
+                                        <img
+                                            src="/images/social/google.svg"
+                                            alt=""
+                                            width={28}
+                                            height={28}
+                                            className="absolute top-6 right-6 size-7"
+                                        />
+                                    )}
+                                    {stat.key === 'languages' ? (
+                                        // Flags instead of « FR · EN » (user decision 2026-09-25); the text stays for assistive tech
+                                        <p className="flex items-center gap-2">
+                                            <CountryFlag country="FR" className="h-6 w-9" />
+                                            <CountryFlag country="GB" className="h-6 w-9" />
+                                            <span className="sr-only">{stat.value}</span>
+                                        </p>
+                                    ) : (
+                                        <p className="font-heading text-2xl font-semibold tabular-nums sm:text-3xl">{stat.value}</p>
+                                    )}
                                     <div className="flex flex-col gap-1">
                                         <h3 className="text-base font-medium text-balance">{stat.title}</h3>
                                         <p className="text-muted-foreground text-sm/6 text-pretty">{stat.text}</p>

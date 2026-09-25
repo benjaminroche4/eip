@@ -13,7 +13,7 @@ const STATS: BuyStat[] = [
 ];
 
 describe('BuyHero', () => {
-    it('renders the header, the CTA, the photo and the key figures, without a play button when no video is configured', async () => {
+    it('renders the header, the CTA, the background clip and the key figures, without a play button when no YouTube video is configured', async () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyHero stats={STATS} video={null} />);
 
@@ -21,13 +21,19 @@ describe('BuyHero', () => {
             screen.getByRole('heading', { level: 1, name: "Trouvez l'appartement ou l'hôtel particulier qui vous ressemble à Paris" }),
         ).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Parler à un conseiller' })).toHaveAttribute('href', '/contact');
-        expect(screen.getByRole('img', { name: /haussmannienne/ })).toHaveAttribute('src', '/images/home/hero-2000.jpg');
+        // The owner's clip in place of the photo (2026-09-23): decorative, poster = its first frame, the alt kept as a hidden caption
+        const clip = container.querySelector('video')!;
+        expect(clip).toHaveAttribute('aria-hidden');
+        expect(clip).toHaveAttribute('poster', '/images/buy/hero-poster-1280.jpg');
+        expect(clip.querySelectorAll('source')[2]).toHaveAttribute('src', '/videos/buy/hero-1280.webm');
+        expect(container.querySelector('img')).toBeNull();
+        expect(screen.getByText(/Séjour lumineux/)).toHaveClass('sr-only');
         expect(screen.queryByRole('button')).toBeNull();
         expect(screen.getAllByText('25+')).toHaveLength(2); // desktop (over the photo) + mobile (under it), one hidden per breakpoint
         expect(screen.getAllByRole('list', { name: 'Chiffres clés', hidden: true })).toHaveLength(2); // on the photo (desktop) + first row of the 2×2 grid (mobile)
         expect(screen.getAllByText('250 M€+')[0].closest('li')?.textContent).toMatch(/^250 M€\+/); // value first, label under it
 
-        expect(await axe(container)).toHaveNoViolations();
+        expect(await axe(container, { preload: false })).toHaveNoViolations(); // preload: axe waits for the clip's metadata, which jsdom never loads
     });
 
     it('loads the privacy-enhanced YouTube iframe when the play button is activated with the keyboard', async () => {

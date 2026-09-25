@@ -55,6 +55,17 @@ class ContactFormTest extends TestCase
         }
     }
 
+    public function test_an_arrondissement_profile_prefills_the_topic_and_the_message(): void
+    {
+        $this->get('/contact')->assertInertia(fn (Assert $p) => $p->where('prefill', null));
+        $this->get('/contact?district=14')
+            ->assertOk()
+            ->assertInertia(fn (Assert $p) => $p->where('prefill.topic', 'buy')->where('prefill.message', 'Je souhaite être conseillé sur Paris 14e (Montparnasse, Alésia).'));
+        $this->get('/contact?district=99')->assertInertia(fn (Assert $p) => $p->where('prefill', null));
+        $this->withLocale('en')->get('/en/contact?district=6')
+            ->assertInertia(fn (Assert $p) => $p->where('prefill.message', 'I would like advice on Paris 6th (Saint-Germain-des-Prés, Luxembourg).'));
+    }
+
     public function test_a_valid_request_emails_the_agency_and_flashes_a_success_message(): void
     {
         Mail::fake();

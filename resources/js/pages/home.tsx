@@ -20,6 +20,8 @@ type HomeProps = {
     testimonials: Testimonial[];
     stories: SuccessStory[];
     figure: string;
+    /** Properties on offer, under the search bar (null = line hidden). */
+    listings: number | null;
     posts: BlogPostSummary[];
     faq: FaqTeaserData;
 };
@@ -41,7 +43,7 @@ const columnClass = 'mx-auto w-full max-w-7xl px-6 py-16 sm:py-20 lg:px-8';
  * 8. `BlogRelated` — expertise and a soft exit for those who are not ready (hidden without articles);
  * 9. `CtaCard` — the action.
  */
-export default function Home({ testimonials, stories, figure, posts, faq }: HomeProps) {
+export default function Home({ testimonials, stories, figure, listings, posts, faq }: HomeProps) {
     const { seo, ziggy } = usePage<SharedData>().props;
     const { t } = useTranslation();
     const origin = new URL(ziggy.location).origin;
@@ -58,7 +60,7 @@ export default function Home({ testimonials, stories, figure, posts, faq }: Home
                 ]}
             />
             <PublicLayout hero>
-                <Hero />
+                <Hero listings={listings} />
                 {/* 2. Trust intro (Figma 712-25112 / 712-25584): real figure, advisors, Google rating, two CTAs */}
                 <TrustIntro figure={figure} />
                 {/* 3. Services: the visitor routes themselves */}

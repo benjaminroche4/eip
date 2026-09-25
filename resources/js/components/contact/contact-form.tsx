@@ -23,7 +23,7 @@ const ADVISORS = [
 
 const MESSAGE_MAX = 2000;
 
-type ContactFormProps = { topics: string[] };
+type ContactFormProps = { topics: string[]; prefill?: { topic: string; message: string } | null };
 
 type ContactFormData = {
     first_name: string;
@@ -40,7 +40,7 @@ type ContactFormData = {
  * "Request a callback" card (Figma 261-7411): advisor avatars + availability badge,
  * title, then the form posted with Inertia (server-side validation, errors inline, success flash).
  */
-export default function ContactForm({ topics }: ContactFormProps) {
+export default function ContactForm({ topics, prefill }: ContactFormProps) {
     const { t } = useTranslation();
     const { flash, seo } = usePage<SharedData>().props;
     const { data, setData, post, processing, errors, reset } = useForm<ContactFormData>({
@@ -48,8 +48,8 @@ export default function ContactForm({ topics }: ContactFormProps) {
         last_name: '',
         email: '',
         phone: '',
-        topic: '',
-        message: '',
+        topic: prefill?.topic ?? '',
+        message: prefill?.message ?? '',
         consent: false,
         website: '',
     });

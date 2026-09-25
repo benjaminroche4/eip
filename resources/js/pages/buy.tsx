@@ -2,7 +2,7 @@ import BuyAdvantages from '@/components/buy/buy-advantages';
 import BuyDistricts, { type BuyDistrict } from '@/components/buy/buy-districts';
 import BuyFaq, { type BuyFaq as BuyFaqData } from '@/components/buy/buy-faq';
 import BuyHero, { type BuyStat } from '@/components/buy/buy-hero';
-import BuyRecord from '@/components/buy/buy-record';
+import BuyRecord, { type BuyFact } from '@/components/buy/buy-record';
 import BuyStrategies, { type BuyStrategy } from '@/components/buy/buy-strategies';
 import CtaCard from '@/components/home/cta-card';
 import Testimonials, { type Testimonial } from '@/components/home/testimonials';
@@ -22,7 +22,7 @@ type BuyProps = {
     testimonials: Testimonial[];
     faq: BuyFaqData;
     /** « Notre bilan »: four facts distinct from the hero figures (BuyController::facts). */
-    facts: BuyStat[];
+    facts: BuyFact[];
 };
 
 /** « Acheter » (Figma 712-18453 / 712-18766): hero with the key figures and an optional presentation video, then « Pourquoi Estate in Paris » (712-18480 / 712-18794) the investment strategies (712-18511 / 712-18821) the prime districts (712-18574 / 712-18884), the home testimonials (proof), the track record (712-19621 / 712-20151) and the FAQ. Conversion rhythm (2026-09-22): the single primary action « Parler à un conseiller » → contact is a full button in the hero and on the closing card only; every call to action in between is outline. */

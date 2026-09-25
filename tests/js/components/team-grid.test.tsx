@@ -1,6 +1,7 @@
 import TeamGrid, { type TeamMember } from '@/components/about/team-grid';
-import { screen, waitFor } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { act, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
 
@@ -73,5 +74,74 @@ describe('TeamGrid', () => {
         row.scrollLeft = 0; // back at the start after a layout change: « previous » is off again
         window.dispatchEvent(new Event('resize'));
         await waitFor(() => expect(screen.getByRole('button', { name: 'Membre précédent' })).toBeDisabled());
+    });
+});
+
+describe('TeamGrid autoplay (mobile)', () => {
+    it('advances one card every 5 s, wraps to the first after the last, and rests while the cards are hovered', async () => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
+        const scrollTo = vi.fn();
+        window.HTMLElement.prototype.scrollTo = scrollTo;
+        const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+        const { container } = renderPage(<TeamGrid members={members} />);
+
+        await act(async () => {
+            vi.advanceTimersByTime(5000);
+        });
+        expect(scrollTo).toHaveBeenCalledTimes(1); // → card 2
+        // jsdom measures every card at 0: `current` stays 0, so the interval keeps aiming at card 2 — the wrap is
+        // covered by the modulo: with a single member nothing plays at all
+        const row = container.querySelector('ul.snap-x')!.parentElement!;
+        await user.hover(row);
+        await act(async () => {
+            vi.advanceTimersByTime(10000);
+        });
+        expect(scrollTo).toHaveBeenCalledTimes(1);
+        await user.unhover(row);
+        await act(async () => {
+            vi.advanceTimersByTime(5000);
+        });
+        expect(scrollTo).toHaveBeenCalledTimes(2);
+
+        // An arrow press restarts the delay
+        await user.click(screen.getByRole('button', { name: 'Membre suivant' }));
+        expect(scrollTo).toHaveBeenCalledTimes(3);
+        await act(async () => {
+            vi.advanceTimersByTime(4000);
+        });
+        expect(scrollTo).toHaveBeenCalledTimes(3);
+
+        expect(await axe(container)).toHaveNoViolations();
+        vi.useRealTimers();
+    });
+
+    it('never auto-scrolls under prefers-reduced-motion nor with a single member', async () => {
+        vi.useFakeTimers();
+        const scrollTo = vi.fn();
+        window.HTMLElement.prototype.scrollTo = scrollTo;
+        const original = window.matchMedia;
+        vi.spyOn(window, 'matchMedia').mockImplementation(
+            (query: string) =>
+                ({
+                    matches: query.includes('reduce'),
+                    media: query,
+                    addEventListener: vi.fn(),
+                    removeEventListener: vi.fn(),
+                }) as unknown as MediaQueryList,
+        );
+        renderPage(<TeamGrid members={members} />);
+        await act(async () => {
+            vi.advanceTimersByTime(20000);
+        });
+        expect(scrollTo).not.toHaveBeenCalled();
+        window.matchMedia = original;
+        vi.restoreAllMocks();
+
+        renderPage(<TeamGrid members={members.slice(0, 1)} />);
+        await act(async () => {
+            vi.advanceTimersByTime(20000);
+        });
+        expect(scrollTo).not.toHaveBeenCalled();
+        vi.useRealTimers();
     });
 });

@@ -1,4 +1,5 @@
 import HeroVideo from '@/components/home/hero-video';
+import BackgroundVideo from '@/components/page/background-video';
 import { render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -22,6 +23,12 @@ describe('HeroVideo', () => {
             '/videos/home/hero-1280.mp4',
         ]);
         expect(container.querySelector('source')).toHaveAttribute('media', '(max-width: 40rem)');
+    });
+
+    it('is the shared BackgroundVideo: another clip and poster for the Buy hero', () => {
+        const { container } = render(<BackgroundVideo base="/videos/buy/hero" poster="/images/buy/hero-poster-1280.jpg" />);
+        expect(container.querySelector('video')).toHaveAttribute('poster', '/images/buy/hero-poster-1280.jpg');
+        expect(container.querySelectorAll('source')[3]).toHaveAttribute('src', '/videos/buy/hero-1280.mp4');
     });
 
     it('stays on the poster under prefers-reduced-motion (autoplay removed)', () => {

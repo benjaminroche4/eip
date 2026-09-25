@@ -1,6 +1,6 @@
+import BackgroundVideo from '@/components/page/background-video';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import ProofLine from '@/components/page/proof-line';
-import SeoImage from '@/components/seo/seo-image';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
@@ -149,18 +149,11 @@ export default function AboutHero() {
                 <ProofLine align="start" />
             </div>
 
-            {/* Photo panel (Figma 712-23841), pushed 12px right on desktop so its edge lines up with the header's « Nous contacter » button (header inner padding 20px vs layout 32px — user decision 2026-09-16): team photo, dark bottom veil, glass message card with its vertical controls */}
+            {/* Photo panel (Figma 712-23841), pushed 12px right on desktop so its edge lines up with the header's « Nous contacter » button (header inner padding 20px vs layout 32px — user decision 2026-09-16): the owner's façade clip (`public/videos/about/hero-*`, photo `hero-{800,1400}.jpg` kept as the still fallback), dark bottom veil, glass message card with its vertical controls */}
             <div className="relative -mx-6 flex aspect-video items-end overflow-hidden p-4 sm:p-6 lg:mx-0 lg:-mr-3 lg:aspect-auto lg:min-h-[46rem] lg:p-10">
-                <SeoImage
-                    src="/images/about/hero-1400.jpg"
-                    srcSet="/images/about/hero-800.jpg 800w, /images/about/hero-1400.jpg 1400w"
-                    sizes="(min-width: 64rem) 50vw, 100vw"
-                    alt={t('about.hero_photo_alt')}
-                    width={1400}
-                    height={1751}
-                    priority
-                    className="animate-hero-photo absolute inset-0 size-full object-cover motion-reduce:animate-none"
-                />
+                {/* The owner's portrait clip of a Haussmann façade in place of the photo (2026-09-23), decorative; the alt stays as a hidden caption */}
+                <BackgroundVideo base="/videos/about/hero" widths={[640, 856]} poster="/images/about/hero-poster-856.jpg" />
+                <p className="sr-only">{t('about.hero_photo_alt')}</p>
                 {/* Short veil: only the height of the card, so the façade stays bright above it */}
                 <div aria-hidden className="absolute inset-x-0 bottom-0 h-72 bg-linear-to-t from-black/60 to-transparent" />
 
