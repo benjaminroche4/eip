@@ -16,9 +16,7 @@ describe('Hero', () => {
         expect(screen.queryByText(/25 ans d'expertise/)).toBeNull();
         // Search bar (Figma 712-25068 / 712-25576), no logic: labelled cells, a submit that goes nowhere
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
-        const title = within(search).getByText(
-            (_, el) => el?.tagName === 'P' && el.textContent === "L'agence parisienne des clients internationaux", // the words are split into spans
-        );
+        const title = within(search).getByText("L'agence parisienne des clients internationaux");
         expect(title).toHaveClass('font-semibold', 'tracking-wide', 'text-2xl/9', 'sm:text-4xl/13', 'lg:text-5xl/16'); // one size down on mobile (user decision 2026-09-25) // h1 scale, mixed case, light tracking (user decisions 2026-09-25)
         expect(title).not.toHaveClass('uppercase');
         expect(within(search).getByRole('combobox', { name: 'Arrondissement' })).toHaveAttribute('aria-expanded', 'false'); // typed directly in the cell
@@ -46,14 +44,14 @@ describe('Hero', () => {
         expect(container.querySelector('video')).toHaveClass('animate-hero-photo');
         expect(screen.getByRole('list', { name: 'Nos engagements' })).toHaveClass('animate-hero-rise');
         expect(screen.getByRole('list', { name: 'Nos engagements' }).style.getPropertyValue('--stagger')).toBe('660ms'); // step 3, after title / card / proof (300, 420, 540 ms)
-        const words = title.querySelectorAll('span'); // written word by word (manifesto reveal), 40 ms apart from 300 ms
-        expect(words).toHaveLength(5);
-        expect(words[0]).toHaveClass('animate-manifesto-in', 'motion-reduce:animate-none');
-        expect(words[0].style.getPropertyValue('--stagger')).toBe('300ms');
-        expect(words[4].style.getPropertyValue('--stagger')).toBe('460ms');
+        expect(title.querySelector('span')).toBeNull(); // whole title (the word-by-word reveal was tried and removed)
+        expect(title).toHaveClass('animate-hero-rise', 'motion-reduce:animate-none');
+        expect(title.style.getPropertyValue('--stagger')).toBe('300ms'); // the cascade starts with the title
         expect(container.querySelector('.animate-sweep-shimmer')).toBeNull(); // the sweep on the card was removed (2026-09-25)
         const submit = within(search).getByRole('button', { name: 'Lancer ma recherche' });
-        expect(submit.querySelector('svg')).toHaveClass('group-hover:-translate-y-px', 'group-hover:text-secondary-60'); // the magnifier nudges and turns sand
+        const [arrow, loupe] = submit.querySelectorAll('svg');
+        expect(arrow).toHaveClass('sm:hidden'); // mobile: text + the site's arrow…
+        expect(loupe).toHaveClass('hidden', 'sm:block', 'group-hover:-translate-y-px', 'group-hover:text-secondary-60'); // …from sm the magnifier alone, nudging and turning sand
         expect(within(submit).getByText('Voir les biens')).toHaveClass('sm:sr-only'); // mobile: a plain conversion text, icon only from sm
         expect(container.querySelector('section')).toHaveClass('min-h-svh', 'justify-end'); // fills the first screen, the row along the bottom edge
 

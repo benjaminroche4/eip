@@ -7,20 +7,8 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/
 import { useSearchDraft } from '@/hooks/use-search-draft';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { Check, Plus, Search, X } from 'lucide-react';
-import {
-    type CSSProperties,
-    type FormEvent,
-    Fragment,
-    type KeyboardEvent,
-    type ReactNode,
-    type Ref,
-    useEffect,
-    useId,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from 'react';
+import { ArrowUpRight, Check, Plus, Search, X } from 'lucide-react';
+import { type FormEvent, type KeyboardEvent, type ReactNode, type Ref, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 const ARRONDISSEMENTS = Array.from({ length: 20 }, (_, i) => i + 1);
 /** Quick budgets (euros) offered under the budget cell. */
@@ -230,9 +218,6 @@ function BudgetList({
 }
 
 /** Title of the block: the site's h1 scale (the former hero h1 sizes), mixed case with a light tracking (user decisions 2026-09-25). */
-/** Word-by-word reveal of the title: first word at the cascade's step 0 (300 ms), then 40 ms per word. */
-const TITLE_AT_MS = 300;
-const WORD_MS = 40;
 const TITLE = 'font-heading text-center text-2xl/9 font-semibold tracking-wide text-balance text-white drop-shadow-md sm:text-4xl/13 lg:text-5xl/16';
 
 type HeroSearchProps = { className?: string };
@@ -252,8 +237,7 @@ type HeroSearchProps = { className?: string };
  * - Nothing under the card any more: the suggested searches, then the proof line (properties on offer / sold, Google
  *   rating) were built then removed the same day (user decisions 2026-09-25).
  * - The criteria are **remembered for the session** (`useSearchDraft`, `sessionStorage`).
- * - Motion (user decision 2026-09-25, all `motion-reduce`-safe): title written word by word (`manifesto-in`, 40 ms per word from 300 ms), card and trust
- *   row rising in cascade (`hero-rise` steps 1 and 3), a pill pops in and fades out before leaving (`pop` / `pill-out`), the panels
+ * - Motion (user decision 2026-09-25, all `motion-reduce`-safe): title, card and trust row rising in cascade (`hero-rise` steps 0, 1 and 3), a pill pops in and fades out before leaving (`pop` / `pill-out`), the panels
  *   rise 4px in fade (`panel-in`), the counter pops on each change, the magnifier nudges up-right and turns sand on hover. (The one-off
  *   light sweep across the card was tried and removed the same day.)
  * Every control has a `name` (`city[]`, `budget`) for the future GET to the results page.
@@ -572,9 +556,11 @@ function SearchBlock({ small, cities, setCities, budget, setBudget }: SearchBloc
                         >
                             {/* Mobile: a plain conversion text next to the magnifier (user decision 2026-09-25); icon only from sm */}
                             <span className="sm:sr-only">{t('home.search_cta_short')}</span>
+                            {/* Mobile: the site's arrow next to the text, like every other button; from sm the magnifier alone */}
+                            <ArrowUpRight aria-hidden className="sm:hidden" />
                             <Search
                                 aria-hidden
-                                className="group-hover:text-secondary-60 size-5 transition-[transform,color] duration-300 group-hover:translate-x-px group-hover:-translate-y-px motion-reduce:transition-none"
+                                className="group-hover:text-secondary-60 hidden size-5 transition-[transform,color] duration-300 group-hover:translate-x-px group-hover:-translate-y-px motion-reduce:transition-none sm:block"
                             />
                         </Button>
                     </div>
@@ -631,22 +617,8 @@ export default function HeroSearch({ className }: HeroSearchProps) {
     return (
         <form role="search" aria-label={t('home.search_label')} onSubmit={onSubmit} className={cn('mx-auto w-full max-w-3xl', className)}>
             <div className="flex w-full flex-col gap-6 sm:gap-8">
-                {/* The title is written word by word (the manifesto's reveal: slight 3D tilt + blur dissipating, 40 ms per word,
-                    starting at the cascade's first step) — user decision 2026-09-25 */}
-                <p className={TITLE}>
-                    {t('home.search_title')
-                        .split(' ')
-                        .map((word, i) => (
-                            <Fragment key={i}>
-                                {i > 0 && ' '}
-                                <span
-                                    style={{ '--stagger': `${TITLE_AT_MS + i * WORD_MS}ms` } as CSSProperties}
-                                    className="animate-manifesto-in inline-block [animation-delay:var(--stagger)] motion-reduce:animate-none"
-                                >
-                                    {word}
-                                </span>
-                            </Fragment>
-                        ))}
+                <p style={rise(0).style} className={cn(TITLE, rise(0).className)}>
+                    {t('home.search_title')}
                 </p>
                 <SearchBlock small={small} cities={cities} setCities={setCities} budget={budget} setBudget={setBudget} />
             </div>
