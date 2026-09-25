@@ -3,7 +3,6 @@ import GradientHairline from '@/components/layout/gradient-hairline';
 import { Badge, badgeVariants } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
-import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet';
 import { useSearchDraft } from '@/hooks/use-search-draft';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
@@ -232,8 +231,8 @@ type HeroSearchProps = { className?: string };
  *   stay on one line and collapse to the last picked one + « +N » when they would overflow (measured on an invisible
  *   twin). The list has a footer with the live count and « Terminé ».
  * - Budget = digit-only input grouping its thousands, with quick amounts offered while it has the focus.
- * - Below `sm` the arrondissement list opens in a **classic bottom sheet** (no search field, nothing focused: the keyboard
- *   never opens — user decision 2026-09-25); the budget keeps the amounts popover at every width.
+ * - The same popovers at every width (user decision 2026-09-25); on mobile the arrondissement cell is read-only with
+ *   `inputMode="none"`, so it opens the list without the keyboard, and no row is highlighted.
  * - Nothing under the card any more: the suggested searches, then the proof line (properties on offer / sold, Google
  *   rating) were built then removed the same day (user decisions 2026-09-25).
  * - The criteria are **remembered for the session** (`useSearchDraft`, `sessionStorage`).
@@ -500,37 +499,34 @@ function SearchBlock({ small, cities, setCities, budget, setBudget }: SearchBloc
                 >
                     <div className="flex flex-col sm:flex-row">
                         <div className="flex min-w-0 flex-col sm:min-h-18 sm:flex-1 sm:flex-row sm:items-stretch">
-                            {small ? (
-                                cityCell
-                            ) : (
-                                // Desktop: the list is a popover anchored on the whole cell, at the cell's width (contact dropdown style)
-                                <Popover open={cityOpen} onOpenChange={(open) => (open ? setCityOpen(true) : closeCity())}>
-                                    <PopoverAnchor asChild>{cityCell}</PopoverAnchor>
-                                    <PopoverContent
-                                        align="start"
-                                        sideOffset={8}
-                                        onOpenAutoFocus={(e) => e.preventDefault()}
-                                        onFocusOutside={(e) => e.preventDefault()} // the focus stays in the cell's input
-                                        onInteractOutside={(e) => cityCellRef.current?.contains(e.target as Node) && e.preventDefault()} // the cell (pills, ×, « +N ») is not « outside »
-                                        className={panelClass}
-                                    >
-                                        <CityList
-                                            id={listId}
-                                            options={options}
-                                            cities={cities}
-                                            highlighted={highlighted}
-                                            onHighlight={setHighlighted}
-                                            onToggle={(n) => {
-                                                toggleCity(n);
-                                                setQuery('');
-                                                cityInput.current?.focus();
-                                            }}
-                                            empty={t('home.search_city_empty')}
-                                        />
-                                        <CityFooter count={cities.length} onDone={closeCity} />
-                                    </PopoverContent>
-                                </Popover>
-                            )}
+                            {/* The list is a popover anchored on the whole cell, at the cell's width (contact dropdown style) — the same at every
+                                width, like the budget (user decision 2026-09-25); on mobile the cell never opens the keyboard */}
+                            <Popover open={cityOpen} onOpenChange={(open) => (open ? setCityOpen(true) : closeCity())}>
+                                <PopoverAnchor asChild>{cityCell}</PopoverAnchor>
+                                <PopoverContent
+                                    align="start"
+                                    sideOffset={8}
+                                    onOpenAutoFocus={(e) => e.preventDefault()}
+                                    onFocusOutside={(e) => e.preventDefault()} // the focus stays in the cell's input
+                                    onInteractOutside={(e) => cityCellRef.current?.contains(e.target as Node) && e.preventDefault()} // the cell (pills, ×, « +N ») is not « outside »
+                                    className={panelClass}
+                                >
+                                    <CityList
+                                        id={listId}
+                                        options={options}
+                                        cities={cities}
+                                        highlighted={small ? -1 : highlighted} // no keyboard on mobile: no highlighted row (a hover state would linger under the finger)
+                                        onHighlight={setHighlighted}
+                                        onToggle={(n) => {
+                                            toggleCity(n);
+                                            setQuery('');
+                                            if (!small) cityInput.current?.focus();
+                                        }}
+                                        empty={t('home.search_city_empty')}
+                                    />
+                                    <CityFooter count={cities.length} onDone={closeCity} />
+                                </PopoverContent>
+                            </Popover>
                             <Divider />
                             {/* Budget: the same popover of quick amounts at every width (a number field may open the keyboard) */}
                             <Popover open={budgetOpen} onOpenChange={setBudgetOpen}>
@@ -566,39 +562,6 @@ function SearchBlock({ small, cities, setCities, budget, setBudget }: SearchBloc
                     </div>
                 </div>
             </div>
-
-            {/* Below sm: the arrondissement list opens in a classic bottom sheet (no field, no keyboard) */}
-            {small && (
-                <>
-                    <Sheet open={cityOpen} onOpenChange={(open) => (open ? setCityOpen(true) : closeCity())}>
-                        <SheetContent
-                            side="bottom"
-                            hideClose
-                            onOpenAutoFocus={(e) => e.preventDefault()} // classic list: nothing takes the focus, so no keyboard (user decision 2026-09-25)
-                            className="bg-card flex max-h-[85dvh] flex-col gap-0 p-0"
-                        >
-                            <SheetTitle className="px-4 pt-4 text-base font-medium">{t('home.search_city')}</SheetTitle>
-                            <SheetDescription className="sr-only">{t('home.search_city_hint')}</SheetDescription>
-                            <CityList
-                                id={`${listId}-sheet`}
-                                options={options}
-                                cities={cities}
-                                highlighted={-1} // no keyboard here: no highlighted row (a hover state would linger under the finger)
-                                onHighlight={setHighlighted}
-                                onToggle={(n) => {
-                                    toggleCity(n);
-                                    setQuery('');
-                                }}
-                                empty={t('home.search_city_empty')}
-                                className="max-h-none flex-1 px-1 pt-2 [&_[role=option]]:py-3"
-                            />
-                            <div className="pb-[env(safe-area-inset-bottom)]">
-                                <CityFooter count={cities.length} onDone={closeCity} />
-                            </div>
-                        </SheetContent>
-                    </Sheet>
-                </>
-            )}
         </>
     );
 }

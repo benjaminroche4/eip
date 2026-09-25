@@ -149,7 +149,7 @@ describe('Hero', () => {
         scrollWidth.mockRestore();
     });
 
-    it('opens a classic list in a bottom sheet below sm, without any keyboard', async () => {
+    it('opens the same list popover below sm as on desktop, without any keyboard', async () => {
         const user = userEvent.setup();
         const mql = vi.spyOn(window, 'matchMedia').mockImplementation(
             (query: string) =>
@@ -167,17 +167,17 @@ describe('Hero', () => {
         renderPage(<Hero />);
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
         const city = within(search).getByRole('combobox', { name: 'Arrondissement' });
-        expect(city).toHaveAttribute('readonly'); // the cell only opens the sheet…
+        expect(city).toHaveAttribute('readonly'); // the cell only opens the list…
         expect(city).toHaveAttribute('inputmode', 'none'); // …and never the keyboard
         await user.click(city);
-        const sheet = screen.getByRole('dialog', { name: 'Arrondissement' });
-        expect(within(sheet).queryByRole('combobox')).toBeNull(); // classic list: no search field, nothing autofocused
-        await user.click(within(sheet).getByRole('option', { name: /Paris 7e/ }));
+        const list = screen.getByRole('listbox'); // the same popover as on desktop (and as the budget), no bottom sheet
+        expect(screen.queryByRole('dialog', { name: 'Arrondissement' })).toBeNull();
+        expect(within(list).queryByText('Paris 7e')!.closest('[role=option]')).not.toHaveAttribute('data-highlighted');
+        await user.click(within(list).getByRole('option', { name: /Paris 7e/ }));
         expect(search.querySelector('input[name="city[]"]')).toHaveValue('7');
-        await user.click(within(sheet).getByRole('button', { name: 'Terminé' }));
-        expect(screen.queryByRole('dialog')).toBeNull();
-        await user.click(within(search).getByRole('textbox', { name: 'Budget maximum' })); // the budget keeps its amounts popover, no sheet
-        expect(screen.queryByRole('dialog', { name: 'Budget maximum' })).toBeNull();
+        await user.click(screen.getByRole('button', { name: 'Terminé' }));
+        expect(screen.queryByRole('listbox')).toBeNull();
+        await user.click(within(search).getByRole('textbox', { name: 'Budget maximum' })); // the budget keeps its amounts popover
         await user.click(screen.getByRole('button', { name: '3 000 000 €' }));
         expect(within(search).getByRole('textbox', { name: 'Budget maximum' })).toHaveValue('3 000 000');
         mql.mockRestore();
