@@ -233,7 +233,7 @@ function BudgetList({
 /** Word-by-word reveal of the title: first word at the cascade's step 0 (300 ms), then 40 ms per word. */
 const TITLE_AT_MS = 300;
 const WORD_MS = 40;
-const TITLE = 'font-heading text-center text-3xl/11 font-semibold tracking-wide text-balance text-white drop-shadow-md sm:text-4xl/13 lg:text-5xl/16';
+const TITLE = 'font-heading text-center text-2xl/9 font-semibold tracking-wide text-balance text-white drop-shadow-md sm:text-4xl/13 lg:text-5xl/16';
 
 type HeroSearchProps = { className?: string };
 
@@ -254,8 +254,8 @@ type HeroSearchProps = { className?: string };
  * - The criteria are **remembered for the session** (`useSearchDraft`, `sessionStorage`).
  * - Motion (user decision 2026-09-25, all `motion-reduce`-safe): title written word by word (`manifesto-in`, 40 ms per word from 300 ms), card and trust
  *   row rising in cascade (`hero-rise` steps 1 and 3), a pill pops in and fades out before leaving (`pop` / `pill-out`), the panels
- *   rise 4px in fade (`panel-in`), the counter pops on each change, the magnifier nudges up-right and turns sand on hover, and one
- *   light sweep crosses the card 1.4 s after load (`sweep-shimmer`, single pass).
+ *   rise 4px in fade (`panel-in`), the counter pops on each change, the magnifier nudges up-right and turns sand on hover. (The one-off
+ *   light sweep across the card was tried and removed the same day.)
  * Every control has a `name` (`city[]`, `budget`) for the future GET to the results page.
  */
 type SearchBlockProps = {
@@ -512,16 +512,8 @@ function SearchBlock({ small, cities, setCities, budget, setBudget }: SearchBloc
                     decision 2026-09-25): the two cells (stacked on mobile, one row from sm) then the square button flush with the edge */}
                 <div
                     style={rise(1).style}
-                    className={cn(
-                        'bg-card border-secondary-30 relative flex flex-col overflow-hidden border ring-4 ring-white/25',
-                        rise(1).className,
-                    )}
+                    className={cn('bg-card border-secondary-30 relative flex flex-col border ring-4 ring-white/25', rise(1).className)}
                 >
-                    {/* One light sweep across the card once it has risen (the header button's shimmer, a single pass — user decision 2026-09-25) */}
-                    <span
-                        aria-hidden
-                        className="via-secondary-30/70 animate-sweep-shimmer pointer-events-none absolute inset-y-0 left-0 z-10 w-1/2 bg-linear-to-r from-transparent to-transparent blur-[2px] [animation-delay:1400ms] [animation-fill-mode:both] [animation-iteration-count:1] motion-reduce:hidden"
-                    />
                     <div className="flex flex-col sm:flex-row">
                         <div className="flex min-w-0 flex-col sm:min-h-18 sm:flex-1 sm:flex-row sm:items-stretch">
                             {small ? (

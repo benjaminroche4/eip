@@ -19,7 +19,7 @@ describe('Hero', () => {
         const title = within(search).getByText(
             (_, el) => el?.tagName === 'P' && el.textContent === "L'agence parisienne des clients internationaux", // the words are split into spans
         );
-        expect(title).toHaveClass('font-semibold', 'tracking-wide', 'text-3xl/11', 'lg:text-5xl/16'); // looser line height (user decision 2026-09-25) // h1 scale, mixed case, light tracking (user decisions 2026-09-25)
+        expect(title).toHaveClass('font-semibold', 'tracking-wide', 'text-2xl/9', 'sm:text-4xl/13', 'lg:text-5xl/16'); // one size down on mobile (user decision 2026-09-25) // h1 scale, mixed case, light tracking (user decisions 2026-09-25)
         expect(title).not.toHaveClass('uppercase');
         expect(within(search).getByRole('combobox', { name: 'Arrondissement' })).toHaveAttribute('aria-expanded', 'false'); // typed directly in the cell
         expect(within(search).getByRole('textbox', { name: 'Budget maximum' })).toHaveAttribute('name', 'budget'); // two criteria only (user decision 2026-09-25)
@@ -51,7 +51,7 @@ describe('Hero', () => {
         expect(words[0]).toHaveClass('animate-manifesto-in', 'motion-reduce:animate-none');
         expect(words[0].style.getPropertyValue('--stagger')).toBe('300ms');
         expect(words[4].style.getPropertyValue('--stagger')).toBe('460ms');
-        expect(container.querySelector('.animate-sweep-shimmer')).toHaveClass('[animation-iteration-count:1]', 'motion-reduce:hidden'); // one light sweep on the card
+        expect(container.querySelector('.animate-sweep-shimmer')).toBeNull(); // the sweep on the card was removed (2026-09-25)
         const submit = within(search).getByRole('button', { name: 'Lancer ma recherche' });
         expect(submit.querySelector('svg')).toHaveClass('group-hover:-translate-y-px', 'group-hover:text-secondary-60'); // the magnifier nudges and turns sand
         expect(within(submit).getByText('Voir les biens')).toHaveClass('sm:sr-only'); // mobile: a plain conversion text, icon only from sm
