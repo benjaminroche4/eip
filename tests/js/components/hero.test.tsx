@@ -16,17 +16,20 @@ describe('Hero', () => {
         expect(screen.queryByText(/25 ans d'expertise/)).toBeNull();
         // Search bar (Figma 712-25068 / 712-25576), no logic: labelled cells, a submit that goes nowhere
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
-        const title = within(search).getByText("L'agence parisienne des clients internationaux");
+        const title = within(search).getByText(
+            (_, el) => el?.tagName === 'P' && el.textContent === "L'agence parisienne des clients internationaux", // the words are split into spans
+        );
         expect(title).toHaveClass('font-semibold', 'tracking-wide', 'text-3xl/11', 'lg:text-5xl/16'); // looser line height (user decision 2026-09-25) // h1 scale, mixed case, light tracking (user decisions 2026-09-25)
         expect(title).not.toHaveClass('uppercase');
-        expect(within(search).getByRole('combobox', { name: 'Ville / code postal' })).toHaveAttribute('aria-expanded', 'false'); // typed directly in the cell
+        expect(within(search).getByRole('combobox', { name: 'Arrondissement' })).toHaveAttribute('aria-expanded', 'false'); // typed directly in the cell
         expect(within(search).getByRole('textbox', { name: 'Budget maximum' })).toHaveAttribute('name', 'budget'); // two criteria only (user decision 2026-09-25)
         expect(within(search).queryByRole('combobox', { name: 'Pièces' })).toBeNull();
         expect(within(search).queryByRole('textbox', { name: 'Surface' })).toBeNull();
         expect(within(search).getByRole('button', { name: 'Lancer ma recherche' })).toHaveAttribute('type', 'submit');
-        expect(search.parentElement).toHaveClass('pt-28', 'sm:flex-1', 'sm:items-center'); // top of the screen on mobile, centred in the screen from sm
+        expect(search.parentElement).toHaveClass('flex-1', 'items-center', 'pt-24'); // centred in the screen at every width (mobile too, 2026-09-25)
         expect(search).toHaveClass('mx-auto', 'max-w-3xl'); // centred block
-        expect(within(search).queryByText(/biens disponibles/)).toBeNull(); // no listings figure → no line
+        expect(within(search).queryByText(/Basé sur 400 avis/)).toBeNull(); // nothing under the card any more (proof line removed, 2026-09-25)
+        expect(within(search).getByRole('combobox', { name: 'Arrondissement' })).not.toHaveAttribute('placeholder'); // « + Ajouter » sits in the field at rest
         const values = within(screen.getByRole('list', { name: 'Nos engagements' })).getAllByRole('listitem');
         expect(values.map((li) => li.textContent)).toEqual([
             'Confidentiel et off-market',
@@ -42,8 +45,17 @@ describe('Hero', () => {
         // Reveal on load: the photo settles from a zoom, the row rises first in the cascade
         expect(container.querySelector('video')).toHaveClass('animate-hero-photo');
         expect(screen.getByRole('list', { name: 'Nos engagements' })).toHaveClass('animate-hero-rise');
-        expect(screen.getByRole('list', { name: 'Nos engagements' }).style.getPropertyValue('--stagger')).toBe('420ms'); // after the search bar (300 ms)
-        expect(container.querySelector('section')).toHaveClass('min-h-svh', 'justify-between', 'sm:justify-end'); // fills the first screen, the row along the bottom edge
+        expect(screen.getByRole('list', { name: 'Nos engagements' }).style.getPropertyValue('--stagger')).toBe('660ms'); // step 3, after title / card / proof (300, 420, 540 ms)
+        const words = title.querySelectorAll('span'); // written word by word (manifesto reveal), 40 ms apart from 300 ms
+        expect(words).toHaveLength(5);
+        expect(words[0]).toHaveClass('animate-manifesto-in', 'motion-reduce:animate-none');
+        expect(words[0].style.getPropertyValue('--stagger')).toBe('300ms');
+        expect(words[4].style.getPropertyValue('--stagger')).toBe('460ms');
+        expect(container.querySelector('.animate-sweep-shimmer')).toHaveClass('[animation-iteration-count:1]', 'motion-reduce:hidden'); // one light sweep on the card
+        const submit = within(search).getByRole('button', { name: 'Lancer ma recherche' });
+        expect(submit.querySelector('svg')).toHaveClass('group-hover:-translate-y-px', 'group-hover:text-secondary-60'); // the magnifier nudges and turns sand
+        expect(within(submit).getByText('Voir les biens')).toHaveClass('sm:sr-only'); // mobile: a plain conversion text, icon only from sm
+        expect(container.querySelector('section')).toHaveClass('min-h-svh', 'justify-end'); // fills the first screen, the row along the bottom edge
 
         expect(await axe(container, { preload: false })).toHaveNoViolations(); // preload: axe waits for the background video's metadata, which jsdom never loads
     });
@@ -52,10 +64,11 @@ describe('Hero', () => {
         const user = userEvent.setup();
         renderPage(<Hero />);
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
-        const city = within(search).getByRole('combobox', { name: 'Ville / code postal' });
+        const city = within(search).getByRole('combobox', { name: 'Arrondissement' });
         expect(within(search).getByText('Tout Paris')).toHaveClass('rounded-none'); // default pill: the whole city, square
 
-        await user.click(city); // the list opens under the cell, « Tout Paris » checked
+        await user.click(city); // the list opens under the cell, « Tout Paris » checked; the field now says what to type
+        expect(city).toHaveAttribute('placeholder', 'Arrondissement ou code postal');
         expect(city).toHaveAttribute('aria-expanded', 'true');
         expect(screen.getByRole('option', { name: 'Tout Paris' })).toHaveAttribute('aria-selected', 'true');
         await user.type(city, '75016'); // typing filters: postal code…
@@ -69,7 +82,9 @@ describe('Hero', () => {
         await user.keyboard('{ArrowDown}{ArrowDown}{ArrowUp}{Enter}'); // arrows move the highlight: the 10e
         expect([...search.querySelectorAll('input[name="city[]"]')].map((i) => (i as HTMLInputElement).value)).toEqual(['16', '10']);
         expect(within(search).getAllByText('Paris 10e').at(-1)).toHaveClass('rounded-none'); // pills in the order picked (the measuring twin comes first)
-        expect(screen.getByRole('status')).toHaveTextContent('2 arrondissements sélectionnés'); // live count in the footer
+        expect(screen.getByRole('status')).toHaveTextContent('2 arrondissements sélectionnés'); // live count in the footer (round sand counter + sr-only sentence)
+        expect(within(search).getAllByText('Paris 10e').at(-1)).toHaveClass('animate-pop'); // a new pill pops in
+        expect(screen.getByRole('listbox').parentElement).toHaveClass('animate-panel-in'); // the panel rose in
         await user.keyboard('{Backspace}'); // Backspace on an empty text removes the last pill
         expect(search.querySelectorAll('input[name="city[]"]')).toHaveLength(1);
         await user.click(screen.getByRole('option', { name: /Paris 16e/ })); // a click on a checked row unchecks it
@@ -95,19 +110,18 @@ describe('Hero', () => {
         await user.click(within(search).getByRole('button', { name: 'Effacer Budget maximum' }));
         expect(budget).toHaveValue('');
 
-        await user.type(within(search).getByRole('combobox', { name: 'Ville / code postal' }), '7{Enter}');
+        await user.type(within(search).getByRole('combobox', { name: 'Arrondissement' }), '7{Enter}');
         expect(search.querySelector('input[name="city[]"]')).toHaveValue('7');
-        await user.click(within(search).getByRole('button', { name: 'Effacer Ville / code postal' })); // the cell's × clears every pill
+        await user.click(within(search).getByRole('button', { name: 'Effacer Arrondissement' })); // the cell's × clears every pill
         expect(search.querySelectorAll('input[name="city[]"]')).toHaveLength(0);
     });
 
-    it('shows the properties on offer when the figure is known, and remembers the criteria for the session', async () => {
+    it('remembers the criteria for the session', async () => {
         const user = userEvent.setup();
-        const first = renderPage(<Hero listings={120} />);
+        const first = renderPage(<Hero />);
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
-        expect(within(search).getByText('120 biens disponibles à Paris')).toBeInTheDocument();
         await user.type(within(search).getByRole('textbox', { name: 'Budget maximum' }), '900000');
-        await user.type(within(search).getByRole('combobox', { name: 'Ville / code postal' }), '16{Enter}');
+        await user.type(within(search).getByRole('combobox', { name: 'Arrondissement' }), '16{Enter}');
         expect(JSON.parse(window.sessionStorage.getItem('home-search')!)).toEqual({ cities: [16], budget: '900 000' });
         first.unmount();
 
@@ -124,7 +138,7 @@ describe('Hero', () => {
         const scrollWidth = vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockReturnValue(400);
         renderPage(<Hero />);
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
-        const city = within(search).getByRole('combobox', { name: 'Ville / code postal' });
+        const city = within(search).getByRole('combobox', { name: 'Arrondissement' });
         await user.type(city, '6{Enter}16{Enter}8{Enter}');
         const row = within(search).getAllByText('Paris 8e').at(-1)!.parentElement!; // the visible row (the invisible twin comes first)
         expect(within(row).queryByText('Paris 6e')).toBeNull();
@@ -137,7 +151,7 @@ describe('Hero', () => {
         scrollWidth.mockRestore();
     });
 
-    it('opens the lists in bottom sheets below sm, with their own input', async () => {
+    it('opens a classic list in a bottom sheet below sm, without any keyboard', async () => {
         const user = userEvent.setup();
         const mql = vi.spyOn(window, 'matchMedia').mockImplementation(
             (query: string) =>
@@ -154,18 +168,19 @@ describe('Hero', () => {
         );
         renderPage(<Hero />);
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
-        const city = within(search).getByRole('combobox', { name: 'Ville / code postal' });
-        expect(city).toHaveAttribute('readonly'); // the cell only opens the sheet
+        const city = within(search).getByRole('combobox', { name: 'Arrondissement' });
+        expect(city).toHaveAttribute('readonly'); // the cell only opens the sheet…
+        expect(city).toHaveAttribute('inputmode', 'none'); // …and never the keyboard
         await user.click(city);
-        const sheet = screen.getByRole('dialog', { name: 'Ville / code postal' });
-        await user.type(within(sheet).getByRole('combobox'), '75007');
+        const sheet = screen.getByRole('dialog', { name: 'Arrondissement' });
+        expect(within(sheet).queryByRole('combobox')).toBeNull(); // classic list: no search field, nothing autofocused
         await user.click(within(sheet).getByRole('option', { name: /Paris 7e/ }));
         expect(search.querySelector('input[name="city[]"]')).toHaveValue('7');
         await user.click(within(sheet).getByRole('button', { name: 'Terminé' }));
         expect(screen.queryByRole('dialog')).toBeNull();
-        await user.click(within(search).getByRole('textbox', { name: 'Budget maximum' }));
-        const budgetSheet = screen.getByRole('dialog', { name: 'Budget maximum' });
-        await user.click(within(budgetSheet).getByRole('button', { name: '3 000 000 €' }));
+        await user.click(within(search).getByRole('textbox', { name: 'Budget maximum' })); // the budget keeps its amounts popover, no sheet
+        expect(screen.queryByRole('dialog', { name: 'Budget maximum' })).toBeNull();
+        await user.click(screen.getByRole('button', { name: '3 000 000 €' }));
         expect(within(search).getByRole('textbox', { name: 'Budget maximum' })).toHaveValue('3 000 000');
         mql.mockRestore();
     });

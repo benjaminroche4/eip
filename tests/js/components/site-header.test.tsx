@@ -19,6 +19,37 @@ describe('SiteHeader', () => {
         expect(screen.getByRole('link', { name: 'Nous contacter' }).querySelector('[aria-hidden]')!.className).toMatch(/animate-sweep-shimmer/); // discreet light sweep
     });
 
+    it('floats transparent over the hero on mobile (white logo and burger) until scrolled or the menu opens', async () => {
+        const user = userEvent.setup();
+        renderPage(<SiteHeader overlay />);
+        const bar = screen.getByRole('banner').firstElementChild!;
+        expect(bar).toHaveClass('max-lg:bg-transparent', 'max-lg:text-white');
+        expect(screen.getByRole('button', { name: 'Ouvrir le menu' })).toHaveClass('hover:text-current'); // the burger keeps its colour on hover (no dark flash over the clip)
+        const logo = screen.getByRole('link', { name: 'Homepage' });
+        expect(logo.querySelector('img[src="/brand/logo_light_mobile.svg"]')).toHaveClass('block'); // white artwork below lg…
+        expect(logo.querySelector('img[src="/brand/logo_dark_mobile.svg"]')).toHaveClass('hidden');
+        expect(logo.querySelector('img[src="/brand/logo_light_desktop.svg"]')).toHaveClass('sm:max-lg:block'); // …tablet included
+
+        await user.click(screen.getByRole('button', { name: 'Ouvrir le menu' })); // menu open: the usual white bar
+        expect(bar).not.toHaveClass('max-lg:bg-transparent');
+        expect(bar).toHaveClass('bg-card');
+        expect(logo.querySelector('img[src="/brand/logo_dark_mobile.svg"]')).not.toHaveClass('hidden');
+        await user.keyboard('{Escape}');
+
+        await act(async () => {
+            window.scrollY = 200;
+            window.dispatchEvent(new Event('scroll'));
+            await new Promise((resolve) => requestAnimationFrame(resolve)); // the hook reads the scroll once per frame
+        });
+        expect(bar).not.toHaveClass('max-lg:bg-transparent'); // scrolled: white bar
+        window.scrollY = 0;
+    });
+
+    it('stays a white card on the other pages (no overlay)', () => {
+        renderPage(<SiteHeader />);
+        expect(screen.getByRole('banner').firstElementChild).not.toHaveClass('max-lg:bg-transparent');
+    });
+
     it('marks the current page with aria-current', () => {
         renderPage(<SiteHeader />, { url: '/acheter-immobilier-paris' });
 

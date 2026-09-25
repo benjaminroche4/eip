@@ -17,7 +17,8 @@ const MobileMenuToggle = forwardRef<HTMLButtonElement, MobileMenuToggleProps>(({
             aria-expanded={open}
             aria-controls={controls}
             onClick={onToggle}
-            className="-mr-6.5 h-12 w-18 rounded-full hover:bg-transparent lg:hidden dark:hover:bg-transparent"
+            // No hover state at all (user decision 2026-09-25): the ghost variant turned the white burger dark over the home clip
+            className="-mr-6.5 h-12 w-18 rounded-full hover:bg-transparent hover:text-current lg:hidden dark:hover:bg-transparent"
         >
             <MenuToggleIcon open={open} />
         </Button>

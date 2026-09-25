@@ -1,10 +1,11 @@
+import { rise } from '@/components/home/hero-rise';
 import HeroSearch from '@/components/home/hero-search';
 import HeroVideo from '@/components/home/hero-video';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { Building2, type LucideIcon, MessageCircleQuestion, Navigation } from 'lucide-react';
-import { type CSSProperties, useRef } from 'react';
+import { useRef } from 'react';
 
 /** The three trust items at the bottom of the hero (Figma 712-26763), icons matched to the Figma glyphs. */
 const VALUES: { key: 'hero_value_1' | 'hero_value_2' | 'hero_value_3'; icon: LucideIcon }[] = [
@@ -22,7 +23,7 @@ const VALUES: { key: 'hero_value_1' | 'hero_value_2' | 'hero_value_3'; icon: Luc
  * intro right under the clip. The same day the Figma search bar (`HeroSearch`) took its place: at the top of the screen
  * on mobile, just above the trust row from `sm`.
  */
-export default function Hero({ listings = null }: { listings?: number | null }) {
+export default function Hero() {
     const { t } = useTranslation();
     const row = useRef<HTMLUListElement>(null);
     // Mobile: the trust row is a snap carousel — opens on the middle item, a light swipe / wheel moves to the next item
@@ -32,7 +33,7 @@ export default function Hero({ listings = null }: { listings?: number | null }) 
     return (
         <section
             aria-label={t('home.values_label')}
-            className="relative -mt-16 flex min-h-svh flex-col justify-between overflow-hidden text-white sm:justify-end lg:-mt-19"
+            className="relative -mt-16 flex min-h-svh flex-col justify-end overflow-hidden text-white lg:-mt-19"
         >
             {/* The owner's clip as the background, rendered server-side with the photo as poster (user decision 2026-09-23: no photo-first fade) */}
             <HeroVideo />
@@ -41,16 +42,10 @@ export default function Hero({ listings = null }: { listings?: number | null }) 
             <div aria-hidden className="absolute inset-0 bg-linear-to-b from-transparent via-black/45 to-transparent" />
             <div aria-hidden className="absolute inset-0 bg-linear-to-t from-black via-black/0 via-30% to-transparent" />
 
-            {/* Search bar (Figma 712-25068 / 712-25576, no logic yet — user decision 2026-09-25): at the top of the screen under the
-                header on mobile, centred in the screen between the header and the trust row from `sm` (user decision 2026-09-25) */}
-            <div
-                style={rise(0).style}
-                className={cn(
-                    'relative mx-auto flex w-full max-w-7xl px-6 pt-28 sm:flex-1 sm:items-center sm:pt-16 sm:pb-6 lg:px-8',
-                    rise(0).className,
-                )}
-            >
-                <HeroSearch listings={listings} />
+            {/* Search bar (Figma 712-25068 / 712-25576, no logic yet — user decision 2026-09-25): centred in the screen between the
+                header and the trust row at every width (mobile centred too, user decision 2026-09-25) */}
+            <div className="relative mx-auto flex w-full max-w-7xl flex-1 items-center px-6 pt-24 pb-6 sm:pt-16 lg:px-8">
+                <HeroSearch />
             </div>
 
             {/* Trust row (Figma 712-26763): one line with hairline separators at every width — on mobile it scrolls sideways
@@ -59,11 +54,11 @@ export default function Hero({ listings = null }: { listings?: number | null }) 
                 ref={row}
                 role="list"
                 aria-label={t('home.values_label')}
-                style={rise(1).style}
+                style={rise(3).style}
                 className={cn(
                     // Mobile: 40vw side padding lets the first / last item sit in the middle when snapped; snap is suspended while dragging.
                     'relative flex w-full cursor-grab snap-x snap-mandatory items-center gap-6 overflow-x-auto px-[40vw] pb-8 text-white/90 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none sm:cursor-auto sm:snap-none sm:justify-center sm:gap-8 sm:overflow-visible sm:px-6 sm:select-auto lg:gap-14 [&::-webkit-scrollbar]:hidden',
-                    rise(1).className,
+                    rise(3).className,
                 )}
             >
                 {VALUES.map(({ key, icon: Icon }, index) => (
@@ -80,9 +75,3 @@ export default function Hero({ listings = null }: { listings?: number | null }) 
         </section>
     );
 }
-
-/** Cascade step for the reveal: the tolerated dynamic CSS variable feeds `animation-delay`. */
-export const rise = (step: number): { className: string; style: CSSProperties } => ({
-    className: 'animate-hero-rise [animation-delay:var(--stagger)] motion-reduce:animate-none',
-    style: { '--stagger': `${300 + step * 120}ms` } as CSSProperties,
-});

@@ -25,6 +25,9 @@
     --animate-rings-breathe: rings-breathe 10s ease-in-out infinite;
     /* Mobile menu: each row unfolds into place (rise + fade), staggered by --stagger — fast and premium (user decision 2026-09-16). */
     --animate-menu-in: menu-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    /* Home search bar (2026-09-25): the arrondissement / amount panels rise 4px in fade on open; a removed pill fades and shrinks before leaving. */
+    --animate-panel-in: panel-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    --animate-pill-out: pill-out 0.2s ease-out both;
     /* Valuation stepper: the digit rolls like a slot reel — the old one leaves, the new one enters from the direction of travel. */
     --animate-slot-in-up: slot-in-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
     --animate-slot-in-down: slot-in-down 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -128,6 +131,18 @@
         }
     }
 
+    @keyframes panel-in {
+        from {
+            transform: translateY(4px);
+            opacity: 0;
+        }
+    }
+    @keyframes pill-out {
+        to {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+    }
     @keyframes menu-in {
         from {
             transform: translateY(12px);

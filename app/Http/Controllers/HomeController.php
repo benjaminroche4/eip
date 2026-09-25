@@ -27,8 +27,6 @@ class HomeController extends Controller
             'faq' => $faq('working', 6)->toArray(),
             // Trust intro headline figure: « properties sold » from about.stats (real numbers only, never a placeholder)
             'figure' => __('ui.about.stats.2.value'),
-            // Properties on offer under the search bar (config, real figure only; null hides the line)
-            'listings' => config('seo.listings_count'),
         ]);
     }
 }

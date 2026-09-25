@@ -13,8 +13,6 @@ return [
     'title_separator' => ' · ',
     'default_description' => env('SEO_DESCRIPTION', 'Application Laravel + Inertia + React : rapide, accessible et optimisée pour le référencement.'),
     'default_image' => env('SEO_DEFAULT_IMAGE', '/og-default.png'), // 1200×630, absolute or relative to APP_URL
-    // Properties currently on offer, shown under the home search bar (real figure only; null hides the line)
-    'listings_count' => env('SEO_LISTINGS_COUNT') === null || env('SEO_LISTINGS_COUNT') === '' ? null : (int) env('SEO_LISTINGS_COUNT'),
     'locale' => 'fr_FR',
     'language' => 'fr',
     'twitter' => env('SEO_TWITTER', null), // '@handle'

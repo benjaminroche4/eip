@@ -14,7 +14,8 @@ import { Link } from '@inertiajs/react';
 import { useCallback, useId, useRef, useState } from 'react';
 
 /** Site header (Figma 137-2085 desktop, 125-361 mobile). */
-/** `overlay`: the header floats over a full-bleed hero (home) — the desktop gap above the card stays transparent until scrolled. */
+/** `overlay`: the header floats over a full-bleed hero (home) — the desktop gap above the card stays transparent until scrolled;
+ *  on mobile the bar itself is transparent (white logo and burger) until scrolled or the menu opens (user decision 2026-09-25). */
 export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
     const { t } = useTranslation();
     const navItems = useNavItems();
@@ -34,6 +35,9 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
     }, []);
     // Mobile: slide the bar away while scrolling down, bring it back on the first upward scroll (never while the menu is open).
     const hidden = scrolled && direction === 'down' && !menuOpen;
+    // Mobile over the hero (user decision 2026-09-25): the bar is transparent with a white logo and burger while the
+    // page is at the top and the menu closed; scrolling or opening the menu brings the usual white bar back.
+    const transparent = overlay && !scrolled && !menuOpen;
 
     // Discreet light sweep on the CTA so it stands out (user decision 2026-09-22): a narrow, slanted, soft white band crosses the button every 8 s.
     const cta = (
@@ -78,6 +82,7 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
                     // Menu open: solid white, whatever the scroll state.
                     // Switched fast so the bar and the panel turn white together.
                     menuOpen && 'bg-card supports-[backdrop-filter]:bg-card backdrop-blur-none duration-0',
+                    transparent && 'max-lg:bg-transparent max-lg:text-white max-lg:supports-[backdrop-filter]:bg-transparent',
                 )}
             >
                 <div
@@ -94,7 +99,7 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
                             scrolled && 'scale-90',
                         )}
                     >
-                        <BrandLogo priority />
+                        <BrandLogo priority light={transparent} />
                     </Link>
 
                     <NavDivider />
