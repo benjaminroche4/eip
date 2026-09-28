@@ -1,14 +1,15 @@
 import LanguageLinks from '@/components/i18n/language-links';
+import CountBadge from '@/components/navigation/count-badge';
 import { type NavItem, useSecondaryNavItems } from '@/components/navigation/nav-items';
 import NavLink from '@/components/navigation/nav-link';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { House, KeyRound, Tag } from 'lucide-react';
+import { Building2, House, KeyRound, Tag } from 'lucide-react';
 import { type CSSProperties, type PointerEvent, type ReactNode, useEffect, useRef } from 'react';
 
 /** Icons of the first-level entries (buy / sell / estimate). */
-const ICONS = { buy: KeyRound, sell: Tag, estimate: House } as const;
+const ICONS = { buy: KeyRound, sell: Tag, estimate: House, properties: Building2 } as const;
 
 type MobileMenuPanelProps = {
     id: string;
@@ -124,10 +125,18 @@ export default function MobileMenuPanel({ id, open, compact, items, isActive, ct
                                         active={isActive(item.href)}
                                         aria-current={isActive(item.href) ? 'page' : undefined}
                                         onClick={onClose}
+                                        aria-label={item.ariaLabel}
                                         className="font-medium"
                                     >
                                         <MenuIcon itemKey={item.key} />
                                         {item.mobileLabel ?? item.label}
+                                        {/* Pushed to the right edge, white on the sand of the hovered / focused / current row (user decision 2026-09-28) */}
+                                        {item.count !== undefined && (
+                                            <CountBadge
+                                                count={item.count}
+                                                className="group-hover:bg-card group-focus-visible:bg-card group-aria-[current=page]:bg-card ml-auto"
+                                            />
+                                        )}
                                         {item.key === 'estimate' && <EstimateBadge label={t('nav.estimate_badge')} />}
                                     </NavLink>
                                 </li>

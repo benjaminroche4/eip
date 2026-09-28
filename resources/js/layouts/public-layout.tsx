@@ -13,10 +13,12 @@ type PublicLayoutProps = PropsWithChildren<{
     hero?: boolean;
     /** Haussmann façade watermark behind the page header; off for pages opening on a photo (about). */
     backdrop?: boolean;
+    /** `false` = the header scrolls away on mobile (the properties page pins its own filter bar instead, 2026-09-28). */
+    stickyHeader?: boolean;
 }>;
 
 /** Layout of every public (SSR, indexable) page: header, <main> filling the viewport, footer pinned at the bottom. `overflow-x-clip` lets a `w-screen` breakout (about page testimonials) bleed without a horizontal scrollbar. */
-export default function PublicLayout({ children, className, hero = false, backdrop = true }: PublicLayoutProps) {
+export default function PublicLayout({ children, className, hero = false, backdrop = true, stickyHeader = true }: PublicLayoutProps) {
     const { t } = useTranslation();
     const { year } = usePage<SharedData>().props;
 
@@ -28,7 +30,7 @@ export default function PublicLayout({ children, className, hero = false, backdr
             >
                 {t('a11y.skip_to_content')}
             </a>
-            <SiteHeader overlay={hero} />
+            <SiteHeader overlay={hero} sticky={stickyHeader} />
             <main
                 id="main"
                 tabIndex={-1}

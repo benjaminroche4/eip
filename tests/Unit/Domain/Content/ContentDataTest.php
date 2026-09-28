@@ -125,4 +125,12 @@ class ContentDataTest extends TestCase
         $this->expectExceptionMessage(FaqItem::class.' from ui.php is missing the key(s) "answer"');
         FaqCategory::fromArray(['key' => 'buying', 'title' => 'Acheter', 'items' => [['question' => 'Combien ?']]]);
     }
+
+    public function test_array_shape_validates_integers(): void
+    {
+        ArrayShape::validate('T', ['n' => 6], ['n' => 'int']);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('"n" must be a int, string given');
+        ArrayShape::validate('T', ['n' => '6'], ['n' => 'int']);
+    }
 }

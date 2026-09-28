@@ -30,6 +30,7 @@
         "vitest-axe": "^0.1.0"
     },
     "dependencies": {
+        "@googlemaps/markerclusterer": "^2.6.2",
         "@headlessui/react": "^2.2.0",
         "@inertiajs/react": "^2.3.27",
         "@radix-ui/react-avatar": "^1.1.3",

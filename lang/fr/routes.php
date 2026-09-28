@@ -10,6 +10,8 @@ return [
     'estimate' => 'estimation-immobiliere-paris',
     'sell' => 'vendre-immobilier-paris',
     'buy' => 'acheter-immobilier-paris',
+    'properties' => 'nos-biens',
+    'off_market' => 'biens-off-market',
     'blog' => 'blog',
     'blog_show' => 'blog/{slug}',
     'blog_category' => 'blog/categorie/{category}',

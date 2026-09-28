@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from '@/hooks/use-translation';
+import { linkClass } from '@/lib/hover-surface';
 import { type SharedData } from '@/types';
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { CircleCheckBig, ShieldCheck } from 'lucide-react';
+import { BellRing, CircleCheckBig, ShieldCheck } from 'lucide-react';
 import { type FormEvent, useEffect, useRef } from 'react';
 
 const ADVISORS = [
@@ -17,18 +18,21 @@ const ADVISORS = [
 
 export type NextIssue = { iso: string; label: string };
 
-type NewsletterFormProps = { nextIssue: NextIssue };
+type NewsletterFormProps = {
+    nextIssue: NextIssue;
+    /** Listing search to be alerted about (query string), from « Recevoir les nouveaux biens » (2026-09-28). */ search?: string | null;
+};
 
-type NewsletterFormData = { email: string; website: string /* honeypot, stays empty */ };
+type NewsletterFormData = { email: string; website: string /* honeypot, stays empty */; search: string };
 
 /**
  * Subscription card (Figma 262-8118): e-mail + button on one line (label visually hidden, error under the row),
  * avatars + next-issue date, "no spam" pill. Success replaces the form with the date and a next step.
  */
-export default function NewsletterForm({ nextIssue }: NewsletterFormProps) {
+export default function NewsletterForm({ nextIssue, search = null }: NewsletterFormProps) {
     const { t } = useTranslation();
     const { flash } = usePage<SharedData>().props;
-    const { data, setData, post, processing, errors, reset } = useForm<NewsletterFormData>({ email: '', website: '' });
+    const { data, setData, post, processing, errors, reset } = useForm<NewsletterFormData>({ email: '', website: '', search: search ?? '' });
     const successTitle = useRef<HTMLHeadingElement>(null);
 
     // Move focus to the confirmation so keyboard / screen-reader users land on it after the redirect.
@@ -111,6 +115,19 @@ export default function NewsletterForm({ nextIssue }: NewsletterFormProps) {
                             )}
                         </div>
 
+                        {/* A listing search to follow (« Recevoir les nouveaux biens », 2026-09-28): said in words, sent hidden */}
+                        {search && (
+                            <p className="bg-background-05 flex items-start gap-2 p-3 text-xs">
+                                <BellRing aria-hidden className="text-secondary-80 mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
+                                <span>
+                                    {t('newsletter.alert_notice')}{' '}
+                                    <Link href={`${route('properties')}?${search}`} className={linkClass}>
+                                        {t('newsletter.alert_link')}
+                                    </Link>
+                                </span>
+                                <input type="hidden" name="search" value={data.search} />
+                            </p>
+                        )}
                         {/* Honeypot: invisible to people, filled by bots, rejected server-side */}
                         <div aria-hidden className="hidden">
                             <label htmlFor="newsletter-website">Website</label>

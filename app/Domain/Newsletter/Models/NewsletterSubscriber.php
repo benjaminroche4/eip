@@ -12,7 +12,7 @@ class NewsletterSubscriber extends Model
     /** @use HasFactory<NewsletterSubscriberFactory> */
     use HasFactory;
 
-    protected $fillable = ['email', 'locale', 'ip', 'user_agent', 'subscribed_at', 'unsubscribed_at', 'welcome_sent_at'];
+    protected $fillable = ['email', 'locale', 'search', 'ip', 'user_agent', 'subscribed_at', 'unsubscribed_at', 'welcome_sent_at'];
 
     protected static function newFactory(): NewsletterSubscriberFactory
     {

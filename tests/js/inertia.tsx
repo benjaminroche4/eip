@@ -9,6 +9,7 @@ const ROUTES: Record<string, string> = {
     home: '/',
     search: '/recherche',
     buy: '/acheter-immobilier-paris',
+    properties: '/nos-biens',
     sell: '/vendre-immobilier-paris',
     estimate: '/estimation-immobiliere-paris',
     contact: '/contact',
@@ -23,6 +24,9 @@ const ROUTES: Record<string, string> = {
 };
 export function routeStub(name?: string, params?: Record<string, string | number>): string & { has: (n: string) => boolean } {
     if (name === undefined) return { has: (n: string) => n in ROUTES } as never;
+    // Listing detail and district pages: the slug is part of the path (2026-09-28)
+    if (name === 'properties.show' && params?.slug !== undefined) return `/nos-biens/${params.slug}` as never;
+    if (name === 'properties.district' && params?.district !== undefined) return `/nos-biens/${params.district}` as never;
     const path = ROUTES[name] ?? `/${name}`;
     const query = params ? new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)])).toString() : '';
     return (query ? `${path}?${query}` : path) as never;
@@ -34,6 +38,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
         quote: { message: '', author: '' },
         auth: { user: null as never },
         locale: 'fr',
+        propertiesCount: 6,
         year: 2026,
         flash: { success: null, callbackPhone: null, newsletter: null, estimate: null, valuationReference: null },
         localization: {

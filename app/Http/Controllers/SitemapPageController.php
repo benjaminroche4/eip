@@ -27,6 +27,7 @@ class SitemapPageController extends Controller
         return Inertia::render('sitemap', [
             'groups' => [
                 ['title' => __('ui.footer.navigation'), 'links' => [
+                    $link('ui.nav.properties', 'properties'),
                     $link('ui.nav.buy', 'buy'),
                     $link('ui.nav.sell', 'sell'),
                     $link('ui.nav.estimate', 'estimate'),

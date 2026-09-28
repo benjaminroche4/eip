@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Properties\Support\DistrictSlug;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BuyController;
@@ -10,6 +11,9 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\OffMarketController;
+use App\Http\Controllers\PropertiesController;
+use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SellController;
 use App\Http\Controllers\SeoController;
@@ -51,6 +55,16 @@ Route::group([
     Route::post(LaravelLocalization::transRoute('routes.estimate'), [EstimateController::class, 'store'])->middleware('throttle:estimate')->name('estimate.store');
 
     Route::get(LaravelLocalization::transRoute('routes.buy'), BuyController::class)->name('buy');
+    Route::get(LaravelLocalization::transRoute('routes.properties'), [PropertiesController::class, 'index'])->name('properties');
+    // Clean listing per arrondissement (2026-09-28): `/nos-biens/paris-6e` ↔ `/en/properties/paris-6th`
+    Route::get(LaravelLocalization::transRoute('routes.properties').'/{district}', [PropertiesController::class, 'district'])
+        ->where('district', DistrictSlug::PATTERN)
+        ->name('properties.district');
+    // Detail page of a listing (2026-09-28): any other slug under the listing (the district pattern is matched first)
+    Route::get(LaravelLocalization::transRoute('routes.properties').'/{slug}', [PropertyController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name('properties.show');
+    Route::get(LaravelLocalization::transRoute('routes.off_market'), OffMarketController::class)->name('off_market');
     Route::get(LaravelLocalization::transRoute('routes.sell'), SellController::class)->name('sell');
 
     Route::get(LaravelLocalization::transRoute('routes.sitemap'), SitemapPageController::class)->name('sitemap');

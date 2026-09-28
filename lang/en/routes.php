@@ -10,6 +10,8 @@ return [
     'estimate' => 'property-valuation-paris',
     'sell' => 'sell-property-paris',
     'buy' => 'buy-property-paris',
+    'properties' => 'properties',
+    'off_market' => 'off-market-properties',
     'blog' => 'blog',
     'blog_show' => 'blog/{slug}',
     'blog_category' => 'blog/category/{category}',

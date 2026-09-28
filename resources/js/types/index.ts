@@ -37,6 +37,8 @@ export interface SharedData {
     localization: Localization;
     translations: Translations;
     seo: SeoShared;
+    /** Properties on offer (badge next to « Nos biens »). */
+    propertiesCount: number;
     ziggy: { location: string; url: string };
     [key: string]: unknown;
 }

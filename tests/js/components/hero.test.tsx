@@ -20,10 +20,12 @@ describe('Hero', () => {
         expect(title).toHaveClass('font-semibold', 'tracking-wide', 'text-2xl/9', 'sm:text-4xl/13', 'lg:text-5xl/16'); // one size down on mobile (user decision 2026-09-25) // h1 scale, mixed case, light tracking (user decisions 2026-09-25)
         expect(title).not.toHaveClass('uppercase');
         expect(within(search).getByRole('combobox', { name: 'Arrondissement' })).toHaveAttribute('aria-expanded', 'false'); // typed directly in the cell
-        expect(within(search).getByRole('textbox', { name: 'Budget maximum' })).toHaveAttribute('name', 'budget'); // two criteria only (user decision 2026-09-25)
+        expect(within(search).getByRole('textbox', { name: 'Budget maximum' })).not.toHaveAttribute('name'); // the GET carries the bare digits through a hidden `budget` field (2026-09-28)
         expect(within(search).queryByRole('combobox', { name: 'Pièces' })).toBeNull();
         expect(within(search).queryByRole('textbox', { name: 'Surface' })).toBeNull();
         expect(within(search).getByRole('button', { name: 'Lancer ma recherche' })).toHaveAttribute('type', 'submit');
+        expect(search).toHaveAttribute('action', '/nos-biens'); // GET to the listing since it exists (2026-09-25)
+        expect(search).toHaveAttribute('method', 'get');
         expect(search.parentElement).toHaveClass('flex-1', 'items-center', 'pt-24'); // centred in the screen at every width (mobile too, 2026-09-25)
         expect(search).toHaveClass('mx-auto', 'max-w-3xl'); // centred block
         expect(within(search).queryByText(/Basé sur 400 avis/)).toBeNull(); // nothing under the card any more (proof line removed, 2026-09-25)
@@ -66,7 +68,7 @@ describe('Hero', () => {
         expect(within(search).getByText('Tout Paris')).toHaveClass('rounded-none'); // default pill: the whole city, square
 
         await user.click(city); // the list opens under the cell, « Tout Paris » checked; the field now says what to type
-        expect(city).toHaveAttribute('placeholder', 'Arrondissement ou code postal');
+        expect(city).toHaveAttribute('placeholder', 'Arrondissement, quartier ou code postal');
         expect(city).toHaveAttribute('aria-expanded', 'true');
         expect(screen.getByRole('option', { name: 'Tout Paris' })).toHaveAttribute('aria-selected', 'true');
         await user.type(city, '75016'); // typing filters: postal code…
@@ -97,7 +99,8 @@ describe('Hero', () => {
         renderPage(<Hero />);
         const search = screen.getByRole('search', { name: 'Rechercher un bien' });
         const budget = within(search).getByRole('textbox', { name: 'Budget maximum' });
-        await user.click(budget); // the focus offers quick amounts under the cell
+        await user.click(budget); // the focus offers quick amounts under the cell, from 400 000 € (user decision 2026-09-25)
+        expect(screen.getByRole('button', { name: '400 000 €' })).toBeInTheDocument(); // first preset
         await user.click(screen.getByRole('button', { name: '2 000 000 €' }));
         expect(budget).toHaveValue('2 000 000');
         expect(budget).toHaveFocus();

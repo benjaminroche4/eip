@@ -57,7 +57,7 @@ class SeoTest extends TestCase
 
         $index = file_get_contents(public_path('sitemap.xml'));
         $this->assertStringContainsString('<sitemapindex', $index);
-        foreach (['sitemap.pages.xml', 'sitemap.blog.xml'] as $file) {
+        foreach (['sitemap.pages.xml', 'sitemap.blog.xml', 'sitemap.properties.xml'] as $file) {
             $this->assertStringContainsString('<loc>'.url('/'.$file).'</loc>', $index);
             $this->assertFileExists(public_path($file));
         }

@@ -149,6 +149,71 @@ export function article(input: {
     };
 }
 
+/** schema.org accommodation type behind the listing's property types. */
+const ACCOMMODATION: Record<string, string> = { apartment: 'Apartment', house: 'House', mansion: 'House', loft: 'Apartment' };
+
+export type ListingInput = {
+    slug: string;
+    title: string;
+    excerpt: string;
+    type: string;
+    transaction: 'sale' | 'rent';
+    price: number;
+    surface: number;
+    rooms: number;
+    bedrooms: number;
+    arrondissement: number;
+    photos: string[];
+    available: boolean;
+    lat: number;
+    lng: number;
+    off_market?: boolean;
+};
+
+/**
+ * One `RealEstateListing` per property shown (2026-09-28): the offer (price, or monthly rent as a unit price), the
+ * accommodation it is about (type, floor size in m², rooms, bedrooms, the arrondissement's postal code, the position).
+ * Confidential listings are left out: their details are hidden on purpose.
+ */
+export function realEstateListings(properties: ListingInput[], origin: string, pageUrl: string, locale: string): JsonLd[] {
+    const absolute = (url: string) => (url.startsWith('http') ? url : `${origin}${url}`);
+    return properties
+        .filter((p) => !p.off_market)
+        .map((p) => ({
+            '@type': 'RealEstateListing',
+            '@id': `${pageUrl}#${p.slug}`,
+            url: `${pageUrl}#${p.slug}`,
+            name: p.title,
+            description: p.excerpt,
+            inLanguage: locale,
+            image: p.photos.slice(0, 3).map((photo) => absolute(photo.replace('{w}', '1600'))),
+            offers: {
+                '@type': 'Offer',
+                price: p.price,
+                priceCurrency: 'EUR',
+                availability: p.available ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability',
+                businessFunction: p.transaction === 'rent' ? 'http://purl.org/goodrelations/v1#LeaseOut' : 'http://purl.org/goodrelations/v1#Sell',
+                ...(p.transaction === 'rent'
+                    ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: p.price, priceCurrency: 'EUR', unitCode: 'MON' } }
+                    : {}),
+            },
+            about: {
+                '@type': ACCOMMODATION[p.type] ?? 'Accommodation',
+                name: p.title,
+                floorSize: { '@type': 'QuantitativeValue', value: p.surface, unitCode: 'MTK' },
+                numberOfRooms: p.rooms,
+                numberOfBedrooms: p.bedrooms,
+                address: {
+                    '@type': 'PostalAddress',
+                    addressLocality: 'Paris',
+                    postalCode: `750${String(p.arrondissement).padStart(2, '0')}`,
+                    addressCountry: 'FR',
+                },
+                geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng },
+            },
+        }));
+}
+
 export function itemList(items: { name: string; url: string }[]): JsonLd {
     return {
         '@type': 'ItemList',

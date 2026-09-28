@@ -1,3 +1,4 @@
+import CountBadge from '@/components/navigation/count-badge';
 import { type NavItem } from '@/components/navigation/nav-items';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from '@/hooks/use-translation';
@@ -23,7 +24,7 @@ export default function FooterNav({ items, label }: { items: NavItem[]; label: s
                                 <span className="sr-only">{t('footer.new_tab')}</span>
                             </a>
                         ) : (
-                            <Link href={item.href} prefetch className={linkClass}>
+                            <Link href={item.href} prefetch aria-label={item.ariaLabel} className={linkClass}>
                                 {item.label}
                                 {item.badge && (
                                     <Badge
@@ -33,6 +34,8 @@ export default function FooterNav({ items, label }: { items: NavItem[]; label: s
                                         {item.badge}
                                     </Badge>
                                 )}
+                                {/* White on the sand footer (user decision 2026-09-28) */}
+                                {item.count !== undefined && <CountBadge count={item.count} className="bg-card" />}
                             </Link>
                         )}
                     </li>

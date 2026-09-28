@@ -18,7 +18,8 @@ final class SharedTranslations
 
     /** Extra sections per route family (the part of the route name before the first dot: `blog.show` → `blog`). */
     public const ROUTES = [
-        'home' => ['home', 'services', 'testimonials', 'stories', 'blog', 'faq', 'about'],
+        // properties on the home: the shared search bar reads its type / transaction labels
+        'home' => ['home', 'search_bar', 'properties', 'services', 'testimonials', 'stories', 'blog', 'faq', 'about'],
         'buy' => ['buy', 'faq', 'testimonials'],
         'sell' => ['sell', 'faq', 'testimonials', 'stories'], // stories: the home's photo row (arrow labels)
         'estimate' => ['estimate', 'contact'],
@@ -27,6 +28,8 @@ final class SharedTranslations
         'about' => ['about', 'team', 'values', 'testimonials'],
         'faq' => ['faq'],
         'districts' => ['districts'],
+        'properties' => ['properties', 'search_bar', 'off_market', 'property'], // off_market: the confidential card's wording; property: the detail page
+        'off_market' => ['off_market', 'properties'], // properties: type labels, facts wording
         'blog' => ['blog', 'faq'],
         'search' => ['search'],
         'privacy' => [],

@@ -17,6 +17,7 @@ class NewsletterRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email:rfc', 'max:190'],
             'website' => ['prohibited'], // honeypot: bots fill it, humans never see it
+            'search' => ['nullable', 'string', 'max:500', 'regex:/^[\w\[\]=&%.,-]*$/'], // a listing query string only
         ];
     }
 

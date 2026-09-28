@@ -38,8 +38,8 @@ function Harness() {
     );
 }
 
-// The interaction test drives many user events on 20 shapes: under the full run's load it can pass 5 s.
-vi.setConfig({ testTimeout: 15000 });
+// The interaction test drives many user events on 20 shapes: under the full run's load it passed 15 s once (2026-09-28).
+vi.setConfig({ testTimeout: 30000 });
 
 describe('ParisMap + DistrictDetail', () => {
     afterEach(() => vi.useRealTimers());

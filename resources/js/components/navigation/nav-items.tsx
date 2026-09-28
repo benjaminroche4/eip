@@ -7,6 +7,10 @@ export type NavItem = {
     label: string;
     href: string;
     badge?: string;
+    /** Round sand counter next to the label (« Nos biens »: properties on offer). */
+    count?: number;
+    /** Accessible name when a counter follows the label (« Nos biens, 6 biens »). */
+    ariaLabel?: string;
     /** Action-oriented label for the mobile menu (« Estimer mon bien »). */
     mobileLabel?: string;
     /** Another site (opens in a new tab, plain <a>, no prefetch). */
@@ -16,7 +20,15 @@ export type NavItem = {
 /** Primary navigation entries (labels from lang/ui.php). */
 export function useNavItems(): NavItem[] {
     const { t } = useTranslation();
+    const { propertiesCount } = usePage<SharedData>().props;
     return [
+        {
+            key: 'properties',
+            label: t('nav.properties'),
+            href: route('properties'),
+            count: propertiesCount,
+            ariaLabel: `${t('nav.properties')}, ${t('nav.properties_count', { count: propertiesCount })}`,
+        },
         { key: 'buy', label: t('nav.buy'), href: route('buy') },
         { key: 'sell', label: t('nav.sell'), href: route('sell') },
         { key: 'estimate', label: t('nav.estimate'), href: route('estimate'), mobileLabel: t('nav.estimate_mobile') },
@@ -31,8 +43,15 @@ export function useContactHref(): string {
 /** Footer « Nos services » column: the three service pages, then the sister agency Relocation in Paris (external, user decision 2026-09-22). */
 export function useFooterNavItems(): NavItem[] {
     const { t } = useTranslation();
-    const { seo } = usePage<SharedData>().props;
+    const { seo, propertiesCount } = usePage<SharedData>().props;
     return [
+        {
+            key: 'properties',
+            label: t('nav.properties'),
+            href: route('properties'),
+            count: propertiesCount,
+            ariaLabel: `${t('nav.properties')}, ${t('nav.properties_count', { count: propertiesCount })}`,
+        },
         { key: 'buy', label: t('nav.buy'), href: route('buy') },
         { key: 'sell', label: t('nav.sell'), href: route('sell') },
         { key: 'estimate', label: t('nav.estimate'), href: route('estimate') },

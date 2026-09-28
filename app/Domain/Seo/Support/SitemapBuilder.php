@@ -5,6 +5,9 @@ namespace App\Domain\Seo\Support;
 use App\Domain\Blog\Actions\ListBlogCategoryUrls;
 use App\Domain\Blog\Actions\ListBlogUrls;
 use App\Domain\Blog\Exceptions\SanityRequestFailed;
+use App\Domain\Properties\Actions\ListDistrictListings;
+use App\Domain\Properties\Actions\ListProperties;
+use App\Domain\Properties\Support\DistrictSlug;
 use Illuminate\Support\Facades\Log;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Spatie\Sitemap\Sitemap;
@@ -20,9 +23,14 @@ use Spatie\Sitemap\Tags\Url;
 final class SitemapBuilder
 {
     /** Sub-sitemaps written next to the index, in public/. */
-    public const FILES = ['pages' => 'sitemap.pages.xml', 'blog' => 'sitemap.blog.xml'];
+    public const FILES = ['pages' => 'sitemap.pages.xml', 'blog' => 'sitemap.blog.xml', 'properties' => 'sitemap.properties.xml'];
 
-    public function __construct(private readonly ListBlogUrls $blogUrls, private readonly ListBlogCategoryUrls $categoryUrls) {}
+    public function __construct(
+        private readonly ListBlogUrls $blogUrls,
+        private readonly ListBlogCategoryUrls $categoryUrls,
+        private readonly ListDistrictListings $districtListings,
+        private readonly ListProperties $properties,
+    ) {}
 
     /**
      * Builds the index and the sub-sitemaps. Returns them keyed by file name (`sitemap.xml` first),
@@ -36,6 +44,7 @@ final class SitemapBuilder
         $files = [
             self::FILES['pages'] => ['sitemap' => $this->pages(), 'lastmod' => $this->pagesLastmod()],
             self::FILES['blog'] => ['sitemap' => $blog['sitemap'], 'lastmod' => $blog['lastmod']],
+            self::FILES['properties'] => ['sitemap' => $this->properties(), 'lastmod' => $this->pagesLastmod()],
         ];
 
         $index = SitemapIndex::create();
@@ -66,6 +75,67 @@ final class SitemapBuilder
                 }
                 $url->addAlternate($this->localized(LaravelLocalization::getDefaultLocale(), $page['path']), 'x-default');
 
+                $sitemap->add($url);
+            }
+        }
+
+        return $sitemap;
+    }
+
+    /**
+     * « Nos biens » family (user decision 2026-09-25): the listing page in every locale, with hreflang, then the clean
+     * district pages (`/nos-biens/paris-6e`, 2026-09-28) for every arrondissement with a property for sale. Property
+     * detail pages will be added here once they exist (one URL per property from `ListProperties`, lastmod = its update).
+     */
+    public function properties(): Sitemap
+    {
+        $sitemap = Sitemap::create();
+        $locales = array_keys(LaravelLocalization::getSupportedLocales());
+        $default = LaravelLocalization::getDefaultLocale();
+
+        foreach ($locales as $locale) {
+            $url = Url::create($this->localized($locale, 'routes.properties'))
+                ->setPriority(0.9)
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                ->setLastModificationDate($this->pagesLastmod());
+            foreach ($locales as $alt) {
+                $url->addAlternate($this->localized($alt, 'routes.properties'), $alt);
+            }
+            $url->addAlternate($this->localized($default, 'routes.properties'), 'x-default');
+            $sitemap->add($url);
+        }
+
+        // Detail pages (2026-09-28): every public listing in every locale, the twin rows sit at the same index; lastmod = its publication
+        $lists = collect($locales)->mapWithKeys(fn (string $locale) => [$locale => ($this->properties)($locale)]);
+        foreach ($lists[$default] as $index => $property) {
+            if ($property->offMarket) {
+                continue;
+            }
+            $detailUrl = fn (string $locale) => $this->localized($locale, 'routes.properties').'/'.($lists[$locale][$index]?->slug ?? $property->slug);
+            foreach ($locales as $locale) {
+                $url = Url::create($detailUrl($locale))
+                    ->setPriority(0.8)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                    ->setLastModificationDate($property->publishedAt ? new \DateTimeImmutable($property->publishedAt) : $this->pagesLastmod());
+                foreach ($locales as $alt) {
+                    $url->addAlternate($detailUrl($alt), $alt);
+                }
+                $url->addAlternate($detailUrl($default), 'x-default');
+                $sitemap->add($url);
+            }
+        }
+
+        $districtUrl = fn (string $locale, int $n) => $this->localized($locale, 'routes.properties').'/'.DistrictSlug::make($n, $locale);
+        foreach (($this->districtListings)($default) as $district) {
+            foreach ($locales as $locale) {
+                $url = Url::create($districtUrl($locale, $district['n']))
+                    ->setPriority(0.7)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                    ->setLastModificationDate($this->pagesLastmod());
+                foreach ($locales as $alt) {
+                    $url->addAlternate($districtUrl($alt, $district['n']), $alt);
+                }
+                $url->addAlternate($districtUrl($default, $district['n']), 'x-default');
                 $sitemap->add($url);
             }
         }

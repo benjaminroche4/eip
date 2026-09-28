@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Domain\Contact\Actions\SendContactMessage;
 use App\Domain\Contact\Data\ContactMessage;
 use App\Domain\Content\Actions\ListArrondissements;
+use App\Domain\Properties\Actions\ShowProperty;
 use App\Http\Requests\ContactRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,6 +27,17 @@ class ContactController extends Controller
      */
     private function prefill(Request $request, ListArrondissements $arrondissements): ?array
     {
+        // From a listing's detail page (`?property=slug`, 2026-09-28): the listing named in the message
+        $slug = (string) $request->query('property', '');
+        if ($slug !== '' && ($page = app(ShowProperty::class)($slug)) !== null) {
+            $p = $page->property;
+            $name = collect($arrondissements())->firstWhere('n', $p->arrondissement)?->name ?? "Paris {$p->arrondissement}";
+
+            return [
+                'topic' => $p->transaction === 'rent' ? 'other' : 'buy',
+                'message' => __('ui.contact.property_prefill', ['title' => $p->title, 'name' => $name, 'reference' => strtoupper(substr(md5($p->slug), 0, 6))]),
+            ];
+        }
         $n = DistrictsController::selectedFrom($request);
         if ($n === null) {
             return null;

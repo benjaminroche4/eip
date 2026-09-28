@@ -18,8 +18,8 @@ const viewBox = (d: string): string => {
 };
 
 /**
- * Outline of one arrondissement (its real shape from `lib/paris-arrondissements.ts`), decorative: a dark-sand hairline
- * only, no fill (user decision 2026-09-25), scaled to its own bounding box so every arrondissement fills the same
+ * Outline of one arrondissement (its real shape from `lib/paris-arrondissements.ts`), decorative: a light-sand hairline
+ * only, no fill, very discreet (user decisions 2026-09-25: « encore plus clair, très discret »), scaled to its own bounding box so every arrondissement fills the same
  * square. Inlaid large in the bottom-right corner of the district cards, overflowing the card and clipped by it.
  * Renders nothing for an unknown number.
  */
@@ -30,7 +30,7 @@ export default function ArrondissementGlyph({ arrondissement, className }: Arron
 
     return (
         <svg aria-hidden viewBox={viewBox(shape.d)} className={cn('pointer-events-none', className)} data-arrondissement={n}>
-            <path d={shape.d} className="stroke-secondary-60 fill-none" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+            <path d={shape.d} className="stroke-secondary-30 fill-none" strokeWidth="1.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
         </svg>
     );
 }

@@ -25,6 +25,7 @@ class SharedTranslationsTest extends TestCase
         'faq' => 'pages/faq.tsx',
         'blog' => ['pages/blog/index.tsx', 'pages/blog/show.tsx'],
         'search' => 'pages/search.tsx',
+        'off_market' => 'pages/off-market.tsx',
         'privacy' => 'pages/legal.tsx',
         'legal' => 'pages/legal.tsx',
         'sitemap' => 'pages/sitemap.tsx',

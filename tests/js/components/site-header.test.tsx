@@ -14,7 +14,10 @@ describe('SiteHeader', () => {
 
         expect(screen.getByRole('link', { name: 'Homepage' })).toHaveAttribute('href', '/');
         const nav = screen.getByRole('navigation', { name: 'Navigation principale' });
-        expect(within(nav).getAllByRole('link').length).toBeGreaterThanOrEqual(3);
+        expect(within(nav).getAllByRole('link').length).toBeGreaterThanOrEqual(4);
+        const properties = within(nav).getByRole('link', { name: 'Nos biens, 6 biens' }); // first entry, with the round sand counter (2026-09-25)
+        expect(properties).toHaveAttribute('href', '/nos-biens');
+        expect(properties.querySelector('.rounded-full')).toHaveClass('bg-secondary-30');
         expect(screen.getByRole('link', { name: 'Nous contacter' })).toHaveAttribute('href', '/contact');
         expect(screen.getByRole('link', { name: 'Nous contacter' }).querySelector('[aria-hidden]')!.className).toMatch(/animate-sweep-shimmer/); // discreet light sweep
     });
@@ -83,6 +86,11 @@ describe('SiteHeader', () => {
         expect(screen.getByRole('button', { name: 'Fermer le menu' })).toHaveAttribute('aria-expanded', 'true');
         const mobileNav = screen.getByRole('navigation', { name: 'Navigation mobile' });
         expect(within(mobileNav).getAllByRole('link')[0]).toHaveFocus();
+        // « Nos biens » counter: flush right on its row, white on the sand of the hovered / focused / current row (user decision 2026-09-28)
+        const counter = Array.from(within(mobileNav).getByRole('link', { name: 'Nos biens, 6 biens' }).querySelectorAll('[aria-hidden]')).find(
+            (el) => el.textContent === '6',
+        );
+        expect(counter).toHaveClass('ml-auto', 'group-hover:bg-card', 'group-focus-visible:bg-card', 'group-aria-[current=page]:bg-card');
 
         await user.keyboard('{Escape}');
         expect(screen.getByRole('button', { name: 'Ouvrir le menu' })).toHaveAttribute('aria-expanded', 'false');
@@ -160,15 +168,15 @@ describe('SiteHeader mobile menu layout', () => {
         // No divider between the bar and the first rows (tried and dropped the same day — user decision 2026-09-22)
         expect(mobileNav.querySelector(':scope > span[aria-hidden]')).toBeNull(); // no hairline under the bar (tried and dropped the same day — user decision 2026-09-22)
         // First level: thin grey icon + vertical hairline before the label (ui.sh variant « Hairline verticale »).
-        links.slice(0, 3).forEach((l) => {
+        links.slice(0, 4).forEach((l) => {
             expect(l.querySelector('svg')).not.toBeNull();
             expect(l.querySelector('span[aria-hidden].w-px')).not.toBeNull();
         });
-        links.slice(3).forEach((l) => expect(l.querySelector('svg')).toBeNull());
-        links.slice(0, 3).forEach((l) => expect(l).toHaveClass('font-medium')); // first level in medium, secondary stays regular
-        links.slice(3).forEach((l) => expect(l).not.toHaveClass('font-medium'));
-        expect(links[2]).toHaveTextContent('Estimer mon bienSous 24 h'); // action label + nudge badge on the valuation entry
-        expect(within(links[2]).getByText('Sous 24 h')).toHaveClass('rounded-none', 'bg-background-08'); // square sand badge (ui.sh variant « Carré sable »)
+        links.slice(4).forEach((l) => expect(l.querySelector('svg')).toBeNull());
+        links.slice(0, 4).forEach((l) => expect(l).toHaveClass('font-medium')); // first level in medium, secondary stays regular
+        links.slice(4).forEach((l) => expect(l).not.toHaveClass('font-medium'));
+        expect(links[3]).toHaveTextContent('Estimer mon bienSous 24 h'); // action label + nudge badge on the valuation entry
+        expect(within(links[3]).getByText('Sous 24 h')).toHaveClass('rounded-none', 'bg-background-08'); // square sand badge (ui.sh variant « Carré sable »)
         // Stack unfold: every row animates in, staggered 35 ms apart.
         const rows = links.map((l) => l.parentElement!);
         rows.forEach((li) => expect(li).toHaveClass('animate-menu-in'));
@@ -176,12 +184,12 @@ describe('SiteHeader mobile menu layout', () => {
         expect(rows[1].style.getPropertyValue('--stagger')).toBe('35ms');
 
         // Secondary links sit in a sand gradient well (ui.sh variant « Dégradé sable »).
-        expect(links[3].closest('ul')).toHaveClass('from-background-08', 'bg-linear-to-b');
-        expect(links[2].querySelector('svg')).toHaveClass('lucide-house');
+        expect(links[4].closest('ul')).toHaveClass('from-background-08', 'bg-linear-to-b');
+        expect(links[3].querySelector('svg')).toHaveClass('lucide-house');
         links.forEach((l) => expect(l).not.toHaveClass('after:h-px')); // plain hover, no drawn underline
-        links.slice(0, 3).forEach((l) => expect(l).toHaveClass('hover:bg-background-05')); // first level: sand hover
+        links.slice(0, 4).forEach((l) => expect(l).toHaveClass('hover:bg-background-05')); // first level: sand hover
         // Secondary links: white hover / current state on the sand well (user decision 2026-09-16).
-        links.slice(3).forEach((l) => {
+        links.slice(4).forEach((l) => {
             expect(l).toHaveClass('hover:bg-card', 'aria-[current=page]:bg-card');
             expect(l).not.toHaveClass('hover:bg-background-05');
         });

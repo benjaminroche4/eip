@@ -20,6 +20,13 @@ return [
     'relocation_url' => env('SEO_RELOCATION_URL', 'https://relocation-in-paris.fr/'),
     'theme_color' => '#202832',
 
+    // Google Maps JavaScript API (map of « Nos biens », 2026-09-25): key restricted to the site's domains in Google Cloud; a Map ID
+    // is required by the advanced markers (empty = Google's demo id, styled by us at runtime)
+    'google_maps' => [
+        'key' => env('GOOGLE_MAPS_API_KEY') ?: null,
+        'map_id' => env('GOOGLE_MAPS_MAP_ID') ?: 'DEMO_MAP_ID',
+    ],
+
     'organization' => [
         'name' => env('SEO_ORG_NAME', env('APP_NAME', 'Laravel')),
         'legal_name' => env('SEO_ORG_LEGAL_NAME'),

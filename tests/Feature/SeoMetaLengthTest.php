@@ -22,6 +22,8 @@ class SeoMetaLengthTest extends TestCase
             'faq' => ['ui.pages.faq.seo_title', 'ui.pages.faq.seo_description', true],
             'about' => ['ui.pages.about.seo_title', 'ui.pages.about.seo_description', true],
             'districts' => ['ui.pages.districts.seo_title', 'ui.pages.districts.seo_description', true],
+            'properties' => ['ui.pages.properties.seo_title', 'ui.pages.properties.seo_description', true],
+            'off_market' => ['ui.pages.off_market.seo_title', 'ui.pages.off_market.seo_description', true],
             'estimate' => ['ui.pages.estimate.seo_title', 'ui.pages.estimate.seo_description', true],
             'sell' => ['ui.pages.sell.seo_title', 'ui.pages.sell.seo_description', true],
             'buy' => ['ui.pages.buy.seo_title', 'ui.pages.buy.seo_description', true],

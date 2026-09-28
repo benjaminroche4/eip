@@ -143,7 +143,7 @@ export default function DistrictCards({ id, texts, items }: DistrictCardsProps) 
                             {/* The arrondissement's outline, large, overflowing the bottom-right corner and clipped by the card, behind the text (`-z-10` under the card's `isolate`) — decorative, user decision 2026-09-25 */}
                             <ArrondissementGlyph
                                 arrondissement={item.name}
-                                className="absolute -right-10 -bottom-12 -z-10 size-48 opacity-60 transition-opacity duration-300 group-hover:opacity-100 motion-reduce:transition-none"
+                                className="absolute -right-10 -bottom-12 -z-10 size-48 opacity-40 transition-opacity duration-300 group-hover:opacity-70 motion-reduce:transition-none"
                             />
                         </li>
                     ))}

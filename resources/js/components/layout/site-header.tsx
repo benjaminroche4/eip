@@ -1,5 +1,6 @@
 import LanguageSwitcher from '@/components/i18n/language-switcher';
 import BrandLogo from '@/components/layout/brand-logo';
+import CountBadge from '@/components/navigation/count-badge';
 import MobileMenuPanel from '@/components/navigation/mobile-menu-panel';
 import MobileMenuToggle from '@/components/navigation/mobile-menu-toggle';
 import NavDivider from '@/components/navigation/nav-divider';
@@ -16,7 +17,8 @@ import { useCallback, useId, useRef, useState } from 'react';
 /** Site header (Figma 137-2085 desktop, 125-361 mobile). */
 /** `overlay`: the header floats over a full-bleed hero (home) — the desktop gap above the card stays transparent until scrolled;
  *  on mobile the bar itself is transparent (white logo and burger) until scrolled or the menu opens (user decision 2026-09-25). */
-export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
+/** `sticky={false}`: the bar scrolls away with the page at every width (the properties page pins its filter bar instead). */
+export default function SiteHeader({ overlay = false, sticky = true }: { overlay?: boolean; sticky?: boolean }) {
     const { t } = useTranslation();
     const navItems = useNavItems();
     const contactHref = useContactHref();
@@ -65,7 +67,8 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
                 'lg:before:absolute lg:before:inset-x-0 lg:before:top-0 lg:before:-z-10 lg:before:transition-[height] lg:before:duration-500 lg:before:ease-[cubic-bezier(0.16,1,0.3,1)] lg:before:motion-reduce:transition-none',
                 !overlay && 'lg:before:bg-background',
                 scrolled ? 'lg:px-0 lg:pt-0 lg:before:h-0' : 'lg:px-5 lg:pt-3 lg:before:h-3',
-                hidden && '-translate-y-full lg:translate-y-0',
+                hidden && sticky && '-translate-y-full lg:translate-y-0',
+                !sticky && 'static',
             )}
         >
             {/* Floating card that morphs into an edge-to-edge solid white bar once scrolled */}
@@ -106,8 +109,9 @@ export default function SiteHeader({ overlay = false }: { overlay?: boolean }) {
 
                     <nav className="hidden flex-1 items-center gap-5 lg:flex" aria-label={t('nav.main')}>
                         {navItems.map((item) => (
-                            <NavLink key={item.key} href={item.href} active={isActive(item.href)}>
+                            <NavLink key={item.key} href={item.href} active={isActive(item.href)} aria-label={item.ariaLabel}>
                                 {item.label}
+                                {item.count !== undefined && <CountBadge count={item.count} />}
                             </NavLink>
                         ))}
                     </nav>

@@ -65,7 +65,7 @@ describe('BuyDistricts', () => {
             '7',
             '16',
         ]);
-        expect(cards[0].querySelector('svg[data-arrondissement] path')).toHaveClass('fill-none', 'stroke-secondary-60'); // outline only, overflowing and clipped by the card
+        expect(cards[0].querySelector('svg[data-arrondissement] path')).toHaveClass('fill-none', 'stroke-secondary-30'); // outline only, very light, overflowing and clipped by the card
         expect(cards[0]).toHaveClass('overflow-hidden', 'isolate');
         expect(cards[0].querySelector('svg[data-arrondissement]')).toHaveAttribute('aria-hidden', 'true');
         const chip = within(cards[0]).getByText('Forte demande');

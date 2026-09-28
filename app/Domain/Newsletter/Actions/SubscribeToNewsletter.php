@@ -23,11 +23,17 @@ final class SubscribeToNewsletter
         $subscriber = NewsletterSubscriber::firstOrNew(['email' => $subscription->email]);
 
         if ($subscriber->exists && $subscriber->unsubscribed_at === null) {
+            // An active subscriber can still attach (or change) the search to be alerted about
+            if ($subscription->search !== null) {
+                $subscriber->update(['search' => $subscription->search]);
+            }
+
             return $subscriber;
         }
 
         $subscriber->fill([
             'locale' => $subscription->locale,
+            'search' => $subscription->search,
             'ip' => $subscription->ip,
             'user_agent' => $subscription->userAgent,
             'subscribed_at' => now(),

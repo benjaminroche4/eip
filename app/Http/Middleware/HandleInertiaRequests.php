@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Domain\Localization\Support\LocalizedUrls;
 use App\Domain\Localization\Support\SharedTranslations;
+use App\Domain\Properties\Actions\ListProperties;
 use App\Domain\Seo\Support\OpeningHours;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
@@ -59,6 +60,8 @@ class HandleInertiaRequests extends Middleware
                 'valuationReference' => $request->session()->get('valuation_reference'),
             ],
             'localization' => fn () => app(LocalizedUrls::class)->forCurrentRequest(),
+            // Badge next to « Nos biens » in the header, the mobile menu and the footer (2026-09-25)
+            'propertiesCount' => fn () => app(ListProperties::class)->count(),
             // Only the `ui.php` sections this route's components read (see SharedTranslations): ~48 KB otherwise on every page
             'translations' => fn () => SharedTranslations::forRoute($request->route()?->getName()),
             'seo' => fn () => [

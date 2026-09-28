@@ -125,4 +125,20 @@ class NewsletterTest extends TestCase
             ->assertRedirect('/newsletter')
             ->assertSessionHasErrors(['email' => __('ui.newsletter.email_invalid')]);
     }
+
+    public function test_a_listing_search_can_be_attached_to_the_subscription_for_alerts(): void
+    {
+        Mail::fake();
+        // « Recevoir les nouveaux biens » from the listing: the page echoes the search to the form
+        $this->get('/newsletter?search=city%5B%5D%3D6%26budget%3D2000000')
+            ->assertInertia(fn (Assert $p) => $p->where('search', 'city[]=6&budget=2000000'));
+
+        $this->from('/newsletter')->post('/newsletter', ['email' => 'alert@example.com', 'search' => 'city[]=6&budget=2000000'])->assertRedirect('/newsletter');
+        $this->assertDatabaseHas('newsletter_subscribers', ['email' => 'alert@example.com', 'search' => 'city[]=6&budget=2000000']);
+
+        // An active subscriber can change the search to follow; junk is rejected
+        $this->from('/newsletter')->post('/newsletter', ['email' => 'alert@example.com', 'search' => 'type[]=loft'])->assertRedirect('/newsletter');
+        $this->assertDatabaseHas('newsletter_subscribers', ['email' => 'alert@example.com', 'search' => 'type[]=loft']);
+        $this->from('/newsletter')->post('/newsletter', ['email' => 'alert@example.com', 'search' => '<script>'])->assertSessionHasErrors('search');
+    }
 }

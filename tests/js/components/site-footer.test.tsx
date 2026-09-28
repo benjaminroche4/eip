@@ -14,7 +14,8 @@ describe('SiteFooter', () => {
             within(nav)
                 .getAllByRole('link')
                 .map((l) => l.textContent),
-        ).toEqual(['Acheter', 'Vendre', 'Estimation', 'Relocation(nouvel onglet)']);
+        ).toEqual(['Nos biens6', 'Acheter', 'Vendre', 'Estimation', 'Relocation(nouvel onglet)']); // « Nos biens » first with its round counter (digit aria-hidden + sr-only wording), 2026-09-25
+        expect(screen.getByRole('link', { name: 'Nos biens, 6 biens' }).querySelector('[aria-hidden]')).toHaveClass('bg-card'); // white counter on the sand footer (user decision 2026-09-28)
         const relocation = within(nav).getByRole('link', { name: /Relocation/ }); // sister agency: external, new tab
         expect(relocation).toHaveAttribute('href', 'https://relocation-in-paris.fr/');
         expect(relocation).toHaveAttribute('target', '_blank');

@@ -12,8 +12,8 @@ final class ArrayShape
 {
     /**
      * @param  array<string, mixed>  $data  the raw item from ui.php
-     * @param  array<string, 'string'|'array'>  $required  expected key => type
-     * @param  array<string, 'string'|'array'>  $optional  keys that may be absent (or null) but must match the type when present
+     * @param  array<string, 'string'|'array'|'int'|'bool'|'float'>  $required  expected key => type
+     * @param  array<string, 'string'|'array'|'int'|'bool'|'float'>  $optional  keys that may be absent (or null) but must match the type when present
      */
     public static function validate(string $type, array $data, array $required, array $optional = []): void
     {
@@ -31,7 +31,13 @@ final class ArrayShape
             if (! array_key_exists($key, $data) || ($data[$key] === null && isset($optional[$key]))) {
                 continue;
             }
-            $valid = $expected === 'array' ? is_array($data[$key]) : is_string($data[$key]);
+            $valid = match ($expected) {
+                'array' => is_array($data[$key]),
+                'int' => is_int($data[$key]),
+                'bool' => is_bool($data[$key]),
+                'float' => is_float($data[$key]) || is_int($data[$key]),
+                default => is_string($data[$key]),
+            };
             if (! $valid) {
                 throw new InvalidArgumentException(sprintf('%s from ui.php: "%s" must be a %s, %s given.', $type, $key, $expected, get_debug_type($data[$key])));
             }

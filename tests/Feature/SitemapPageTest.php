@@ -38,9 +38,11 @@ class SitemapPageTest extends TestCase
             ->assertInertia(fn (Assert $p) => $p->component('sitemap')
                 ->has('groups', 3)
                 ->where('groups.0.title', 'Nos services')
-                ->has('groups.0.links', 4)
-                ->where('groups.0.links.0.label', 'Acheter')
-                ->where('groups.0.links.0.href', url('/acheter-immobilier-paris'))
+                ->has('groups.0.links', 5)
+                ->where('groups.0.links.0.label', 'Nos biens') // first service link since 2026-09-25
+                ->where('groups.0.links.0.href', url('/nos-biens'))
+                ->where('groups.0.links.1.label', 'Acheter')
+                ->where('groups.0.links.1.href', url('/acheter-immobilier-paris'))
                 ->where('groups.1.title', 'Pages du site')
                 ->has('groups.1.links', 6) // home first, no search page (placeholder dataset)
                 ->where('groups.1.links.0.href', url('/'))
@@ -60,7 +62,7 @@ class SitemapPageTest extends TestCase
         $this->fakeSanity();
         $this->get('/en/sitemap')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('sitemap')->where('groups.0.links.0.href', url('/en/buy-property-paris'))->where('groups.2.links.2.href', url('/en/sitemap'))->where('blog.categories.0.posts.1.href', url('/en/blog/en-2')));
+            ->assertInertia(fn (Assert $p) => $p->component('sitemap')->where('groups.0.links.0.href', url('/en/properties'))->where('groups.0.links.1.href', url('/en/buy-property-paris'))->where('groups.2.links.2.href', url('/en/sitemap'))->where('blog.categories.0.posts.1.href', url('/en/blog/en-2')));
 
         $this->withLocale('en')->get('/en/plan-du-site')->assertNotFound();
         $this->withLocale('fr')->get('/conditions-generales')->assertNotFound(); // the former terms page
