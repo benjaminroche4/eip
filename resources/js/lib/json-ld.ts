@@ -168,6 +168,9 @@ export type ListingInput = {
     lat: number;
     lng: number;
     off_market?: boolean;
+    /** `Y-m-d`, the `datePosted` of a detail page. */
+    published_at?: string | null;
+    photo_alt?: string;
 };
 
 /**
@@ -175,18 +178,31 @@ export type ListingInput = {
  * accommodation it is about (type, floor size in m², rooms, bedrooms, the arrondissement's postal code, the position).
  * Confidential listings are left out: their details are hidden on purpose.
  */
-export function realEstateListings(properties: ListingInput[], origin: string, pageUrl: string, locale: string): JsonLd[] {
+/**
+ * One `RealEstateListing` per property. On the listing page each one is anchored (`#slug`); on a detail page
+ * (`standalone`) the listing IS the page: its url is the page's, `mainEntityOfPage` and `datePosted` are set.
+ */
+export function realEstateListings(properties: ListingInput[], origin: string, pageUrl: string, locale: string, standalone = false): JsonLd[] {
     const absolute = (url: string) => (url.startsWith('http') ? url : `${origin}${url}`);
     return properties
         .filter((p) => !p.off_market)
         .map((p) => ({
             '@type': 'RealEstateListing',
-            '@id': `${pageUrl}#${p.slug}`,
-            url: `${pageUrl}#${p.slug}`,
+            '@id': standalone ? pageUrl : `${pageUrl}#${p.slug}`,
+            url: standalone ? pageUrl : `${pageUrl}#${p.slug}`,
+            ...(standalone ? { mainEntityOfPage: pageUrl } : {}),
+            ...(p.published_at ? { datePosted: p.published_at } : {}),
             name: p.title,
             description: p.excerpt,
             inLanguage: locale,
-            image: p.photos.slice(0, 3).map((photo) => absolute(photo.replace('{w}', '1600'))),
+            image: standalone
+                ? p.photos.map((photo, i) => ({
+                      '@type': 'ImageObject',
+                      contentUrl: absolute(photo.replace('{w}', '1600')),
+                      url: absolute(photo.replace('{w}', '1600')),
+                      ...(p.photo_alt ? { caption: i === 0 ? p.photo_alt : `${p.photo_alt} (${i + 1})` } : {}),
+                  }))
+                : p.photos.slice(0, 3).map((photo) => absolute(photo.replace('{w}', '1600'))),
             offers: {
                 '@type': 'Offer',
                 price: p.price,

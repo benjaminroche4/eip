@@ -1,4 +1,5 @@
 import PropertyCard from '@/components/properties/property-card';
+import { router } from '@inertiajs/react';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -32,7 +33,7 @@ describe('PropertyCard', () => {
             .getAllByRole('listitem')
             .map((li) => li.textContent);
         expect(facts).toEqual(['2 chambres2 ch.', '4 pièces4 p.', '128 m²']); // sr-only wording + short visible label, then the surface
-        expect(screen.getByRole('link', { name: PROPERTY.title })).toHaveAttribute('href', `/nos-biens/${PROPERTY.slug}`); // the title links to the detail page (2026-09-28)
+        expect(screen.getByRole('link', { name: PROPERTY.title })).toHaveAttribute('href', `/nos-biens/achat/paris-6e/${PROPERTY.slug}`); // the title links to the detail page (2026-09-28)
         expect(await axe(container)).toHaveNoViolations();
     });
 
@@ -47,6 +48,18 @@ describe('PropertyCard', () => {
         expect(screen.queryByRole('group')).toBeNull();
         expect(screen.getByRole('img')).toHaveAttribute('alt', 'Salon haussmannien lumineux');
         expect(screen.getByRole('img')).toHaveClass('group-hover:scale-105'); // photo zooms on the card's hover
+        // Hover, ui.sh « Liseré lumineux » chosen among 15 (user decision 2026-09-29): pointer, map chip (`data-active`) and keyboard
+        // (`focus-within`) share one state — sand hairline, the site's light gliding along the frame, darker fact icons; no title
+        // underline (user decision), no shadow, no movement, reduced motion hides the light
+        const card = screen.getByRole('article');
+        expect(card).toHaveClass('relative', 'hover:border-secondary-60', 'data-active:border-secondary-60', 'focus-within:border-secondary-60');
+        expect(card).toHaveClass('transition-colors', 'motion-reduce:transition-none');
+        expect(card.className).not.toMatch(/shadow|hover:scale|hover:-translate|hover:bg-/);
+        const light = card.querySelector('.ring-mask')!;
+        expect(light).toHaveClass('opacity-0', 'group-hover:opacity-100', 'group-data-active:opacity-100', 'motion-reduce:hidden');
+        expect(light).toHaveAttribute('aria-hidden');
+        expect(screen.getByRole('link').className).not.toMatch(/after:/); // no drawn hairline under the title
+        expect(card.querySelector('ul svg')).toHaveClass('group-hover:text-foreground', 'group-data-active:text-foreground');
     });
 
     it('makes a featured listing stand out the chosen way: a sand « Coup de cœur » chip next to the availability and the light sweep across the price band (2026-09-28)', async () => {
@@ -99,5 +112,44 @@ describe('PropertyCard', () => {
         await user.click(full);
         expect(onCompare).toHaveBeenCalledTimes(1);
         expect(screen.queryByText('Nouveau')).toBeNull();
+    });
+
+    it('a click anywhere on the card opens the listing, except on a control, with a modifier, after a drag, or on a confidential listing (2026-09-29)', async () => {
+        const user = userEvent.setup();
+        const onCompare = vi.fn();
+        vi.mocked(router.visit).mockClear();
+        Element.prototype.scrollTo = vi.fn(); // jsdom has no smooth scroll; the arrow only needs to swallow the click
+        const { rerender } = renderPage(<PropertyCard property={PROPERTY} onCompare={onCompare} />);
+        const card = screen.getByRole('article');
+        expect(card).toHaveClass('cursor-pointer');
+
+        await user.click(within(card).getByText(/19 141/)); // the price band: not a link
+        expect(router.visit).toHaveBeenCalledWith(`/nos-biens/achat/paris-6e/${PROPERTY.slug}`);
+
+        vi.mocked(router.visit).mockClear();
+        await user.click(within(card).getByRole('button', { name: /^Comparer/ })); // a control keeps its own job
+        expect(onCompare).toHaveBeenCalled();
+        expect(router.visit).not.toHaveBeenCalled();
+        await user.click(within(card).getByRole('button', { name: 'Photo suivante' }));
+        expect(router.visit).not.toHaveBeenCalled();
+        await user.keyboard('{Meta>}');
+        await user.click(within(card).getByText(/19 141/));
+        await user.keyboard('{/Meta}');
+        expect(router.visit).not.toHaveBeenCalled(); // a modifier is the link's business (new tab)
+
+        // A drag of the photos (pointer moved 8px or more) is not a click
+        const band = within(card).getByText(/19 141/);
+        await user.pointer([
+            { keys: '[MouseLeft>]', target: band, coords: { x: 10, y: 10 } },
+            { target: band, coords: { x: 60, y: 12 } },
+            { keys: '[/MouseLeft]', target: band, coords: { x: 60, y: 12 } },
+        ]);
+        expect(router.visit).not.toHaveBeenCalled();
+
+        rerender(<PropertyCard property={{ ...PROPERTY, off_market: true }} />);
+        const confidential = screen.getByRole('article');
+        expect(confidential).not.toHaveClass('cursor-pointer');
+        await user.click(within(confidential).getByText(/Prix sur demande/));
+        expect(router.visit).not.toHaveBeenCalled(); // no public page for a confidential listing
     });
 });

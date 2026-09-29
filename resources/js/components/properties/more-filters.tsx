@@ -41,7 +41,7 @@ export const CONDITIONS = ['to_renovate', 'renovated', 'new'] as const;
 export const FLOORS = ['not_ground', 'top'] as const;
 const SURFACES = [50, 80, 100, 150, 200, 300];
 /** Icons of the filters (user decision 2026-09-28). */
-const FEATURE_ICONS: Record<(typeof FEATURES)[number], LucideIcon> = {
+export const FEATURE_ICONS: Record<(typeof FEATURES)[number], LucideIcon> = {
     elevator: ArrowUpDown,
     balcony: Sun,
     terrace: TreePalm,

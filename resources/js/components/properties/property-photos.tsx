@@ -13,6 +13,11 @@ type PropertyPhotosProps = {
     /** No row of dots (confidential cards: the photos are blurred, user decision 2026-09-28). */ dots?: boolean;
     /** Card above the fold: its first photo loads eagerly with high priority (LCP), the others stay lazy (2026-09-28). */
     priority?: boolean;
+    /** Image classes and `sizes` when the carousel leaves the card (the description strip: 16/9, the column's width, 2026-09-29). */
+    imageClass?: string;
+    sizes?: string;
+    /** Accessible name of the carousel (default « Photos de {title} »); the description strip needs its own, the gallery already carries that one. */
+    label?: string;
 };
 
 const arrowClass =
@@ -25,7 +30,16 @@ const arrowClass =
  * scroll goes through `scrollBehavior()`. The mouse drags the row too (`useDragScroll`, grab cursor) and the dots sit on
  * a translucent dark pill so they read on any photo (user decisions 2026-09-26). A single photo renders the image alone.
  */
-export default function PropertyPhotos({ photos, alt, title, dots = true, priority = false }: PropertyPhotosProps) {
+export default function PropertyPhotos({
+    photos,
+    alt,
+    title,
+    dots = true,
+    priority = false,
+    imageClass = 'aspect-[4/3]',
+    sizes = '(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw',
+    label,
+}: PropertyPhotosProps) {
     const { t } = useTranslation();
     const ref = useRef<HTMLDivElement>(null);
     const [index, setIndex] = useState(0);
@@ -54,12 +68,15 @@ export default function PropertyPhotos({ photos, alt, title, dots = true, priori
             <SeoImage
                 src={src.replace('{w}', '1600')}
                 srcSet={`${src.replace('{w}', '800')} 800w, ${src.replace('{w}', '1600')} 1600w`}
-                sizes="(min-width: 64rem) 24rem, (min-width: 40rem) 50vw, 100vw"
+                sizes={sizes}
                 alt={count > 1 ? t('properties.photo_n', { alt, n: i + 1, count }) : alt}
                 width={1600}
                 height={1200}
                 priority={priority && i === 0}
-                className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none"
+                className={cn(
+                    'w-full object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none',
+                    imageClass,
+                )}
             />
         </div>
     );
@@ -71,7 +88,7 @@ export default function PropertyPhotos({ photos, alt, title, dots = true, priori
             className="group/photos relative overflow-hidden"
             role="group"
             aria-roledescription="carousel"
-            aria-label={t('properties.photos_label', { title })}
+            aria-label={label ?? t('properties.photos_label', { title })}
         >
             <div
                 ref={ref}

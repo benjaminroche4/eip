@@ -25,7 +25,8 @@ class SharedTranslationsTest extends TestCase
         'faq' => 'pages/faq.tsx',
         'blog' => ['pages/blog/index.tsx', 'pages/blog/show.tsx'],
         'search' => 'pages/search.tsx',
-        'off_market' => 'pages/off-market.tsx',
+        'off_market' => ['pages/off-market.tsx', 'pages/properties/locked.tsx'],
+        'properties' => ['pages/properties/locked.tsx'], // the gate also stands in for a confidential detail page (2026-09-29)
         'privacy' => 'pages/legal.tsx',
         'legal' => 'pages/legal.tsx',
         'sitemap' => 'pages/sitemap.tsx',

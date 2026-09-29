@@ -221,6 +221,42 @@
 
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
+    /* Radix Collapsible (`ui/collapsible.tsx`): same slide as the accordions */
+    /* Fake caret of the OTP field (`ui/input-otp.tsx`, off-market gate, 2026-09-29) */
+    --animate-caret-blink: caret-blink 1.2s ease-out infinite;
+
+    @keyframes caret-blink {
+        0%,
+        70%,
+        100% {
+            opacity: 1;
+        }
+        20%,
+        50% {
+            opacity: 0;
+        }
+    }
+
+    --animate-collapsible-down: collapsible-down 0.2s ease-out;
+    --animate-collapsible-up: collapsible-up 0.2s ease-out;
+
+    @keyframes collapsible-down {
+        from {
+            height: 0;
+        }
+        to {
+            height: var(--radix-collapsible-content-height);
+        }
+    }
+
+    @keyframes collapsible-up {
+        from {
+            height: var(--radix-collapsible-content-height);
+        }
+        to {
+            height: 0;
+        }
+    }
 
     @keyframes accordion-down {
         from {

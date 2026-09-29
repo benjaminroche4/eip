@@ -400,6 +400,7 @@ describe('Properties page', () => {
         expect(within(quick).queryByRole('button', { name: 'Lancer ma recherche' })).toBeNull(); // compact: the dark square button is « Filtres »
         expect(within(quick).queryByRole('radiogroup', { name: 'Projet' })).toBeNull(); // the other criteria live in the modal
         expect(within(quick).getByText('Arrondissement')).toHaveClass('uppercase'); // the home bar's labels
+        expect(within(quick).getByText('Arrondissement').querySelector('svg')).toBeNull(); // no pin on the page's bar, only in the modal (user decision 2026-09-29)
         expect(within(quick).getByText('Budget')).toHaveAttribute('aria-hidden'); // shortened on screen, « Budget maximum » stays the accessible name
 
         const toggle = screen.getByRole('button', { name: 'Filtres, 1' }); // one criterion set in the modal (the type); the 8e is visible in the bar itself

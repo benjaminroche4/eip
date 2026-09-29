@@ -47,6 +47,31 @@ final readonly class Property implements Arrayable
         public bool $chargesIncluded = true,
         /** `Y-m-d`; null = unknown. « Nouveau » = published within the last 14 days. */
         public ?string $publishedAt = null,
+        /** Detail page content (2026-09-28): paragraphs, rooms with surfaces, building facts, energy labels, co-ownership, rental terms, media, price history, visit slots, transport. */
+        /** @var list<string> */
+        public array $description = [],
+        /** @var list<array{name: string, surface: int}> */
+        public array $roomsDetail = [],
+        public ?int $yearBuilt = null,
+        public ?string $heating = null,
+        public ?string $orientation = null,
+        public ?int $annualCharges = null,
+        public ?int $propertyTax = null,
+        /** @var array{energy: string, climate: string, cost_min: int, cost_max: int, year: int}|null */
+        public ?array $dpe = null,
+        public ?int $lots = null,
+        public ?bool $procedure = null,
+        /** Rent-control reference (monthly, rentals) and deposit. */
+        public ?int $rentReference = null,
+        public ?int $deposit = null,
+        /** @var list<array{date: string, price: int}> oldest first */
+        public array $priceHistory = [],
+        /** @var list<string> ISO local datetimes of the next open viewings */
+        public array $visits = [],
+        /** @var list<array{name: string, kind: string, lines: list<string>, minutes: int}> */
+        public array $transport = [],
+        /** `Y-m-d` once sold or let: the page stays online in noindex with a banner, the listing leaves the catalogue. */
+        public ?string $soldAt = null,
     ) {}
 
     public const FEATURES = ['elevator', 'balcony', 'terrace', 'top_floor', 'parking', 'concierge', 'view', 'cellar', 'quiet'];
@@ -62,7 +87,12 @@ final readonly class Property implements Arrayable
         ArrayShape::validate(self::class, $data, [
             'slug' => 'string', 'title' => 'string', 'arrondissement' => 'int', 'area' => 'string', 'type' => 'string', 'transaction' => 'string',
             'price' => 'int', 'surface' => 'int', 'rooms' => 'int', 'bedrooms' => 'int', 'excerpt' => 'string', 'photos' => 'array', 'photo_alt' => 'string', 'advisor' => 'int', 'available' => 'bool', 'lat' => 'float', 'lng' => 'float',
-        ], ['off_market' => 'bool', 'featured' => 'bool', 'features' => 'array', 'condition' => 'string', 'floor' => 'int', 'furnished' => 'bool', 'charges_included' => 'bool', 'published_at' => 'string']);
+        ], [
+            'off_market' => 'bool', 'featured' => 'bool', 'features' => 'array', 'condition' => 'string', 'floor' => 'int', 'furnished' => 'bool', 'charges_included' => 'bool', 'published_at' => 'string',
+            'description' => 'array', 'rooms_detail' => 'array', 'year_built' => 'int', 'heating' => 'string', 'orientation' => 'string', 'annual_charges' => 'int', 'property_tax' => 'int',
+            'dpe' => 'array', 'lots' => 'int', 'procedure' => 'bool', 'rent_reference' => 'int', 'deposit' => 'int',
+            'price_history' => 'array', 'visits' => 'array', 'transport' => 'array', 'sold_at' => 'string',
+        ]);
 
         return new self(
             slug: $data['slug'], title: $data['title'], arrondissement: $data['arrondissement'], area: $data['area'], type: $data['type'], transaction: $data['transaction'],
@@ -73,7 +103,28 @@ final readonly class Property implements Arrayable
             condition: in_array($data['condition'] ?? null, self::CONDITIONS, true) ? $data['condition'] : null,
             floor: $data['floor'] ?? null, furnished: (bool) ($data['furnished'] ?? false), chargesIncluded: (bool) ($data['charges_included'] ?? true),
             publishedAt: $data['published_at'] ?? null,
+            description: array_values(array_filter((array) ($data['description'] ?? []), 'is_string')),
+            roomsDetail: array_values((array) ($data['rooms_detail'] ?? [])),
+            yearBuilt: $data['year_built'] ?? null, heating: $data['heating'] ?? null, orientation: $data['orientation'] ?? null,
+            annualCharges: $data['annual_charges'] ?? null, propertyTax: $data['property_tax'] ?? null,
+            dpe: isset($data['dpe']['energy'], $data['dpe']['climate']) ? $data['dpe'] : null,
+            lots: $data['lots'] ?? null, procedure: $data['procedure'] ?? null,
+            rentReference: $data['rent_reference'] ?? null, deposit: $data['deposit'] ?? null,
+            priceHistory: array_values((array) ($data['price_history'] ?? [])), visits: array_values((array) ($data['visits'] ?? [])),
+            transport: array_values((array) ($data['transport'] ?? [])), soldAt: $data['sold_at'] ?? null,
         );
+    }
+
+    /** Sold or let: out of the catalogue, the page stays online in noindex. */
+    public function isSold(): bool
+    {
+        return $this->soldAt !== null;
+    }
+
+    /** Days the listing took to sell (published → sold), for the « Vendu en N jours » banner. */
+    public function daysToSell(): ?int
+    {
+        return $this->soldAt !== null && $this->publishedAt !== null ? (int) Carbon::parse($this->publishedAt)->diffInDays(Carbon::parse($this->soldAt)) : null;
     }
 
     /** Price per m² (rent: monthly rent per m²), rounded. */
@@ -97,6 +148,11 @@ final readonly class Property implements Arrayable
             'lat' => $this->lat, 'lng' => $this->lng, 'off_market' => $this->offMarket, 'featured' => $this->featured,
             'features' => $this->features, 'condition' => $this->condition, 'floor' => $this->floor, 'furnished' => $this->furnished, 'charges_included' => $this->chargesIncluded,
             'published_at' => $this->publishedAt, 'is_new' => $this->isNew(), 'price_sqm' => $this->pricePerSqm(),
+            'description' => $this->description, 'rooms_detail' => $this->roomsDetail, 'year_built' => $this->yearBuilt, 'heating' => $this->heating, 'orientation' => $this->orientation,
+            'annual_charges' => $this->annualCharges, 'property_tax' => $this->propertyTax, 'dpe' => $this->dpe, 'lots' => $this->lots, 'procedure' => $this->procedure,
+            'rent_reference' => $this->rentReference, 'deposit' => $this->deposit,
+            'price_history' => $this->priceHistory, 'visits' => $this->visits, 'transport' => $this->transport,
+            'sold_at' => $this->soldAt, 'days_to_sell' => $this->daysToSell(),
         ];
     }
 }

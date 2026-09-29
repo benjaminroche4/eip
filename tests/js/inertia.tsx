@@ -25,7 +25,8 @@ const ROUTES: Record<string, string> = {
 export function routeStub(name?: string, params?: Record<string, string | number>): string & { has: (n: string) => boolean } {
     if (name === undefined) return { has: (n: string) => n in ROUTES } as never;
     // Listing detail and district pages: the slug is part of the path (2026-09-28)
-    if (name === 'properties.show' && params?.slug !== undefined) return `/nos-biens/${params.slug}` as never;
+    if (name === 'properties.show' && params?.slug !== undefined)
+        return `/nos-biens/${params.transaction}/${params.district}/${params.slug}` as never;
     if (name === 'properties.district' && params?.district !== undefined) return `/nos-biens/${params.district}` as never;
     const path = ROUTES[name] ?? `/${name}`;
     const query = params ? new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)])).toString() : '';

@@ -2,7 +2,7 @@ import { type Property } from '@/components/properties/property-card';
 
 /** One sale of the sample, as `Property::toArray()` sends it. */
 export const PROPERTY: Property = {
-    slug: 'appartement-saint-germain-des-pres-6e',
+    slug: 'appartement-saint-germain-des-pres',
     title: 'Appartement haussmannien, Saint-Germain-des-Prés',
     arrondissement: 6,
     area: 'Saint-Germain-des-Prés',

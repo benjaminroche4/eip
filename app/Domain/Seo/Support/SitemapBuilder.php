@@ -8,6 +8,7 @@ use App\Domain\Blog\Exceptions\SanityRequestFailed;
 use App\Domain\Properties\Actions\ListDistrictListings;
 use App\Domain\Properties\Actions\ListProperties;
 use App\Domain\Properties\Support\DistrictSlug;
+use App\Domain\Properties\Support\PropertyUrl;
 use Illuminate\Support\Facades\Log;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Spatie\Sitemap\Sitemap;
@@ -111,7 +112,7 @@ final class SitemapBuilder
             if ($property->offMarket) {
                 continue;
             }
-            $detailUrl = fn (string $locale) => $this->localized($locale, 'routes.properties').'/'.($lists[$locale][$index]?->slug ?? $property->slug);
+            $detailUrl = fn (string $locale) => PropertyUrl::make($property->transaction, $property->arrondissement, $lists[$locale][$index]?->slug ?? $property->slug, $locale);
             foreach ($locales as $locale) {
                 $url = Url::create($detailUrl($locale))
                     ->setPriority(0.8)

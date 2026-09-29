@@ -540,7 +540,8 @@ export default function SearchBar({
     const cityCell = (
         <Cell ref={cityCellRef} className={cn(extended && 'sm:flex-[1.4]', compact && cn(compactCellClass, 'flex-[1.3]'), stackedCell)}>
             <label htmlFor={`${id}-city`} className={cn(labelClass, 'flex items-center gap-1.5')}>
-                {extended && <MapPin aria-hidden className="size-3.5" strokeWidth={1.5} />}
+                {/* The pin only inside the filters modal (stacked), never on the page's bar (user decision 2026-09-29) */}
+                {extended && !compact && <MapPin aria-hidden className="size-3.5" strokeWidth={1.5} />}
                 {t('search_bar.city')}
             </label>
             {cities.map((n) => (

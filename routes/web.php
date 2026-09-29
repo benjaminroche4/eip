@@ -60,11 +60,13 @@ Route::group([
     Route::get(LaravelLocalization::transRoute('routes.properties').'/{district}', [PropertiesController::class, 'district'])
         ->where('district', DistrictSlug::PATTERN)
         ->name('properties.district');
-    // Detail page of a listing (2026-09-28): any other slug under the listing (the district pattern is matched first)
-    Route::get(LaravelLocalization::transRoute('routes.properties').'/{slug}', [PropertyController::class, 'show'])
-        ->where('slug', '[a-z0-9-]+')
+    // Detail page of a listing (SEO, 2026-09-28 / 29): the transaction, the arrondissement, the slug —
+    // `/nos-biens/achat/paris-6e/appartement-saint-germain-des-pres` ↔ `/en/properties/buy/paris-6th/…`
+    Route::get(LaravelLocalization::transRoute('routes.properties').'/{transaction}/{district}/{slug}', [PropertyController::class, 'show'])
+        ->where(['transaction' => 'achat|location|buy|rent', 'district' => DistrictSlug::PATTERN, 'slug' => '[a-z0-9-]+'])
         ->name('properties.show');
     Route::get(LaravelLocalization::transRoute('routes.off_market'), OffMarketController::class)->name('off_market');
+    Route::post(LaravelLocalization::transRoute('routes.off_market'), [OffMarketController::class, 'unlock'])->middleware('throttle:off_market')->name('off_market.unlock');
     Route::get(LaravelLocalization::transRoute('routes.sell'), SellController::class)->name('sell');
 
     Route::get(LaravelLocalization::transRoute('routes.sitemap'), SitemapPageController::class)->name('sitemap');

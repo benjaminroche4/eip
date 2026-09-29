@@ -1,12 +1,13 @@
+import BorderShimmer from '@/components/page/border-shimmer';
 import PropertyPhotos from '@/components/properties/property-photos';
 import SeoImage from '@/components/seo/seo-image';
 import { Badge } from '@/components/ui/badge';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatPrice } from '@/lib/format-price';
-import { linkClass } from '@/lib/hover-surface';
 import { ordinal } from '@/lib/ordinal';
+import { propertyUrl } from '@/lib/property-url';
 import { cn } from '@/lib/utils';
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { BedDouble, Check, Columns3, LayoutGrid, Lock, Maximize2, Sparkles } from 'lucide-react';
 import { type ReactNode } from 'react';
 
@@ -45,7 +46,24 @@ export type Property = {
     published_at?: string | null;
     /** Published within the last 14 days (server-computed). */
     is_new?: boolean;
-    price_sqm?: number;
+    price_sqm?: number /** Detail page content (2026-09-28). */;
+    description?: string[];
+    rooms_detail?: { name: string; surface: number }[];
+    year_built?: number | null;
+    heating?: string | null;
+    orientation?: string | null;
+    annual_charges?: number | null;
+    property_tax?: number | null;
+    dpe?: { energy: string; climate: string; cost_min: number; cost_max: number; year: number } | null;
+    lots?: number | null;
+    procedure?: boolean | null;
+    rent_reference?: number | null;
+    deposit?: number | null;
+    price_history?: { date: string; price: number }[];
+    visits?: string[];
+    transport?: { name: string; kind: 'metro' | 'rer'; lines: string[]; minutes: number }[];
+    sold_at?: string | null;
+    days_to_sell?: number | null;
 };
 
 type PropertyCardProps = {
@@ -65,7 +83,8 @@ type PropertyCardProps = {
  * language (square corners, sand hairlines, no shadow): photo inset by `p-1.5`, then the availability badge **inset on the photo** (no advisor portrait, user decision 2026-09-26) (ui.sh variant « Badge sur la photo » chosen among 15, user decision
  * 2026-09-26), the price large on a **sand band** with the price per m² and the fees note (« / mois · charges » for rents; photos scroll and zoom on hover in `PropertyPhotos`), the
  * « Achat · Paris 6e » eyebrow + the listing title as h3 in normal weight, and the footer row « 2 ch. · 4 p. · 128 m² » with thin icons (full wording sr-only) (bedrooms, rooms, surface) with thin icons separated by
- * hairlines. No detail page yet: the card is not a link. `active` = its marker is hovered on the map.
+ * hairlines. The title links to the detail page and a click anywhere on the card follows it (2026-09-29). `active` = its marker is hovered on the map: the card then shows its
+ * hover state (see `shell`, hover rework 2026-09-29).
  */
 export default function PropertyCard({
     property,
@@ -78,6 +97,7 @@ export default function PropertyCard({
 }: PropertyCardProps) {
     const { t, tc, locale } = useTranslation();
     const arrondissement = `Paris ${ordinal(property.arrondissement, locale)}`;
+    const url = propertyUrl(property, locale);
 
     const isRent = property.transaction === 'rent';
     const priceNode = (
@@ -101,9 +121,9 @@ export default function PropertyCard({
                 <span className="sr-only">{t('properties.location', { arrondissement })}</span>
                 <span aria-hidden>{arrondissement}</span>
             </p>
-            {/* The title links to the listing's detail page (2026-09-28); the whole card stays hover-only to keep the photos swipeable */}
+            {/* The title is the real link to the detail page (2026-09-28); the whole card follows it on click (2026-09-29, see `onClick`) */}
             <h3 className="text-base/6 font-normal text-balance">
-                <Link href={route('properties.show', { slug: property.slug })} prefetch className={cn(linkClass, 'focus-ring')}>
+                <Link href={url} prefetch className="focus-ring">
                     {property.title}
                 </Link>
             </h3>
@@ -111,7 +131,11 @@ export default function PropertyCard({
     );
     const fact = (Icon: typeof BedDouble, sr: string, value: string, className?: string) => (
         <li className={cn('flex items-center gap-1.5 whitespace-nowrap tabular-nums', className)}>
-            <Icon aria-hidden className="text-muted-foreground size-4" strokeWidth={1.5} />
+            <Icon
+                aria-hidden
+                className="text-muted-foreground group-hover:text-foreground group-data-active:text-foreground group-focus-within:text-foreground size-4 transition-colors duration-300 motion-reduce:transition-none"
+                strokeWidth={1.5}
+            />
             {sr === value ? (
                 value
             ) : (
@@ -147,18 +171,50 @@ export default function PropertyCard({
         </ul>
     );
     const photos = <PropertyPhotos photos={property.photos} alt={property.photo_alt} title={property.title} priority={priority} />;
+    // The whole card leads to the listing (user decision 2026-09-29): the title stays the real link (keyboard, crawlers);
+    // a click anywhere else follows it, unless it landed on a control (photo arrows, comparison tick), came with a
+    // modifier (new tab is the link's job), followed a drag of the photos (8px or more), or the listing has no public
+    // page (confidential). Plain-text selection is left alone too.
+    const pressed = { x: 0, y: 0 };
+    const onPointerDown = (e: React.PointerEvent) => {
+        pressed.x = e.clientX;
+        pressed.y = e.clientY;
+    };
+    const onClick = (e: React.MouseEvent<HTMLElement>) => {
+        if (property.off_market || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if ((e.target as HTMLElement).closest('a, button, input, select, textarea, label')) return;
+        if (Math.hypot(e.clientX - pressed.x, e.clientY - pressed.y) >= 8) return;
+        if (window.getSelection()?.toString()) return;
+        router.visit(url);
+    };
     const shell = (className: string, children: ReactNode) => (
         <article
             id={property.slug}
             data-active={active || undefined}
             onPointerEnter={() => onActivate?.(property.slug)}
             onPointerLeave={() => onActivate?.(null)}
-            className={cn('group flex w-full flex-col transition-colors duration-300 motion-reduce:transition-none', className)}
+            onPointerDown={onPointerDown}
+            onClick={onClick}
+            className={cn(
+                !property.off_market && 'cursor-pointer',
+                // Hover, ui.sh « Liseré lumineux » chosen among 15 (user decision 2026-09-29): one state for the pointer, the map
+                // chip (`data-active`) and the keyboard (`focus-within`) — the hairline turns sand and the site's light glides
+                // along it (`BorderShimmer`, faded in), the fact icons darken, the photo keeps its slow zoom. No underline on the
+                // title (user decision). Colours only, 300 ms expo-out; reduced motion hides the light and cuts the transitions.
+                'group relative flex w-full flex-col transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+                'hover:border-secondary-60 data-active:border-secondary-60 focus-within:border-secondary-60',
+                className,
+            )}
         >
             {children}
         </article>
     );
-    const frame = active ? 'border-foreground/40' : 'hover:border-foreground/40';
+    // The sand band deepens with the card's hover / active / focus (the gutter around it turns light sand, the band must stay ahead)
+    const bandClass = 'bg-background-05 flex flex-wrap items-baseline justify-between gap-x-3 px-3 py-2';
+    // The light along the frame, invisible until the card's hover / active / focus
+    const shimmer = (
+        <BorderShimmer className="opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100 group-data-active:opacity-100" />
+    );
     const note = (
         <span className="text-right text-xs tabular-nums">
             {isRent ? t('properties.per_month') : t('properties.per_sqm', { price: formatPrice(property.price / property.surface, locale) })}
@@ -171,9 +227,10 @@ export default function PropertyCard({
     // title, arrondissement and facts stay visible. The gated off-market page shows the full cards.
     if (property.off_market) {
         return shell(
-            cn('border-border bg-card border p-1.5', frame),
+            'border-border bg-card border p-1.5',
             <>
                 <div className="relative">
+                    {shimmer}
                     {/* One still photo, no carousel (user decision 2026-09-28): the blur says the rest is reserved */}
                     <div className="overflow-hidden">
                         <SeoImage
@@ -200,7 +257,7 @@ export default function PropertyCard({
                         </span>
                     </div>
                 </div>
-                <p className="bg-background-05 flex flex-wrap items-baseline justify-between gap-x-3 px-3 py-2">
+                <p className={bandClass}>
                     <span className="font-heading text-xl font-semibold">
                         <span className="sr-only">{t('properties.price')}: </span>
                         {t('off_market.price_on_request')}
@@ -247,10 +304,11 @@ export default function PropertyCard({
     // under reduced motion, the chip alone then carries the distinction.
     if (property.featured) {
         return shell(
-            cn('border-border bg-card border p-1.5', frame),
+            'border-border bg-card border p-1.5',
             <>
                 <div className="relative">
                     {photos}
+                    {shimmer}
                     {compareToggle}
                     <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                         {availability}
@@ -264,7 +322,7 @@ export default function PropertyCard({
                         </Badge>
                     </div>
                 </div>
-                <p className="bg-background-05 relative flex flex-wrap items-baseline justify-between gap-x-3 overflow-hidden px-3 py-2">
+                <p className={cn(bandClass, 'relative overflow-hidden')}>
                     <span
                         aria-hidden
                         className="animate-sweep-shimmer via-secondary-30/70 pointer-events-none absolute inset-y-0 left-0 w-1/2 skew-x-[-12deg] bg-linear-to-r from-transparent to-transparent blur-[2px] motion-reduce:hidden"
@@ -280,10 +338,11 @@ export default function PropertyCard({
     }
 
     return shell(
-        cn('border-border bg-card border p-1.5', frame),
+        'border-border bg-card border p-1.5',
         <>
             <div className="relative">
                 {photos}
+                {shimmer}
                 {/* Availability inset on the photo (ui.sh « Badge sur la photo », user decision 2026-09-26; the advisor portrait was removed the same day) */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                     {availability}
@@ -292,7 +351,7 @@ export default function PropertyCard({
                 {compareToggle}
             </div>
             {/* Price band glued to the photo (ui.sh « Bandeau collé à la photo » chosen among 15 structures, user decision 2026-09-26): the price per m² in the text colour, only the fees note muted */}
-            <p className="bg-background-05 flex flex-wrap items-baseline justify-between gap-x-3 px-3 py-2">
+            <p className={bandClass}>
                 {priceNode} {note}
             </p>
             <div className="flex flex-1 flex-col gap-4 p-3 pt-3">

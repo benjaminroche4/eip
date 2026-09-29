@@ -30,7 +30,7 @@ class PropertiesTest extends TestCase
                 ->has('properties', 6) // the 6 sales of the sample (the 2 rentals are behind « Location »)
                 ->where('pagination', ['page' => 1, 'lastPage' => 1, 'total' => 6, 'perPage' => 12])
                 ->where('indexing', ['noindex' => false, 'canonical' => url('/nos-biens'), 'prev' => null, 'next' => null])
-                ->where('properties.0.slug', 'appartement-saint-germain-des-pres-6e')
+                ->where('properties.0.slug', 'appartement-saint-germain-des-pres')
                 ->where('properties.0.arrondissement', 6)
                 ->where('properties.0.transaction', 'sale')
                 ->where('properties.0.price', 2450000)
@@ -109,7 +109,7 @@ class PropertiesTest extends TestCase
     public function test_listing_is_paginated_on_the_server_with_a_merge_prop_past_page_one(): void
     {
         // 30 sales: the sample repeated with distinct slugs (the Sanity catalogue will be bigger than the sample)
-        $sample = collect(__('properties.sample'))->where('transaction', 'sale')->values();
+        $sample = collect(__('properties.sample'))->where('transaction', 'sale')->reject(fn (array $r) => isset($r['sold_at']))->values(); // the sold one stays out
         $this->app->bind(ListProperties::class, fn () => new ListProperties(
             fn () => collect(range(0, 29))->map(fn (int $i) => ['slug' => "bien-$i"] + $sample[$i % $sample->count()])->all(),
         ));

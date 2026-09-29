@@ -113,6 +113,22 @@
     --color-rer-d: #00814f;
     --color-rer-e: #c04191;
 
+    /* Energy labels (DPE / GES), the official ADEME scale colours (2026-09-28) */
+    --color-dpe-a: #00a06d;
+    --color-dpe-b: #52b153;
+    --color-dpe-c: #c8d200;
+    --color-dpe-d: #ffe600;
+    --color-dpe-e: #f9b000;
+    --color-dpe-f: #ec6f1e;
+    --color-dpe-g: #d7221f;
+    --color-ges-a: #a3d1f2;
+    --color-ges-b: #8fb8e6;
+    --color-ges-c: #7a9fd9;
+    --color-ges-d: #6586cc;
+    --color-ges-e: #4f6dbf;
+    --color-ges-f: #3a54b2;
+    --color-ges-g: #253ba5;
+
     /* Text (Figma variables) */
     --color-text-heading: #0f1b29;
     --color-text-body: #545b67;

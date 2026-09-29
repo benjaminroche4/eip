@@ -159,4 +159,25 @@ class PropertyQueryTest extends TestCase
         $this->assertTrue($sample[0]->toArray()['is_new']);
         Carbon::setTestNow();
     }
+
+    public function test_a_property_knows_when_it_is_sold_and_how_long_it_took(): void
+    {
+        $rows = collect(__('properties.sample', [], 'fr'));
+        $sold = Property::fromArray($rows->firstWhere('slug', 'appartement-luxembourg'));
+        $this->assertTrue($sold->isSold());
+        $this->assertSame(23, $sold->daysToSell());
+        $this->assertSame('2026-09-12', $sold->toArray()['sold_at']);
+        $live = Property::fromArray($rows->firstWhere('slug', 'appartement-passy'));
+        $this->assertFalse($live->isSold());
+        $this->assertNull($live->daysToSell());
+        // The richer fields ride along, optional and typed
+        $this->assertSame('C', $live->dpe['energy']);
+        $this->assertCount(2, $live->description);
+        $this->assertSame(1931, $live->toArray()['year_built']);
+        // The catalogue leaves the sold one out, `all()` keeps it
+        $list = new ListProperties;
+        $this->assertNull($list()->firstWhere('slug', 'appartement-luxembourg'));
+        $this->assertNotNull($list->all()->firstWhere('slug', 'appartement-luxembourg'));
+        $this->assertSame(8, $list->count());
+    }
 }

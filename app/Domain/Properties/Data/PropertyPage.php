@@ -17,5 +17,8 @@ final readonly class PropertyPage
         public Property $property,
         public array $slugs,
         public array $similar,
+        /** Previous / next catalogue listing of the same transaction (2026-09-28). */
+        public ?Property $previous = null,
+        public ?Property $next = null,
     ) {}
 }

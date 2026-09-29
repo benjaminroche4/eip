@@ -16,15 +16,21 @@ final class ListProperties
     /** @param  (Closure(?string): list<array<string, mixed>>)|null  $source  rows provider (tests, or the Sanity query later); null = the localized sample */
     public function __construct(private ?Closure $source = null) {}
 
-    /** @return Collection<int, Property> */
+    /** The catalogue: every listing not sold or let (sold ones only live on their own page, `all()`). @return Collection<int, Property> */
     public function __invoke(?string $locale = null): Collection
+    {
+        return $this->all($locale)->reject(fn (Property $p) => $p->isSold())->values();
+    }
+
+    /** Every row, sold ones included (the detail page keeps them online in noindex, 2026-09-28). @return Collection<int, Property> */
+    public function all(?string $locale = null): Collection
     {
         return collect($this->rows($locale))->map(fn (array $row) => Property::fromArray($row))->values();
     }
 
     public function count(): int
     {
-        return count($this->rows());
+        return $this->__invoke()->count();
     }
 
     /**

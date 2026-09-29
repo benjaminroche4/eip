@@ -28,7 +28,7 @@ final class SharedTranslations
         'about' => ['about', 'team', 'values', 'testimonials'],
         'faq' => ['faq'],
         'districts' => ['districts'],
-        'properties' => ['properties', 'search_bar', 'off_market', 'property'], // off_market: the confidential card's wording; property: the detail page
+        'properties' => ['properties', 'search_bar', 'off_market', 'property', 'contact'], // off_market: the confidential card's wording; property: the detail page; contact: its viewing request form (2026-09-28)
         'off_market' => ['off_market', 'properties'], // properties: type labels, facts wording
         'blog' => ['blog', 'faq'],
         'search' => ['search'],

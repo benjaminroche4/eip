@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatPrice } from '@/lib/format-price';
 import { ordinal } from '@/lib/ordinal';
+import { propertyUrl } from '@/lib/property-url';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { X } from 'lucide-react';
@@ -56,11 +57,11 @@ function Show({
     variant?: 'outline' | 'default' | 'neutral';
     className?: string;
 }) {
-    const { t } = useTranslation();
+    const { t, locale } = useTranslation();
     // A real link to the detail page (2026-09-28); `onShow` still lets the page close the map view / the mini card
     return (
         <Button asChild variant={variant} size="sm" className={className}>
-            <Link href={route('properties.show', { slug: property.slug })} prefetch onClick={() => onShow(property.slug)}>
+            <Link href={propertyUrl(property, locale)} prefetch onClick={() => onShow(property.slug)}>
                 {t('properties.preview_show')}
             </Link>
         </Button>

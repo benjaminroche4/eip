@@ -25,7 +25,7 @@ describe('MapPreview', () => {
         expect(onClose).toHaveBeenCalledTimes(2);
         // « Voir le bien » is a real link to the detail page (2026-09-28); the click still tells the page (map view closes)
         const show = screen.getByRole('link', { name: 'Voir le bien' });
-        expect(show).toHaveAttribute('href', `/nos-biens/${PROPERTY.slug}`);
+        expect(show).toHaveAttribute('href', `/nos-biens/achat/paris-6e/${PROPERTY.slug}`);
         await user.click(show);
         expect(onShow).toHaveBeenCalledWith(PROPERTY.slug);
         expect(await axe(container)).toHaveNoViolations();

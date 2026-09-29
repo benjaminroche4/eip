@@ -44,5 +44,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('contact', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
         RateLimiter::for('newsletter', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
         RateLimiter::for('estimate', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
+        // The off-market access code: five tries a minute per IP against a six-digit code (2026-09-29)
+        RateLimiter::for('off_market', fn (Request $request) => Limit::perMinute(5)->by($request->ip()));
     }
 }
