@@ -43,7 +43,7 @@ describe('PropertyAdvisorCard', () => {
                 reference="AP-6"
             />,
         );
-        expect(screen.getByText(/Baisse de 4 % le 12 septembre 2026/)).toBeInTheDocument();
+        expect(screen.queryByText(/Baisse de/)).toBeNull(); // the price-drop line was removed (2026-09-30)
         // The advisor sits in a white, sand-lined panel (variante ui.sh « Conseiller encadré » choisie parmi 24, 2026-09-29)
         expect(screen.getByText('Maris Moreau').closest('.border-secondary-30')).toHaveClass('bg-card', 'border', 'p-3');
     });

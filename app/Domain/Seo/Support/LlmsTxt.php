@@ -2,9 +2,19 @@
 
 namespace App\Domain\Seo\Support;
 
+use App\Domain\Properties\Actions\ListDistrictListings;
+
 /** https://llmstxt.org — concise, factual site description for LLM crawlers (FR + EN). */
 final class LlmsTxt
 {
+    public function __construct(private ListDistrictListings $districtListings) {}
+
+    /** « [Paris 3e](url) · [Paris 6e](url) … » (2026-09-30). */
+    private function districtLinks(string $locale): string
+    {
+        return collect(($this->districtListings)($locale))->map(fn (array $d) => "[{$d['name']}]({$d['url']})")->implode(' · ') ?: '-';
+    }
+
     public function build(): string
     {
         $name = config('seo.site_name');
@@ -23,6 +33,8 @@ final class LlmsTxt
             '- [Accueil]('.url('/').") : présentation de {$name}, immobilier de prestige à Paris.",
             '- [Rechercher un bien]('.url('/recherche').') : appartements, hôtels particuliers et biens off-market à Paris.',
             '- [Nos biens]('.url('/nos-biens').') : les appartements, hôtels particuliers et biens off-market actuellement proposés par l\'agence à Paris.',
+            '- [Nos biens à louer]('.url('/nos-biens/location').') : les appartements de prestige actuellement à la location à Paris.',
+            '- Nos biens par arrondissement : '.$this->districtLinks('fr').' (une page par arrondissement où l\'agence a un bien, avec le profil du quartier et son prix moyen au m²).',
             '- [Acheter]('.url('/acheter-immobilier-paris').') : appartements, hôtels particuliers et biens off-market à Paris.',
             '- [Vendre]('.url('/vendre-immobilier-paris').') : vente de biens de prestige à Paris auprès d\'acquéreurs qualifiés.',
             '- [Estimation]('.url('/estimation-immobiliere-paris').') : estimation gratuite d\'un bien à Paris.',
@@ -38,6 +50,8 @@ final class LlmsTxt
             '- [Home]('.url('/en').") : {$name}, luxury real estate in Paris.",
             '- [Search a property]('.url('/en/search').') : apartments, private mansions and off-market properties in Paris.',
             '- [Our properties]('.url('/en/properties').') : the apartments, private mansions and off-market properties currently offered by the agency in Paris.',
+            '- [Our rentals]('.url('/en/properties/rent').') : the luxury apartments currently to rent in Paris.',
+            '- Our properties by arrondissement: '.$this->districtLinks('en').' (one page per arrondissement where the agency has a listing, with the district profile and its average price per sqm).',
             '- [Buy]('.url('/en/buy-property-paris').') : apartments, private mansions and off-market properties in Paris.',
             '- [Sell]('.url('/en/sell-property-paris').') : selling luxury property in Paris to qualified buyers.',
             '- [Valuation]('.url('/en/property-valuation-paris').') : free valuation of a property in Paris.',

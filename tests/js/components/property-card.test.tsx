@@ -93,33 +93,19 @@ describe('PropertyCard', () => {
         expect(screen.getByText('128 m²')).toBeInTheDocument();
     });
 
-    it('flags a listing published within 14 days as « Nouveau » next to the availability, and offers the comparison tick', async () => {
-        const user = userEvent.setup();
-        const onCompare = vi.fn();
-        const { rerender } = renderPage(<PropertyCard property={{ ...PROPERTY, is_new: true }} onCompare={onCompare} />);
+    it('flags a listing published within 14 days as « Nouveau » next to the availability', () => {
+        const { rerender } = renderPage(<PropertyCard property={{ ...PROPERTY, is_new: true }} />);
         expect(screen.getByText('Nouveau')).toHaveClass('bg-secondary-60');
         expect(screen.getByText('Disponible').parentElement).toContainElement(screen.getByText('Nouveau'));
-        const tick = screen.getByRole('button', { name: `Comparer : ${PROPERTY.title}` });
-        expect(tick).toHaveAttribute('aria-pressed', 'false');
-        await user.click(tick);
-        expect(onCompare).toHaveBeenCalledWith(PROPERTY.slug);
-
-        rerender(<PropertyCard property={PROPERTY} onCompare={onCompare} compared />);
-        expect(screen.getByRole('button', { name: `Ne plus comparer : ${PROPERTY.title}` })).toHaveAttribute('aria-pressed', 'true');
-        rerender(<PropertyCard property={PROPERTY} onCompare={onCompare} compareFull />);
-        const full = screen.getByRole('button', { name: `Comparer : ${PROPERTY.title}` });
-        expect(full).toHaveAttribute('aria-disabled', 'true'); // three already ticked
-        await user.click(full);
-        expect(onCompare).toHaveBeenCalledTimes(1);
+        rerender(<PropertyCard property={PROPERTY} />);
         expect(screen.queryByText('Nouveau')).toBeNull();
     });
 
-    it('a click anywhere on the card opens the listing, except on a control, with a modifier, after a drag, or on a confidential listing (2026-09-29)', async () => {
+    it('a click anywhere on the card opens the listing, except on a control (photo arrow), with a modifier, after a drag, or on a confidential listing (2026-09-29)', async () => {
         const user = userEvent.setup();
-        const onCompare = vi.fn();
         vi.mocked(router.visit).mockClear();
         Element.prototype.scrollTo = vi.fn(); // jsdom has no smooth scroll; the arrow only needs to swallow the click
-        const { rerender } = renderPage(<PropertyCard property={PROPERTY} onCompare={onCompare} />);
+        const { rerender } = renderPage(<PropertyCard property={PROPERTY} />);
         const card = screen.getByRole('article');
         expect(card).toHaveClass('cursor-pointer');
 
@@ -127,10 +113,7 @@ describe('PropertyCard', () => {
         expect(router.visit).toHaveBeenCalledWith(`/nos-biens/achat/paris-6e/${PROPERTY.slug}`);
 
         vi.mocked(router.visit).mockClear();
-        await user.click(within(card).getByRole('button', { name: /^Comparer/ })); // a control keeps its own job
-        expect(onCompare).toHaveBeenCalled();
-        expect(router.visit).not.toHaveBeenCalled();
-        await user.click(within(card).getByRole('button', { name: 'Photo suivante' }));
+        await user.click(within(card).getByRole('button', { name: 'Photo suivante' })); // a control keeps its own job
         expect(router.visit).not.toHaveBeenCalled();
         await user.keyboard('{Meta>}');
         await user.click(within(card).getByText(/19 141/));

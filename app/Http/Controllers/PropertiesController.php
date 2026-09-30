@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Content\Actions\ListArrondissements;
-use App\Domain\Content\Support\ContentList;
 use App\Domain\Localization\Support\LocalizedUrls;
 use App\Domain\Properties\Actions\FilterProperties;
 use App\Domain\Properties\Actions\ListDistrictListings;
@@ -42,6 +41,23 @@ class PropertiesController extends Controller
         return $this->render($query, null, fn (int $page) => route('properties', $query->params($page)), $query->isIndexable());
     }
 
+    /** Rentals landing (`/nos-biens/location` ↔ `/en/properties/rent`, SEO audit 2026-09-30): the only indexable URL of the rentals, with its own title, h1 and hreflang. */
+    public function rent(Request $request): Response
+    {
+        $query = PropertyQuery::fromRequest($request)->withTransaction('rent');
+        $this->localizedUrls->override(collect(array_keys(LaravelLocalization::getSupportedLocales()))
+            ->mapWithKeys(fn (string $code) => [$code => LaravelLocalization::getURLFromRouteNameTranslated($code, 'routes.properties_rent')])
+            ->all());
+
+        return $this->render(
+            $query,
+            null,
+            fn (int $page) => route('properties.rent', $query->params($page, withTransaction: false)),
+            $query->isRentIndexable(),
+            landing: 'rent',
+        );
+    }
+
     public function district(Request $request, string $district): Response|RedirectResponse
     {
         $n = DistrictSlug::parse($district);
@@ -61,24 +77,28 @@ class PropertiesController extends Controller
 
         return $this->render(
             $query,
-            ['n' => $n, 'slug' => $canonical, 'name' => $arrondissement?->name ?? "Paris $n", 'areas' => $arrondissement?->areas ?? ''],
+            // The arrondissement's summary and average price feed an editorial paragraph on the district page (thin content, SEO audit 2026-09-30)
+            ['n' => $n, 'slug' => $canonical, 'name' => $arrondissement?->name ?? "Paris $n", 'areas' => $arrondissement?->areas ?? '', 'summary' => $arrondissement?->summary, 'price' => $arrondissement?->price],
             fn (int $page) => route('properties.district', ['district' => $canonical] + $query->params($page, withCities: false)),
             $query->isDistrictIndexable(),
         );
     }
 
-    /** @param  array{n: int, slug: string, name: string, areas: string}|null  $district */
-    private function render(PropertyQuery $query, ?array $district, \Closure $url, bool $indexable): Response
+    /** @param  array{n: int, slug: string, name: string, areas: string, summary: string|null, price: string|null}|null  $district */
+    private function render(PropertyQuery $query, ?array $district, \Closure $url, bool $indexable, ?string $landing = null): Response
     {
         $listing = ($this->filter)($query);
         abort_if($query->page > 1 && $query->page > $listing->lastPage(), 404);
-        $items = ContentList::toArray($listing->items->all());
+        // The card shape only (SEO audit 2026-09-30: half the payload of the full DTO)
+        $items = $listing->items->map(fn ($property) => $property->toCard())->all();
 
         return Inertia::render('properties', [
             'properties' => $query->page > 1 ? Inertia::merge($items) : $items,
             'pagination' => $listing->toArray(),
             'filters' => $query->toArray(),
             'district' => $district,
+            // `rent` on the rentals landing: its own title, h1 and intro (2026-09-30)
+            'landing' => $landing,
             'districts' => ($this->districtListings)(),
             // Quartiers to offer in the filters (the `area` of every listing, 2026-09-28)
             'areas' => ($this->list)()->pluck('area')->unique()->sort()->values()->all(),

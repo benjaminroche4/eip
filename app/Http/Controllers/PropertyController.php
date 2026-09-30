@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Domain\Content\Actions\ListArrondissements;
 use App\Domain\Content\Actions\ListTeamMembers;
-use App\Domain\Content\Support\ContentList;
 use App\Domain\Localization\Support\LocalizedUrls;
 use App\Domain\Properties\Actions\ShowProperty;
 use App\Domain\Properties\Support\DistrictSlug;
@@ -56,7 +55,7 @@ class PropertyController extends Controller
 
         return Inertia::render('properties/show', [
             'property' => $property->toArray(),
-            'similar' => ContentList::toArray($page->similar),
+            'similar' => array_map(fn ($p) => $p->toCard(), $page->similar), // the card shape only (SEO audit 2026-09-30)
             'district' => [
                 'n' => $property->arrondissement,
                 'name' => $arrondissement?->name ?? "Paris {$property->arrondissement}",

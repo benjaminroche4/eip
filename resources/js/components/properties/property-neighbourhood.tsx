@@ -1,10 +1,11 @@
 import { type Property } from '@/components/properties/property-card';
 import PropertyTransport from '@/components/properties/property-transport';
+import { SMALL_SCREEN, useMediaQuery } from '@/hooks/use-media-query';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatPrice } from '@/lib/format-price';
 import { cn } from '@/lib/utils';
-import { GraduationCap, TrainFront, Trees, type LucideIcon } from 'lucide-react';
-import { type CSSProperties, type ReactNode } from 'react';
+import { ChevronDown, GraduationCap, TrainFront, Trees, type LucideIcon } from 'lucide-react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 
 type PropertyNeighbourhoodProps = {
     property: Property;
@@ -83,11 +84,28 @@ export default function PropertyNeighbourhood({ property, district, arrondisseme
     );
     const source = <p className="text-grey-60 text-xs text-pretty">{t('property.price_source')}</p>;
     const showCompare = districtSqm > 0 && !isRent;
+    // Mobile (review 2026-09-30): schools and parks wait behind « En savoir plus sur le 8e »; always shown from sm
+    const small = useMediaQuery(SMALL_SCREEN);
+    const [more, setMore] = useState(false);
+    const extras = district.education.length > 0 || district.parks.length > 0;
     const rubrics = (
         <div className="divide-border/60 flex flex-col divide-y">
             {stops.length > 0 && rubric(TrainFront, t('property.on_foot'), <PropertyTransport property={property} />)}
-            {district.education.length > 0 && rubric(GraduationCap, t('property.district_schools'), places(district.education.slice(0, 3)))}
-            {district.parks.length > 0 && rubric(Trees, t('property.district_parks'), places(district.parks.slice(0, 3)))}
+            {extras && small && !more && (
+                <button
+                    type="button"
+                    aria-expanded={false}
+                    onClick={() => setMore(true)}
+                    className="focus-ring hover:text-foreground text-muted-foreground flex items-center gap-1.5 py-4 text-sm"
+                >
+                    {t('property.district_more', { arrondissement })}
+                    <ChevronDown aria-hidden className="size-4" />
+                </button>
+            )}
+            {(!small || more) &&
+                district.education.length > 0 &&
+                rubric(GraduationCap, t('property.district_schools'), places(district.education.slice(0, 3)))}
+            {(!small || more) && district.parks.length > 0 && rubric(Trees, t('property.district_parks'), places(district.parks.slice(0, 3)))}
         </div>
     );
 

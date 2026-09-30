@@ -9,7 +9,7 @@ import { formatPrice } from '@/lib/format-price';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { Info, Phone, TrendingDown } from 'lucide-react';
+import { Info, Phone } from 'lucide-react';
 import { type ReactNode } from 'react';
 
 export type Advisor = { id: number; photo: string; name: string | null; role: string | null };
@@ -29,18 +29,9 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
     const isRent = property.transaction === 'rent';
     const sold = Boolean(property.sold_at);
     const perSqm = formatPrice(Math.round(property.price / property.surface), locale);
-    // Price history (2026-09-28): the last drop in percent, nothing when the price never moved (the « Mis en vente le … ·
-    // prix inchangé » line was removed on 2026-09-29, user decision)
-    const history = property.price_history ?? [];
-    const first = history[0];
-    const last = history[history.length - 1];
-    const drop = first && last && last.price < first.price ? Math.round((1 - last.price / first.price) * 100) : 0;
-    const dateOf = (iso: string) =>
-        new Date(iso).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-
     const priceBlock = (dark = false) => (
         <div className="flex flex-col gap-2">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <p className="font-heading text-3xl font-semibold tabular-nums">
                     <span className="sr-only">{t('properties.price')} </span>
                     {formatPrice(property.price, locale)}
@@ -80,13 +71,6 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
             </p>
         </div>
     );
-    const meta = (className?: string) =>
-        drop > 0 && (
-            <p className={cn('text-muted-foreground flex items-center gap-1.5 text-xs tabular-nums', className)}>
-                <TrendingDown aria-hidden className="text-success size-3.5" strokeWidth={1.5} />
-                {t('property.price_drop', { percent: drop, date: dateOf(last.date) })}
-            </p>
-        );
     const advisorRow = (size: 'sm' | 'md' | 'lg' = 'md', centered = false) => (
         <div className={cn('flex items-center gap-3', centered && 'flex-col text-center')}>
             <Avatar className={cn('ring-card ring-2', size === 'sm' && 'size-9', size === 'md' && 'size-12', size === 'lg' && 'size-20')}>
@@ -101,7 +85,8 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
         </div>
     );
     // Only a sold or withdrawn listing carries a notice under the advisor (the "single point of contact" line was removed, user decision 2026-09-29)
-    const notice = sold ? t('property.sold_notice') : property.available ? null : t('property.unavailable_notice');
+    // Only a sold listing carries a notice (the « sous offre » one was removed on user decision 2026-09-30)
+    const notice = sold ? t('property.sold_notice') : null;
     const promise = (className?: string) => notice && <p className={cn('text-muted-foreground text-xs text-pretty', className)}>{notice}</p>;
     const actions = (
         <div className="flex flex-col gap-2">
@@ -126,7 +111,6 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
     return frame(
         <>
             {priceBlock()}
-            {meta('-mt-3')}
             {/* The advisor in a white, sand-lined panel (variante ui.sh « Conseiller encadré » choisie parmi 24, 2026-09-29) */}
             <div className="border-secondary-30 bg-card border p-3">{advisorRow('sm')}</div>
             {promise()}

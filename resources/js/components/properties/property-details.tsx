@@ -2,7 +2,7 @@ import { type Property } from '@/components/properties/property-card';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatPrice } from '@/lib/format-price';
 import { cn } from '@/lib/utils';
-import { type CSSProperties } from 'react';
+import { type CSSProperties, type ReactNode } from 'react';
 
 /**
  * « Les pièces » and « Caractéristiques » of the detail page (2026-09-28): every room with its surface (a `dl`, the
@@ -17,9 +17,14 @@ export default function PropertyDetails({ property }: { property: Property }) {
     const { t, locale } = useTranslation();
     const rooms = property.rooms_detail ?? [];
     const isRent = property.transaction === 'rent';
-    type Fact = { key: string; label: string; value: string | null };
+    type Fact = { key: string; label: string; value: ReactNode | null };
     const building: Fact[] = [
-        { key: 'year', label: t('property.year_built'), value: property.year_built ? String(property.year_built) : null },
+        // A dated fact is marked up as a date (SEO audit 2026-09-30)
+        {
+            key: 'year',
+            label: t('property.year_built'),
+            value: property.year_built ? <time dateTime={String(property.year_built)}>{property.year_built}</time> : null,
+        },
         { key: 'heating', label: t('property.heating'), value: property.heating ?? null },
         { key: 'orientation', label: t('property.orientation'), value: property.orientation ?? null },
     ];

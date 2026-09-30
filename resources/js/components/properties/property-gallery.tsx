@@ -8,6 +8,9 @@ import { cn } from '@/lib/utils';
 import { ChevronLeft, ChevronRight, Images, X } from 'lucide-react';
 import { type KeyboardEvent, type MouseEvent, type PointerEvent, useEffect, useRef, useState } from 'react';
 
+/** One photo every 5 s (the testimonials' and the homepage carousel's pace). */
+const AUTOPLAY_MS = 5000;
+
 type PropertyGalleryProps = {
     /** `{w}` templates, 400 / 800 / 1200 / 1600 available. */
     photos: string[];
@@ -16,10 +19,12 @@ type PropertyGalleryProps = {
 };
 
 /**
- * Gallery of the detail page (user decision 2026-09-29, replacing the hero + thumbnails of the day before): **every
- * photo on one line that scrolls**, a film strip edge to edge under the header, 50 dvh high (a notch smaller, user decision 2026-09-29), each photo at the row's
- * height and its own width, a 12px gap and the page's side margins at both ends (user decision 2026-09-29), snap on each, mouse / pen drag (`useDragScroll`), arrows always shown that **wrap around**
- * (last → first, user decision 2026-09-29: an arrow must never fade at the ends), counter « 2 / 5 », the first photo eager (LCP); a click on a photo (not the end of a drag) or « Voir les N photos » opens the **modal carousel**
+ * Gallery of the detail page (user decision 2026-09-29, kept after a one-hour try of the homepage carousel on
+ * 2026-09-30): **every photo on one line that scrolls**, a film strip edge to edge under the header, 50 dvh high, each
+ * photo at the row's height and its own width, a 12px gap, flush left on mobile and with the page's side margins from `sm` (user decision 2026-09-30), snap on each, mouse
+ * / pen drag (`useDragScroll`), arrows always shown that **wrap around** (last → first), counter « 2 / 5 », **autoplay** one photo every 5 s with
+ * the site's pauses (hover, focus, touch, hidden tab, out of view, reduced motion — user decision 2026-09-30), the first
+ * photo eager (LCP); a click on a photo (not the end of a drag) or « Voir les N photos » opens the **modal carousel**
  * (user decision 2026-09-29): the photo large, the thumbnails under it, arrows, ← →, swipe, a click on the dark backdrop closes; the backdrop is translucent
  * (`bg-primary/80` + blur, the page shows through — user decision 2026-09-29). The « Visite 3D » link and the « Visite vidéo » button were removed on 2026-09-29 (user decisions). The lightbox is a full-screen dark dialog: the photo contained, previous / next arrows (and ← →), the
  * counter announced, a strip of thumbnails (`aria-pressed`), Escape / the cross close it and the focus returns to
@@ -70,14 +75,50 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
         el.addEventListener('scroll', measure, { passive: true });
         return () => el.removeEventListener('scroll', measure);
     }, [count]);
+    // Autoplay (user decision 2026-09-30, the site's rule for anything that moves on its own): one photo every 5 s,
+    // wrapping at the end, stopped while the pointer is over the strip or its controls, while a control has the focus,
+    // during a touch, when the tab is hidden or the strip is out of view, and never under `prefers-reduced-motion`.
+    // An arrow press restarts the delay.
+    const [resting, setResting] = useState(false);
+    const [inView, setInView] = useState(true);
+    const [tick, setTick] = useState(0);
+    const frame = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const el = frame.current;
+        if (!el || count < 2 || typeof IntersectionObserver === 'undefined') return;
+        const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [count]);
+    useEffect(() => {
+        if (count < 2 || resting || !inView || open !== null) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const id = window.setInterval(() => {
+            if (!document.hidden) slideRef.current(indexRef.current === count - 1 ? 0 : indexRef.current + 1);
+        }, AUTOPLAY_MS);
+        return () => window.clearInterval(id);
+    }, [count, resting, inView, open, tick]);
+    const indexRef = useRef(0);
+    indexRef.current = index;
+    const slideRef = useRef<(to: number) => void>(() => {});
     const slide = (to: number) => {
         const el = strip.current;
         const item = el?.children[Math.min(Math.max(to, 0), count - 1)] as HTMLElement | undefined;
-        if (el && item) el.scrollTo({ left: item.offsetLeft, behavior: scrollBehavior() });
+        if (!el || !item) return;
+        // Aim at the photo's start minus the strip's side padding (the snap's own alignment), never past the end of
+        // the strip: the last photo's start lies beyond the maximum scroll, so aiming at it left it cut (bug 2026-09-30)
+        const padding = parseFloat(window.getComputedStyle(el).paddingLeft) || 0;
+        const max = Math.max(el.scrollWidth - el.clientWidth, 0);
+        el.scrollTo({ left: Math.min(item.offsetLeft - padding, max), behavior: scrollBehavior() });
     };
-    // Under sm the two arrows sit side by side at the bottom right of the strip (user decision 2026-09-29, they were hidden on mobile); from sm, centred on the sides
+    slideRef.current = slide;
+    const press = (to: number) => {
+        slide(to);
+        setTick((n) => n + 1);
+    };
+    // Arrows from sm only, centred on the sides (under sm the finger drags and the counter alone remains — mobile review 2026-09-30)
     const arrowClass =
-        'focus-ring bg-card/80 text-foreground hover:bg-card absolute flex size-10 items-center justify-center backdrop-blur transition-colors duration-300 sm:top-1/2 sm:-translate-y-1/2 motion-reduce:transition-none';
+        'focus-ring bg-card/80 text-foreground hover:bg-card absolute hidden size-10 items-center justify-center backdrop-blur transition-colors duration-300 sm:top-1/2 sm:flex sm:-translate-y-1/2 motion-reduce:transition-none';
     const altOf = (i: number) => (i === 0 ? alt : t('properties.photo_n', { alt, n: i + 1, count }));
     const go = (delta: number) => setOpen((i) => (i === null ? null : (i + delta + count) % count));
     const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -87,9 +128,15 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
 
     return (
         <div
+            ref={frame}
             role="group"
             aria-roledescription="carousel"
             aria-label={t('properties.photos_label', { title })}
+            onPointerEnter={(e) => e.pointerType !== 'touch' && setResting(true)}
+            onPointerLeave={(e) => e.pointerType !== 'touch' && setResting(false)}
+            onTouchStart={() => setResting(true)}
+            onFocus={() => setResting(true)}
+            onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node | null) && setResting(false)}
             className="group/strip relative left-1/2 -mt-10 w-screen -translate-x-1/2 sm:-mt-12 lg:-mt-20"
         >
             {/* Every photo on one line that scrolls (user decision 2026-09-29): a film strip edge to edge under the header,
@@ -98,7 +145,7 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
                 ref={strip}
                 onPointerUp={release}
                 role="list"
-                className="flex h-[50dvh] max-h-[36rem] min-h-72 cursor-grab snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto overscroll-x-contain px-6 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none lg:scroll-px-8 lg:px-8 [&::-webkit-scrollbar]:hidden"
+                className="flex h-[50dvh] max-h-[36rem] min-h-72 cursor-grab snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none sm:scroll-px-6 sm:px-6 lg:scroll-px-8 lg:px-8 [&::-webkit-scrollbar]:hidden"
             >
                 {photos.map((photo, i) => (
                     <li key={photo} className="h-full shrink-0 snap-start last:snap-end">
@@ -136,7 +183,7 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
                     <button
                         type="button"
                         aria-label={t('properties.photo_prev')}
-                        onClick={() => slide(index === 0 ? count - 1 : index - 1)}
+                        onClick={() => press(index === 0 ? count - 1 : index - 1)}
                         className={cn(arrowClass, 'right-17 bottom-4 sm:right-auto sm:bottom-auto sm:left-4 lg:left-6')}
                     >
                         <ChevronLeft aria-hidden className="size-5" strokeWidth={1.5} />
@@ -144,7 +191,7 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
                     <button
                         type="button"
                         aria-label={t('properties.photo_next')}
-                        onClick={() => slide(index === count - 1 ? 0 : index + 1)}
+                        onClick={() => press(index === count - 1 ? 0 : index + 1)}
                         className={cn(arrowClass, 'right-6 bottom-4 sm:right-4 sm:bottom-auto lg:right-6')}
                     >
                         <ChevronRight aria-hidden className="size-5" strokeWidth={1.5} />

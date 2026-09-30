@@ -171,7 +171,16 @@ export type ListingInput = {
     /** `Y-m-d`, the `datePosted` of a detail page. */
     published_at?: string | null;
     photo_alt?: string;
+    /** Absolute URL of the listing's own page (SEO audit 2026-09-30: on the listing page each entity links to its page, never to an anchor). */
+    url?: string;
+    /** Extra facts of the accommodation and the offer (audit 2026-09-30). */
+    year_built?: number | null;
+    floor?: number | null;
+    price_history?: { date: string; price: number }[];
 };
+
+/** The agency behind every listing (`provider`), so the entities carry E-E-A-T (audit 2026-09-30). */
+export type ListingAgency = { name: string; url: string };
 
 /**
  * One `RealEstateListing` per property shown (2026-09-28): the offer (price, or monthly rent as a unit price), the
@@ -182,16 +191,27 @@ export type ListingInput = {
  * One `RealEstateListing` per property. On the listing page each one is anchored (`#slug`); on a detail page
  * (`standalone`) the listing IS the page: its url is the page's, `mainEntityOfPage` and `datePosted` are set.
  */
-export function realEstateListings(properties: ListingInput[], origin: string, pageUrl: string, locale: string, standalone = false): JsonLd[] {
+export function realEstateListings(
+    properties: ListingInput[],
+    origin: string,
+    pageUrl: string,
+    locale: string,
+    standalone = false,
+    agency?: ListingAgency,
+): JsonLd[] {
     const absolute = (url: string) => (url.startsWith('http') ? url : `${origin}${url}`);
+    // The last price change (or the publication) = `dateModified`
+    const modified = (p: ListingInput) => p.price_history?.at(-1)?.date ?? p.published_at ?? null;
     return properties
         .filter((p) => !p.off_market)
         .map((p) => ({
             '@type': 'RealEstateListing',
-            '@id': standalone ? pageUrl : `${pageUrl}#${p.slug}`,
-            url: standalone ? pageUrl : `${pageUrl}#${p.slug}`,
+            '@id': standalone ? pageUrl : (p.url ?? `${pageUrl}#${p.slug}`),
+            url: standalone ? pageUrl : (p.url ?? `${pageUrl}#${p.slug}`),
             ...(standalone ? { mainEntityOfPage: pageUrl } : {}),
             ...(p.published_at ? { datePosted: p.published_at } : {}),
+            ...(modified(p) ? { dateModified: modified(p) } : {}),
+            ...(agency ? { provider: { '@type': 'RealEstateAgent', name: agency.name, url: agency.url } } : {}),
             name: p.title,
             description: p.excerpt,
             inLanguage: locale,
@@ -205,6 +225,7 @@ export function realEstateListings(properties: ListingInput[], origin: string, p
                 : p.photos.slice(0, 3).map((photo) => absolute(photo.replace('{w}', '1600'))),
             offers: {
                 '@type': 'Offer',
+                ...(standalone || p.url ? { url: standalone ? pageUrl : p.url } : {}),
                 price: p.price,
                 priceCurrency: 'EUR',
                 availability: p.available ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability',
@@ -219,6 +240,8 @@ export function realEstateListings(properties: ListingInput[], origin: string, p
                 floorSize: { '@type': 'QuantitativeValue', value: p.surface, unitCode: 'MTK' },
                 numberOfRooms: p.rooms,
                 numberOfBedrooms: p.bedrooms,
+                ...(p.year_built ? { yearBuilt: p.year_built } : {}),
+                ...(p.floor != null ? { floorLevel: String(p.floor) } : {}),
                 address: {
                     '@type': 'PostalAddress',
                     addressLocality: 'Paris',

@@ -57,6 +57,8 @@ Route::group([
     Route::get(LaravelLocalization::transRoute('routes.buy'), BuyController::class)->name('buy');
     Route::get(LaravelLocalization::transRoute('routes.properties'), [PropertiesController::class, 'index'])->name('properties');
     // Clean listing per arrondissement (2026-09-28): `/nos-biens/paris-6e` ↔ `/en/properties/paris-6th`
+    // Indexable rentals landing (SEO audit 2026-09-30): `/nos-biens/location` ↔ `/en/properties/rent`
+    Route::get(LaravelLocalization::transRoute('routes.properties_rent'), [PropertiesController::class, 'rent'])->name('properties.rent');
     Route::get(LaravelLocalization::transRoute('routes.properties').'/{district}', [PropertiesController::class, 'district'])
         ->where('district', DistrictSlug::PATTERN)
         ->name('properties.district');

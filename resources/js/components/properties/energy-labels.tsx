@@ -78,12 +78,12 @@ function Scale({ kind, value, label }: { kind: 'dpe' | 'ges'; value: string; lab
                             aria-current={active ? 'true' : undefined}
                             onPointerEnter={() => setHovered(c)}
                             className={cn(
-                                'font-heading relative flex w-9 items-end justify-center pb-1 text-xs font-semibold transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+                                'font-heading relative flex w-8 items-end justify-center pb-1 text-xs font-semibold transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none sm:w-9',
                                 'after:bg-secondary-60 after:absolute after:inset-x-0 after:-bottom-2 after:h-0.5 after:origin-left after:scale-x-0 after:transition-transform after:duration-500 after:ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:after:transition-none',
                                 STEPS[i],
                                 colours[c],
                                 active
-                                    ? 'w-11 -translate-y-1 text-base after:scale-x-100'
+                                    ? 'w-10 -translate-y-1 text-base after:scale-x-100 sm:w-11'
                                     : 'opacity-40 hover:-translate-y-1 hover:opacity-100 hover:after:scale-x-100',
                                 hovered !== null && hovered !== c && !active && 'opacity-25',
                             )}

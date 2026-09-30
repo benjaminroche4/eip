@@ -147,7 +147,13 @@ class PropertiesTest extends TestCase
                 ->has('properties', 1)
                 ->where('properties.0.arrondissement', 6)
                 ->where('filters.city', [6])
-                ->where('district', ['n' => 6, 'slug' => 'paris-6e', 'name' => 'Paris 6e', 'areas' => 'Saint-Germain-des-Prés, Luxembourg'])
+                ->where('district.n', 6)
+                ->where('district.slug', 'paris-6e')
+                ->where('district.name', 'Paris 6e')
+                ->where('district.areas', 'Saint-Germain-des-Prés, Luxembourg')
+                ->where('district.price', '14 500') // the arrondissement's profile feeds an editorial paragraph (SEO audit 2026-09-30)
+                ->where('district.summary', fn (string $s) => str_starts_with($s, 'Le 6e est Saint-Germain-des-Prés'))
+                ->where('landing', null)
                 ->where('indexing', ['noindex' => false, 'canonical' => url('/nos-biens/paris-6e'), 'prev' => null, 'next' => null])
                 ->where('localization.alternates.fr', url('/nos-biens/paris-6e'))
                 ->where('localization.alternates.en', url('/en/properties/paris-6th'))
@@ -198,5 +204,37 @@ class PropertiesTest extends TestCase
         $llms = $this->get('/llms.txt')->assertOk()->getContent();
         $this->assertStringContainsString(url('/nos-biens'), $llms);
         $this->assertStringContainsString(url('/en/properties'), $llms);
+    }
+
+    public function test_the_rentals_landing_is_the_indexable_url_of_the_rentals_in_both_languages(): void
+    {
+        // SEO audit 2026-09-30: rentals only lived behind `?transaction=rent` (noindex)
+        $this->get('/nos-biens/location')
+            ->assertOk()
+            ->assertInertia(fn (Assert $p) => $p->component('properties')
+                ->where('landing', 'rent')
+                ->where('filters.transaction', 'rent')
+                ->has('properties', 2)
+                ->where('properties.0.transaction', 'rent')
+                ->where('indexing.noindex', false)
+                ->where('indexing.canonical', url('/nos-biens/location'))
+                ->where('localization.alternates.en', url('/en/properties/rent'))
+                ->where('translations.properties.rent_headline', 'Nos biens à louer à Paris'));
+        // A filter on top of it is a variant: noindex, the landing stays the canonical path of the pagination links
+        $this->get('/nos-biens/location?type[]=loft')->assertOk()->assertInertia(fn (Assert $p) => $p->where('indexing.noindex', true)->where('indexing.canonical', url('/nos-biens/location?type%5B0%5D=loft')));
+        $this->get('/nos-biens/location?page=3')->assertNotFound();
+        // The card payload carries the card fields only (SEO audit 2026-09-30: half the HTML weight)
+        $this->get('/nos-biens')->assertInertia(fn (Assert $p) => $p->missing('properties.0.description')->missing('properties.0.rooms_detail')->where('properties.0.price_sqm', fn ($v) => is_int($v)));
+
+        $this->artisan('sitemap:generate')->assertSuccessful();
+        $sitemap = file_get_contents(public_path('sitemap.properties.xml'));
+        $this->assertStringContainsString('<loc>'.url('/nos-biens/location').'</loc>', $sitemap);
+        $this->assertStringContainsString('<loc>'.url('/en/properties/rent').'</loc>', $sitemap);
+        $llms = $this->get('/llms.txt')->getContent();
+        $this->assertStringContainsString(url('/nos-biens/location'), $llms);
+        $this->assertStringContainsString('['.'Paris 6e]('.url('/nos-biens/paris-6e').')', $llms); // district pages listed
+
+        $this->withLocale('en')->get('/en/properties/rent')->assertOk()->assertInertia(fn (Assert $p) => $p->where('landing', 'rent')->has('properties', 2)->where('indexing.noindex', false));
+        $this->withLocale('en')->get('/en/nos-biens/location')->assertNotFound();
     }
 }

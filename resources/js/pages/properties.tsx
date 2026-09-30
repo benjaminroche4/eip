@@ -1,7 +1,6 @@
 import CtaCard from '@/components/home/cta-card';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import ActiveFilters, { type ActiveFilter } from '@/components/properties/active-filters';
-import CompareTray, { COMPARE_MAX } from '@/components/properties/compare';
 import DistrictLinks, { type DistrictLink } from '@/components/properties/district-links';
 import EmptyResults from '@/components/properties/empty-results';
 import FilterBar from '@/components/properties/filter-bar';
@@ -25,6 +24,7 @@ import { groupThousands } from '@/lib/format-price';
 import { breadcrumbList, itemList, realEstateListings } from '@/lib/json-ld';
 import { ordinal } from '@/lib/ordinal';
 import { withNeighbours } from '@/lib/paris-neighbours';
+import { propertyUrl } from '@/lib/property-url';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
@@ -55,7 +55,7 @@ export type PropertyFilters = {
 type Pagination = { page: number; lastPage: number; total: number; perPage: number };
 type Indexing = { noindex: boolean; canonical: string; prev: string | null; next: string | null };
 /** The clean district page (`/nos-biens/paris-6e`, 2026-09-28): the arrondissement the listing is narrowed to. */
-type District = { n: number; slug: string; name: string; areas: string };
+type District = { n: number; slug: string; name: string; areas: string; summary: string | null; price: string | null };
 /** The clean district pages worth linking: every arrondissement with a property for sale. */
 type PropertiesProps = {
     properties: Property[];
@@ -64,6 +64,8 @@ type PropertiesProps = {
     indexing: Indexing;
     map: MapConfig;
     district: District | null;
+    /** `rent` on the rentals landing (`/nos-biens/location`, 2026-09-30): its own title, h1 and intro. */
+    landing: 'rent' | null;
     districts: DistrictLink[];
     /** Quartiers to offer in the filters. */
     areas: string[];
@@ -153,12 +155,28 @@ const filtersKey = (f: PropertyFilters, locale: string) =>
  * **« Rechercher dans cette zone »** (2026-09-28): the map hands its frame back as a `bounds` filter, shown as a
  * removable chip on the count row; the map never refits on that filter (the user framed it).
  */
-export default function PropertiesPage({ properties, pagination, filters, indexing, map, district, districts, areas, priceBounds }: PropertiesProps) {
+export default function PropertiesPage({
+    properties,
+    pagination,
+    filters,
+    indexing,
+    map,
+    district,
+    landing,
+    districts,
+    areas,
+    priceBounds,
+}: PropertiesProps) {
     const { t, tc, locale } = useTranslation();
-    const { ziggy } = usePage<SharedData>().props;
+    const { ziggy, seo } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
     const url = route('properties');
     const pageUrl = district ? `${url}/${district.slug}` : url;
+    // Absolute detail URL for the structured data (Ziggy gives an absolute one; the test double a path)
+    const detailUrl = (p: Property) => {
+        const u = propertyUrl(p, locale);
+        return u.startsWith('http') ? u : `${origin}${u}`;
+    };
     const small = useMediaQuery(SMALL_SCREEN);
     const desktopView = useMediaQuery(LARGE_SCREEN);
 
@@ -171,12 +189,6 @@ export default function PropertiesPage({ properties, pagination, filters, indexi
     const [bounds, setBounds] = useState<Bounds | null>(filters.bounds);
     const [more, setMoreState] = useState<MoreFilters>(() => moreFrom(filters, locale));
     const setMore = useCallback((patch: Partial<MoreFilters>) => setMoreState((m) => ({ ...m, ...patch })), []);
-    // Comparison (2026-09-28): up to three ticked listings, compared side by side from the tray
-    const [compare, setCompare] = useState<string[]>([]);
-    const toggleCompare = useCallback(
-        (slug: string) => setCompare((c) => (c.includes(slug) ? c.filter((x) => x !== slug) : c.length < COMPARE_MAX ? [...c, slug] : c)),
-        [],
-    );
     const [active, setActive] = useState<string | null>(null);
     // A chosen price chip opens the mini card over the map (user decision 2026-09-26)
     const [selected, setSelected] = useState<string | null>(null);
@@ -378,8 +390,16 @@ export default function PropertiesPage({ properties, pagination, filters, indexi
         { name: t('pages.properties.title'), url },
         ...(district ? [{ name: district.name, url: pageUrl }] : []),
     ];
-    const title = district ? t('properties.district_seo_title', { name: district.name }) : t('pages.properties.seo_title');
-    const description = district ? t('properties.district_seo_description', { name: district.name }) : t('pages.properties.seo_description');
+    const title = district
+        ? t('properties.district_seo_title', { name: district.name })
+        : landing === 'rent'
+          ? t('properties.rent_seo_title')
+          : t('pages.properties.seo_title');
+    const description = district
+        ? t('properties.district_seo_description', { name: district.name })
+        : landing === 'rent'
+          ? t('properties.rent_seo_description')
+          : t('pages.properties.seo_description');
 
     return (
         <>
@@ -390,10 +410,20 @@ export default function PropertiesPage({ properties, pagination, filters, indexi
                 noindex={indexing.noindex}
                 prev={indexing.prev}
                 next={indexing.next}
+                // Every entity links to its detail page, never to an anchor; the agency is the provider (SEO audit 2026-09-30)
+                image={properties[0] ? `${origin}${properties[0].photos[0].replace('{w}', '1600')}` : undefined}
+                imageAlt={properties[0]?.photo_alt}
                 jsonLd={[
                     breadcrumbList(crumbs, origin),
-                    itemList(properties.map((p) => ({ name: p.title, url: `${pageUrl}#${p.slug}` }))),
-                    ...realEstateListings(properties, origin, pageUrl, locale),
+                    itemList(properties.filter((p) => !p.off_market).map((p) => ({ name: p.title, url: detailUrl(p) }))),
+                    ...realEstateListings(
+                        properties.map((p) => ({ ...p, url: detailUrl(p) })),
+                        origin,
+                        pageUrl,
+                        locale,
+                        false,
+                        { name: seo.organization.name, url: origin },
+                    ),
                 ]}
             />
             <PublicLayout className="max-w-none px-0 pt-0 pb-0 sm:pt-0 sm:pb-0 lg:px-0 lg:pt-0" backdrop={false} stickyHeader={false}>
@@ -402,12 +432,27 @@ export default function PropertiesPage({ properties, pagination, filters, indexi
                     <div className="flex max-w-2xl flex-col items-center gap-4">
                         <PageEyebrow>{t('pages.properties.title')}</PageEyebrow>
                         <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-                            {district ? t('properties.district_headline', { name: district.name }) : t('properties.headline')}
+                            {district
+                                ? t('properties.district_headline', { name: district.name })
+                                : landing === 'rent'
+                                  ? t('properties.rent_headline')
+                                  : t('properties.headline')}
                         </h1>
                         {/* GEO: a self-contained sentence */}
                         <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">
-                            {district ? t('properties.district_intro', { name: district.name, areas: district.areas }) : t('pages.properties.intro')}
+                            {district
+                                ? t('properties.district_intro', { name: district.name, areas: district.areas })
+                                : landing === 'rent'
+                                  ? t('properties.rent_intro')
+                                  : t('pages.properties.intro')}
                         </p>
+                        {/* District page: the arrondissement's profile and its average price, so the page carries more than a grid (SEO audit 2026-09-30) */}
+                        {district?.summary && <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{district.summary}</p>}
+                        {district?.price && (
+                            <p className="text-sm font-medium tabular-nums">
+                                {t('properties.district_price_line', { name: district.name, price: district.price })}
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -447,7 +492,12 @@ export default function PropertiesPage({ properties, pagination, filters, indexi
                                 aria-busy={loading !== null || undefined}
                                 className="text-xl font-medium tracking-tight tabular-nums"
                             >
-                                {tc(`properties.count_${transaction}`, pagination.total, { count: pagination.total })}
+                                {district
+                                    ? tc(`properties.count_${transaction}_district`, pagination.total, {
+                                          count: pagination.total,
+                                          name: district.name,
+                                      })
+                                    : tc(`properties.count_${transaction}`, pagination.total, { count: pagination.total })}
                             </h2>
                             <div className="flex flex-wrap items-center gap-3">
                                 {filtered && <ResetButton onClick={reset} />}
@@ -491,9 +541,6 @@ export default function PropertiesPage({ properties, pagination, filters, indexi
                                                 active={active === property.slug}
                                                 onActivate={setActive}
                                                 priority={pagination.page === 1 && index < 4}
-                                                compared={compare.includes(property.slug)}
-                                                onCompare={toggleCompare}
-                                                compareFull={compare.length >= COMPARE_MAX}
                                             />
                                         </li>
                                     ))}
@@ -581,12 +628,6 @@ export default function PropertiesPage({ properties, pagination, filters, indexi
                 </div>
                 {/* Floating list / map switch, Airbnb-like (user decision 2026-09-28) — `properties/view-switch.tsx`, square Liste | Carte segment, ui.sh variant chosen among 25 */}
                 <ViewSwitch ref={viewSwitch} view={view} onToggle={() => setView((v) => (v === 'map' ? 'list' : 'map'))} until={closingCard} />
-                {/* Comparison tray (2026-09-28): the ticked listings, compared side by side in a dialog */}
-                <CompareTray
-                    properties={compare.map((slug) => properties.find((p) => p.slug === slug)).filter((p): p is Property => p !== undefined)}
-                    onRemove={(slug) => setCompare((c) => c.filter((x) => x !== slug))}
-                    onClear={() => setCompare([])}
-                />
 
                 {/* Same section rhythm as the other pages (`gap-20 sm:gap-28`) between the list and the closing CTA (user decision 2026-09-26) */}
                 <div ref={closingCard} className="mx-auto w-full max-w-5xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 lg:px-8">

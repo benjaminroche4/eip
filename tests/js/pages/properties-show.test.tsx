@@ -1,5 +1,5 @@
 import PropertyShow from '@/pages/properties/show';
-import { fireEvent, screen, within } from '@testing-library/react';
+import { act, fireEvent, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
@@ -114,6 +114,7 @@ describe('Property detail page', () => {
             '/nos-biens/achat/paris-3e/loft-haut-marais',
         );
         expect(within(similar).queryByRole('link', { name: 'Tous nos biens' })).toBeNull(); // removed under the similar listings (2026-09-29)
+        expect(screen.getByRole('link', { name: 'Retour à Nos biens' })).toHaveAttribute('href', '/nos-biens'); // mobile way back above the breadcrumb (2026-09-30)
         // Previous / next as two buttons (2026-09-29): the title in the accessible name
         expect(within(similar).getByRole('link', { name: 'Voir le bien suivant : Appartement Art déco, Passy' })).toHaveAttribute(
             'href',
@@ -151,6 +152,8 @@ describe('Property detail page', () => {
         expect(prev.className).not.toMatch(/opacity-0/);
         await user.click(prev);
         expect(Element.prototype.scrollTo).toHaveBeenCalled(); // from the first photo, back to the last
+        // The target is bounded by the strip's end, so the last photo is shown whole (bug 2026-09-30); jsdom has no layout: 0
+        expect(vi.mocked(Element.prototype.scrollTo).mock.lastCall?.[0]).toMatchObject({ left: 0 });
 
         await user.click(within(gallery).getByRole('button', { name: 'Voir les 3 photos' }));
         const dialog = await screen.findByRole('dialog', { name: `Photos de ${PROPERTY.title}` });
@@ -206,8 +209,32 @@ describe('Property detail page', () => {
         expect(within(card).getByText(/6 500 €/)).toBeInTheDocument();
         expect(within(card).getByText('Charges comprises')).toBeInTheDocument();
         expect(within(card).getByText('Sous offre')).toBeInTheDocument();
-        expect(within(card).getByText(/Ce bien est sous offre/)).toBeInTheDocument();
+        expect(within(card).queryByText(/Ce bien est sous offre/)).toBeNull(); // the under-offer notice was removed (2026-09-30)
         expect(screen.getByText('Meublé').closest('div')!.querySelector('dd')).toHaveTextContent('Oui');
         expect(screen.queryByRole('heading', { level: 2, name: 'Biens similaires' })).toBeNull();
+    });
+
+    it('gallery autoplay (2026-09-30): one photo every 5 s, paused while the pointer rests on the strip, never under reduced motion', () => {
+        vi.useFakeTimers();
+        page.props = sharedProps();
+        Element.prototype.scrollTo = vi.fn();
+        const { unmount } = renderPage(<PropertyShow {...PROPS} />);
+        const gallery = screen.getByRole('group', { name: `Photos de ${PROPERTY.title}` });
+        act(() => {
+            vi.advanceTimersByTime(5000);
+        });
+        expect(Element.prototype.scrollTo).toHaveBeenCalledTimes(1);
+        fireEvent.pointerEnter(gallery, { pointerType: 'mouse' });
+        act(() => {
+            vi.advanceTimersByTime(10000);
+        });
+        expect(Element.prototype.scrollTo).toHaveBeenCalledTimes(1); // resting
+        fireEvent.pointerLeave(gallery, { pointerType: 'mouse' });
+        act(() => {
+            vi.advanceTimersByTime(5000);
+        });
+        expect(Element.prototype.scrollTo).toHaveBeenCalledTimes(2);
+        unmount();
+        vi.useRealTimers();
     });
 });

@@ -18,7 +18,7 @@ describe('EnergyLabels', () => {
             .getAllByRole('listitem')
             .find((li) => li.getAttribute('aria-current') === 'true')!;
         expect(active).toHaveTextContent('C');
-        expect(active).toHaveClass('bg-dpe-c', 'w-11', '-translate-y-1'); // the listing's class, lifted and wider on the official staircase (2026-09-29)
+        expect(active).toHaveClass('bg-dpe-c', 'sm:w-11', '-translate-y-1'); // the listing's class, lifted and wider on the official staircase (2026-09-29)
         expect(within(energy).getAllByRole('listitem')[0]).toHaveClass('opacity-40');
         expect(screen.getByRole('list', { name: 'Émissions de gaz à effet de serre : classe B' })).toBeInTheDocument();
         expect(screen.getByText(/entre 5 200 € et 7 100 € par an/)).toBeInTheDocument();

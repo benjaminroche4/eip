@@ -23,7 +23,7 @@ import { propertyUrl } from '@/lib/property-url';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeft, ArrowRight, Info, MapPin } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 type District = {
     n: number;
@@ -70,18 +70,21 @@ type PropertyShowProps = {
  */
 export default function PropertyShow({ property, similar, district, advisor, meta, map, neighbours }: PropertyShowProps) {
     const { t, locale } = useTranslation();
-    const { ziggy } = usePage<SharedData>().props;
+    const { ziggy, seo } = usePage<SharedData>().props;
     const sold = Boolean(property.sold_at);
     // The Google map is folded behind a button under lg (2026-09-28): no API call for nothing on mobile
     const [mapOpen, setMapOpen] = useState(false);
     const desktop = useMediaQuery(LARGE_SCREEN);
+    // Where the mobile bar stops: the similar listings, or the closing block when there are none
+    const similarRef = useRef<HTMLElement>(null);
+    const closing = useRef<HTMLDivElement>(null);
     // Section titles of the column (premium rework 2026-09-29): sand Montserrat number + title, as the legal pages
     let sectionNumber = 0;
     const sectionTitle = (id: string, label: string) => {
         sectionNumber += 1;
         return (
             <h2 id={id} className="flex items-baseline gap-3 text-xl font-medium tracking-tight">
-                <span aria-hidden className="font-heading text-secondary-50 text-2xl font-semibold tabular-nums">
+                <span aria-hidden className="font-heading text-secondary-50 text-lg font-semibold tabular-nums sm:text-2xl">
                     {String(sectionNumber).padStart(2, '0')}
                 </span>
                 {label}
@@ -129,7 +132,10 @@ export default function PropertyShow({ property, similar, district, advisor, met
                 description={meta.description}
                 image={`${origin}${property.photos[0].replace('{w}', '1600')}`}
                 imageAlt={property.photo_alt}
-                jsonLd={[breadcrumbList(crumbs, origin), ...realEstateListings([property], origin, url, locale, true)]}
+                jsonLd={[
+                    breadcrumbList(crumbs, origin),
+                    ...realEstateListings([property], origin, url, locale, true, { name: seo.organization.name, url: origin }),
+                ]}
             />
             <PublicLayout className="flex max-w-7xl flex-col gap-16 sm:gap-20" backdrop={false}>
                 <article className="flex flex-col gap-6 sm:gap-8">
@@ -148,7 +154,6 @@ export default function PropertyShow({ property, similar, district, advisor, met
                                         area: property.area,
                                     })}
                                     answer={answer}
-                                    reference={reference}
                                 />
 
                                 <section aria-labelledby="property-description" className="flex max-w-prose flex-col gap-5">
@@ -233,6 +238,8 @@ export default function PropertyShow({ property, similar, district, advisor, met
                                         <h2 id="property-legal" className="sr-only">
                                             {t('property.legal_title')}
                                         </h2>
+                                        {/* The reference, discreet, with the notices (user decision 2026-09-30) */}
+                                        <p>{t('property.reference', { reference })}</p>
                                         <p>{t(property.transaction === 'rent' ? 'property.legal_rent' : 'property.legal_sale')}</p>
                                         <p>
                                             {t('property.legal_risks')}{' '}
@@ -253,7 +260,7 @@ export default function PropertyShow({ property, similar, district, advisor, met
                 </article>
 
                 {similar.length > 0 && (
-                    <section aria-labelledby="property-similar" className="flex flex-col gap-8">
+                    <section ref={similarRef} aria-labelledby="property-similar" className="flex flex-col gap-8">
                         <div className="flex flex-col gap-4">
                             <h2 id="property-similar" className="text-2xl font-medium tracking-tight">
                                 {t('property.similar_title')}
@@ -302,10 +309,18 @@ export default function PropertyShow({ property, similar, district, advisor, met
                     </section>
                 )}
 
-                {/* The breadcrumb closes the page (user decision 2026-09-29): the notch opens straight on the header */}
-                <SeoBreadcrumbs crumbs={crumbs} />
+                {/* The way back and the breadcrumb close the page as one block (mobile spacing review 2026-09-30) */}
+                <div ref={closing} className="flex flex-col gap-4">
+                    <Button asChild variant="outline" size="lg" className="w-full lg:hidden">
+                        <Link href={route('properties')} prefetch>
+                            <ArrowLeft aria-hidden />
+                            {t('property.back_list')}
+                        </Link>
+                    </Button>
+                    <SeoBreadcrumbs crumbs={crumbs} />
+                </div>
 
-                <PropertyMobileBar property={property} advisor={advisor} reference={reference} />
+                <PropertyMobileBar property={property} advisor={advisor} reference={reference} until={similar.length > 0 ? similarRef : closing} />
             </PublicLayout>
         </>
     );

@@ -8,7 +8,7 @@ import { ordinal } from '@/lib/ordinal';
 import { propertyUrl } from '@/lib/property-url';
 import { cn } from '@/lib/utils';
 import { Link, router } from '@inertiajs/react';
-import { BedDouble, Check, Columns3, LayoutGrid, Lock, Maximize2, Sparkles } from 'lucide-react';
+import { BedDouble, LayoutGrid, Lock, Maximize2, Sparkles } from 'lucide-react';
 import { type ReactNode } from 'react';
 
 export type Property = {
@@ -72,10 +72,6 @@ type PropertyCardProps = {
     onActivate?: (slug: string | null) => void;
     /** Above the fold: the first photo loads eagerly (LCP, 2026-09-28). */
     priority?: boolean;
-    /** Comparison (2026-09-28): ticked state and toggle; `compareFull` disables the tick once three are chosen. */
-    compared?: boolean;
-    onCompare?: (slug: string) => void;
-    compareFull?: boolean;
 };
 
 /**
@@ -86,15 +82,7 @@ type PropertyCardProps = {
  * hairlines. The title links to the detail page and a click anywhere on the card follows it (2026-09-29). `active` = its marker is hovered on the map: the card then shows its
  * hover state (see `shell`, hover rework 2026-09-29).
  */
-export default function PropertyCard({
-    property,
-    active = false,
-    onActivate,
-    priority = false,
-    compared = false,
-    onCompare,
-    compareFull = false,
-}: PropertyCardProps) {
+export default function PropertyCard({ property, active = false, onActivate, priority = false }: PropertyCardProps) {
     const { t, tc, locale } = useTranslation();
     const arrondissement = `Paris ${ordinal(property.arrondissement, locale)}`;
     const url = propertyUrl(property, locale);
@@ -278,25 +266,6 @@ export default function PropertyCard({
             {t('properties.new')}
         </Badge>
     ) : null;
-    // Comparison tick, top right of the photo (2026-09-28): white chip, dark once ticked; disabled past three
-    const compareToggle = onCompare ? (
-        <button
-            type="button"
-            aria-pressed={compared}
-            aria-disabled={!compared && compareFull ? true : undefined}
-            aria-label={`${compared ? t('properties.compare_remove') : t('properties.compare')} : ${property.title}`}
-            title={!compared && compareFull ? t('properties.compare_full') : undefined}
-            onClick={() => (compared || !compareFull) && onCompare(property.slug)}
-            className={cn(
-                'focus-ring absolute top-3 right-3 flex items-center gap-1.5 rounded-none px-2 py-0.5 text-[0.6875rem] font-medium transition-colors duration-300 motion-reduce:transition-none',
-                compared ? 'bg-primary text-primary-foreground' : 'bg-card/95 text-foreground hover:bg-card',
-                !compared && compareFull && 'cursor-default opacity-60',
-            )}
-        >
-            {compared ? <Check aria-hidden className="size-3" /> : <Columns3 aria-hidden className="size-3" />}
-            {t('properties.compare')}
-        </button>
-    ) : null;
 
     // Featured listing (« Coup de cœur »), ui.sh « Balayage lumineux » chosen among 20 (user decision 2026-09-28): the same
     // card with a sand « Coup de cœur » chip next to the availability on the photo, and the site's light sweep
@@ -309,7 +278,6 @@ export default function PropertyCard({
                 <div className="relative">
                     {photos}
                     {shimmer}
-                    {compareToggle}
                     <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                         {availability}
                         {newChip}
@@ -348,7 +316,6 @@ export default function PropertyCard({
                     {availability}
                     {newChip}
                 </div>
-                {compareToggle}
             </div>
             {/* Price band glued to the photo (ui.sh « Bandeau collé à la photo » chosen among 15 structures, user decision 2026-09-26): the price per m² in the text colour, only the fees note muted */}
             <p className={bandClass}>

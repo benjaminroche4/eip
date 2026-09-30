@@ -11,6 +11,7 @@ return [
     'sell' => 'sell-property-paris',
     'buy' => 'buy-property-paris',
     'properties' => 'properties',
+    'properties_rent' => 'properties/rent',
     'transaction_sale' => 'buy',
     'transaction_rent' => 'rent',
     'off_market' => 'off-market-properties',

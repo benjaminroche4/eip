@@ -106,6 +106,21 @@ final class SitemapBuilder
             $sitemap->add($url);
         }
 
+        // Rentals landing (2026-09-30), only while a rental is published
+        if (($this->properties)($default)->contains(fn ($p) => $p->transaction === 'rent' && ! $p->offMarket)) {
+            foreach ($locales as $locale) {
+                $url = Url::create($this->localized($locale, 'routes.properties_rent'))
+                    ->setPriority(0.8)
+                    ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
+                    ->setLastModificationDate($this->pagesLastmod());
+                foreach ($locales as $alt) {
+                    $url->addAlternate($this->localized($alt, 'routes.properties_rent'), $alt);
+                }
+                $url->addAlternate($this->localized($default, 'routes.properties_rent'), 'x-default');
+                $sitemap->add($url);
+            }
+        }
+
         // Detail pages (2026-09-28): every public listing in every locale, the twin rows sit at the same index; lastmod = its publication
         $lists = collect($locales)->mapWithKeys(fn (string $locale) => [$locale => ($this->properties)($locale)]);
         foreach ($lists[$default] as $index => $property) {
@@ -113,11 +128,18 @@ final class SitemapBuilder
                 continue;
             }
             $detailUrl = fn (string $locale) => PropertyUrl::make($property->transaction, $property->arrondissement, $lists[$locale][$index]?->slug ?? $property->slug, $locale);
+            // lastmod = the last price change, else the publication (SEO audit 2026-09-30)
+            $lastChange = collect($property->priceHistory)->pluck('date')->push($property->publishedAt)->filter()->max();
             foreach ($locales as $locale) {
+                $twin = $lists[$locale][$index] ?? $property;
                 $url = Url::create($detailUrl($locale))
                     ->setPriority(0.8)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                    ->setLastModificationDate($property->publishedAt ? new \DateTimeImmutable($property->publishedAt) : $this->pagesLastmod());
+                    ->setLastModificationDate($lastChange ? new \DateTimeImmutable($lastChange) : $this->pagesLastmod());
+                // The photos (image sitemap), captioned in the page's language
+                foreach (array_slice($property->photos, 0, 3) as $i => $photo) {
+                    $url->addImage(url(str_replace('{w}', '1600', $photo)), $twin->photoAlt.($i > 0 ? ' ('.($i + 1).')' : ''));
+                }
                 foreach ($locales as $alt) {
                     $url->addAlternate($detailUrl($alt), $alt);
                 }

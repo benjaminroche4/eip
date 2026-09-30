@@ -133,7 +133,9 @@ class PropertyShowTest extends TestCase
         $this->assertStringContainsString('<loc>'.url('/nos-biens/achat/paris-7e/appartement-champ-de-mars').'</loc>', $properties);
         $this->assertStringContainsString('<loc>'.url('/en/properties/buy/paris-7th/apartment-champ-de-mars').'</loc>', $properties);
         $this->assertStringContainsString('hreflang="en" href="'.url('/en/properties/buy/paris-7th/apartment-champ-de-mars').'"', $properties);
-        $this->assertStringContainsString('<lastmod>2026-08-15', $properties); // the listing's publication date
+        $this->assertStringContainsString('<lastmod>2026-09-12', $properties); // the listing's last price change (its publication was 2026-08-15) — audit 2026-09-30
+        $this->assertStringContainsString('<image:loc>'.url('/images/buy/district-3-1600.webp').'</image:loc>', $properties); // image sitemap
+        $this->assertStringContainsString('<image:caption>Vue sur la tour Eiffel depuis un appartement du Champ-de-Mars</image:caption>', $properties);
         $this->assertStringNotContainsString('appartement-saint-germain-des-pres', $properties, 'confidential listings have no public page');
     }
 }

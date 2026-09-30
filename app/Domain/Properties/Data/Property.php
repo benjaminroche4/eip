@@ -139,6 +139,24 @@ final readonly class Property implements Arrayable
         return $this->publishedAt !== null && Carbon::parse($this->publishedAt)->diffInDays(Carbon::today(), false) <= self::NEW_FOR_DAYS && ! Carbon::parse($this->publishedAt)->isFuture();
     }
 
+    /**
+     * The card's shape (listing, district pages, similar listings — SEO audit 2026-09-30: the full DTO weighed 14 Ko for six
+     * cards and 9 Ko for two similar ones on every page): everything the cards, the map, the compare tray and the
+     * listing JSON-LD read; the long texts and the detail-only facts stay on the detail page.
+     */
+    public function toCard(): array
+    {
+        return [
+            'slug' => $this->slug, 'title' => $this->title, 'arrondissement' => $this->arrondissement, 'area' => $this->area, 'type' => $this->type, 'transaction' => $this->transaction,
+            'price' => $this->price, 'surface' => $this->surface, 'rooms' => $this->rooms, 'bedrooms' => $this->bedrooms,
+            'excerpt' => $this->excerpt, 'photos' => $this->photos, 'photo_alt' => $this->photoAlt, 'advisor' => $this->advisor, 'available' => $this->available,
+            'lat' => $this->lat, 'lng' => $this->lng, 'off_market' => $this->offMarket, 'featured' => $this->featured,
+            'features' => $this->features, 'condition' => $this->condition, 'floor' => $this->floor, 'furnished' => $this->furnished, 'charges_included' => $this->chargesIncluded,
+            'published_at' => $this->publishedAt, 'is_new' => $this->isNew(), 'price_sqm' => $this->pricePerSqm(), 'year_built' => $this->yearBuilt, 'dpe' => $this->dpe,
+            'price_history' => $this->priceHistory, 'sold_at' => $this->soldAt,
+        ];
+    }
+
     public function toArray(): array
     {
         return [

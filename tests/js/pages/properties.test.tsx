@@ -67,7 +67,7 @@ const DISTRICTS = [
     { n: 6, slug: 'paris-6e', url: '/nos-biens/paris-6e', name: 'Paris 6e', count: 1 },
     { n: 8, slug: 'paris-8e', url: '/nos-biens/paris-8e', name: 'Paris 8e', count: 1 },
 ];
-const BASE = { district: null, districts: DISTRICTS };
+const BASE = { district: null, landing: null, districts: DISTRICTS };
 const SALES = PROPERTIES.filter((p) => p.transaction === 'sale');
 const PAGINATION = { page: 1, lastPage: 1, total: SALES.length, perPage: 12 };
 const INDEXING = { noindex: false, canonical: 'http://localhost/nos-biens', prev: null, next: null };
@@ -507,12 +507,23 @@ describe('Properties page', () => {
                 map={MAP}
                 areas={[]}
                 priceBounds={BOUNDS}
-                district={{ n: 6, slug: 'paris-6e', name: 'Paris 6e', areas: 'Saint-Germain-des-Prés, Luxembourg' }}
+                district={{
+                    n: 6,
+                    slug: 'paris-6e',
+                    name: 'Paris 6e',
+                    areas: 'Saint-Germain-des-Prés, Luxembourg',
+                    summary: 'Le 6e est Saint-Germain-des-Prés, l’adresse la plus recherchée de Paris.',
+                    price: '14 500',
+                }}
                 districts={DISTRICTS}
             />,
         );
         expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Nos biens à vendre à Paris 6e');
         expect(screen.getByText(/Saint-Germain-des-Prés, Luxembourg/)).toBeInTheDocument(); // the intro names the districts
+        // Thin page no more (SEO audit 2026-09-30): the arrondissement's profile, its average price, the count naming it
+        expect(screen.getByText(/l’adresse la plus recherchée de Paris/)).toBeInTheDocument();
+        expect(screen.getByText('Prix moyen constaté dans le Paris 6e : 14 500 €/m² (Notaires du Grand Paris).')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: /bien/ })).toHaveTextContent('à Paris 6e');
         expect(document.title).toContain('Biens à vendre à Paris 6e');
         // Crawlable links to every district page with properties, the current one marked
         const nav = screen.getByRole('navigation', { name: 'Nos biens par arrondissement' });
@@ -524,6 +535,10 @@ describe('Properties page', () => {
             .map((s) => s.textContent)
             .join('');
         expect(jsonLd).toContain('"RealEstateListing"');
+        // Every entity links to its detail page, never to an anchor, and names the agency (SEO audit 2026-09-30)
+        expect(jsonLd).toContain(`"url":"http://localhost/nos-biens/achat/paris-6e/${PROPERTY.slug}"`);
+        expect(jsonLd).not.toContain('#appartement');
+        expect(jsonLd).toContain('"provider":{"@type":"RealEstateAgent"');
         expect(jsonLd).toContain('"floorSize":{"@type":"QuantitativeValue","value":128,"unitCode":"MTK"}');
         expect(jsonLd).toContain('"postalCode":"75006"');
         expect(jsonLd).toContain('"name":"Paris 6e"');
@@ -619,7 +634,7 @@ describe('Properties page', () => {
         expect(card).not.toHaveAttribute('data-active');
     });
 
-    it('shows the criteria in force as chips under the bar with the alert link, widens a zero result, and ticks listings to compare (2026-09-28)', async () => {
+    it('shows the criteria in force as chips under the bar with the alert link, widens a zero result (2026-09-28)', async () => {
         const user = userEvent.setup();
         page.props = sharedProps();
         renderPage(
@@ -658,33 +673,6 @@ describe('Properties page', () => {
         expect(screen.queryByRole('list', { name: 'Critères actifs' })).toBeNull();
     });
 
-    it('compares up to three ticked listings from a pinned tray (2026-09-28)', async () => {
-        const user = userEvent.setup();
-        page.props = sharedProps();
-        renderPage(
-            <PropertiesPage
-                properties={SALES}
-                pagination={PAGINATION}
-                filters={FILTERS}
-                indexing={INDEXING}
-                map={MAP}
-                districts={[]}
-                areas={[]}
-                priceBounds={BOUNDS}
-            />,
-        );
-        expect(screen.queryByRole('region', { name: 'Comparer les biens' })).toBeNull();
-        await user.click(screen.getByRole('button', { name: `Comparer : ${SALES[0].title}` }));
-        await user.click(screen.getByRole('button', { name: `Comparer : ${SALES[1].title}` }));
-        const tray = screen.getByRole('region', { name: 'Comparer les biens' });
-        expect(tray).toHaveTextContent('2 biens à comparer');
-        await user.click(within(tray).getByRole('button', { name: 'Comparer' }));
-        expect(within(await screen.findByRole('dialog', { name: 'Comparer les biens' })).getAllByRole('columnheader')).toHaveLength(2);
-        await user.keyboard('{Escape}');
-        await user.click(within(tray).getByRole('button', { name: 'Vider la comparaison' }));
-        expect(screen.queryByRole('region', { name: 'Comparer les biens' })).toBeNull();
-    });
-
     it('folds the pinned bar to one line once scrolled under lg, and unfolds it on a tap (2026-09-28)', async () => {
         const user = userEvent.setup();
         page.props = sharedProps();
@@ -711,5 +699,25 @@ describe('Properties page', () => {
         await user.click(summary);
         expect(screen.getByRole('search', { name: 'Filtres rapides' })).toBeInTheDocument();
         Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+    });
+    it('rentals landing (SEO audit 2026-09-30): its own title, h1 and intro, the rentals count', () => {
+        page.props = sharedProps();
+        renderPage(
+            <PropertiesPage
+                properties={PROPERTIES.filter((p) => p.transaction === 'rent')}
+                pagination={{ page: 1, lastPage: 1, total: 1, perPage: 12 }}
+                filters={{ ...FILTERS, transaction: 'rent' }}
+                indexing={{ ...INDEXING, canonical: 'http://localhost/nos-biens/location' }}
+                map={MAP}
+                areas={[]}
+                priceBounds={BOUNDS}
+                {...BASE}
+                landing="rent"
+            />,
+        );
+        expect(document.title).toContain('Appartements de prestige à louer à Paris');
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Nos biens à louer à Paris');
+        expect(screen.getByText(/actuellement à la location à Paris/)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: /location/ })).toHaveTextContent('1 bien en location à Paris');
     });
 });

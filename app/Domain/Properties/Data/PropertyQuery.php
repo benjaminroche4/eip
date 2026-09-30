@@ -112,6 +112,19 @@ final readonly class PropertyQuery
         );
     }
 
+    /** The same request forced on a transaction (the clean rentals landing `/nos-biens/location`, 2026-09-30). */
+    public function withTransaction(string $transaction): self
+    {
+        return new self($this->cities, $this->budget, $transaction, $this->types, $this->rooms, $this->sort, $this->bounds, $this->page, $this->perPage, $this->budgetMin, $this->surfaceMin, $this->bedrooms, $this->features, $this->conditions, $this->floors, $this->furnished, $this->availableOnly, $this->areas);
+    }
+
+    /** The rentals landing is indexable on its plain first page: the transaction is the page, not a filter (2026-09-30). */
+    public function isRentIndexable(): bool
+    {
+        return $this->page === 1 && $this->transaction === 'rent' && $this->cities === [] && $this->sort === 'recent'
+            && ! $this->withTransaction('sale')->hasFiltersBesidesCities();
+    }
+
     /** The same request narrowed to one arrondissement (the clean district URLs). @param list<int> $cities */
     public function withCities(array $cities): self
     {
@@ -214,14 +227,14 @@ final readonly class PropertyQuery
      * Query params of this request for another page (route params, without the defaults). `withCities` = false leaves
      * the arrondissement out (it is in the path of a clean district URL). @return array<string, mixed>
      */
-    public function params(?int $page = null, bool $withCities = true): array
+    public function params(?int $page = null, bool $withCities = true, bool $withTransaction = true): array
     {
         $page ??= $this->page;
 
         return array_filter([
             'city' => $withCities ? $this->cities : [],
             'budget' => $this->budget,
-            'transaction' => $this->transaction === 'rent' ? 'rent' : null,
+            'transaction' => $withTransaction && $this->transaction === 'rent' ? 'rent' : null,
             'type' => $this->types,
             'rooms' => $this->rooms,
             'sort' => $this->sort !== 'recent' ? $this->sort : null,
