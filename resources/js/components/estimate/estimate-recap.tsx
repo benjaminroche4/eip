@@ -178,7 +178,7 @@ export default function EstimateRecap({ values, frameless = false }: EstimateRec
                         >
                             {/* Gradient hairline between groups (same divider as the form steps) */}
                             {index > 0 && <GradientHairline className="mb-4" />}
-                            <h3
+                            <p
                                 id={`estimate-recap-${index}`}
                                 className="text-muted-foreground mb-1 flex items-center gap-2 font-sans text-xs font-normal"
                             >
@@ -193,7 +193,7 @@ export default function EstimateRecap({ values, frameless = false }: EstimateRec
                                     </span>
                                 )}
                                 {group.title}
-                            </h3>
+                            </p>
                             {/* Rows are buttons (focus the field), so a plain list rather than a <dl> */}
                             <ul role="list" className="grid grid-cols-2">
                                 {group.rows.map((row, rowIndex) => {

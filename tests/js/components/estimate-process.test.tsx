@@ -14,7 +14,7 @@ describe('EstimateProcess', () => {
         const steps = within(container.querySelector('ol')!).getAllByRole('listitem');
         expect(steps).toHaveLength(3);
         expect(steps[0]).toHaveTextContent('01');
-        expect(within(steps[0]).getByRole('heading', { level: 3, name: 'Vous décrivez votre bien' })).toBeInTheDocument();
+        expect(within(steps[0]).getByRole('heading', { level: 3, name: 'Vous nous présentez votre bien' })).toBeInTheDocument();
         expect(steps[1]).toHaveTextContent('Sous 24 heures ouvrées'); // the delay is stated
         expect(container.querySelectorAll('a, button')).toHaveLength(0);
 
