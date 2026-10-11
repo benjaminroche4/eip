@@ -15,7 +15,7 @@ describe('EstimateProcess', () => {
         expect(steps).toHaveLength(3);
         expect(steps[0]).toHaveTextContent('01');
         expect(within(steps[0]).getByRole('heading', { level: 3, name: 'Vous nous présentez votre bien' })).toBeInTheDocument();
-        expect(steps[1]).toHaveTextContent('Sous 24 heures ouvrées'); // the delay is stated
+        expect(steps[1]).toHaveTextContent('24 heures maximum'); // the delay is stated
         expect(container.querySelectorAll('a, button')).toHaveLength(0);
 
         expect(await axe(container)).toHaveNoViolations();
