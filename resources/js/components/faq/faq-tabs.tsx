@@ -1,14 +1,15 @@
 import FaqAnswer from '@/components/faq/faq-answer';
+import FaqAnswerPanel from '@/components/faq/faq-answer-panel';
 import FaqCta from '@/components/faq/faq-cta';
 import FaqSearch from '@/components/faq/faq-search';
 import { type FaqCategory, type FaqItem } from '@/components/faq/types';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useTranslation } from '@/hooks/use-translation';
 import { stripFaqMarkup } from '@/lib/faq-markup';
 import { scrollBehavior } from '@/lib/focus-field';
 import { cn } from '@/lib/utils';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import { Tabs as TabsPrimitive } from 'radix-ui';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -34,6 +35,7 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
     const [open, setOpen] = useState<Record<string, string[]>>(() =>
         Object.fromEntries(categories.map((c) => [c.key, c.items[0] ? [c.items[0].slug] : []])),
     );
+    const [sheetOpen, setSheetOpen] = useState(false);
     const [query, setQuery] = useState('');
     const searchId = 'faq-search';
 
@@ -101,37 +103,58 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
                 {/* Search over every question of every topic */}
                 <FaqSearch id={searchId} value={query} onChange={setQuery} count={results ? results.length : null} />
 
-                {/* Mobile: a bordered "contents" dropdown instead of the strip (user decision 2026-08-31) */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger className="group focus-ring border-border bg-card flex h-11 w-full items-center justify-between gap-3 rounded-none border px-4 text-sm lg:hidden">
+                {/* Mobile: the bordered "contents" button opens the site's bottom sheet (the legal pages' one, user decision
+                    2026-10-11: the dropdown it replaced had no height limit); every topic in compact rows, the active one on sand */}
+                <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+                    <SheetTrigger className="group focus-ring border-border bg-card flex h-11 w-full items-center justify-between gap-3 rounded-none border px-4 text-sm lg:hidden">
                         <span>{t('faq.summary')}</span>
                         <span className="text-muted-foreground flex min-w-0 items-center gap-2">
                             <span className="truncate">{categories.find((c) => c.key === active)?.title}</span>
                             <ChevronDown
                                 aria-hidden
-                                className="size-4 shrink-0 transition-transform group-data-open:rotate-180 motion-reduce:transition-none"
+                                className="size-4 shrink-0 transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none"
                             />
                         </span>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start" className="w-(--radix-dropdown-menu-trigger-width)">
-                        {categories.map((category) => (
-                            <DropdownMenuItem
-                                key={category.key}
-                                onSelect={() => selectTopic(category.key)}
-                                className={cn(
-                                    // Same surfaces as the desktop rows: light sand highlight, full sand when active — even hovered
-                                    'focus:bg-background-05 justify-between rounded-none py-2.5',
-                                    category.key === active && 'bg-background-08 focus:bg-background-08 text-foreground',
-                                )}
-                            >
-                                {category.title}
-                                <span aria-hidden className="text-muted-foreground text-xs tabular-nums">
-                                    {String(category.items.length).padStart(2, '0')}
-                                </span>
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                    </SheetTrigger>
+                    <SheetContent
+                        side="bottom"
+                        hideClose
+                        className="bg-background-05 flex max-h-[85dvh] flex-col gap-4 overflow-y-auto p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] lg:hidden"
+                    >
+                        <div className="flex items-center justify-between gap-3">
+                            <SheetTitle className="text-xl font-medium tracking-tight">{t('faq.summary')}</SheetTitle>
+                            <SheetClose className="focus-ring border-border bg-card text-muted-foreground hover:text-foreground flex size-9 items-center justify-center rounded-none border transition-colors duration-300">
+                                <X aria-hidden className="size-4" />
+                                <span className="sr-only">{t('a11y.close')}</span>
+                            </SheetClose>
+                        </div>
+                        <SheetDescription className="sr-only">{t('faq.categories_label')}</SheetDescription>
+                        <ul role="list" className="flex flex-col gap-0.5">
+                            {categories.map((category) => (
+                                <li key={category.key}>
+                                    <SheetClose asChild>
+                                        <button
+                                            type="button"
+                                            onClick={() => selectTopic(category.key)}
+                                            aria-current={category.key === active ? 'true' : undefined}
+                                            className={cn(
+                                                'focus-ring flex w-full items-center gap-4 rounded-none px-4 py-2.5 text-left text-sm',
+                                                category.key === active
+                                                    ? 'bg-background-08 text-foreground'
+                                                    : 'bg-card text-muted-foreground hover:text-foreground',
+                                            )}
+                                        >
+                                            <span className="min-w-0 flex-1">{category.title}</span>
+                                            <span aria-hidden className="text-muted-foreground text-xs tabular-nums">
+                                                {String(category.items.length).padStart(2, '0')}
+                                            </span>
+                                        </button>
+                                    </SheetClose>
+                                </li>
+                            ))}
+                        </ul>
+                    </SheetContent>
+                </Sheet>
 
                 <TabsPrimitive.List aria-label={t('faq.categories_label')} className="flex flex-col gap-0.5 max-lg:hidden">
                     {categories.map((category) => (
@@ -212,9 +235,10 @@ export default function FaqTabs({ categories }: FaqTabsProps) {
                             {category.items.map((item: FaqItem) => (
                                 <AccordionItem key={item.slug} value={item.slug} id={item.slug} className="scroll-mt-24">
                                     <AccordionTrigger>{item.question}</AccordionTrigger>
-                                    <AccordionContent>
+                                    {/* The answer stays in the HTML when closed (`FaqAnswerPanel`): crawlers and AI engines read all 40 answers, not only the JSON-LD (SEO review 2026-10-11) */}
+                                    <FaqAnswerPanel open={values.includes(item.slug)}>
                                         <FaqAnswer text={item.answer} />
-                                    </AccordionContent>
+                                    </FaqAnswerPanel>
                                 </AccordionItem>
                             ))}
                         </Accordion>

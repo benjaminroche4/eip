@@ -75,7 +75,7 @@ export interface SeoShared {
         mapsUrl: string | null;
         address: { street?: string; city?: string; postal_code?: string; country?: string };
     };
-    social: Partial<Record<'linkedin' | 'instagram', string>>;
+    social: Partial<Record<'linkedin', string>>;
     /** Advisor shown on the contact confirmation; null when not configured. */
     advisor: { name: string; role: string | null; photo: string; experienceYears: number | null } | null;
     hours: { spec: string; label: string; open: boolean };

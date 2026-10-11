@@ -10,7 +10,7 @@ class SellTest extends TestCase
 {
     public function test_sell_page_serves_the_hero_and_every_content_block(): void
     {
-        $geo = fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris');
+        $geo = fn (string $text) => str_contains($text, 'Paris') && ! str_contains($text, 'Estate in Paris');
 
         $this->get('/vendre-immobilier-paris')
             ->assertOk()
@@ -32,7 +32,7 @@ class SellTest extends TestCase
                 ->where('translations.sell.process.intro', $geo)
                 ->has('steps', 3)
                 ->missing('districts')
-                ->where('translations.sell.confidential.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
+                ->where('translations.sell.confidential.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('steps.0.title', 'Estimation')
                 ->where('steps.2.title', 'Négociation et signature')
                 ->has('stories', 10) // the home's photo row

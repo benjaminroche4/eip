@@ -305,7 +305,8 @@ Tout chiffre affiché sur le site vient de cette liste (décision utilisateur 20
 | Ancienneté | **25 ans** (« depuis plus de 25 ans », « 25+ ») | `about.stats.1`, `about.hero_slide_1_title`, `home.trust_text` |
 | Biens vendus et loués | **500+** | `about.stats.2`, bloc de confiance de la home (`TrustIntro` lit `about.stats.2`) |
 | Acquéreurs qualifiés actifs | **120+ par mois** | `about.stats.3` |
-| Délai de réponse | **24 h ouvrées** | `nav.estimate_badge` « Sous 24 h », `buy.record.facts.reply` |
+| Réponse à une demande (estimation, demande écrite) | **24 h ouvrées** | `nav.estimate_badge` « Sous 24 h », `estimate.*`, `buy.record.facts.reply` |
+| Rappel après le formulaire de contact | **30 minutes, aux heures d'ouverture** | `contact.success_text`, `contact.form_text`, `contact.advisor_delay_value`, `mail.callback_text`, FAQ « Comment prendre contact » et `faq.no_results` (test `ContactFormTest::test_the_page_carries_one_callback_promise`) |
 | Note Google | **`SEO_GOOGLE_RATING` / `SEO_GOOGLE_REVIEW_COUNT`** (4.9 / 150 en local), jamais en dur | `buy.record.facts.rating`, JSON-LD `aggregateRating`, `ProofLine` |
 | Conseillers | **8** (`team.members`, nom court + rôle + quartier de prédilection), 3 avatars dans la carte CTA | page À propos, footer, CTA |
 | Adresse | **3 rue Grégoire de Tours, 75006 Paris** (`SEO_ORG_*`) | footer, JSON-LD, mentions légales, `buy.record.facts.address`, `llms.txt` (défaut `config/seo.php` corrigé de 75003 → 75006 le 2026-10-11) |
@@ -329,7 +330,7 @@ Infrastructure
 Meta title & description — conventions (testées par `tests/Feature/SeoMetaLengthTest.php`)
 
 - Chaque page publique a ses clés **`<page>.seo_title`** et **`<page>.seo_description`** dans `lang/{fr,en}/ui.php` (distinctes du `title` utilisé pour le `<h1>` / la nav). Les passer à `<SeoHead>`.
-- **Title = `Estate in Paris - {Page}`** (décision utilisateur 2026-10-11) : la marque **ouvre** toujours le titre, suivie du tiret simple ` - ` puis du libellé de la page (`Estate in Paris - Plan du site`, `Estate in Paris - Vendre un bien à Paris`). Même modèle sur toutes les pages, home comprise. **30-60 caractères max (jamais > 60), marque et séparateur compris.** Le libellé après le tiret porte le mot-clé principal + le lieu quand il y a la place, pas de suite de mots-clés, pas de « Accueil » / « Bienvenue ». Unique sur tout le site. Les clés `seo_title` ne contiennent **que le libellé de la page** ; `SeoHead` ajoute le préfixe (`config/seo.php › title_separator` = ` - `), `withBrand={false}` seulement quand un titre dynamique (article, bien) dépasserait 60 avec la marque (`SeoText::fitsBrand()` → `seo_title_brand` / `meta.withBrand`).
+- **Title = `Estate in Paris - {Page}`** (décision utilisateur 2026-10-11) : la marque **ouvre** toujours le titre, suivie du tiret simple ` - ` puis du **seul nom de la page** (`Estate in Paris - Plan du site`, `Estate in Paris - Vendre un bien`, `Estate in Paris - Questions fréquentes` : le même libellé que le h1 ou l'entrée de nav, jamais une phrase à mots-clés — décision utilisateur 2026-10-11, le soir). Même modèle sur toutes les pages, home comprise (`Immobilier de prestige à Paris`). **20-60 caractères (jamais > 60), marque et séparateur compris.** Pas de « Accueil » / « Bienvenue ». Unique sur tout le site ; les pages dynamiques (bien, article, arrondissement, location) gardent un libellé construit depuis les données. Les clés `seo_title` ne contiennent **que le libellé de la page** ; `SeoHead` ajoute le préfixe (`config/seo.php › title_separator` = ` - `), `withBrand={false}` seulement quand un titre dynamique (article, bien) dépasserait 60 avec la marque (`SeoText::fitsBrand()` → `seo_title_brand` / `meta.withBrand`).
 - **Description : 120-160 caractères**, une phrase active qui répond à l'intention de recherche, contient le mot-clé principal + « Paris » de façon naturelle, se termine par une incitation (« découvrez », « trouvez », « contactez »). Jamais tronquée par Google (< 160), jamais dupliquée entre pages, jamais identique au title.
 - Pages dynamiques (bien, article) : construire le title depuis les données (`{Type} {pièces} {quartier} · Estate in Paris`) et **tronquer proprement** à 60 (couper sur un mot, `…`) ; description générée depuis le résumé, même règle 120-160.
 - Pages `noindex` (résultats filtrés, pagination > 1) : title/description quand même renseignés (affichés dans l'onglet, partagés sur les réseaux).
@@ -346,7 +347,7 @@ Par page (`<SeoHead/>`)
 
 GEO (Generative Engine Optimization — être cité par ChatGPT/Perplexity/AI Overviews) — **règle absolue, chaque page**
 
-- **Réponse d'abord** : le premier paragraphe sous le `<h1>` répond directement à l'intention de la page en 1-2 phrases factuelles, autonomes (citables hors contexte : nom de la marque + sujet + lieu). Pas de « Bienvenue ».
+- **Réponse d'abord** : le premier paragraphe sous le `<h1>` répond directement à l'intention de la page en 1-2 phrases factuelles, autonomes (citables hors contexte : sujet + lieu + fait). **Jamais le nom de la marque dans une intro** (décision utilisateur 2026-10-11 : « Estate in Paris répond… », « Estate in Paris accompagne… » sont interdits ; la marque vit dans le `<title>`, les h2 « Pourquoi … avec Estate in Paris ? », le JSON-LD et le manifeste) ; on écrit « nos conseillers », « nous », ou une phrase nominale. Pas de « Bienvenue ».
 - **H2 formulés en questions** quand c'est naturel (« Comment acheter un hôtel particulier à Paris ? »), suivis d'une réponse courte puis du détail. Sections courtes, listes, tableaux pour les chiffres.
 - **Faits datés et sourcés** : chiffres, prix, délais, dates, sources nommées ; `dateModified` visible sur les contenus éditoriaux.
 - **FAQ** en fin de page dès qu'il y a ≥ 3 questions, balisée avec `faqPage()` (JSON-LD) et visible dans le HTML.
@@ -359,7 +360,7 @@ GEO (Generative Engine Optimization — être cité par ChatGPT/Perplexity/AI Ov
 - [x] `/llms.txt` (llmstxt.org) — **remplir `SEO_LLMS_SUMMARY`** : 2-3 phrases factuelles (quoi, pour qui, où)
 - [x] Données structurées riches (Organization `sameAs`, FAQPage, Article avec auteur/dates)
 - [ ] Contenu : répondre directement à la question dans les 1-2 premières phrases de chaque page, titres H2 formulés en questions, FAQ en fin de page (utiliser `faqPage()`), chiffres/dates/sources citées, page « À propos » + auteur identifiable (E-E-A-T)
-- [ ] Renseigner `config/seo.php` / `.env` : `SEO_ORG_*`, `SEO_ORG_SAME_AS` (LinkedIn, X, etc.), `SEO_TWITTER`
+- [ ] Renseigner `config/seo.php` / `.env` : `SEO_ORG_*`, `SEO_TWITTER` (`SEO_SOCIAL_LINKEDIN` = page entreprise LinkedIn, renseignée le 2026-10-11)
 
 Performance (Core Web Vitals)
 
@@ -375,7 +376,7 @@ SEO_OPENING_HOURS="Mo-Sa 09:00-19:00" (+ SEO_OPENING_HOURS_FR/EN libellés)   # 
 SEO_GOOGLE_RATING=4.9 / SEO_GOOGLE_REVIEW_COUNT=150 / SEO_GOOGLE_REVIEWS_URL=   # AggregateRating JSON-LD uniquement (plus de badge visible) — UNIQUEMENT des chiffres réels
 SEO_GOOGLE_MAPS_URL=   # lien de la fiche Google Business Profile (« Voir sur Google Maps » page contact + adresse dans le pied des e-mails via AgencyCard) ; vide = recherche de l'adresse sur Google Maps — décision utilisateur 2026-09-22
 SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_STREET= / SEO_ORG_POSTAL_CODE= / SEO_ORG_CITY=   # footer + JSON-LD
-SEO_SOCIAL_LINKEDIN= / SEO_SOCIAL_INSTAGRAM=   # vide = icône masquée
+SEO_SOCIAL_LINKEDIN=https://www.linkedin.com/company/estate-in-paris   # seul réseau (Instagram retiré le 2026-10-11) ; vide = icône masquée ; fusionné dans `sameAs`
 MAIL_MAILER=resend / RESEND_KEY= / MAIL_FROM_ADDRESS=contact@estate-in-paris.fr   # e-mails transactionnels via Resend (package resend/resend-php, transport natif Laravel) ; domaine estate-in-paris.fr vérifié dans Resend
 SANITY_PROJECT_ID= / SANITY_DATASET=production / SANITY_API_VERSION= / SANITY_TOKEN= / SANITY_BLOG_TYPE=estateBlog / SANITY_USE_CDN=false   # blog (config/services.php › sanity) ; USE_CDN=true en prod ; le token ne quitte jamais le serveur
 APP_URL=https://www.exemple.fr        # base des canonical, sitemap, robots
@@ -385,7 +386,7 @@ SEO_SITE_NAME="Mon site"
 SEO_DESCRIPTION="…"
 SEO_DEFAULT_IMAGE=/og-default.png
 SEO_TWITTER=@handle
-SEO_ORG_NAME= / SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_SAME_AS=https://linkedin.com/…,https://x.com/…
+SEO_ORG_NAME= / SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_SAME_AS=   # profils supplémentaires séparés par des virgules ; LinkedIn vient déjà de SEO_SOCIAL_LINKEDIN
 SEO_LLMS_SUMMARY="…"
 GTM_ID=GTM-XXXXXXX                   # Google Tag Manager, prod uniquement (vide = rien d'injecté)
 SEO_VIDEO_BUY=                       # id YouTube de la vidéo de présentation du hero « Acheter » (vide = photo seule, pas de bouton lecture)

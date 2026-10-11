@@ -42,7 +42,7 @@ describe('Property detail page', () => {
         renderPage(<PropertyShow {...PROPS} />);
         expect(
             screen.getByText(
-                /^Estate in Paris propose ce bien à la vente : appartement de 4 pièces \(128 m², 2 chambres\) à Saint-Germain-des-Prés, Paris 6e, au prix de 2.450.000 €\.$/,
+                /^À la vente : appartement de 4 pièces \(128 m², 2 chambres\) à Saint-Germain-des-Prés, Paris 6e, au prix de 2.450.000 €\.$/,
             ),
         ).toBeInTheDocument();
         const legal = screen.getByRole('region', { name: 'Mentions' });

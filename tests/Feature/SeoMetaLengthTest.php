@@ -6,7 +6,7 @@ use Tests\TestCase;
 
 /**
  * Guards the SEO title / description length conventions (see CLAUDE.md « Meta title & description »).
- * Title: 30-60 characters including the « Site - » brand prefix (every page, home included). Description: 120-160 characters.
+ * Title: 20-60 characters including the « Site - » brand prefix (every page, home included; just the page name after the brand, user decision 2026-10-11). Description: 120-160 characters.
  */
 class SeoMetaLengthTest extends TestCase
 {
@@ -50,7 +50,7 @@ class SeoMetaLengthTest extends TestCase
                 $titleLength = mb_strlen($title);
                 $descriptionLength = mb_strlen($description);
 
-                $this->assertGreaterThanOrEqual(30, $titleLength, "[$locale] $page title too short ($titleLength): $title");
+                $this->assertGreaterThanOrEqual(20, $titleLength, "[$locale] $page title too short ($titleLength): $title");
                 $this->assertLessThanOrEqual(60, $titleLength, "[$locale] $page title too long ($titleLength): $title");
                 $this->assertGreaterThanOrEqual(120, $descriptionLength, "[$locale] $page description too short ($descriptionLength)");
                 $this->assertLessThanOrEqual(160, $descriptionLength, "[$locale] $page description too long ($descriptionLength)");

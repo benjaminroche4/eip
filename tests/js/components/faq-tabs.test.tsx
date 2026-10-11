@@ -1,5 +1,5 @@
 import FaqPage from '@/pages/faq';
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
@@ -52,6 +52,10 @@ describe('FAQ page', () => {
 
         expect(openQuestions().map((b) => b.textContent)).toEqual(['Un étranger peut-il acheter ?']);
         expect(within(panel()).getByRole('button', { name: 'Combien de temps pour acheter ?' })).toHaveAttribute('aria-expanded', 'false');
+        // A closed answer is still in the markup, hidden (GEO: every answer readable in the HTML, 2026-10-11)
+        const closed = within(panel()).getByRole('button', { name: 'Combien de temps pour acheter ?' }).closest('[data-slot="accordion-item"]')!;
+        expect(closed.querySelector('[data-slot="accordion-content"]')).toHaveAttribute('hidden');
+        expect(closed.querySelector('[data-slot="accordion-content"]')!.textContent).not.toBe('');
         expect(within(panel()).getByRole('link', { name: 'Contactez-nous' })).toHaveAttribute('href', '/contact');
         expect(within(panel()).getByRole('link', { name: 'Contacter un conseiller' })).toHaveAttribute('href', '/contact');
     });
@@ -150,7 +154,7 @@ describe('FAQ page', () => {
         window.history.replaceState({}, '', '/questions-frequentes');
     });
 
-    it('switches topics from the mobile "Sommaire" dropdown', async () => {
+    it('switches topics from the mobile "Sommaire" bottom sheet, which closes on pick and on Escape', async () => {
         const user = userEvent.setup();
         render();
 
@@ -158,18 +162,25 @@ describe('FAQ page', () => {
         expect(trigger).toHaveTextContent('Acheter un bien'); // the active topic shows next to the label
         await user.click(trigger);
 
-        const menu = screen.getByRole('menu');
+        const sheet = await screen.findByRole('dialog', { name: 'Sommaire' });
         expect(
-            within(menu)
-                .getAllByRole('menuitem')
+            within(sheet)
+                .getAllByRole('listitem')
                 .map((i) => i.textContent),
         ).toEqual(['Acheter un bien02', 'Vendre un bien01']);
-        await user.click(within(menu).getByRole('menuitem', { name: /Vendre un bien/ }));
+        expect(within(sheet).getByRole('button', { name: /Acheter un bien/ })).toHaveAttribute('aria-current', 'true');
+        await user.click(within(sheet).getByRole('button', { name: /Vendre un bien/ }));
 
-        expect(screen.queryByRole('menu')).not.toBeInTheDocument(); // picking closes the dropdown
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument()); // picking closes the sheet
         expect(screen.getByRole('tab', { name: 'Vendre un bien' })).toHaveAttribute('aria-selected', 'true');
         expect(within(panel()).getByRole('heading', { level: 2, name: 'Vendre un bien' })).toBeInTheDocument();
         expect(trigger).toHaveTextContent('Vendre un bien');
+
+        await user.click(trigger);
+        await screen.findByRole('dialog', { name: 'Sommaire' });
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(trigger).toHaveFocus(); // focus back on the trigger
     });
 
     it('has no axe violations', async () => {

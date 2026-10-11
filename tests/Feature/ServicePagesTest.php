@@ -45,7 +45,8 @@ class ServicePagesTest extends TestCase
                     $this->assertNotSame("ui.pages.$page.$key", __("ui.pages.$page.$key"), "[$locale] missing ui.pages.$page.$key");
                 }
                 if ($page !== 'about') { // the About hero is a warm, brand-free sentence (user decision 2026-10-11); the brand lives in the manifesto below
-                    $this->assertStringContainsString('Estate in Paris', __("ui.pages.$page.intro"), "[$locale] $page intro must name the brand (GEO)");
+                    $this->assertStringNotContainsString('Estate in Paris', __("ui.pages.$page.intro"), "[$locale] $page intro never opens with the brand (user decision 2026-10-11)");
+                    $this->assertStringContainsString('Paris', __("ui.pages.$page.intro"), "[$locale] $page intro names the place (GEO)");
                 }
                 $this->assertStringContainsString('Paris', __("ui.pages.$page.intro"));
             }

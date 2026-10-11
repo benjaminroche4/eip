@@ -78,8 +78,7 @@ return [
 
     // Social profiles shown in the footer (leave empty to hide). Also merged into Organization.sameAs.
     'social' => [
-        'linkedin' => env('SEO_SOCIAL_LINKEDIN'),
-        'instagram' => env('SEO_SOCIAL_INSTAGRAM'),
+        'linkedin' => env('SEO_SOCIAL_LINKEDIN'), // the only network (Instagram removed on user decision 2026-10-11)
     ],
 
     // GEO (Generative Engine Optimization): short, factual summary served in /llms.txt

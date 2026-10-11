@@ -5,7 +5,7 @@ describe('serviceNode', () => {
     it('describes a free service of the organisation served in Paris', () => {
         const node = serviceNode(
             {
-                name: 'Estimation immobilière gratuite à Paris',
+                name: 'Estimation immobilière',
                 description: 'Estate in Paris estime…',
                 url: 'https://example.test/estimation',
                 serviceType: 'Estimation',
@@ -15,7 +15,7 @@ describe('serviceNode', () => {
         expect(node).toMatchObject({
             '@type': 'Service',
             '@id': 'https://example.test/estimation#service',
-            name: 'Estimation immobilière gratuite à Paris',
+            name: 'Estimation immobilière',
             provider: { '@id': 'https://example.test/#organization' },
             areaServed: { '@type': 'City', name: 'Paris' },
             offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },

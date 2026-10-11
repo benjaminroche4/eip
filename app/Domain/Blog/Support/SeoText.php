@@ -9,7 +9,7 @@ final class SeoText
 
     public const DESCRIPTION_MAX = 160;
 
-    public const TITLE_MIN = 30;
+    public const TITLE_MIN = 20;
 
     /**
      * Page title of a dynamic page, ≤ 60 characters with the « Site - » brand prefix. Order of preference: the whole

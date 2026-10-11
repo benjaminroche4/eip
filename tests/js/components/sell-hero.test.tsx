@@ -18,7 +18,7 @@ describe('SellHero', () => {
 
         expect(screen.getByRole('heading', { level: 1, name: 'Vendez votre bien de prestige à Paris au juste prix' })).toBeInTheDocument();
         expect(screen.getByText('Vendre à Paris')).toBeInTheDocument(); // eyebrow
-        expect(screen.getByText(/Estate in Paris accompagne la vente/)).toBeInTheDocument(); // GEO answer-first intro
+        expect(screen.getByText(/^La vente de votre bien de prestige à Paris/)).toBeInTheDocument(); // GEO answer-first intro
         const cta = screen.getByRole('link', { name: 'Faire estimer mon bien' });
         expect(cta).toHaveAttribute('href', '/estimation-immobiliere-paris');
         expect(cta.className).toContain('bg-primary'); // the page's single full button (with the closing card)

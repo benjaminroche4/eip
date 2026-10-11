@@ -15,8 +15,8 @@ class BuyTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('buy')
                 ->where('translations.buy.headline', "Trouvez l'appartement ou l'hôtel particulier qui vous ressemble à Paris")
-                ->where('translations.pages.buy.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
-                ->where('translations.buy.why_intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
+                ->where('translations.pages.buy.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
+                ->where('translations.buy.why_intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.buy.why_title', 'Pourquoi acheter avec Estate in Paris ?')
                 ->where('translations.buy.why_international_title', 'Acheteurs internationaux')
                 ->has('stats', 4)
@@ -32,14 +32,14 @@ class BuyTest extends TestCase
                 ->has('testimonials', 20)
                 ->where('testimonials.0.photo', '/images/testimonials/client-1.webp')
                 ->where('districts.0.area', 'Saint-Germain-des-Prés')
-                ->where('translations.buy.districts.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
-                ->where('translations.buy.strategies.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
+                ->where('translations.buy.districts.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
+                ->where('translations.buy.strategies.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.buy.record.title', 'La confiance des propriétaires et acquéreurs à Paris')
                 ->has('facts', 4) // rating tile present: seo.reviews set above
                 ->where('facts.0.value', '4,9/5')
                 ->where('facts.0.text', 'Sur 150 avis clients publiés.')
                 ->where('facts.1.value', '24 h')
-                ->where('translations.buy.record.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris')));
+                ->where('translations.buy.record.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris')));
 
         $this->withLocale('en')->get('/en/buy-property-paris')
             ->assertOk()

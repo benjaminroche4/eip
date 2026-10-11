@@ -17,7 +17,7 @@ describe('BuyRecord', () => {
         const { container } = renderPage(<BuyRecord facts={FACTS} />);
 
         expect(screen.getByRole('heading', { level: 2, name: 'La confiance des propriétaires et acquéreurs à Paris' })).toBeInTheDocument();
-        expect(screen.getByText(/^Estate in Paris accompagne/)).toBeInTheDocument(); // GEO answer-first intro
+        expect(screen.getByText(/^Acquéreurs et vendeurs de biens d'exception à Paris/)).toBeInTheDocument(); // GEO answer-first intro
         expect(screen.getByRole('heading', { level: 3, name: 'Notre engagement' })).toBeInTheDocument();
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).querySelectorAll('li')).toHaveLength(3);
         expect(screen.getByText('Vos conseillers dédiés')).toBeInTheDocument();

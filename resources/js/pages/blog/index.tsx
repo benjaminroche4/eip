@@ -90,7 +90,7 @@ export default function BlogIndex({ posts, featured, filter, indexing }: Props) 
                         <h1 className="max-w-2xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{t('blog.headline')}</h1>
                     </div>
                     {/* GEO: the first paragraph answers the page's intent in one citable, factual sentence (brand + subject + place). */}
-                    <p className="text-muted-foreground max-w-lg text-base/7 text-pretty sm:text-sm/6">
+                    <p className="text-muted-foreground max-w-lg text-base/7 text-balance sm:text-sm/6">
                         {category ? tc('blog.intro_category', category.count, { category: category.name }) : t('blog.intro')}
                     </p>
                 </div>

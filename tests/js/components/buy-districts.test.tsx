@@ -45,7 +45,7 @@ describe('BuyDistricts', () => {
         const { container } = renderPage(<BuyDistricts items={ITEMS} />);
 
         expect(screen.getByRole('heading', { level: 2, name: 'Dans quels quartiers de Paris investir ?' })).toBeInTheDocument();
-        expect(screen.getByText(/Estate in Paris accompagne/)).toBeInTheDocument(); // GEO answer-first intro
+        expect(screen.getByText(/^Les quartiers de Paris qui allient/)).toBeInTheDocument(); // GEO answer-first intro
         const cards = within(container.querySelector('ul.grid')!)
             .getAllByRole('listitem')
             .filter((li) => li.classList.contains('group'));

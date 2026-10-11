@@ -3,10 +3,7 @@ import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
-const NETWORKS = [
-    { key: 'linkedin', label: 'LinkedIn' },
-    { key: 'instagram', label: 'Instagram' },
-] as const;
+const NETWORKS = [{ key: 'linkedin', label: 'LinkedIn' }] as const; // Instagram removed (user decision 2026-10-11)
 
 type SocialLinksProps = { className?: string };
 

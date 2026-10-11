@@ -20,7 +20,7 @@ describe('TrustIntro', () => {
         expect(reviewsLink.className).toContain('after:origin-right'); // the site's underline that draws itself on hover
         expect(container.querySelector('img[src="/images/social/google.svg"]')).toHaveAttribute('alt', ''); // Google logo, no star
         expect(container.querySelector('svg.lucide-star')).toBeNull();
-        expect(screen.getByText(/^Depuis plus de 25 ans, Estate in Paris/)).toBeInTheDocument(); // GEO sentence
+        expect(screen.getByText(/^Depuis plus de 25 ans, nous accompagnons/)).toBeInTheDocument(); // GEO sentence
 
         const buy = screen.getByRole('link', { name: 'Découvrir nos biens' });
         const contact = screen.getByRole('link', { name: 'Contacter un conseiller' });

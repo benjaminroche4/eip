@@ -50,7 +50,7 @@ class PropertiesTest extends TestCase
                 ->where('districts.0', ['n' => 3, 'slug' => 'paris-3e', 'url' => url('/nos-biens/paris-3e'), 'name' => 'Paris 3e', 'count' => 1]) // the clean district pages with properties (2026-09-28)
                 ->where('districts.1.n', 6)
                 ->where('propertiesCount', 8) // the badge next to « Nos biens », shared on every page
-                ->where('translations.pages.properties.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
+                ->where('translations.pages.properties.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.properties.types.mansion', 'Hôtel particulier')
                 ->where('translations.properties.transaction.rent', 'Location')
                 ->where('translations.nav.properties_count', ':count biens'));

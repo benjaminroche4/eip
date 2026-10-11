@@ -715,7 +715,7 @@ describe('Properties page', () => {
                 landing="rent"
             />,
         );
-        expect(document.title).toContain('Appartements de prestige à louer à Paris');
+        expect(document.title).toContain('Biens à louer');
         expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Nos biens à louer à Paris');
         expect(screen.getByText(/actuellement à la location à Paris/)).toBeInTheDocument();
         expect(screen.getByRole('heading', { level: 2, name: /location/ })).toHaveTextContent('1 bien en location à Paris');

@@ -37,78 +37,78 @@ return [
     'pages' => [
         'contact' => [
             'title' => 'Contact',
-            'seo_title' => 'Contacter notre agence immobilière à Paris',
-            'seo_description' => "Contactez Estate in Paris pour un projet d'achat, de vente ou d'estimation à Paris. Notre équipe vous répond par téléphone ou par e-mail : écrivez-nous.",
-            'intro' => "Estate in Paris accompagne en toute confidentialité l'achat, la vente et l'estimation de biens de prestige à Paris.",
+            'seo_title' => 'Contactez-nous',
+            'seo_description' => 'Contactez Estate in Paris pour acheter, vendre ou estimer un bien à Paris : un conseiller vous rappelle sous 30 minutes, par téléphone ou par e-mail.',
+            'intro' => "Achat, vente ou estimation d'un bien à Paris : nos conseillers vous répondent en toute confidentialité.",
         ],
         'estimate' => [
             'title' => 'Estimation',
-            'seo_title' => 'Estimation immobilière gratuite à Paris',
+            'seo_title' => 'Estimation immobilière',
             'seo_description' => 'Faites estimer votre appartement ou hôtel particulier à Paris par un expert Estate in Paris : une valeur fondée sur le marché réel. Demandez votre estimation.',
-            'intro' => "Estate in Paris estime gratuitement votre appartement, hôtel particulier ou bien d'exception à Paris, à partir des transactions réelles du quartier.",
+            'intro' => "Votre appartement, hôtel particulier ou bien d'exception à Paris, estimé gratuitement à partir des transactions réelles du quartier.",
         ],
         'sell' => [
             'title' => 'Vendre',
-            'seo_title' => 'Vendre son bien de prestige à Paris',
+            'seo_title' => 'Vendre un bien',
             'seo_description' => 'Confiez la vente de votre appartement ou hôtel particulier à Paris à Estate in Paris : estimation, mise en valeur, acquéreurs qualifiés. Vendez au bon prix.',
-            'intro' => "Estate in Paris accompagne la vente de votre bien de prestige à Paris, de l'estimation à la signature, auprès d'acquéreurs français et internationaux qualifiés.",
+            'intro' => "La vente de votre bien de prestige à Paris, de l'estimation à la signature, auprès d'acquéreurs français et internationaux qualifiés.",
         ],
         'buy' => [
             'title' => 'Acheter',
-            'seo_title' => 'Acheter un bien de prestige à Paris',
+            'seo_title' => 'Acheter un bien',
             'seo_description' => "Appartements, hôtels particuliers et biens off-market : Estate in Paris vous accompagne pour acheter un bien d'exception à Paris. Découvrez notre sélection.",
-            'intro' => "Estate in Paris sélectionne pour vous des appartements, hôtels particuliers et biens off-market à Paris et vous accompagne jusqu'à l'acquisition.",
+            'intro' => "Appartements, hôtels particuliers et biens off-market sélectionnés pour vous à Paris, avec un accompagnement jusqu'à l'acquisition.",
         ],
         'newsletter' => [
             'title' => 'Newsletter',
-            'seo_title' => 'Newsletter immobilier de prestige à Paris',
+            'seo_title' => 'Newsletter immobilier à Paris',
             'seo_description' => 'Recevez chaque semaine les tendances du marché immobilier de prestige à Paris, nos analyses et des biens off-market en avant-première. Inscrivez-vous.',
-            'intro' => 'Estate in Paris publie chaque semaine une newsletter sur le marché immobilier de prestige à Paris : tendances, prix et opportunités off-market réservées à ses abonnés.',
+            'intro' => 'Tendances, prix au m² et biens off-market à Paris en avant-première, en une lettre par semaine.',
         ],
         'about' => [
             'title' => 'À propos',
-            'seo_title' => 'Agence immobilière de prestige à Paris 6e',
+            'seo_title' => 'À propos',
             'seo_description' => 'Estate in Paris, agence immobilière de prestige à Paris 6e : huit conseillers bilingues, une méthode fondée sur les chiffres, cinq engagements. Découvrez-les.',
             'intro' => 'Des conseillers qui connaissent chaque adresse de Paris et prennent le temps de comprendre votre projet.',
         ],
         'faq' => [
             'title' => 'FAQ',
-            'seo_title' => 'FAQ immobilier de prestige à Paris',
+            'seo_title' => 'Questions fréquentes',
             'seo_description' => "Délais de vente, frais, estimation, biens off-market : Estate in Paris répond aux questions fréquentes sur l'immobilier de prestige à Paris. Consultez la FAQ.",
-            'intro' => "Estate in Paris répond aux questions les plus fréquentes sur l'achat, la vente et l'estimation d'un bien de prestige à Paris.",
+            'intro' => "Les réponses aux questions les plus fréquentes sur l'achat, la vente et l'estimation d'un bien de prestige à Paris.",
         ],
         'properties' => [
             'title' => 'Nos biens',
-            'seo_title' => 'Biens de prestige à vendre à Paris',
+            'seo_title' => 'Nos biens',
             'seo_description' => 'Appartements, hôtels particuliers et lofts actuellement proposés par Estate in Paris dans les plus beaux quartiers de Paris. Découvrez nos biens à vendre.',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris présente ici les biens de prestige actuellement à la vente à Paris : appartements haussmanniens, hôtels particuliers et lofts, sélectionnés par nos conseillers.',
+            'intro' => 'Les biens de prestige actuellement à la vente à Paris : appartements haussmanniens, hôtels particuliers et lofts, sélectionnés par nos conseillers.',
         ],
         'off_market' => [
             'title' => 'Biens off-market',
-            'seo_title' => 'Biens off-market à Paris, sélection privée',
+            'seo_title' => 'Biens off-market',
             'seo_description' => 'Estate in Paris ouvre sur code sa sélection de biens off-market à Paris : appartements et hôtels particuliers vendus en toute discrétion. Demandez votre accès.',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris réserve à ses clients une sélection de biens off-market à Paris, jamais publiés : appartements et hôtels particuliers vendus en toute discrétion.',
+            'intro' => 'Une sélection de biens off-market à Paris, jamais publiés : appartements et hôtels particuliers vendus en toute discrétion, réservés à nos clients.',
         ],
         'districts' => [
             'title' => 'Arrondissements',
-            'seo_title' => 'Arrondissements de Paris : prix au m²',
+            'seo_title' => 'Arrondissements de Paris',
             'seo_description' => "Carte interactive des 20 arrondissements de Paris : quartiers, profil d'acquéreur idéal et prix moyen au m² selon les Notaires. Trouvez le vôtre.",
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Les 20 arrondissements de Paris vus par Estate in Paris : quartiers, profil d'acquéreur et prix moyen au m².",
+            'intro' => "Les 20 arrondissements de Paris : quartiers, profil d'acquéreur et prix moyen au m².",
         ],
         'sitemap' => [
             'title' => 'Plan du site',
-            'seo_title' => 'Plan du site, toutes nos pages',
-            'seo_description' => "Toutes les pages d'Estate in Paris, agence immobilière de prestige : acheter, vendre, estimer un bien à Paris, nos biens, arrondissements, blog et FAQ.",
+            'seo_title' => 'Plan du site',
+            'seo_description' => "Toutes les pages d'Estate in Paris, agence immobilière de prestige à Paris : acheter, vendre, estimer un bien, nos biens, arrondissements, blog et FAQ.",
             'headline' => 'Plan du site Estate in Paris',
             'links_count' => '{1} :count lien|[2,*] :count liens',
             'group_pages' => 'Pages du site',
             'blog_other' => 'Autres articles',
             'blog_posts' => 'Articles du blog',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Toutes les pages d'Estate in Paris, agence immobilière de prestige à Paris : achat, vente, estimation, biens à vendre, arrondissements et blog.",
+            'intro' => 'Toutes les pages du site : achat, vente et estimation à Paris, biens à vendre, arrondissements et blog.',
         ],
     ],
     'properties' => [
@@ -152,12 +152,12 @@ return [
         // Clean district pages (`/nos-biens/paris-6e`, 2026-09-28): :name = « Paris 6e », :areas = its districts
         'district_headline' => 'Nos biens à vendre à :name',
         'rent_headline' => 'Nos biens à louer à Paris',
-        'rent_seo_title' => 'Appartements de prestige à louer à Paris',
+        'rent_seo_title' => 'Biens à louer',
         'rent_seo_description' => 'Appartements meublés et locations de prestige à Paris, sélectionnés par Estate in Paris avec un conseiller dédié. Découvrez nos biens à louer.',
-        'rent_intro' => 'Estate in Paris présente ici les biens de prestige actuellement à la location à Paris : appartements meublés, terrasses et vues, sélectionnés par nos conseillers.',
+        'rent_intro' => 'Les biens de prestige actuellement à la location à Paris : appartements meublés, terrasses et vues, sélectionnés par nos conseillers.',
         'district_seo_title' => 'Biens à vendre à :name',
         'district_seo_description' => 'Appartements, hôtels particuliers et lofts à vendre à :name, sélectionnés par Estate in Paris avec un conseiller dédié. Découvrez nos biens dans le quartier.',
-        'district_intro' => 'Estate in Paris présente les biens de prestige à la vente à :name (:areas) : appartements, hôtels particuliers et lofts sélectionnés par nos conseillers.',
+        'district_intro' => 'Les biens de prestige à la vente à :name (:areas) : appartements, hôtels particuliers et lofts sélectionnés par nos conseillers.',
         'by_district' => 'Nos biens par arrondissement',
         'by_district_link' => ':name (:count)',
         // « Rechercher dans cette zone » (2026-09-28): the map's frame becomes a filter
@@ -266,7 +266,7 @@ return [
         'faq' => [
             'eyebrow' => 'Questions fréquentes',
             'title' => "Vos questions avant d'investir à Paris",
-            'intro' => "Quartiers, rendement, fiscalité : Estate in Paris répond aux questions les plus posées par ceux qui investissent dans l'immobilier à Paris.",
+            'intro' => "Quartiers, rendement, fiscalité : les réponses aux questions les plus posées par ceux qui investissent dans l'immobilier à Paris.",
             'all' => 'Voir toutes les questions',
         ],
         'choose_label' => 'Choisir un arrondissement',
@@ -317,7 +317,7 @@ return [
     ],
     'blog' => [
         'title' => 'Blog',
-        'seo_title' => 'Blog : vivre et investir à Paris',
+        'seo_title' => 'Blog',
         'seo_description' => "Conseils d'experts pour acheter, vendre ou s'installer à Paris : quartiers, prix, démarches et fiscalité. Découvrez les articles du blog Estate in Paris.",
         'intro' => 'Nos articles pour comprendre le marché immobilier parisien et préparer votre projet.',
         'headline' => 'Le blog pour acheter à Paris',
@@ -351,7 +351,7 @@ return [
         'cta_eyebrow' => 'Parlons de votre projet',
         'reading_progress' => 'Progression de la lecture',
         'seo_description_category' => "Tous les articles « :category » d'Estate in Paris : conseils d'experts pour acheter, vendre ou estimer un bien de prestige à Paris. Découvrez nos guides.",
-        'intro_category' => '{1} Estate in Paris regroupe ici son guide « :category » pour acheter, vendre ou estimer un bien de prestige à Paris.|[2,*] Estate in Paris regroupe ici ses :count guides « :category » pour acheter, vendre ou estimer un bien de prestige à Paris.',
+        'intro_category' => '{1} Notre article « :category » sur l\'immobilier à Paris.|[2,*] Nos :count articles « :category » sur l\'immobilier à Paris.',
         'previous' => 'Articles précédents',
         'next' => 'Articles suivants',
         'page_of' => 'Page :current / :last',
@@ -364,7 +364,7 @@ return [
     ],
     'search' => [
         'title' => 'Recherche',
-        'seo_title' => 'Rechercher un bien de prestige à Paris',
+        'seo_title' => 'Recherche',
         'seo_description' => "Appartement, hôtel particulier ou bien off-market : recherchez parmi la sélection Estate in Paris et trouvez votre futur bien d'exception.",
         'title_with_term' => 'Recherche : :term',
         'description' => 'Recherchez parmi tous nos contenus.',
@@ -411,7 +411,7 @@ return [
                     ['question' => 'Pouvez-vous me trouver des biens off-market ?', 'answer' => "Oui. Une partie des biens que nous proposons ne sont jamais publiés : ils sont présentés en toute discrétion à un cercle restreint d'acquéreurs qualifiés. [Confiez-nous votre recherche](contact) pour y accéder."],
                     ['question' => 'Dois-je être en France pour acheter ?', 'answer' => "Non. Les visites peuvent se faire à distance, et la signature de la promesse comme de l'acte définitif peut se faire par procuration. Nous coordonnons le notaire, le financement et la gestion du bien après l'acquisition."],
                     ['question' => 'Un acquéreur étranger peut-il obtenir un prêt en France ?', 'answer' => "Oui, les banques françaises prêtent aux non-résidents, généralement jusqu'à 50 à 70 % du prix avec un apport plus élevé qu'un résident. Nous vous mettons en relation avec des courtiers habitués aux dossiers internationaux."],
-                    ['question' => 'Quelle est la différence entre promesse et compromis de vente ?', 'answer' => "La promesse unilatérale engage le vendeur pendant un délai donné, l'acquéreur verse une indemnité d'immobilisation d'environ 10 %. Le compromis engage les deux parties dès la signature. À Paris, la promesse est la formule la plus courante."],
+                    ['question' => 'Quelle est la différence entre promesse et compromis de vente ?', 'answer' => "La promesse unilatérale engage le vendeur pendant un délai donné, l'acquéreur verse une indemnité d'immobilisation de 5 à 10 %. Le compromis engage les deux parties dès la signature. À Paris, la promesse est la formule la plus courante."],
                     ['question' => "Qu'est-ce que le délai de rétractation ?", 'answer' => "Après la signature de la promesse, l'acquéreur non professionnel dispose de dix jours pour se rétracter sans justification ni pénalité. Passé ce délai, il est engagé sous réserve des conditions suspensives, comme l'obtention du prêt."],
                     ['question' => 'Comment se déroule une visite avec Estate in Paris ?', 'answer' => 'Nous sélectionnons en amont les biens qui correspondent à vos critères, puis organisons des visites groupées sur une même journée si vous venez de loin. Un conseiller vous accompagne à chaque visite et répond à vos questions sur le quartier et la copropriété.'],
                     ['question' => "Quels documents vérifier avant d'acheter en copropriété ?", 'answer' => "Les trois derniers procès-verbaux d'assemblée générale, le règlement de copropriété, le carnet d'entretien, les diagnostics techniques et le montant des charges. Nous les réunissons et les analysons avec vous avant toute offre."],
@@ -454,14 +454,14 @@ return [
                 'title' => 'Travailler avec Estate in Paris',
                 'items' => [
                     ['question' => 'Comment prendre contact avec un conseiller ?', 'answer' => "Par le [formulaire de la page contact](contact), par téléphone aux heures d'ouverture, ou par e-mail. Un conseiller vous rappelle sous 30 minutes aux heures d'ouverture."],
-                    ['question' => 'Dans quelles langues travaillez-vous ?', 'answer' => "Nos conseillers travaillent en français et en anglais, et coordonnent l'ensemble des intervenants d'une transaction depuis l'étranger : notaire, financement, procuration, gestion du bien."],
+                    ['question' => 'Dans quelles langues travaillez-vous ?', 'answer' => "Nos conseillers travaillent en français, en anglais et en espagnol, et coordonnent l'ensemble des intervenants d'une transaction depuis l'étranger : notaire, financement, procuration, gestion du bien."],
                     ['question' => 'Quels sont vos honoraires ?', 'answer' => 'Nos honoraires sont fixés en pourcentage du prix de vente et précisés dans le mandat avant toute mise en vente. Ils sont indiqués dans chaque annonce, conformément à la réglementation.'],
                     ['question' => 'Quels types de biens proposez-vous ?', 'answer' => "Appartements de standing, hôtels particuliers, immeubles, ateliers d'artiste et biens atypiques dans Paris et sa proche périphérie, en vente publique ou off-market."],
                     ['question' => 'Comment garantissez-vous la confidentialité ?', 'answer' => "Aucune information sur un bien ou un client n'est diffusée sans accord écrit. Les biens off-market sont présentés sans adresse et sous accord de confidentialité aux seuls acquéreurs qualifiés."],
                     ['question' => "Travaillez-vous avec d'autres agences ?", 'answer' => "Oui, lorsque c'est dans l'intérêt de nos clients : nous collaborons avec un réseau de confrères en France et à l'étranger pour élargir la recherche ou la diffusion d'un bien."],
                     ['question' => 'Proposez-vous un service de recherche sur mesure ?', 'answer' => "Oui. En mandat de recherche, un conseiller dédié sélectionne les biens, organise les visites, négocie et vous accompagne jusqu'à la signature, y compris pour les biens hors marché."],
                     ['question' => 'Quels sont vos horaires ?', 'answer' => "Du lundi au vendredi de 8h à 20h et le samedi de 8h à 12h. En dehors de ces horaires, laissez-nous un message : nous vous rappelons dès l'ouverture."],
-                    ['question' => 'Où se situe votre agence ?', 'answer' => "Au cœur de Saint-Germain-des-Prés, dans le 6ᵉ arrondissement. L'adresse et un lien vers le plan figurent sur [la page contact](contact) ; nous recevons sur rendez-vous."],
+                    ['question' => 'Où se situe votre agence ?', 'answer' => "Au cœur de Saint-Germain-des-Prés, dans le 6e arrondissement. L'adresse et un lien vers le plan figurent sur [la page contact](contact) ; nous recevons sur rendez-vous."],
                     ['question' => 'Comment recevoir vos analyses du marché ?', 'answer' => 'En vous inscrivant à [notre newsletter hebdomadaire](newsletter) : tendances, prix, sélection de biens et opportunités off-market, chaque lundi dans votre boîte mail.'],
                 ],
             ],
@@ -540,7 +540,7 @@ return [
         'consent_privacy' => 'Vos données servent uniquement à traiter cette demande et sont conservées 3 ans au plus. [Politique de confidentialité](privacy)',
         'process_eyebrow' => 'Notre méthode',
         'process_title' => 'Comment se déroule une estimation ?',
-        'process_intro' => 'Estate in Paris estime votre bien à Paris en trois étapes : vous le décrivez en ligne, un conseiller analyse les transactions réelles du quartier, vous recevez une estimation confidentielle sous 24 heures ouvrées.',
+        'process_intro' => 'Votre bien à Paris, estimé en trois étapes : vous le décrivez en ligne, un conseiller analyse les transactions réelles du quartier, vous recevez une estimation confidentielle sous 24 heures ouvrées.',
         'process_describe_title' => 'Vous décrivez votre bien',
         'process_describe_text' => 'Type, adresse, surface, étage, atouts et état : le formulaire ci-dessus suffit, aucune visite n\'est nécessaire à ce stade.',
         'process_describe_delay' => '5 minutes',
@@ -595,7 +595,7 @@ return [
         'confirmation_reassurance' => 'Votre demande reste strictement confidentielle : aucune publication, aucun engagement. Pour compléter votre dossier, répondez simplement à cet e-mail.',
     ],
     'newsletter' => [
-        'headline' => 'Le marché parisien de prestige, chaque lundi dans votre boîte',
+        'headline' => 'Le marché immobilier de prestige à Paris, chaque lundi',
         'subtitle' => 'Tendances, prix au m² par arrondissement et biens off-market en avant-première, réservés à nos abonnés.',
         'alert_notice' => 'Vous recevrez aussi les nouveaux biens correspondant à votre recherche.',
         'alert_link' => 'Revoir la recherche',
@@ -614,21 +614,21 @@ return [
         'benefits' => [
             'opportunities' => [
                 'title' => 'Opportunités exclusives',
-                'text' => 'Une sélection de biens de prestige et off-market, jamais publiés sur les portails, dans les quartiers les plus recherchés de Paris.',
+                'text' => 'Des biens de prestige et off-market, avant toute publication.',
             ],
             'guidance' => [
                 'title' => 'Les chiffres du marché',
-                'text' => 'Prix au m² et délais de vente par arrondissement, d\'après les dernières données publiées par les Notaires du Grand Paris.',
+                'text' => 'Prix au m² et délais de vente par arrondissement, source Notaires du Grand Paris.',
             ],
             'expertise' => [
                 'title' => 'Des analyses en 3 minutes',
-                'text' => 'Le regard de nos conseillers sur le marché de prestige parisien, en trois minutes de lecture : court, factuel, sans jargon.',
+                'text' => 'Le regard de nos conseillers sur le marché parisien. Court et factuel.',
             ],
         ],
     ],
     'contact' => [
         'call_us' => 'Appeler l\'agence',
-        'headline' => 'Parlons de votre projet immobilier',
+        'headline' => 'Parlons de votre projet immobilier à Paris', // the h1 names the place (SEO audit 2026-10-11)
         'available_on' => 'Disponible sur',
         'whatsapp' => 'WhatsApp',
         'email_us' => 'Écrivez-nous',
@@ -678,7 +678,7 @@ return [
         'response_time' => "Vous serez rappelé sous 30 minutes, aux heures d'ouverture.",
         'sent' => 'Merci pour votre message ! Un expert de notre équipe va vous recontacter rapidement.',
         'success_title' => 'Votre demande a bien été reçue',
-        'success_text' => "Merci d'avoir contacté Estate in Paris. Un conseiller vous rappelle sous 30 minutes, aux heures d'ouverture.",
+        'success_text' => 'Merci pour votre message. Un conseiller vous rappelle sous 30 minutes, aux heures d\'ouverture.',
         'meet_advisor' => 'Votre conseiller',
         'advisor_delay_label' => 'Il vous contactera dans un délai de :',
         'advisor_delay_value' => '30 minutes maximum',
@@ -745,7 +745,7 @@ return [
             'eyebrow' => 'Vente confidentielle',
             'title' => 'Faut-il rendre votre vente publique ?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Non : Estate in Paris propose la vente confidentielle hors marché à Paris. Votre bien n'est présenté qu'à des acquéreurs qualifiés de notre réseau, sans annonce ni portail, et vous décidez à tout moment d'élargir la diffusion.",
+            'intro' => "Non : la vente confidentielle hors marché existe à Paris. Votre bien n'est présenté qu'à des acquéreurs qualifiés de notre réseau, sans annonce ni portail, et vous décidez à tout moment d'élargir la diffusion.",
             'point_1' => 'Aucune annonce publique, aucune photo en ligne sans votre accord',
             'point_2' => 'Acquéreurs qualifiés avant toute visite (projet, calendrier, financement)',
             'point_3' => 'Discrétion garantie vis-à-vis des voisins, locataires et copropriétaires',
@@ -754,7 +754,7 @@ return [
         'why_eyebrow' => 'Pourquoi Estate in Paris',
         'why_title' => 'Pourquoi vendre avec Estate in Paris ?',
         // GEO: a self-contained answer (brand + what + where)
-        'why_intro' => 'Estate in Paris vend les appartements et hôtels particuliers de prestige à Paris au juste prix, avec une estimation fondée sur les ventes réelles, une mise en valeur soignée et des acquéreurs qualifiés.',
+        'why_intro' => 'Vos appartements et hôtels particuliers de prestige à Paris vendus au juste prix : une estimation fondée sur les ventes réelles, une mise en valeur soignée et des acquéreurs qualifiés.',
         'why_valuation_title' => 'Estimation fondée sur les ventes réelles',
         'why_valuation_text' => 'Votre bien est estimé à partir des transactions récentes du quartier et de ses qualités propres (étage, vue, calme, prestations), pas des prix affichés.',
         'why_exposure_title' => 'Mise en valeur soignée',
@@ -768,7 +768,7 @@ return [
             'eyebrow' => 'Notre méthode',
             'title' => 'Comment vendons-nous votre bien ?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris vend un bien de prestige à Paris en trois étapes : une estimation au prix du marché, une mise en valeur professionnelle, puis la négociation et la signature avec un acquéreur qualifié.',
+            'intro' => 'Un bien de prestige à Paris se vend en trois étapes : une estimation au prix du marché, une mise en valeur professionnelle, puis la négociation et la signature avec un acquéreur qualifié.',
             'photo_alt' => "Terrasse d'un appartement de prestige au coucher du soleil avec vue sur la tour Eiffel, Paris",
             'items' => [
                 ['title' => 'Estimation', 'text' => 'Une valeur fondée sur les ventes réelles du quartier et les qualités de votre bien, remise sous 24 heures ouvrées, gratuite et sans engagement.'],
@@ -780,7 +780,7 @@ return [
             'eyebrow' => 'Questions fréquentes',
             'title' => 'Vos questions avant de vendre à Paris',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Délais, diagnostics, fiscalité, mandat : Estate in Paris répond aux questions les plus posées par les vendeurs de biens de prestige à Paris.',
+            'intro' => 'Délais, diagnostics, fiscalité, mandat : les réponses aux questions les plus posées par les vendeurs de biens de prestige à Paris.',
             'all' => 'Voir toutes les questions',
         ],
         'cta_title' => 'Combien vaut votre bien à Paris ?',
@@ -797,7 +797,7 @@ return [
         'stats_label' => 'Chiffres clés',
         'why_eyebrow' => 'Pourquoi Estate in Paris',
         'why_title' => 'Pourquoi acheter avec Estate in Paris ?',
-        'why_intro' => "Estate in Paris associe une connaissance fine du marché parisien, des relations exclusives et un accompagnement personnalisé pour chaque projet d'achat à Paris.",
+        'why_intro' => "Une connaissance fine du marché parisien, des relations exclusives et un accompagnement personnalisé pour chaque projet d'achat à Paris.",
         'why_sourcing_title' => 'Sourcing de biens',
         'why_sourcing_text' => "Une sélection d'appartements et d'hôtels particuliers dans tout Paris, dont des biens off-market jamais publiés.",
         'why_analysis_title' => 'Analyse fondée sur les chiffres',
@@ -811,7 +811,7 @@ return [
             'eyebrow' => 'Opportunités d\'investissement',
             'title' => 'Des stratégies conçues autour de vos objectifs',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Plus-value, revenus locatifs ou diversification : les conseillers d\'Estate in Paris identifient à Paris les biens qui répondent à votre objectif.',
+            'intro' => 'Plus-value, revenus locatifs ou diversification : nos conseillers identifient à Paris les biens qui répondent à votre objectif.',
             'photo_alt' => 'Terrasse d\'un appartement de prestige au coucher du soleil avec vue sur la tour Eiffel, Paris',
             'items' => [
                 ['title' => 'Plus-value', 'text' => 'Acquérez des biens de prestige positionnés pour prendre de la valeur dans le temps.'],
@@ -823,14 +823,14 @@ return [
             'eyebrow' => 'Questions fréquentes',
             'title' => 'Vos questions avant d\'acheter à Paris',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Délais, frais, financement depuis l\'étranger : Estate in Paris répond aux questions les plus posées par les acquéreurs à Paris.',
+            'intro' => 'Délais, frais, financement depuis l\'étranger : les réponses aux questions les plus posées par les acquéreurs à Paris.',
             'all' => 'Voir toutes les questions',
         ],
         'record' => [
             'eyebrow' => 'Notre bilan',
             'title' => 'La confiance des propriétaires et acquéreurs à Paris',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Estate in Paris accompagne acquéreurs et vendeurs de biens d'exception à Paris, avec un conseiller dédié, des acheteurs qualifiés et une connaissance fine du marché de prestige parisien.",
+            'intro' => "Acquéreurs et vendeurs de biens d'exception à Paris, accompagnés par un conseiller dédié, des acheteurs qualifiés et une connaissance fine du marché de prestige parisien.",
             'commitment_title' => 'Notre engagement',
             'commitment_text' => "Nous aidons chaque propriétaire à valoriser son bien grâce à une stratégie sur mesure, des acquéreurs qualifiés et un accompagnement expert jusqu'à la signature.",
             'advisors_label' => 'Vos conseillers dédiés',
@@ -848,7 +848,7 @@ return [
             'eyebrow' => 'Explorer Paris',
             'title' => 'Dans quels quartiers de Paris investir ?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Estate in Paris accompagne ses clients dans les quartiers de Paris qui allient forte demande locative, valorisation à long terme et biens de prestige : Rive gauche, Triangle d'or, Champ-de-Mars et 16e.",
+            'intro' => "Les quartiers de Paris qui allient forte demande locative, valorisation à long terme et biens de prestige : Rive gauche, Triangle d'or, Champ-de-Mars et 16e.",
             'price_label' => 'Prix moyen',
             // GEO: dated, named source shown once under the grid and linked to each price by aria-describedby
             'price_source' => "Prix moyens au m² arrondis, d'après les dernières données publiées par les Notaires du Grand Paris (2e trimestre 2026).",
@@ -963,7 +963,7 @@ return [
     'services' => [
         'eyebrow' => 'Ce que nous faisons',
         'title' => 'Que pouvons-nous faire pour votre projet immobilier à Paris ?',
-        'intro' => "Achat, vente, estimation ou accompagnement : les conseillers d'Estate in Paris vous guident à chaque étape de votre projet immobilier à Paris.",
+        'intro' => 'Achat, vente, estimation ou accompagnement : nos conseillers vous guident à chaque étape de votre projet immobilier à Paris.',
         'buy_title' => 'Acheter',
         'buy_text' => 'Accédez à des résidences d\'exception et à des opportunités off-market.',
         'sell_title' => 'Vendre',
@@ -1049,7 +1049,7 @@ return [
         // Trust intro under the hero (Figma 712-25112 / 712-25584): the figure comes from about.stats (real numbers only)
         'trust_title_1' => 'biens vendus à Paris.',
         'trust_title_2' => 'Un interlocuteur unique.',
-        'trust_text' => "Depuis plus de 25 ans, Estate in Paris accompagne acquéreurs, vendeurs et investisseurs vers des opportunités d'exception à Paris grâce à sa connaissance du terrain, une stratégie sur mesure et un réseau de confiance.",
+        'trust_text' => "Depuis plus de 25 ans, nous accompagnons acquéreurs, vendeurs et investisseurs vers des opportunités d'exception à Paris grâce à notre connaissance du terrain, une stratégie sur mesure et un réseau de confiance.",
         'trust_cta_buy' => 'Découvrir nos biens',
         'trust_cta_contact' => 'Contacter un conseiller',
         // Conversion order of the home (2026-09-22): market data and FAQ teaser texts, h2 as questions
@@ -1057,12 +1057,12 @@ return [
             'eyebrow' => 'Vos questions',
             'title' => 'Comment travaille-t-on avec Estate in Paris ?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris répond aux questions que se posent acquéreurs et vendeurs avant de lui confier un projet à Paris : honoraires, délais, confidentialité, accompagnement.',
+            'intro' => 'Les réponses aux questions que se posent acquéreurs et vendeurs avant de nous confier un projet à Paris : honoraires, délais, confidentialité, accompagnement.',
             'all' => 'Voir toutes les questions',
         ],
         // Blog preview (2026-09-22)
         'blog_title' => "Que faut-il savoir avant d'acheter ou de vendre à Paris ?",
-        'blog_intro' => "Estate in Paris publie chaque semaine des guides sur l'immobilier de prestige à Paris : prix au m², quartiers, démarches et fiscalité.",
+        'blog_intro' => 'Nos articles pour comprendre le marché immobilier parisien et préparer votre projet.',
         'blog_cta' => 'Voir tous les articles',
     ],
     // Barre de recherche partagée (hero de la home + page « Nos biens », 2026-09-25) ; `properties.*` porte les critères étendus
@@ -1083,8 +1083,8 @@ return [
         'locked_eyebrow' => 'Accès réservé',
         'locked_title' => 'Ce bien est confidentiel',
         'locked_title_selection' => 'Cette sélection est confidentielle',
-        'locked_intro' => "Estate in Paris réserve ce bien off-market à ses clients : saisissez le code d'accès à 6 chiffres remis par votre conseiller pour consulter la fiche complète.",
-        'locked_intro_selection' => "Estate in Paris réserve sa sélection off-market à ses clients : saisissez le code d'accès à 6 chiffres remis par votre conseiller pour la consulter.",
+        'locked_intro' => "Ce bien off-market est réservé à nos clients : saisissez le code d'accès à 6 chiffres remis par votre conseiller pour consulter la fiche complète.",
+        'locked_intro_selection' => "Notre sélection off-market est réservée à nos clients : saisissez le code d'accès à 6 chiffres remis par votre conseiller pour la consulter.",
         'locked_teaser' => ':type · :transaction · Paris :arrondissement',
         'code_label' => "Code d'accès",
         'code_hint' => '6 chiffres, communiqués par votre conseiller.',
@@ -1104,8 +1104,8 @@ return [
         'seo_title' => ':type :rooms pièces, :area · :arrondissement',
         'seo_description' => ':type de :rooms pièces, :surface m², :bedrooms chambres à :area, :arrondissement, :price. :excerpt Contactez Estate in Paris pour une visite privée.',
         'seo_description_short' => ':type de :rooms pièces, :surface m², :bedrooms chambres à :area, :arrondissement, :price honoraires inclus. Contactez Estate in Paris pour une visite privée.',
-        'answer' => 'Estate in Paris propose ce bien à la vente : :type de :rooms pièces (:surface m², :bedrooms chambres) à :area, :arrondissement, au prix de :price.',
-        'answer_rent' => 'Estate in Paris propose ce bien à la location : :type de :rooms pièces (:surface m², :bedrooms chambres) à :area, :arrondissement, pour :price par mois.',
+        'answer' => 'À la vente : :type de :rooms pièces (:surface m², :bedrooms chambres) à :area, :arrondissement, au prix de :price.',
+        'answer_rent' => 'À la location : :type de :rooms pièces (:surface m², :bedrooms chambres) à :area, :arrondissement, pour :price par mois.',
         'legal_title' => 'Mentions',
         'legal_sale' => 'Prix de présentation, honoraires d\'agence inclus à la charge du vendeur. Surface indicative, à confirmer par le diagnostic loi Carrez. Les diagnostics (DPE, copropriété) sont communiqués lors de la visite.',
         'legal_rent' => 'Loyer mensuel indiqué charges comprises, zone soumise à encadrement des loyers : le loyer de référence majoré, le dépôt de garantie et le détail des honoraires à la charge du locataire sont communiqués sur demande. Surface habitable indicative.',

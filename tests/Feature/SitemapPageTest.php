@@ -56,7 +56,7 @@ class SitemapPageTest extends TestCase
                 ->where('blog.categories.0.posts.0.href', url('/blog/fr-1'))
                 ->has('blog.other', 1)
                 ->where('blog.other.0.href', url('/blog/fr-3'))
-                ->where('translations.pages.sitemap.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris')));
+                ->where('translations.pages.sitemap.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris')));
 
         $this->withLocale('en'); // re-creates the app: fake Sanity again
         $this->fakeSanity();

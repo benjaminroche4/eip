@@ -18,7 +18,7 @@ class OffMarketTest extends TestCase
                 ->has('properties', 1)
                 ->where('properties.0.off_market', true)
                 ->where('translations.off_market.price_on_request', 'Prix sur demande')
-                ->where('translations.pages.off_market.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'off-market')));
+                ->where('translations.pages.off_market.intro', fn (string $intro) => str_contains($intro, 'off-market') && ! str_contains($intro, 'Estate in Paris')));
 
         $this->withLocale('en')->withSession([OffMarketAccess::SESSION_KEY => true])->get('/en/off-market-properties')->assertOk()->assertInertia(fn (Assert $p) => $p->component('off-market')->has('properties', 1));
         $this->withLocale('en')->get('/en/biens-off-market')->assertNotFound();

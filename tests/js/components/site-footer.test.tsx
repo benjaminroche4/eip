@@ -52,7 +52,7 @@ describe('SiteFooter', () => {
 
         const social = screen.getByRole('list', { name: 'Nous suivre' });
         const links = within(social).getAllByRole('link');
-        expect(links).toHaveLength(2);
+        expect(links).toHaveLength(1); // LinkedIn only (Instagram removed, 2026-10-11)
         for (const link of links) {
             expect(link).toHaveAttribute('target', '_blank');
             expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));

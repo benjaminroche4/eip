@@ -72,7 +72,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
                 address: { street: '3 rue Grégoire de Tours', city: 'Paris', postal_code: '75006', country: 'FR' },
             },
             advisor: { name: 'Maris Moreau', role: 'Conseillère senior', photo: '/images/advisors/advisor-1.webp', experienceYears: 12 },
-            social: { linkedin: 'https://www.linkedin.com/company/x', instagram: 'https://www.instagram.com/x' },
+            social: { linkedin: 'https://www.linkedin.com/company/x' },
             hours: { spec: 'Mo-Fr 08:00-20:00, Sa 08:00-12:00', label: 'Lun - Ven, 8h - 20h · Sam, 8h - 12h', open: true },
             reviews: { rating: 4.9, count: 150, url: 'https://www.google.com/maps' },
         },

@@ -34,7 +34,7 @@ class DistrictsPageTest extends TestCase
                 ->where('items.5.dining', fn ($a) => collect($a)->contains('Café de Flore'))
                 ->where('items.5.parks', fn ($a) => collect($a)->contains('Jardin du Luxembourg'))
                 ->where('items.5.education', fn ($a) => collect($a)->contains('Lycée Fénelon'))
-                ->where('translations.pages.districts.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))
+                ->where('translations.pages.districts.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.districts.source', fn (string $s) => str_contains($s, 'Notaires du Grand Paris')));
 
         $this->withLocale('en')->get('/en/paris-districts')

@@ -10,7 +10,7 @@ describe('EstimateProcess', () => {
         const { container } = renderPage(<EstimateProcess />);
 
         expect(screen.getByRole('heading', { level: 2, name: 'Comment se déroule une estimation ?' })).toBeInTheDocument();
-        expect(screen.getByText(/Estate in Paris estime votre bien à Paris en trois étapes/)).toBeInTheDocument(); // GEO answer-first intro
+        expect(screen.getByText(/^Votre bien à Paris, estimé en trois étapes/)).toBeInTheDocument(); // GEO answer-first intro
         const steps = within(container.querySelector('ol')!).getAllByRole('listitem');
         expect(steps).toHaveLength(3);
         expect(steps[0]).toHaveTextContent('01');

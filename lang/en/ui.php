@@ -37,78 +37,78 @@ return [
     'pages' => [
         'contact' => [
             'title' => 'Contact',
-            'seo_title' => 'Contact our real estate agency in Paris',
-            'seo_description' => 'Contact Estate in Paris about buying, selling or valuing a property in Paris. Our team answers by phone or email: get in touch with us today.',
-            'intro' => 'Estate in Paris guides you, in complete confidentiality, through buying, selling and valuing prestige property in Paris.',
+            'seo_title' => 'Contact us',
+            'seo_description' => 'Contact Estate in Paris to buy, sell or value a property in Paris: an advisor calls you back within 30 minutes during opening hours, by phone or email.',
+            'intro' => 'Buying, selling or valuing a property in Paris: our advisors answer you in complete confidentiality.',
         ],
         'estimate' => [
             'title' => 'Property Valuation',
-            'seo_title' => 'Free property valuation in Paris',
+            'seo_title' => 'Property valuation',
             'seo_description' => 'Have your Paris apartment or private mansion valued by an Estate in Paris expert: a figure grounded in real market data. Request your free valuation.',
-            'intro' => 'Estate in Paris values your apartment, private mansion or exceptional property in Paris for free, based on real transactions in the neighbourhood.',
+            'intro' => 'Your apartment, private mansion or exceptional property in Paris, valued for free from the neighbourhood\'s real transactions.',
         ],
         'sell' => [
             'title' => 'Sell',
-            'seo_title' => 'Sell your luxury property in Paris',
+            'seo_title' => 'Sell a property',
             'seo_description' => 'Entrust the sale of your Paris apartment or private mansion to Estate in Paris: valuation, presentation, qualified buyers. Sell at the best price with us.',
-            'intro' => 'Estate in Paris manages the sale of your luxury property in Paris, from valuation to signing, with qualified French and international buyers.',
+            'intro' => 'The sale of your luxury property in Paris, from valuation to signing, to qualified French and international buyers.',
         ],
         'buy' => [
             'title' => 'Buy',
-            'seo_title' => 'Buy a luxury property in Paris',
+            'seo_title' => 'Buy a property',
             'seo_description' => 'Apartments, private mansions and off-market properties: Estate in Paris helps you buy an exceptional home in Paris. Discover our curated selection today.',
-            'intro' => 'Estate in Paris hand-picks apartments, private mansions and off-market properties in Paris and guides you all the way to the purchase.',
+            'intro' => 'Apartments, private mansions and off-market properties hand-picked for you in Paris, with guidance all the way to the purchase.',
         ],
         'newsletter' => [
             'title' => 'Newsletter',
-            'seo_title' => 'Paris luxury property newsletter',
-            'seo_description' => 'Get weekly insights on the Paris luxury property market from Estate in Paris: trends, prices and off-market opportunities before anyone else. Subscribe today.',
-            'intro' => 'Estate in Paris publishes a weekly newsletter on the Paris luxury property market: trends, prices and off-market opportunities reserved for subscribers.',
+            'seo_title' => 'Property newsletter in Paris',
+            'seo_description' => 'Weekly insights on the Paris luxury property market from Estate in Paris: trends, prices per m² and off-market properties ahead of release. Subscribe.',
+            'intro' => 'Trends, prices per m² and off-market properties in Paris ahead of release, in one letter a week.',
         ],
         'about' => [
             'title' => 'About us',
-            'seo_title' => 'Luxury real estate agency in Paris 6th',
+            'seo_title' => 'About us',
             'seo_description' => 'Estate in Paris, luxury real estate agency in Paris 6th: eight bilingual advisors, a method based on real figures and five commitments. Meet the team.',
             'intro' => 'Advisors who know every address in Paris and take the time to understand your project.',
         ],
         'faq' => [
             'title' => 'FAQ',
-            'seo_title' => 'Paris luxury real estate FAQ',
+            'seo_title' => 'Frequently asked questions',
             'seo_description' => 'Selling times, fees, valuation, off-market properties: Estate in Paris answers the most frequent questions about luxury real estate in Paris. Read the FAQ.',
-            'intro' => 'Estate in Paris answers the most frequent questions about buying, selling and valuing a luxury property in Paris.',
+            'intro' => 'Answers to the most frequent questions about buying, selling and valuing a luxury property in Paris.',
         ],
         'properties' => [
             'title' => 'Our properties',
-            'seo_title' => 'Luxury properties for sale in Paris',
+            'seo_title' => 'Our properties',
             'seo_description' => 'Apartments, private mansions and lofts currently offered by Estate in Paris in the finest districts of Paris. Discover our properties for sale.',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris presents here the luxury properties currently for sale in Paris: Haussmann apartments, private mansions and lofts, selected by our advisors.',
+            'intro' => 'The luxury properties currently for sale in Paris: Haussmann apartments, private mansions and lofts, selected by our advisors.',
         ],
         'off_market' => [
             'title' => 'Off-market properties',
-            'seo_title' => 'Off-market homes in Paris, private list',
+            'seo_title' => 'Off-market properties',
             'seo_description' => 'Estate in Paris opens its off-market selection in Paris with an access code: apartments and private mansions sold in complete discretion. Request your access.',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris keeps for its clients a selection of off-market properties in Paris, never published: apartments and private mansions sold in complete discretion.',
+            'intro' => 'A selection of off-market properties in Paris, never published: apartments and private mansions sold in complete discretion, reserved for our clients.',
         ],
         'districts' => [
             'title' => 'Arrondissements',
-            'seo_title' => 'Paris arrondissements: prices per m²',
+            'seo_title' => 'Paris arrondissements',
             'seo_description' => 'Interactive map of the 20 arrondissements of Paris: districts, best-fit buyer profile and average price per m² from the Notaires. Find yours.',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'The 20 arrondissements of Paris by Estate in Paris: neighbourhoods, buyer profile and average price per m².',
+            'intro' => 'The 20 arrondissements of Paris: neighbourhoods, buyer profile and average price per m².',
         ],
         'sitemap' => [
             'title' => 'Sitemap',
-            'seo_title' => 'Sitemap, all our pages in Paris',
-            'seo_description' => 'Every page of Estate in Paris, luxury real estate agency: buy, sell or value a property in Paris, our listings, arrondissements, blog, FAQ and legal notices.',
+            'seo_title' => 'Sitemap',
+            'seo_description' => 'Every page of Estate in Paris, luxury real estate agency in Paris: buy, sell or value a property, our listings, arrondissements, blog, FAQ and legal notices.',
             'headline' => 'Estate in Paris sitemap',
             'links_count' => '{1} :count link|[2,*] :count links',
             'group_pages' => 'Site pages',
             'blog_other' => 'Other articles',
             'blog_posts' => 'Blog articles',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Every page of Estate in Paris, luxury real estate agency in Paris: buying, selling, valuation, listings, arrondissements and blog.',
+            'intro' => 'Every page of the site: buying, selling and valuation in Paris, listings, arrondissements and blog.',
         ],
     ],
     'properties' => [
@@ -152,12 +152,12 @@ return [
         // Clean district pages (`/en/properties/paris-6th`, 2026-09-28): :name = « Paris 6th », :areas = its districts
         'district_headline' => 'Our properties for sale in :name',
         'rent_headline' => 'Our properties to rent in Paris',
-        'rent_seo_title' => 'Luxury apartments to rent in Paris',
+        'rent_seo_title' => 'Properties to rent',
         'rent_seo_description' => 'Furnished apartments and luxury rentals in Paris, selected by Estate in Paris with a dedicated advisor. Discover our properties to rent.',
-        'rent_intro' => 'Estate in Paris presents here the luxury properties currently to rent in Paris: furnished apartments, terraces and views, selected by our advisors.',
+        'rent_intro' => 'The luxury properties currently to rent in Paris: furnished apartments, terraces and views, selected by our advisors.',
         'district_seo_title' => 'Properties for sale in :name',
         'district_seo_description' => 'Apartments, private mansions and lofts for sale in :name, selected by Estate in Paris with a dedicated advisor. Discover our properties in the district.',
-        'district_intro' => 'Estate in Paris presents the prestige properties for sale in :name (:areas): apartments, private mansions and lofts selected by our advisors.',
+        'district_intro' => 'The prestige properties for sale in :name (:areas): apartments, private mansions and lofts selected by our advisors.',
         'by_district' => 'Our properties by arrondissement',
         'by_district_link' => ':name (:count)',
         // « Search this area » (2026-09-28): the map's frame becomes a filter
@@ -266,7 +266,7 @@ return [
         'faq' => [
             'eyebrow' => 'Frequently asked questions',
             'title' => 'Your questions before investing in Paris',
-            'intro' => 'Districts, yields, tax: Estate in Paris answers the questions most asked by those investing in Paris property.',
+            'intro' => 'Districts, yields, tax: answers to the questions most asked by those investing in Paris property.',
             'all' => 'See all questions',
         ],
         'choose_label' => 'Choose an arrondissement',
@@ -317,7 +317,7 @@ return [
     ],
     'blog' => [
         'title' => 'Blog',
-        'seo_title' => 'Blog: living and investing in Paris',
+        'seo_title' => 'Blog',
         'seo_description' => 'Expert advice on buying, selling or settling in Paris: neighbourhoods, prices, procedures and taxes. Discover the latest articles from Estate in Paris.',
         'intro' => 'Our articles to understand the Paris property market and prepare your project.',
         'headline' => 'The blog for buying in Paris',
@@ -351,7 +351,7 @@ return [
         'cta_eyebrow' => 'Let’s talk about your project',
         'reading_progress' => 'Reading progress',
         'seo_description_category' => 'All “:category” articles by Estate in Paris: expert advice on buying, selling or valuing a prestige property in Paris. Discover our guides.',
-        'intro_category' => '{1} Estate in Paris gathers here its “:category” guide to buying, selling or valuing a prestige property in Paris.|[2,*] Estate in Paris gathers here its :count “:category” guides to buying, selling or valuing a prestige property in Paris.',
+        'intro_category' => '{1} Our “:category” article on Paris property.|[2,*] Our :count “:category” articles on Paris property.',
         'previous' => 'Previous articles',
         'next' => 'Next articles',
         'page_of' => 'Page :current / :last',
@@ -364,7 +364,7 @@ return [
     ],
     'search' => [
         'title' => 'Search',
-        'seo_title' => 'Search for a luxury property in Paris',
+        'seo_title' => 'Search',
         'seo_description' => 'Apartment, private mansion or off-market property: search the Estate in Paris selection and find your next exceptional home.',
         'title_with_term' => 'Search: :term',
         'description' => 'Search across all our content.',
@@ -411,7 +411,7 @@ return [
                     ['question' => 'Can you help me find off-market properties?', 'answer' => 'Yes. Part of the properties we offer are never published: they are presented discreetly to a restricted circle of qualified buyers. [Entrust us with your search](contact) to gain access.'],
                     ['question' => 'Do I need to be in France to purchase a property?', 'answer' => 'No. Viewings can be done remotely, and both the preliminary agreement and the final deed can be signed by power of attorney. We coordinate the notary, the financing and the management of the property after the purchase.'],
                     ['question' => 'Can a foreign buyer get a mortgage in France?', 'answer' => 'Yes, French banks lend to non-residents, usually up to 50 to 70% of the price with a higher deposit than for residents. We introduce you to brokers used to international files.'],
-                    ['question' => 'What is the difference between a promesse and a compromis de vente?', 'answer' => 'A promesse binds the seller for a set period while the buyer pays a deposit of about 10%. A compromis binds both parties from signing. In Paris the promesse is the most common form.'],
+                    ['question' => 'What is the difference between a promesse and a compromis de vente?', 'answer' => 'A promesse binds the seller for a set period while the buyer pays a deposit of 5 to 10%. A compromis binds both parties from signing. In Paris the promesse is the most common form.'],
                     ['question' => 'What is the cooling-off period?', 'answer' => 'After signing the preliminary agreement, a non-professional buyer has ten days to withdraw without reason or penalty. After that, the buyer is bound subject to the conditions precedent, such as obtaining the loan.'],
                     ['question' => 'How does a viewing with Estate in Paris work?', 'answer' => 'We shortlist the properties matching your criteria beforehand, then group the viewings on a single day if you travel from afar. An advisor accompanies every viewing and answers your questions about the neighbourhood and the building.'],
                     ['question' => 'Which documents should I check before buying in a co-owned building?', 'answer' => 'The minutes of the last three general meetings, the co-ownership rules, the maintenance log, the technical surveys and the amount of the service charges. We gather and review them with you before any offer.'],
@@ -454,7 +454,7 @@ return [
                 'title' => 'Working with Estate in Paris',
                 'items' => [
                     ['question' => 'How can I get in touch with an advisor?', 'answer' => 'Through the [contact page form](contact), by phone during opening hours, or by email. An advisor calls you back within 30 minutes during opening hours.'],
-                    ['question' => 'Which languages do you work in?', 'answer' => 'Our advisors work in French and English and coordinate everyone a transaction from abroad requires: notary, financing, power of attorney, property management.'],
+                    ['question' => 'Which languages do you work in?', 'answer' => 'Our advisors work in French, English and Spanish and coordinate everyone a transaction from abroad requires: notary, financing, power of attorney, property management.'],
                     ['question' => 'What are your fees?', 'answer' => 'Our fees are a percentage of the sale price and are set out in the mandate before any listing. They are stated in each listing, as required by regulation.'],
                     ['question' => 'Which types of property do you offer?', 'answer' => "High-end apartments, private mansions, whole buildings, artists' studios and unusual properties in Paris and its immediate surroundings, listed publicly or off-market."],
                     ['question' => 'How do you guarantee confidentiality?', 'answer' => 'No information about a property or a client is shared without written consent. Off-market properties are presented without an address and under a confidentiality agreement to qualified buyers only.'],
@@ -540,7 +540,7 @@ return [
         'consent_privacy' => 'Your data is only used to handle this request and kept for 3 years at most. [Privacy policy](privacy)',
         'process_eyebrow' => 'Our method',
         'process_title' => 'How does a valuation work?',
-        'process_intro' => 'Estate in Paris values your Paris property in three steps: you describe it online, an advisor analyses the real transactions of the neighbourhood, and you receive a confidential valuation within 24 working hours.',
+        'process_intro' => 'Your Paris property, valued in three steps: you describe it online, an advisor analyses the neighbourhood\'s real transactions, and you receive a confidential valuation within 24 working hours.',
         'process_describe_title' => 'You describe your property',
         'process_describe_text' => 'Type, address, floor area, floor, assets and condition: the form above is enough, no visit is needed at this stage.',
         'process_describe_delay' => '5 minutes',
@@ -594,7 +594,7 @@ return [
         'confirmation_reassurance' => 'Your request stays strictly confidential: no listing, no obligation. To add details to your file, simply reply to this e-mail.',
     ],
     'newsletter' => [
-        'headline' => 'The Paris luxury market, every Monday in your inbox',
+        'headline' => 'The Paris luxury property market, every Monday',
         'subtitle' => 'Trends, prices per m² by arrondissement and off-market properties ahead of the market, reserved for our subscribers.',
         'alert_notice' => 'You will also receive the new properties matching your search.',
         'alert_link' => 'Review the search',
@@ -613,21 +613,21 @@ return [
         'benefits' => [
             'opportunities' => [
                 'title' => 'Exclusive opportunities',
-                'text' => "Access a curated portfolio of luxury and off-market properties across Paris's most prestigious neighbourhoods.",
+                'text' => 'Luxury and off-market properties, before any publication.',
             ],
             'guidance' => [
                 'title' => 'Market figures',
-                'text' => 'Prices per m², time to sell and trends by arrondissement, from real transactions.',
+                'text' => 'Prices per m² and time to sell by arrondissement, from the Notaires du Grand Paris.',
             ],
             'expertise' => [
                 'title' => 'Insights in 3 minutes',
-                'text' => "Our advisors' take on the Paris luxury market: short, factual, jargon-free.",
+                'text' => "Our advisors' view of the Paris market. Short and factual.",
             ],
         ],
     ],
     'contact' => [
         'call_us' => 'Call the agency',
-        'headline' => "Let's discuss your property",
+        'headline' => "Let's discuss your property project in Paris",
         'available_on' => 'Available on',
         'whatsapp' => 'WhatsApp',
         'email_us' => 'Email us',
@@ -677,7 +677,7 @@ return [
         'response_time' => 'We call you back within 30 minutes during opening hours.',
         'sent' => 'Thank you for your message! An expert from our team will get back to you shortly.',
         'success_title' => 'Your request has been received',
-        'success_text' => 'Thank you for contacting Estate in Paris. One of our advisors calls you back within 30 minutes during opening hours.',
+        'success_text' => 'Thank you for your message. An advisor calls you back within 30 minutes during opening hours.',
         'meet_advisor' => 'Meet your advisor',
         'advisor_delay_label' => 'They will contact you within:',
         'advisor_delay_value' => '30 minutes at most',
@@ -744,7 +744,7 @@ return [
             'eyebrow' => 'Confidential sale',
             'title' => 'Does your sale have to be public?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'No: Estate in Paris offers confidential off-market sales in Paris. Your property is shown only to qualified buyers from our network, with no listing or portal, and you can widen the exposure whenever you decide.',
+            'intro' => 'No: confidential off-market sales exist in Paris. Your property is shown only to qualified buyers from our network, with no listing or portal, and you can widen the exposure whenever you decide.',
             'point_1' => 'No public listing, no photo online without your agreement',
             'point_2' => 'Buyers qualified before any viewing (project, timeline, financing)',
             'point_3' => 'Discretion guaranteed towards neighbours, tenants and co-owners',
@@ -753,7 +753,7 @@ return [
         'why_eyebrow' => 'Why Estate in Paris',
         'why_title' => 'Why sell with Estate in Paris?',
         // GEO: a self-contained answer (brand + what + where)
-        'why_intro' => 'Estate in Paris sells luxury apartments and private mansions in Paris at the right price, with a valuation based on actual sales, careful presentation and qualified buyers.',
+        'why_intro' => 'Your luxury apartments and private mansions in Paris sold at the right price: a valuation based on actual sales, careful presentation and qualified buyers.',
         'why_valuation_title' => 'Valuation based on actual sales',
         'why_valuation_text' => 'Your property is valued from recent transactions in the neighbourhood and its own qualities (floor, view, quietness, features), not asking prices.',
         'why_exposure_title' => 'Careful presentation',
@@ -767,7 +767,7 @@ return [
             'eyebrow' => 'Our method',
             'title' => 'How do we sell your property?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris sells a luxury property in Paris in three steps: a valuation at market price, professional presentation, then negotiation and signing with a qualified buyer.',
+            'intro' => 'A luxury property in Paris sells in three steps: a valuation at market price, professional presentation, then negotiation and signing with a qualified buyer.',
             'photo_alt' => 'Terrace of a luxury apartment at sunset overlooking the Eiffel Tower, Paris',
             'items' => [
                 ['title' => 'Valuation', 'text' => 'A value based on actual sales in the neighbourhood and the qualities of your property, delivered within 24 business hours, free and without obligation.'],
@@ -779,7 +779,7 @@ return [
             'eyebrow' => 'Frequently asked questions',
             'title' => 'Your questions before selling in Paris',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Timelines, surveys, taxation, mandate: Estate in Paris answers the questions sellers of luxury properties in Paris ask most.',
+            'intro' => 'Timelines, surveys, taxation, mandate: answers to the questions sellers of luxury properties in Paris ask most.',
             'all' => 'See all questions',
         ],
         'cta_title' => 'How much is your property worth in Paris?',
@@ -796,7 +796,7 @@ return [
         'stats_label' => 'Key figures',
         'why_eyebrow' => 'Why Estate in Paris',
         'why_title' => 'Why buy with Estate in Paris?',
-        'why_intro' => 'Estate in Paris combines in-depth knowledge of the Paris market, exclusive relationships and personalised guidance for every property purchase in Paris.',
+        'why_intro' => 'In-depth knowledge of the Paris market, exclusive relationships and personalised guidance for every property purchase in Paris.',
         'why_sourcing_title' => 'Property sourcing',
         'why_sourcing_text' => 'A curated selection of apartments and private mansions across Paris, including off-market properties never advertised.',
         'why_analysis_title' => 'Figures-based analysis',
@@ -810,7 +810,7 @@ return [
             'eyebrow' => 'Investment opportunities',
             'title' => 'Strategies designed around your investment goals',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Capital appreciation, rental income or diversification: Estate in Paris advisors identify the Paris properties that match your objective.',
+            'intro' => 'Capital appreciation, rental income or diversification: our advisors identify the Paris properties that match your objective.',
             'photo_alt' => 'Terrace of a luxury apartment at sunset overlooking the Eiffel Tower, Paris',
             'items' => [
                 ['title' => 'Capital appreciation', 'text' => 'Acquire premium properties positioned for long-term value growth.'],
@@ -822,14 +822,14 @@ return [
             'eyebrow' => 'Frequently asked questions',
             'title' => 'Your questions before buying in Paris',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Timelines, costs, financing from abroad: Estate in Paris answers the questions buyers in Paris ask most.',
+            'intro' => 'Timelines, costs, financing from abroad: answers to the questions buyers in Paris ask most.',
             'all' => 'See all questions',
         ],
         'record' => [
             'eyebrow' => 'Our track record',
             'title' => 'Trusted by property owners and buyers across Paris',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris guides buyers and sellers of exceptional properties in Paris with a dedicated advisor, qualified buyers and deep knowledge of the Paris luxury market.',
+            'intro' => 'Buyers and sellers of exceptional properties in Paris, guided by a dedicated advisor, qualified buyers and deep knowledge of the Paris luxury market.',
             'commitment_title' => 'Our commitment',
             'commitment_text' => 'We help every owner maximise the value of their property through a tailored strategy, qualified buyers and expert support through to signature.',
             'advisors_label' => 'Your dedicated advisors',
@@ -856,7 +856,7 @@ return [
             'eyebrow' => 'Explore Paris',
             'title' => 'Which Paris districts to invest in?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris guides its clients in the Paris districts combining strong rental demand, long-term appreciation and luxury properties: the Left Bank, the Golden Triangle, Champ-de-Mars and the 16th.',
+            'intro' => 'The Paris districts combining strong rental demand, long-term appreciation and luxury properties: the Left Bank, the Golden Triangle, Champ-de-Mars and the 16th.',
             'price_label' => 'Average price',
             // GEO: dated, named source shown once under the grid and linked to each price by aria-describedby
             'price_source' => 'Rounded average prices per m², based on the latest figures published by the Notaires du Grand Paris (Q2 2026).',
@@ -968,7 +968,7 @@ return [
     'services' => [
         'eyebrow' => 'What we do',
         'title' => 'What can we do for your property project in Paris?',
-        'intro' => 'Buying, selling, valuing or being guided: Estate in Paris advisors support you at every stage of your property project in Paris.',
+        'intro' => 'Buying, selling, valuing or being guided: our advisors support you at every stage of your property project in Paris.',
         'buy_title' => 'Buy property',
         'buy_text' => 'Access exceptional residences and off-market opportunities.',
         'sell_title' => 'Sell property',
@@ -1052,7 +1052,7 @@ return [
         // Trust intro under the hero (Figma 712-25112 / 712-25584): the figure comes from about.stats (real numbers only)
         'trust_title_1' => 'properties sold in Paris.',
         'trust_title_2' => 'One trusted advisor.',
-        'trust_text' => 'For more than 25 years, Estate in Paris has helped buyers, sellers and investors access exceptional opportunities in Paris through local knowledge, tailored strategy and a trusted network.',
+        'trust_text' => 'For more than 25 years, we have helped buyers, sellers and investors access exceptional opportunities in Paris through local knowledge, tailored strategy and a trusted network.',
         'trust_cta_buy' => 'Discover our properties',
         'trust_cta_contact' => 'Contact an advisor',
         // Conversion order of the home (2026-09-22): market data and FAQ teaser texts, h2 as questions
@@ -1060,12 +1060,12 @@ return [
             'eyebrow' => 'Your questions',
             'title' => 'How does working with Estate in Paris go?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris answers the questions buyers and sellers ask before entrusting it with a project in Paris: fees, timing, confidentiality, support.',
+            'intro' => 'Answers to the questions buyers and sellers ask before entrusting us with a project in Paris: fees, timing, confidentiality, support.',
             'all' => 'See every question',
         ],
         // Blog preview (2026-09-22)
         'blog_title' => 'What should you know before buying or selling in Paris?',
-        'blog_intro' => 'Estate in Paris publishes weekly guides on luxury real estate in Paris: prices per m², neighbourhoods, procedures and taxation.',
+        'blog_intro' => 'Our articles to understand the Paris property market and prepare your project.',
         'blog_cta' => 'See all articles',
     ],
     // Shared search bar (home hero + « Nos biens » page, 2026-09-25); `properties.*` carries the extended criteria
@@ -1086,8 +1086,8 @@ return [
         'locked_eyebrow' => 'Private access',
         'locked_title' => 'This property is confidential',
         'locked_title_selection' => 'This selection is confidential',
-        'locked_intro' => 'Estate in Paris reserves this off-market property for its clients: enter the 6-digit access code your advisor gave you to see the full listing.',
-        'locked_intro_selection' => 'Estate in Paris reserves its off-market selection for its clients: enter the 6-digit access code your advisor gave you to browse it.',
+        'locked_intro' => 'This off-market property is reserved for our clients: enter the 6-digit access code your advisor gave you to see the full listing.',
+        'locked_intro_selection' => 'Our off-market selection is reserved for our clients: enter the 6-digit access code your advisor gave you to browse it.',
         'locked_teaser' => ':type · :transaction · Paris :arrondissement',
         'code_label' => 'Access code',
         'code_hint' => '6 digits, given by your advisor.',
@@ -1107,8 +1107,8 @@ return [
         'seo_title' => ':rooms-room :type, :area · :arrondissement',
         'seo_description' => ':rooms-room :type_lower, :surface sqm, :bedrooms bedrooms in :area, :arrondissement, :price. :excerpt Contact Estate in Paris for a private viewing.',
         'seo_description_short' => ':rooms-room :type_lower, :surface sqm, :bedrooms bedrooms in :area, :arrondissement, :price fees included. Contact Estate in Paris for a private viewing.',
-        'answer' => 'Estate in Paris offers this property for sale: :rooms-room :type (:surface sqm, :bedrooms bedrooms) in :area, :arrondissement, priced at :price.',
-        'answer_rent' => 'Estate in Paris offers this property for rent: :rooms-room :type (:surface sqm, :bedrooms bedrooms) in :area, :arrondissement, at :price per month.',
+        'answer' => 'For sale: :rooms-room :type (:surface sqm, :bedrooms bedrooms) in :area, :arrondissement, priced at :price.',
+        'answer_rent' => 'For rent: :rooms-room :type (:surface sqm, :bedrooms bedrooms) in :area, :arrondissement, at :price per month.',
         'legal_title' => 'Notices',
         'legal_sale' => 'Asking price, agency fees included and paid by the seller. Indicative surface, to be confirmed by the Carrez survey. Diagnostics (energy rating, co-ownership) are provided at the viewing.',
         'legal_rent' => 'Monthly rent shown with charges included, in a rent-control zone: the reference rent cap, the deposit and the tenant fees are provided on request. Indicative living area.',
