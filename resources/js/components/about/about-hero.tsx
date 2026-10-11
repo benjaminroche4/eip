@@ -4,7 +4,7 @@ import ProofLine from '@/components/page/proof-line';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
-import { ArrowUpRight, Award, EyeOff, Globe, type LucideIcon } from 'lucide-react';
+import { ArrowDown, Award, EyeOff, Globe, type LucideIcon } from 'lucide-react';
 import { type CSSProperties, type KeyboardEvent, type PointerEvent, type Ref, useEffect, useRef, useState } from 'react';
 
 /** The three messages of the glass card, each with its lucide icon (user decision 2026-09-16: icons, not portraits). */
@@ -125,7 +125,7 @@ export default function AboutHero() {
             aria-labelledby="about-title"
             // Flush photo (user decision 2026-09-16): the hero cancels the layout's top padding and the gap below it, so the
             // photo panel touches the header and the manifesto band; the text column carries its own vertical padding.
-            className="-mt-10 -mb-12 grid gap-10 sm:-mt-12 lg:-mt-20 lg:-mb-16 lg:grid-cols-2 lg:gap-16"
+            className="-mt-10 -mb-20 grid gap-10 sm:-mt-12 sm:-mb-28 lg:-mt-20 lg:grid-cols-2 lg:gap-16"
         >
             <div className="flex flex-col items-center justify-center gap-10 pt-16 text-center sm:pt-20 lg:items-start lg:py-20 lg:text-left">
                 <div className="flex flex-col items-center gap-6 lg:items-start">
@@ -140,7 +140,7 @@ export default function AboutHero() {
                     <Button asChild size="lg">
                         <a href="#team-title">
                             {t('about.hero_cta')}
-                            <ArrowUpRight aria-hidden />
+                            <ArrowDown aria-hidden />
                         </a>
                     </Button>
                 </div>

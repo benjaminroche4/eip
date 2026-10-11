@@ -35,7 +35,14 @@ export default function About({ team, testimonials, stats }: AboutProps) {
                 title={t('pages.about.seo_title')}
                 description={t('pages.about.seo_description')}
                 jsonLd={[
-                    { '@type': 'AboutPage', name: t('pages.about.seo_title'), url: route('about'), about: { '@id': `${origin}/#organization` } },
+                    {
+                        '@type': 'AboutPage',
+                        name: t('pages.about.seo_title'),
+                        description: t('pages.about.seo_description'),
+                        url: route('about'),
+                        inLanguage: seo.locale.replace('_', '-'),
+                        about: { '@id': `${origin}/#organization` },
+                    },
                     // E-E-A-T (2026-09-22): the organisation lists its advisors as `employee`, one `Person` node each
                     teamOrganizationNode(seo, origin, team.length),
                     ...teamNodes(team, origin),
@@ -43,14 +50,15 @@ export default function About({ team, testimonials, stats }: AboutProps) {
                 ]}
             />
             <PublicLayout className="max-w-7xl" backdrop={false}>
-                <div className="flex flex-col gap-12 lg:gap-16">
+                {/* Sections spaced like « Acheter » / « Vendre » (`gap-20 sm:gap-28`, user decision 2026-10-11: the team block sat 64px under the values but 144px above the reviews band) */}
+                <div className="flex flex-col gap-20 sm:gap-28">
                     {/* Hero (Figma 712-23809 / 712-23841 / 712-24213 / 712-24243): header + team photo panel, no façade watermark behind it (user decision 2026-09-16) */}
                     <AboutHero />
 
                     {/* Commitments band (Figma 712-23866): endless marquee, full width, flush between the hero photo and the
                         manifesto band — no space above or below (user decision 2026-09-16): the hero already cancels the gap
                         above, the band cancels the gap below. */}
-                    <div className="relative left-1/2 -mb-12 w-screen -translate-x-1/2 lg:-mb-16">
+                    <div className="relative left-1/2 -mb-20 w-screen -translate-x-1/2 sm:-mb-28">
                         <ValuesMarquee />
                     </div>
 

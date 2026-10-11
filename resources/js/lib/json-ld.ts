@@ -2,7 +2,8 @@ import { type JsonLd } from '@/components/seo/seo-head';
 import { type SeoShared } from '@/types';
 
 /** RealEstateAgent (Organization subtype Google understands) + WebSite (with Sitelinks SearchAction). Use once, on the homepage. */
-export function siteGraph(seo: SeoShared, origin: string, searchUrl: string): JsonLd[] {
+/** The agency's full `RealEstateAgent` node (address, phone, hours, rating, sameAs): the home graph and the About page (E-E-A-T, 2026-10-11). */
+export function agencyNode(seo: SeoShared, origin: string): JsonLd {
     const { organization: org, hours, reviews } = seo;
     const address =
         org.address.street || org.address.city
@@ -16,33 +17,37 @@ export function siteGraph(seo: SeoShared, origin: string, searchUrl: string): Js
                   },
               }
             : {};
+    return {
+        '@type': ['RealEstateAgent', 'Organization'],
+        '@id': `${origin}/#organization`,
+        name: org.name,
+        url: origin,
+        logo: { '@type': 'ImageObject', url: org.logo },
+        image: org.logo,
+        ...(org.phone ? { telephone: org.phone } : {}),
+        ...(org.email ? { email: org.email } : {}),
+        ...address,
+        ...(org.address.city ? { areaServed: { '@type': 'City', name: org.address.city } } : {}),
+        ...(hours?.spec ? { openingHours: hours.spec } : {}),
+        priceRange: '€€€€',
+        ...(reviews
+            ? {
+                  aggregateRating: {
+                      '@type': 'AggregateRating',
+                      ratingValue: reviews.rating,
+                      reviewCount: reviews.count,
+                      bestRating: 5,
+                      worstRating: 1,
+                  },
+              }
+            : {}),
+        ...(org.sameAs.length ? { sameAs: org.sameAs } : {}),
+    };
+}
+
+export function siteGraph(seo: SeoShared, origin: string, searchUrl: string): JsonLd[] {
     return [
-        {
-            '@type': ['RealEstateAgent', 'Organization'],
-            '@id': `${origin}/#organization`,
-            name: org.name,
-            url: origin,
-            logo: { '@type': 'ImageObject', url: org.logo },
-            image: org.logo,
-            ...(org.phone ? { telephone: org.phone } : {}),
-            ...(org.email ? { email: org.email } : {}),
-            ...address,
-            ...(org.address.city ? { areaServed: { '@type': 'City', name: org.address.city } } : {}),
-            ...(hours?.spec ? { openingHours: hours.spec } : {}),
-            priceRange: '€€€€',
-            ...(reviews
-                ? {
-                      aggregateRating: {
-                          '@type': 'AggregateRating',
-                          ratingValue: reviews.rating,
-                          reviewCount: reviews.count,
-                          bestRating: 5,
-                          worstRating: 1,
-                      },
-                  }
-                : {}),
-            ...(org.sameAs.length ? { sameAs: org.sameAs } : {}),
-        },
+        agencyNode(seo, origin),
         {
             '@type': 'WebSite',
             '@id': `${origin}/#website`,
@@ -302,7 +307,7 @@ export function contactPage(seo: SeoShared, origin: string, url: string, name: s
  * organisation node, `knowsLanguage` fr + en (the whole team is bilingual, 2026-10-11), `jobTitle` from the role. The organisation lists them as
  * `employee` through `teamOrganizationNode()`.
  */
-export function teamNodes(members: { name: string; role: string; photo: string }[], origin: string): JsonLd[] {
+export function teamNodes(members: { name: string; role: string; photo: string; area?: string }[], origin: string): JsonLd[] {
     return members.map((member, i) => ({
         '@type': 'Person',
         '@id': `${origin}/#person-${i + 1}`,
@@ -310,13 +315,14 @@ export function teamNodes(members: { name: string; role: string; photo: string }
         jobTitle: member.role,
         image: member.photo.startsWith('http') ? member.photo : `${origin}${member.photo}`,
         knowsLanguage: ['fr', 'en'],
+        ...(member.area ? { knowsAbout: member.area } : {}), // favourite district (2026-10-11)
         worksFor: { '@id': `${origin}/#organization` },
     }));
 }
 
-/** The organisation node with its `employee` references to the team's `Person` nodes. */
+/** The agency's full node (address, phone, hours, rating) with its `employee` references to the team's `Person` nodes (SEO audit 2026-10-11: the About page carried only the minimal node). */
 export function teamOrganizationNode(seo: SeoShared, origin: string, teamCount: number): JsonLd {
-    return { ...organizationNode(seo, origin), employee: Array.from({ length: teamCount }, (_, i) => ({ '@id': `${origin}/#person-${i + 1}` })) };
+    return { ...agencyNode(seo, origin), employee: Array.from({ length: teamCount }, (_, i) => ({ '@id': `${origin}/#person-${i + 1}` })) };
 }
 
 /**

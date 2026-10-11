@@ -36,7 +36,7 @@ class SellTest extends TestCase
                 ->where('steps.0.title', 'Estimation')
                 ->where('steps.2.title', 'Négociation et signature')
                 ->has('stories', 10) // the home's photo row
-                ->has('testimonials', 10)
+                ->has('testimonials', 20)
                 // FAQ: the first six questions of the « selling » topic
                 ->where('translations.sell.faq.title', 'Vos questions avant de vendre à Paris')
                 ->where('translations.sell.faq.intro', $geo)

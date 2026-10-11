@@ -27,7 +27,7 @@ describe('AgencyManifesto', () => {
 
         const items = within(container.querySelector('ul')!).getAllByRole('listitem');
         expect(items).toHaveLength(4);
-        expect(within(items[3]).getByRole('heading', { level: 3, name: 'sur 150 avis Google' })).toBeInTheDocument();
+        expect(within(items[3]).getByText('sur 150 avis Google')).toBeInTheDocument();
         // Grid: stacked, 2×2 from sm, four columns from lg; gradient hairlines between (never dotted borders)
         const grid = container.querySelector('ul')!;
         expect(grid).toHaveClass('sm:grid-cols-2', 'lg:grid-cols-4');
@@ -52,7 +52,7 @@ describe('AgencyManifesto', () => {
 
         // Figures: accessible text = the final value from the start, title + text rise in cascade (120 ms apart)
         expect(items[0].querySelector('.sr-only')).toHaveTextContent('25 ans');
-        expect(items[1].querySelector('h3')!.parentElement).toHaveClass('animate-hero-rise');
+        expect(items[1].querySelector('p.text-lg')!.parentElement).toHaveClass('animate-hero-rise');
         expect(items[1].style.getPropertyValue('--stagger')).toBe('120ms');
 
         expect(await axe(container)).toHaveNoViolations();

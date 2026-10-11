@@ -125,7 +125,8 @@ export default function AgencyManifesto({ stats = [] }: AgencyManifestoProps) {
                                                 : 'opacity-0 motion-reduce:opacity-100',
                                         )}
                                     >
-                                        <h3 className="text-lg font-medium text-balance">{stat.title}</h3>
+                                        {/* A `p`, not a heading: « biens vendus » is a label, not a section title (user edit 2026-10-11) */}
+                                        <p className="text-lg font-medium text-balance">{stat.title}</p>
                                         <p className="text-muted-foreground text-base/7 text-pretty sm:text-sm/6">{stat.text}</p>
                                     </div>
                                 </li>

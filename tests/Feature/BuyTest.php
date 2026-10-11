@@ -29,7 +29,7 @@ class BuyTest extends TestCase
                 ->has('strategies', 3)
                 ->where('strategies.2.title', 'Opportunités hors marché')
                 ->has('districts', 4)
-                ->has('testimonials', 10)
+                ->has('testimonials', 20)
                 ->where('testimonials.0.photo', '/images/testimonials/client-1.webp')
                 ->where('districts.0.area', 'Saint-Germain-des-Prés')
                 ->where('translations.buy.districts.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris'))

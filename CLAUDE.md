@@ -307,7 +307,7 @@ Tout chiffre affiché sur le site vient de cette liste (décision utilisateur 20
 | Acquéreurs qualifiés actifs | **120+ par mois** | `about.stats.3` |
 | Délai de réponse | **24 h ouvrées** | `nav.estimate_badge` « Sous 24 h », `buy.record.facts.reply` |
 | Note Google | **`SEO_GOOGLE_RATING` / `SEO_GOOGLE_REVIEW_COUNT`** (4.9 / 150 en local), jamais en dur | `buy.record.facts.rating`, JSON-LD `aggregateRating`, `ProofLine` |
-| Conseillers | **6** (`team.members`), 3 avatars dans la carte CTA | page À propos, footer, CTA |
+| Conseillers | **8** (`team.members`, nom court + rôle + quartier de prédilection), 3 avatars dans la carte CTA | page À propos, footer, CTA |
 | Adresse | **3 rue Grégoire de Tours, 75006 Paris** (`SEO_ORG_*`) | footer, JSON-LD, mentions légales, `buy.record.facts.address`, `llms.txt` (défaut `config/seo.php` corrigé de 75003 → 75006 le 2026-10-11) |
 | Langues | FR · EN | `buy.record.facts.languages`, `about.hero_slide_3_title` |
 | Prix au m² par arrondissement | Notaires du Grand Paris, dernier trimestre publié (T2 2026) | `districts.items`, `buy.districts.items` (voir Structure utile › Arrondissements) |

@@ -62,7 +62,7 @@ class HomeTest extends TestCase
                 ->where('posts.0.slug', 'fr-1')
                 ->where('translations.home.blog_intro', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
                 ->where('translations.home.trust_text', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
-                ->has('testimonials', 10)
+                ->has('testimonials', 20)
                 ->has('stories', 10)
                 ->where('faq.slug', 'travailler-avec-estate-in-paris')
                 ->has('faq.items', 6)
@@ -72,7 +72,7 @@ class HomeTest extends TestCase
                 ->where('testimonials.0.name', 'Sophie M.')
                 ->where('testimonials.0.photo', '/images/testimonials/client-1.webp')
                 ->where('testimonials.0.source', 'google')
-                ->where('testimonials.3.source', 'trustpilot'));
+                ->where('testimonials.1.source', 'trustpilot'));
 
         foreach (['client-1', 'client-2', 'client-3'] as $portrait) {
             $this->assertFileExists(public_path("images/testimonials/$portrait.webp")); // the owner's avatars, WebP 160 px
@@ -82,7 +82,7 @@ class HomeTest extends TestCase
         $this->fakeSanity();
         $this->get('/en')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('home')->where('translations.home.trust_title_2', 'One trusted advisor.')->where('testimonials.1.context', 'Sold a penthouse in Paris 16'));
+            ->assertInertia(fn (Assert $p) => $p->component('home')->where('translations.home.trust_title_2', 'One trusted advisor.')->where('testimonials.1.context', 'Bought a family apartment in Paris 6'));
     }
 
     public function test_home_hides_the_blog_preview_when_sanity_fails(): void

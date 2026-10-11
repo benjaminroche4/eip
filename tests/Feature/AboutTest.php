@@ -17,7 +17,7 @@ class AboutTest extends TestCase
                 ->has('team', 8)
                 ->where('team.0.name', 'Julien L.')
                 ->where('team.0.area', 'Saint-Germain-des-Prés, Paris 6e')
-                ->has('testimonials', 10)
+                ->has('testimonials', 20)
                 ->has('stats', 4)
                 ->where('stats.0.value', '25 ans')
                 ->where('stats.0.title', "d'expérience à Paris")

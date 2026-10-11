@@ -25,7 +25,7 @@ describe('AboutHero', () => {
         ]);
         expect(screen.getByText(/Façade haussmannienne/)).toHaveClass('sr-only');
         // Photo flush with the header and the next band: the section cancels the layout's top padding and the gap below
-        expect(container.querySelector('section')).toHaveClass('-mt-10', 'sm:-mt-12', 'lg:-mt-20', '-mb-12', 'lg:-mb-16');
+        expect(container.querySelector('section')).toHaveClass('-mt-10', 'sm:-mt-12', 'lg:-mt-20', '-mb-20', 'sm:-mb-28');
         expect(clip.parentElement!.className).not.toMatch(/border|ring|rounded/);
         const card = container.querySelector('[aria-live="polite"]')!;
         expect(card).toHaveClass('backdrop-blur-md', 'bg-black/40'); // dark glass, readable on the bright façade

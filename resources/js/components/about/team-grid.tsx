@@ -138,7 +138,13 @@ export default function TeamGrid({ members }: TeamGridProps) {
                             <div className="border-secondary-30 bg-card flex h-full border p-2">
                                 <div className="from-background-05 flex w-full flex-col gap-5 bg-linear-to-b to-transparent p-4 pb-6">
                                     <div className="from-background-10 to-background-05 aspect-square w-full bg-linear-to-b">
-                                        <SeoImage src={member.photo} alt="" width={800} height={800} className="size-full object-cover" />
+                                        <SeoImage
+                                            src={member.photo}
+                                            alt={t('team.portrait_alt', { name: member.name, role: member.role })}
+                                            width={800}
+                                            height={800}
+                                            className="size-full object-cover"
+                                        />
                                     </div>
                                     {/* Footer (ui.sh variant « Aligné à gauche, hairline, chip langues », kept again among 15 card variants, user decisions 2026-09-16) */}
                                     <div className="flex flex-col gap-4">

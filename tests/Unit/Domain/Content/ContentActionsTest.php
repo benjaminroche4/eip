@@ -30,7 +30,7 @@ class ContentActionsTest extends TestCase
     {
         $lists = [
             [ListTeamMembers::class, TeamMember::class, 8],
-            [ListTestimonials::class, Testimonial::class, 10],
+            [ListTestimonials::class, Testimonial::class, 20],
             [ListSuccessStories::class, SuccessStory::class, 10],
             [ListStats::class, Stat::class, 4],
             [ListDistricts::class, District::class, 4],
