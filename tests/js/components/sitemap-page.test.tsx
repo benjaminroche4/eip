@@ -34,8 +34,8 @@ describe('Sitemap page', () => {
         page.props = sharedProps();
         const { container } = renderPage(<Sitemap groups={GROUPS} blog={BLOG} />);
 
-        expect(screen.getByRole('heading', { level: 1, name: 'Toutes les pages du site' })).toBeInTheDocument();
-        expect(screen.getByText(/^Estate in Paris, agence immobilière/)).toBeInTheDocument(); // GEO intro
+        expect(screen.getByRole('heading', { level: 1, name: 'Plan du site Estate in Paris' })).toBeInTheDocument();
+        expect(screen.getByText(/^Toutes les pages d'Estate in Paris, agence immobilière/)).toBeInTheDocument(); // GEO intro
         const main = within(container.querySelector('main')!); // the footer has its own nav landmarks
         expect(main.getAllByRole('navigation')).toHaveLength(1); // one landmark (« Plan du site »), sections inside
         expect(main.getByRole('heading', { level: 2, name: /Nos services.*2 liens/ })).toHaveClass('text-xl', 'font-medium'); // legal pages' size + count pill (sr-only wording)

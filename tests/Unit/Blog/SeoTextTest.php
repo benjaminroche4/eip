@@ -9,23 +9,23 @@ class SeoTextTest extends TestCase
 {
     public function test_long_titles_are_cut_at_their_last_natural_break_keeping_the_keyword_head(): void
     {
-        $suffix = config('seo.title_separator').config('seo.site_name');
+        $brand = config('seo.site_name').config('seo.title_separator');
 
         $title = SeoText::title('Que faire à Paris quand il pleut : le guide local pour tous les jours');
         $this->assertSame('Que faire à Paris quand il pleut', $title);
-        $this->assertLessThanOrEqual(60, mb_strlen($title.$suffix));
-        $this->assertTrue(SeoText::fitsSuffix($title));
+        $this->assertLessThanOrEqual(60, mb_strlen($brand.$title));
+        $this->assertTrue(SeoText::fitsBrand($title));
 
         $this->assertSame('Vendre un appartement à Paris', SeoText::title('Vendre un appartement à Paris : étapes, coûts et fiscalité en 2026'));
         $this->assertSame('Court', SeoText::title('Court'));
     }
 
-    public function test_without_a_usable_break_the_whole_title_is_kept_and_the_suffix_dropped(): void
+    public function test_without_a_usable_break_the_whole_title_is_kept_and_the_brand_dropped(): void
     {
-        // 60 characters, no break: kept whole, the brand suffix is dropped rather than the keywords.
+        // 60 characters, no break: kept whole, the brand prefix is dropped rather than the keywords.
         $title = SeoText::title('Comment estimer la valeur de son appartement à Paris en 2026');
         $this->assertSame('Comment estimer la valeur de son appartement à Paris en 2026', $title);
-        $this->assertFalse(SeoText::fitsSuffix($title));
+        $this->assertFalse(SeoText::fitsBrand($title));
 
         // Longer still: word-boundary cut at 60 with an ellipsis.
         $long = SeoText::title('Comment choisir son agence immobilière à Paris quand on habite à Londres ou New York');

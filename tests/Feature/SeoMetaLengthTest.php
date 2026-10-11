@@ -6,15 +6,15 @@ use Tests\TestCase;
 
 /**
  * Guards the SEO title / description length conventions (see CLAUDE.md « Meta title & description »).
- * Title: 30-60 characters including the " · Site" suffix when applied. Description: 120-160 characters.
+ * Title: 30-60 characters including the « Site - » brand prefix (every page, home included). Description: 120-160 characters.
  */
 class SeoMetaLengthTest extends TestCase
 {
-    /** @return array<string, array{0: string, 1: string, 2: bool}> page → [title key, description key, suffixed] */
+    /** @return array<string, array{0: string, 1: string, 2: bool}> page → [title key, description key, branded] */
     private function pages(): array
     {
         return [
-            'home' => ['ui.home.seo_title', 'ui.home.seo_description', false],
+            'home' => ['ui.home.seo_title', 'ui.home.seo_description', true],
             'search' => ['ui.search.seo_title', 'ui.search.seo_description', true],
             'blog' => ['ui.blog.seo_title', 'ui.blog.seo_description', true],
             'contact' => ['ui.pages.contact.seo_title', 'ui.pages.contact.seo_description', true],
@@ -35,13 +35,13 @@ class SeoMetaLengthTest extends TestCase
 
     public function test_seo_titles_and_descriptions_respect_length_limits(): void
     {
-        $suffix = config('seo.title_separator').config('seo.site_name');
+        $brand = config('seo.site_name').config('seo.title_separator');
 
         foreach (['fr', 'en'] as $locale) {
             app()->setLocale($locale);
 
-            foreach ($this->pages() as $page => [$titleKey, $descriptionKey, $suffixed]) {
-                $title = __($titleKey).($suffixed ? $suffix : '');
+            foreach ($this->pages() as $page => [$titleKey, $descriptionKey, $branded]) {
+                $title = ($branded ? $brand : '').__($titleKey);
                 $description = __($descriptionKey);
 
                 $this->assertNotSame($titleKey, __($titleKey), "[$locale] $page: missing $titleKey");

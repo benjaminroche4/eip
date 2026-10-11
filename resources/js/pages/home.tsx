@@ -50,7 +50,6 @@ export default function Home({ testimonials, stories, figure, posts, faq }: Home
         <>
             <SeoHead
                 title={t('home.seo_title')}
-                withSuffix={false}
                 description={t('home.seo_description')}
                 jsonLd={[
                     ...siteGraph(seo, origin, route('search')),

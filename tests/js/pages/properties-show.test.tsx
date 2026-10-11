@@ -30,7 +30,7 @@ const PROPS = {
     advisor: { id: 1, photo: '/images/advisors/advisor-1.webp', name: 'Alexandre Moreau', role: 'Conseiller senior' },
     meta: {
         title: 'Appartement haussmannien, Saint-Germain-des-Prés',
-        withSuffix: true,
+        withBrand: true,
         description: 'Étage noble, parquet, moulures et cheminées.',
     },
     map: { key: null, mapId: 'DEMO_MAP_ID' },

@@ -82,7 +82,7 @@ final readonly class BlogPost implements Arrayable
             'body' => $this->body,
             'faqs' => $this->faqs,
             'seo_title' => $this->seoTitle,
-            'seo_title_suffix' => SeoText::fitsSuffix($this->seoTitle),
+            'seo_title_brand' => SeoText::fitsBrand($this->seoTitle),
             'word_count' => $this->wordCount,
             'seo_description' => $this->seoDescription,
             'tags' => $this->tags,

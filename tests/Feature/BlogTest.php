@@ -179,7 +179,7 @@ class BlogTest extends TestCase
             ->component('blog/show')
             ->where('post.slug', 'acheter-a-paris')
             ->where('post.seo_title', 'Acheter un appartement à Paris') // cut at the « : » break, keeping the keyword head
-            ->where('post.seo_title_suffix', true)
+            ->where('post.seo_title_brand', true)
             ->where('post.word_count', 12) // « Introduction » + « Premier paragraphe. » + 3 FAQ questions / answers
             ->where('post.body.0._type', 'wysiwygBlock')
             ->where('post.body.0.content.1.image.width', 1200)
@@ -194,7 +194,7 @@ class BlogTest extends TestCase
             ->where('localization.alternates.en', url('/en/blog/buying-in-paris'))
             ->where('localization.alternates.fr', url('/blog/acheter-a-paris')));
 
-        $this->assertLessThanOrEqual(60, mb_strlen('Acheter un appartement à Paris'.config('seo.title_separator').config('seo.site_name')));
+        $this->assertLessThanOrEqual(60, mb_strlen(config('seo.site_name').config('seo.title_separator').'Acheter un appartement à Paris'));
     }
 
     public function test_article_without_translation_sends_switcher_to_the_blog_index(): void

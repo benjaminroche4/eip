@@ -100,15 +100,15 @@ return [
         ],
         'sitemap' => [
             'title' => 'Sitemap',
-            'seo_title' => 'Sitemap: all our pages',
-            'seo_description' => 'Find every page of the Estate in Paris website: buying, selling or valuing a property in Paris, blog, FAQ, newsletter and legal information. Browse the site.',
-            'headline' => 'Every page of the site',
+            'seo_title' => 'Sitemap, all our pages in Paris',
+            'seo_description' => 'Every page of Estate in Paris, luxury real estate agency: buy, sell or value a property in Paris, our listings, arrondissements, blog, FAQ and legal notices.',
+            'headline' => 'Estate in Paris sitemap',
             'links_count' => '{1} :count link|[2,*] :count links',
             'group_pages' => 'Site pages',
             'blog_other' => 'Other articles',
             'blog_posts' => 'Blog articles',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Estate in Paris, a luxury real estate agency in Paris, gathers all of its pages here: services, resources and legal information.',
+            'intro' => 'Every page of Estate in Paris, luxury real estate agency in Paris: buying, selling, valuation, listings, arrondissements and blog.',
         ],
     ],
     'properties' => [
@@ -722,6 +722,7 @@ return [
     ],
     'a11y' => [
         'skip_to_content' => 'Skip to content',
+        'close' => 'Close',
     ],
     'sell' => [
         'photo_alt' => 'Living room of a luxury apartment overlooking the Eiffel Tower, the kind of property Estate in Paris sells in Paris',
@@ -995,7 +996,7 @@ return [
         'value_5_text' => 'French or foreign buyers and sellers: we handle remote viewings, powers of attorney and financing from abroad.',
     ],
     'footer' => [
-        'tagline_1' => 'Luxury Real Estate in Paris',
+        'tagline_1' => 'Luxury Real Estate in Paris.',
         'tagline_2' => 'Exceptional properties and exclusive opportunities for international buyers and investors.',
         'navigation' => 'Services',
         'about_column' => 'About',
@@ -1018,7 +1019,7 @@ return [
     ],
     'home' => [
         'title' => 'Home',
-        'seo_title' => 'Estate in Paris - Luxury Real Estate in Paris',
+        'seo_title' => 'Luxury Real Estate in Paris',
         'seo_description' => 'Apartments, private mansions and off-market properties in Paris. Estate in Paris selects and sells prestige real estate with a dedicated advisor.',
         'values_label' => 'Our commitments',
         'search_title' => 'The Paris agency for international clients',

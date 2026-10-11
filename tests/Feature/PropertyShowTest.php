@@ -36,7 +36,7 @@ class PropertyShowTest extends TestCase
                 // Meta built from the data, keyword first (type, rooms, quartier, arrondissement), never the editorial title
                 ->where('meta.title', 'Appartement 5 pièces, Champ-de-Mars · Paris 7e')
                 ->where('seo.organization.name', config('seo.organization.name')) // the shared prop survives: a page prop named `seo` shadowed it (blank page 2026-09-28)
-                ->where('meta.withSuffix', false) // 46 characters: the suffix would pass 60, the quartier keyword wins
+                ->where('meta.withBrand', false) // 46 characters: the brand prefix would pass 60, the quartier keyword wins
                 ->where('meta.description', 'Appartement de 5 pièces, 165 m², 3 chambres à Champ-de-Mars, Paris 7e, 3 150 000 € honoraires inclus. Contactez Estate in Paris pour une visite privée.') // the excerpt would pass 160: facts + call to action
                 ->where('district.metro', ['8', '10', '12', '13'])
                 ->where('neighbours.previous.title', "Hôtel particulier, Triangle d'or") // previous / next sale of the catalogue
@@ -64,14 +64,14 @@ class PropertyShowTest extends TestCase
 
     public function test_every_listing_meta_respects_the_seo_lengths_in_both_languages(): void
     {
-        $suffix = config('seo.title_separator').config('seo.site_name');
+        $brand = config('seo.site_name').config('seo.title_separator');
         foreach (['fr', 'en'] as $locale) {
             foreach ((new ListProperties)($locale) as $property) {
                 if ($property->offMarket) {
                     continue;
                 }
                 $seo = PropertySeo::for($property, $locale);
-                $title = $seo['title'].($seo['withSuffix'] ? $suffix : '');
+                $title = ($seo['withBrand'] ? $brand : '').$seo['title'];
                 $this->assertLessThanOrEqual(SeoText::TITLE_MAX, mb_strlen($title), $title);
                 $this->assertGreaterThanOrEqual(SeoText::TITLE_MIN, mb_strlen($title), $title);
                 $this->assertStringContainsString('Paris', $seo['description']);

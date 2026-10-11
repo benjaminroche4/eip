@@ -12,21 +12,21 @@ final class SeoText
     public const TITLE_MIN = 30;
 
     /**
-     * Page title of a dynamic page, ≤ 60 characters. Order of preference: the whole title with the " · Site" suffix;
-     * the head before its last natural break (« : », « ? », « - », « | », « ( ») with the suffix; the whole title
-     * without suffix (see `fitsSuffix()`); a word-boundary cut at 60 without suffix. Keywords are never sacrificed
-     * to the brand suffix.
+     * Page title of a dynamic page, ≤ 60 characters with the « Site - » brand prefix. Order of preference: the whole
+     * title with the prefix; the head before its last natural break (« : », « ? », « - », « | », « ( ») with the
+     * prefix; the whole title without prefix (see `fitsBrand()`); a word-boundary cut at 60 without prefix.
+     * Keywords are never sacrificed to the brand.
      */
     public static function title(string $title): string
     {
         $title = trim(preg_replace('/\s+/u', ' ', $title) ?? $title);
-        $max = self::TITLE_MAX - mb_strlen(self::suffix());
+        $max = self::TITLE_MAX - mb_strlen(self::brand());
         if (mb_strlen($title) <= $max) {
             return $title;
         }
 
-        // The 30-character minimum applies to the full <title>, suffix included.
-        $minHead = max(15, self::TITLE_MIN - mb_strlen(self::suffix()));
+        // The 30-character minimum applies to the full <title>, brand prefix included.
+        $minHead = max(15, self::TITLE_MIN - mb_strlen(self::brand()));
         if (preg_match_all('/\s*[:?|(]|\s[-–—]\s/u', $title, $m, PREG_OFFSET_CAPTURE)) {
             foreach (array_reverse($m[0]) as [$sep, $offset]) {
                 $head = rtrim(mb_strcut($title, 0, $offset), ' :?|(-–—');
@@ -39,15 +39,15 @@ final class SeoText
         return self::clamp($title, self::TITLE_MAX);
     }
 
-    /** Whether the " · Site" suffix can be appended to `title()`'s result while staying ≤ 60 characters. */
-    public static function fitsSuffix(string $seoTitle): bool
+    /** Whether the « Site - » brand prefix can be prepended to `title()`'s result while staying ≤ 60 characters. */
+    public static function fitsBrand(string $seoTitle): bool
     {
-        return mb_strlen($seoTitle.self::suffix()) <= self::TITLE_MAX;
+        return mb_strlen(self::brand().$seoTitle) <= self::TITLE_MAX;
     }
 
-    private static function suffix(): string
+    private static function brand(): string
     {
-        return (string) config('seo.title_separator').config('seo.site_name');
+        return config('seo.site_name').config('seo.title_separator');
     }
 
     public static function description(string $text): string

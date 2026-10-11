@@ -70,7 +70,7 @@ export default function BlogShow({ post, related, alternates }: Props) {
         <>
             <SeoHead
                 title={post.seo_title}
-                withSuffix={post.seo_title_suffix}
+                withBrand={post.seo_title_brand}
                 description={post.seo_description}
                 canonical={post.url}
                 image={post.image?.url}

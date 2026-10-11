@@ -10,7 +10,7 @@
 
 return [
     'site_name' => env('SEO_SITE_NAME', env('APP_NAME', 'Laravel')),
-    'title_separator' => ' · ',
+    'title_separator' => ' - ',
     'default_description' => env('SEO_DESCRIPTION', 'Application Laravel + Inertia + React : rapide, accessible et optimisée pour le référencement.'),
     'default_image' => env('SEO_DEFAULT_IMAGE', '/og-default.png'), // 1200×630, absolute or relative to APP_URL
     'locale' => 'fr_FR',

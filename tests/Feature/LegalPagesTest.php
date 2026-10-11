@@ -31,15 +31,15 @@ class LegalPagesTest extends TestCase
             $this->assertCount(9, $sections);
             $this->assertStringContainsString('Téléphone : +33 1 00 00 00 00', $bodies); // tokens replaced from config/seo.php
             $this->assertStringContainsString('E-mail : legal@example.test', $bodies);
-            $this->assertStringContainsString('Adresse : 1 rue Test, 75006 Paris', $bodies);
+            $this->assertStringContainsString('Adresse de l\'agence : 1 rue Test, 75006 Paris', $bodies);
             $this->assertStringContainsString('Laravel Cloud', $bodies); // real host, not a placeholder
             $this->assertStringContainsString('Localisation des serveurs : Munich, Allemagne', $bodies); // EU data location
             $this->assertStringNotContainsString('À compléter', $bodies);
             $this->assertStringNotContainsString(':phone', $bodies);
-            $page->where('page.updated', 'Dernière mise à jour : 22 septembre 2026');
+            $page->where('page.updated', 'Dernière mise à jour : 11 octobre 2026');
         });
 
-        $this->withLocale('en')->get('/en/legal-notice')->assertOk()->assertInertia(fn (Assert $page) => $page->where('page.updated', 'Last updated: 22 September 2026')->where('page.sections.1.heading', 'Hosting provider'));
+        $this->withLocale('en')->get('/en/legal-notice')->assertOk()->assertInertia(fn (Assert $page) => $page->where('page.updated', 'Last updated: 11 October 2026')->where('page.sections.1.heading', 'Hosting provider'));
     }
 
     public function test_privacy_policy_is_real_and_names_the_actual_processors(): void
@@ -51,7 +51,8 @@ class LegalPagesTest extends TestCase
             $sections = collect($page->toArray()['props']['page']['sections']);
             $bodies = $sections->pluck('body')->implode("\n");
             $this->assertCount(12, $sections);
-            $this->assertStringContainsString('Veylam OÜ', $bodies); // the real controller
+            $this->assertStringContainsString('Bridgeline Group Sàrl', $bodies); // the real controller
+            $this->assertStringContainsString('CHE-188.650.290', $bodies);
             $this->assertStringContainsString('E-mail : privacy@example.test', $bodies); // tokens replaced from config/seo.php
             $this->assertStringContainsString('Estate in Paris, 1 rue Test, 75006 Paris', $bodies);
             foreach (['Laravel Cloud', 'Resend', 'Google Tag Manager', 'Google Places', 'CNIL'] as $name) {
@@ -60,10 +61,10 @@ class LegalPagesTest extends TestCase
             $this->assertStringNotContainsString('À compléter', $bodies);
             $this->assertStringNotContainsString('Relocation', $bodies); // adapted, not copied
             $this->assertStringNotContainsString(':email', $bodies);
-            $page->where('page.updated', 'Dernière mise à jour : 22 septembre 2026');
+            $page->where('page.updated', 'Dernière mise à jour : 11 octobre 2026');
         });
 
-        $this->withLocale('en')->get('/en/privacy-policy')->assertOk()->assertInertia(fn (Assert $page) => $page->where('page.updated', 'Last updated: 22 September 2026')->where('page.sections.1.heading', 'Data controller')->has('page.sections', 12));
+        $this->withLocale('en')->get('/en/privacy-policy')->assertOk()->assertInertia(fn (Assert $page) => $page->where('page.updated', 'Last updated: 11 October 2026')->where('page.sections.1.heading', 'Data controller')->has('page.sections', 12));
     }
 
     public function test_legal_pages_are_listed_in_the_sitemap(): void

@@ -43,6 +43,22 @@ describe('LegalToc', () => {
         expect(await axe(container)).toHaveNoViolations();
     });
 
+    it('opens every section in a bottom sheet on mobile, closes on Escape and gives the focus back to the trigger', async () => {
+        const user = userEvent.setup();
+        renderPage(<LegalToc headings={headings} />);
+
+        const trigger = screen.getByRole('button', { name: /Sommaire/ });
+        expect(trigger).toHaveAttribute('aria-expanded', 'false');
+        await user.click(trigger);
+        const sheet = await screen.findByRole('dialog', { name: 'Sommaire' });
+        expect(within(sheet).getAllByRole('link')).toHaveLength(3); // every section, none hidden behind a height limit
+        expect(within(sheet).getByRole('link', { name: 'Éditeur du site' })).toHaveAttribute('aria-current', 'true');
+
+        await user.keyboard('{Escape}');
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        expect(trigger).toHaveFocus();
+    });
+
     it('moves the sand highlight to the section being read (scrollspy)', async () => {
         mountSections([-300, 80, 900]); // reading the second section: its top passed under the header
         renderPage(<LegalToc headings={headings} />);

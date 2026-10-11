@@ -32,8 +32,8 @@ export type BlogPost = BlogPostSummary & {
     body: BlogSection[];
     faqs: BlogFaq[];
     seo_title: string;
-    /** false when the article title is kept whole and the brand suffix would push the <title> past 60 characters. */
-    seo_title_suffix: boolean;
+    /** false when the article title is kept whole and the « Estate in Paris - » prefix would push the <title> past 60 characters. */
+    seo_title_brand: boolean;
     word_count: number;
     seo_description: string;
     tags: string[];

@@ -45,7 +45,7 @@ type PropertyShowProps = {
     district: District;
     advisor: Advisor;
     /** Page meta (`meta`, not `seo`: that name is the shared prop). */
-    meta: { title: string; withSuffix: boolean; description: string };
+    meta: { title: string; withBrand: boolean; description: string };
     map: MapConfig;
     /** Four questions of the matching FAQ topic (GEO, 2026-09-28). */
     /** Previous / next catalogue listing of the same transaction. */
@@ -128,7 +128,7 @@ export default function PropertyShow({ property, similar, district, advisor, met
             <SeoHead
                 noindex={sold}
                 title={meta.title}
-                withSuffix={meta.withSuffix}
+                withBrand={meta.withBrand}
                 description={meta.description}
                 image={`${origin}${property.photos[0].replace('{w}', '1600')}`}
                 imageAlt={property.photo_alt}

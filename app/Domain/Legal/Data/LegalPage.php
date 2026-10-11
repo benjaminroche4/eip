@@ -11,7 +11,7 @@ final readonly class LegalPage implements Arrayable
     public const KEYS = ['privacy', 'legal'];
 
     /** Last revision of each page's text (both written on 2026-09-22). */
-    public const UPDATED_AT = ['privacy' => '2026-09-22', 'legal' => '2026-09-22'];
+    public const UPDATED_AT = ['privacy' => '2026-10-11', 'legal' => '2026-10-11'];
 
     /** @param list<array{heading: string, body: string}> $sections */
     public function __construct(

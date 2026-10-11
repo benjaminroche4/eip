@@ -5,8 +5,9 @@ export type JsonLd = Record<string, unknown>;
 
 type SeoHeadProps = {
     title: string;
-    /** Set to false for the homepage to use the raw site name as title. */
-    withSuffix?: boolean;
+    /** `<title>` = « Estate in Paris - {title} » (brand first, see CLAUDE.md « Meta title »). Set to false when the
+     * brand prefix would push a dynamic title past 60 characters (blog article, listing). */
+    withBrand?: boolean;
     description?: string;
     /** Absolute canonical URL. Defaults to the current URL without query string. */
     canonical?: string;
@@ -29,7 +30,7 @@ type SeoHeadProps = {
 
 export default function SeoHead({
     title,
-    withSuffix = true,
+    withBrand = true,
     description,
     canonical,
     noindex = false,
@@ -46,7 +47,7 @@ export default function SeoHead({
     const { seo, ziggy, localization } = usePage<SharedData>().props;
     const current = new URL(ziggy.location);
     const url = canonical ?? `${current.origin}${current.pathname}`; // keeps the trailing slash on the root URL
-    const fullTitle = withSuffix ? `${title}${seo.separator}${seo.siteName}` : title;
+    const fullTitle = withBrand ? `${seo.siteName}${seo.separator}${title}` : title;
     const desc = description ?? seo.description;
     const img = image ?? seo.image;
     const ld = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];

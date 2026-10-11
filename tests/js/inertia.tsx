@@ -55,7 +55,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
         translations: translations.fr,
         seo: {
             siteName: 'Estate in Paris',
-            separator: ' · ',
+            separator: ' - ',
             description: '',
             image: '/og-default.png',
             locale: 'fr_FR',

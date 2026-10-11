@@ -7,13 +7,13 @@ use App\Domain\Properties\Data\Property;
 
 /**
  * Meta title and description of a listing's detail page (2026-09-28), built from its data as the SEO conventions ask
- * (« {Type} {pièces} {quartier} · Estate in Paris », keyword first, place next) rather than from the editorial title:
- * title ≤ 60 with the suffix when it fits (`SeoText`), description 120-160 = the facts, the excerpt, then the call
+ * (« Estate in Paris - {Type} {pièces} {quartier} », brand first, then keyword and place) rather than from the editorial title:
+ * title ≤ 60 with the brand prefix when it fits (`SeoText`), description 120-160 = the facts, the excerpt, then the call
  * to action, clamped on a word.
  */
 final class PropertySeo
 {
-    /** @return array{title: string, withSuffix: bool, description: string} */
+    /** @return array{title: string, withBrand: bool, description: string} */
     public static function for(Property $property, string $locale): array
     {
         $title = SeoText::title(__('ui.property.seo_title', self::values($property, $locale), $locale));
@@ -27,7 +27,7 @@ final class PropertySeo
 
         return [
             'title' => $title,
-            'withSuffix' => SeoText::fitsSuffix($title),
+            'withBrand' => SeoText::fitsBrand($title),
             'description' => SeoText::description($description),
         ];
     }

@@ -14,7 +14,7 @@ type LegalProps = {
 };
 
 /**
- * Legal document (privacy / legal / terms): the site's page header (eyebrow + h1 + intro), then the same
+ * Legal document (privacy / legal / terms): the site's page header (eyebrow + h1), then the same
  * layout as the FAQ (same width, same menu): a table of contents in the FAQ-column style — sticky column on
  * desktop, bordered "contents" dropdown on mobile, scrollspy — and the sections split by gradient hairlines.
  */
@@ -37,7 +37,7 @@ export default function Legal({ page }: LegalProps) {
                             <PageEyebrow>{t('legal_pages.eyebrow')}</PageEyebrow>
                             <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{page.title}</h1>
                         </div>
-                        {/* No intro paragraph (user decision 2026-08-31): the description only feeds the meta; the date sits in a white square chip with the sand hairline (user decision 2026-09-22, replaces the grey pill) */}
+                        {/* No intro under the h1 (user decision 2026-10-11, the GEO sentence added earlier that day was dropped); the date sits in a white square chip with the sand hairline (user decision 2026-09-22, replaces the grey pill) */}
                         <p className="border-secondary-30 bg-card text-text-heading flex items-center gap-2 border px-3 py-1.5 text-xs font-medium">
                             <CalendarDays aria-hidden className="text-muted-foreground size-3.5" strokeWidth={1.5} />
                             {page.updated}

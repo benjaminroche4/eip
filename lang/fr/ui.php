@@ -100,15 +100,15 @@ return [
         ],
         'sitemap' => [
             'title' => 'Plan du site',
-            'seo_title' => 'Plan du site : toutes nos pages',
-            'seo_description' => 'Retrouvez toutes les pages du site Estate in Paris : acheter, vendre ou estimer un bien à Paris, blog, FAQ, newsletter et informations légales. Naviguez.',
-            'headline' => 'Toutes les pages du site',
+            'seo_title' => 'Plan du site, toutes nos pages',
+            'seo_description' => "Toutes les pages d'Estate in Paris, agence immobilière de prestige : acheter, vendre, estimer un bien à Paris, nos biens, arrondissements, blog et FAQ.",
+            'headline' => 'Plan du site Estate in Paris',
             'links_count' => '{1} :count lien|[2,*] :count liens',
             'group_pages' => 'Pages du site',
             'blog_other' => 'Autres articles',
             'blog_posts' => 'Articles du blog',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Estate in Paris, agence immobilière de prestige à Paris, réunit ici l'ensemble de ses pages : services, ressources et informations légales.",
+            'intro' => "Toutes les pages d'Estate in Paris, agence immobilière de prestige à Paris : achat, vente, estimation, biens à vendre, arrondissements et blog.",
         ],
     ],
     'properties' => [
@@ -723,6 +723,7 @@ return [
     ],
     'a11y' => [
         'skip_to_content' => 'Aller au contenu',
+        'close' => 'Fermer',
     ],
     'sell' => [
         'photo_alt' => "Séjour d'un appartement de prestige avec vue sur la tour Eiffel, un bien comme ceux qu'Estate in Paris vend à Paris",
@@ -988,7 +989,7 @@ return [
         'value_5_text' => "Acquéreurs et vendeurs français ou étrangers : nous gérons les visites à distance, la procuration et le financement depuis l'étranger.",
     ],
     'footer' => [
-        'tagline_1' => 'Immobilier de prestige à Paris',
+        'tagline_1' => 'Immobilier de prestige à Paris.',
         'tagline_2' => 'Biens d\'exception et opportunités exclusives pour acquéreurs et investisseurs internationaux.',
         'navigation' => 'Nos services',
         'about_column' => 'À propos',
@@ -1011,7 +1012,7 @@ return [
     ],
     'home' => [
         'title' => 'Accueil',
-        'seo_title' => 'Estate in Paris - Immobilier de prestige à Paris',
+        'seo_title' => 'Immobilier de prestige à Paris',
         'seo_description' => "Appartements, hôtels particuliers et biens off-market à Paris. Estate in Paris sélectionne et vend l'immobilier de prestige avec un conseiller dédié.",
         'values_label' => 'Nos engagements',
         'search_title' => "L'agence parisienne des clients internationaux",
