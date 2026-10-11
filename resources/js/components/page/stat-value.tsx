@@ -13,8 +13,11 @@ const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia('
 export default function StatValue({ value, run, from = 0 }: { value: string; run: boolean; from?: number }) {
     const match = /^([^\d]*)([\d\s.,]*\d)(.*)$/.exec(value);
     const [prefix, digits, suffix] = match ? [match[1], match[2], match[3]] : ['', '', value];
-    const target = Number(digits.replace(/[\s.,]/g, ''));
-    const locale = /\s/.test(digits) ? 'fr-FR' : 'en-GB';
+    // « 4,9 » / « 4.9 »: one or two digits after a separator are decimals (a Google rating), not a thousands group
+    const decimals = /[.,](\d{1,2})$/.exec(digits)?.[1].length ?? 0;
+    const target = decimals ? Number(digits.replace(/\s/g, '').replace(',', '.')) : Number(digits.replace(/[\s.,]/g, ''));
+    const locale = (decimals ? digits.includes(',') : /\s/.test(digits)) ? 'fr-FR' : 'en-GB';
+    const format = (n: number) => n.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
     const [shown, setShown] = useState(from);
     const done = !match || !run || reducedMotion() ? target : shown;
 
@@ -25,13 +28,14 @@ export default function StatValue({ value, run, from = 0 }: { value: string; run
         setShown(from);
         const step = (now: number) => {
             const p = Math.min((now - startAt) / COUNT_MS, 1);
-            setShown(Math.round(from + (target - from) * (1 - Math.pow(1 - p, 4))));
+            const scale = 10 ** decimals;
+            setShown(Math.round((from + (target - from) * (1 - Math.pow(1 - p, 4))) * scale) / scale);
             if (p < 1) frame = requestAnimationFrame(step);
         };
         frame = requestAnimationFrame(step);
         return () => cancelAnimationFrame(frame);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [run, target, from]);
+    }, [run, target, from, decimals]);
 
     if (!match) return <>{value}</>;
     return (
@@ -39,7 +43,7 @@ export default function StatValue({ value, run, from = 0 }: { value: string; run
             <span className="sr-only">{value}</span>
             <span aria-hidden>
                 {prefix}
-                {done.toLocaleString(locale)}
+                {format(done)}
                 {suffix}
             </span>
         </>

@@ -31,7 +31,7 @@ describe('BuyRecord', () => {
         // « FR · EN » is drawn as two flags, the text stays for assistive tech (user decision 2026-09-25)
         expect(within(figures[2]).getByText('FR · EN')).toHaveClass('sr-only');
         expect(figures[2].querySelectorAll('span[aria-hidden] svg')).toHaveLength(2);
-        expect(screen.queryByText('250 M€+')).not.toBeInTheDocument(); // the hero's figures are not repeated here
+        expect(screen.queryByText('450 M€+')).not.toBeInTheDocument(); // the hero's figures are not repeated here
         expect(figures[1].querySelector('svg')).toHaveAttribute('aria-hidden');
         expect(figures[3].className).toMatch(/animate-hero-rise|opacity-0/); // cascade on reveal
         expect(container.querySelectorAll('a, button')).toHaveLength(0);

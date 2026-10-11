@@ -20,4 +20,15 @@ describe('StatValue', () => {
         expect(container.querySelector('[aria-hidden]')).toHaveTextContent('250 M€+');
         vi.restoreAllMocks();
     });
+
+    it('treats one or two digits after a separator as decimals: « 4,9/5 » reads 4,9, never 49 (Google rating tile, 2026-10-11)', () => {
+        vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => 1);
+        const { container, rerender } = render(<StatValue value="4,9/5" run />);
+        expect(container.querySelector('[aria-hidden]')).toHaveTextContent('0,0/5');
+        rerender(<StatValue value="4,9/5" run={false} />);
+        expect(container.querySelector('[aria-hidden]')).toHaveTextContent('4,9/5');
+        rerender(<StatValue value="4.9/5" run={false} />);
+        expect(container.querySelector('[aria-hidden]')).toHaveTextContent('4.9/5');
+        vi.restoreAllMocks();
+    });
 });

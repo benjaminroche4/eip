@@ -57,7 +57,7 @@ class HomeTest extends TestCase
             ->assertInertia(fn (Assert $p) => $p->component('home')
                 ->where('translations.home.trust_title_2', 'Un interlocuteur unique.') // the h1 since the hero lost its text block (2026-09-25)
                 ->where('translations.home.trust_text', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))
-                ->where('figure', '500+')
+                ->where('figure', '300+')
                 ->has('posts', 3)
                 ->where('posts.0.slug', 'fr-1')
                 ->where('translations.home.blog_intro', fn (string $text) => str_contains($text, 'Estate in Paris') && str_contains($text, 'Paris'))

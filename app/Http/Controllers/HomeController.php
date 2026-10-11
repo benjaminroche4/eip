@@ -26,7 +26,7 @@ class HomeController extends Controller
             'stories' => ContentList::toArray($stories()),
             'faq' => $faq('working', 6)->toArray(),
             // Trust intro headline figure: « properties sold » from about.stats (real numbers only, never a placeholder)
-            'figure' => __('ui.about.stats.2.value'),
+            'figure' => __('ui.about.stats.1.value'),
         ]);
     }
 }

@@ -69,7 +69,7 @@ return [
             'title' => 'À propos',
             'seo_title' => 'À propos : agence de prestige à Paris',
             'seo_description' => 'Estate in Paris, agence de prestige à Paris 6e : notre équipe, notre méthode et nos engagements pour acheter, vendre ou estimer un bien. Contactez-nous.',
-            'intro' => 'Estate in Paris réunit des conseillers en immobilier de prestige qui connaissent chaque adresse de Paris et prennent le temps de comprendre votre projet avant de vous conseiller.',
+            'intro' => 'Estate in Paris : des conseillers en immobilier de prestige qui prennent le temps de comprendre votre projet.',
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -891,10 +891,12 @@ return [
         'manifesto_2' => "Une transaction réussie, c'est une porte que vous êtes encore heureux d'ouvrir des années après. Alors nous ne poussons jamais une vente : nous attendons le bon bien, le bon moment, et nous restons là bien après la signature.",
         // Key figures (Figma 712-23876): real figures only, to keep in line with the JSON-LD and llms.txt
         'stats' => [
-            ['value' => '250 M€+', 'title' => 'Transactions réalisées', 'text' => 'Dans les quartiers les plus prisés de Paris.'],
-            ['value' => '25+', 'title' => "Années d'expertise du marché", 'text' => 'Sur le marché immobilier de prestige parisien.'],
-            ['value' => '500+', 'title' => 'Biens vendus et loués', 'text' => "Résidences de prestige et biens d'investissement."],
-            ['value' => '120+', 'title' => 'Acquéreurs qualifiés actifs chaque mois', 'text' => "Accédez à notre réseau d'acheteurs sérieux."],
+            // Coherent set (user decision 2026-10-11): 300 properties for 450 M€ = 1,5 M€ per property, the 6e's reality; the
+            // Google tile reads `seo.reviews` (`:rating` / `:count` replaced by ListStats, tile dropped without real figures).
+            ['value' => '25 ans', 'title' => "d'expérience à Paris", 'text' => 'Sur le marché de prestige, rive gauche en premier.'],
+            ['value' => '300+', 'title' => 'biens vendus', 'text' => 'Appartements, hôtels particuliers, investissements.'],
+            ['value' => '450 M€+', 'title' => 'de transactions', 'text' => 'Dans les quartiers les plus recherchés de Paris.'],
+            ['value' => ':rating/5', 'title' => 'sur :count avis Google', 'text' => 'La note de nos clients, vérifiable sur Google.'],
         ],
     ],
     'stories' => [

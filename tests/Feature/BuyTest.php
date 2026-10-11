@@ -20,7 +20,7 @@ class BuyTest extends TestCase
                 ->where('translations.buy.why_title', 'Pourquoi acheter avec Estate in Paris ?')
                 ->where('translations.buy.why_international_title', 'Acheteurs internationaux')
                 ->has('stats', 4)
-                ->where('stats.1.value', '25+')
+                ->where('stats.1.value', '300+')
                 ->where('video', null)
                 ->has('faq.items', 6)
                 ->where('faq.slug', 'acheter-un-bien')

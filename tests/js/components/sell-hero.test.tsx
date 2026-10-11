@@ -5,10 +5,10 @@ import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
 const STATS = [
-    { value: '250 M€+', title: 'Transactions réalisées', text: '' },
-    { value: '25+', title: "Années d'expertise du marché", text: '' },
-    { value: '500+', title: 'Biens vendus et loués', text: '' },
-    { value: '120+', title: 'Acquéreurs qualifiés actifs chaque mois', text: '' },
+    { value: '25 ans', title: "d'expérience à Paris", text: '' },
+    { value: '300+', title: 'biens vendus', text: '' },
+    { value: '450 M€+', title: 'de transactions', text: '' },
+    { value: '4,9/5', title: 'sur 150 avis Google', text: '' },
 ];
 
 describe('SellHero', () => {

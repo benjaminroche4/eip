@@ -53,8 +53,10 @@ class ContentActionsTest extends TestCase
     {
         $this->assertSame('Conseiller senior', app(ListTeamMembers::class)('fr')[0]->role);
         $this->assertSame('Senior property advisor', app(ListTeamMembers::class)('en')[0]->role);
-        $this->assertSame('Transactions réalisées', app(ListStats::class)('fr')[0]->title);
-        $this->assertSame('Transactions facilitated', app(ListStats::class)('en')[0]->title);
+        $this->assertSame("d'expérience à Paris", app(ListStats::class)('fr')[0]->title);
+        $this->assertSame('of experience in Paris', app(ListStats::class)('en')[0]->title);
+        $this->assertSame('4,9/5', app(ListStats::class)('fr')[3]->value); // Google tile from seo.reviews, decimal per language
+        $this->assertSame('4.9/5', app(ListStats::class)('en')[3]->value);
         $this->assertSame('Saint-Germain-des-Prés', app(ListDistricts::class)('en')[0]->area);
         $this->assertSame('Estimation', app(ListSellSteps::class)('fr')[0]->title);
         $this->assertSame('Negotiation and signing', app(ListSellSteps::class)('en')[2]->title);
@@ -93,6 +95,9 @@ class ContentActionsTest extends TestCase
     public function test_content_list_converts_dtos_to_plain_arrays_in_order(): void
     {
         $stats = app(ListStats::class)('fr');
-        $this->assertSame(__('ui.about.stats', [], 'fr'), ContentList::toArray($stats));
+        $this->assertSame(array_slice(__('ui.about.stats', [], 'fr'), 0, 3), array_slice(ContentList::toArray($stats), 0, 3)); // the fourth tile has its tokens replaced
+
+        config(['seo.reviews.rating' => null]);
+        $this->assertCount(3, app(ListStats::class)('fr')); // no Google tile without real figures
     }
 }

@@ -6,10 +6,10 @@ import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
 const STATS: BuyStat[] = [
-    { value: '250 M€+', title: 'Transactions réalisées', text: '' },
-    { value: '25+', title: "Années d'expertise du marché", text: '' },
-    { value: '500+', title: 'Biens vendus et loués', text: '' },
-    { value: '120+', title: 'Acquéreurs qualifiés actifs chaque mois', text: '' },
+    { value: '25 ans', title: "d'expérience à Paris", text: '' },
+    { value: '300+', title: 'biens vendus', text: '' },
+    { value: '450 M€+', title: 'de transactions', text: '' },
+    { value: '4,9/5', title: 'sur 150 avis Google', text: '' },
 ];
 
 describe('BuyHero', () => {
@@ -29,9 +29,9 @@ describe('BuyHero', () => {
         expect(container.querySelector('img')).toBeNull();
         expect(screen.getByText(/Séjour lumineux/)).toHaveClass('sr-only');
         expect(screen.queryByRole('button')).toBeNull();
-        expect(screen.getAllByText('25+')).toHaveLength(2); // desktop (over the photo) + mobile (under it), one hidden per breakpoint
+        expect(screen.getAllByText('300+')).toHaveLength(2); // desktop (over the photo) + mobile (under it), one hidden per breakpoint
         expect(screen.getAllByRole('list', { name: 'Chiffres clés', hidden: true })).toHaveLength(2); // on the photo (desktop) + first row of the 2×2 grid (mobile)
-        expect(screen.getAllByText('250 M€+')[0].closest('li')?.textContent).toMatch(/^250 M€\+/); // value first, label under it
+        expect(screen.getAllByText('25 ans')[0].closest('li')?.textContent).toMatch(/^25 ans/); // value first, label under it
 
         expect(await axe(container, { preload: false })).toHaveNoViolations(); // preload: axe waits for the clip's metadata, which jsdom never loads
     });
@@ -51,6 +51,6 @@ describe('BuyHero', () => {
         expect(frame).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/abc123?autoplay=1');
         expect(screen.queryByRole('button')).toBeNull();
         expect(frame).toHaveFocus(); // the button is gone: the keyboard reader lands on the player, not on the body
-        expect(screen.getAllByText('25+')).toHaveLength(1); // the figures stay, under the video
+        expect(screen.getAllByText('300+')).toHaveLength(1); // the figures stay, under the video
     });
 });

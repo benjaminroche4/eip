@@ -8,9 +8,9 @@ import { page, renderPage, sharedProps } from '../inertia';
 describe('TrustIntro', () => {
     it('renders the statement with the real figure, the proof line and the two CTAs in keyboard order', async () => {
         page.props = sharedProps();
-        const { container } = renderPage(<TrustIntro figure="500+" />);
+        const { container } = renderPage(<TrustIntro figure="300+" />);
 
-        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('500+ biens vendus à Paris.Un interlocuteur unique.'); // the page's h1 since the hero lost its text (2026-09-25)
+        expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('300+ biens vendus à Paris.Un interlocuteur unique.'); // the page's h1 since the hero lost its text (2026-09-25)
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).querySelectorAll('li')).toHaveLength(3);
         expect(screen.getByText('4,9/5')).toBeInTheDocument();
         expect(screen.getByText(/Basé sur 150 avis/)).toBeInTheDocument(); // seo.reviews, never a made-up count
@@ -39,7 +39,7 @@ describe('TrustIntro', () => {
 
     it('hides the proof line without real review figures', () => {
         page.props = { ...sharedProps(), seo: { ...sharedProps().seo, reviews: null } };
-        renderPage(<TrustIntro figure="500+" />);
+        renderPage(<TrustIntro figure="300+" />);
 
         expect(screen.queryByText(/Basé sur/)).not.toBeInTheDocument();
         expect(screen.queryByRole('list', { name: 'Nos conseillers' })).not.toBeInTheDocument();

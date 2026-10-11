@@ -5,10 +5,10 @@ import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
 const stats: AgencyStat[] = [
-    { value: '250 M€+', title: 'Transactions réalisées', text: 'Dans les quartiers les plus prisés de Paris.' },
-    { value: '25+', title: "Années d'expertise du marché", text: 'Sur le marché immobilier de prestige parisien.' },
-    { value: '500+', title: 'Biens vendus et loués', text: "Résidences de prestige et biens d'investissement." },
-    { value: '120+', title: 'Acquéreurs qualifiés actifs chaque mois', text: "Accédez à notre réseau d'acheteurs sérieux." },
+    { value: '25 ans', title: "d'expérience à Paris", text: 'Sur le marché de prestige, rive gauche en premier.' },
+    { value: '300+', title: 'biens vendus', text: 'Appartements, hôtels particuliers, investissements.' },
+    { value: '450 M€+', title: 'de transactions', text: 'Dans les quartiers les plus recherchés de Paris.' },
+    { value: '4,9/5', title: 'sur 150 avis Google', text: 'La note de nos clients, vérifiable sur Google.' },
 ];
 
 describe('AgencyManifesto', () => {
@@ -27,7 +27,7 @@ describe('AgencyManifesto', () => {
 
         const items = within(container.querySelector('ul')!).getAllByRole('listitem');
         expect(items).toHaveLength(4);
-        expect(within(items[3]).getByRole('heading', { level: 3, name: 'Acquéreurs qualifiés actifs chaque mois' })).toBeInTheDocument();
+        expect(within(items[3]).getByRole('heading', { level: 3, name: 'sur 150 avis Google' })).toBeInTheDocument();
         // Grid: stacked, 2×2 from sm, four columns from lg; gradient hairlines between (never dotted borders)
         const grid = container.querySelector('ul')!;
         expect(grid).toHaveClass('sm:grid-cols-2', 'lg:grid-cols-4');
@@ -51,7 +51,7 @@ describe('AgencyManifesto', () => {
         expect((mark as HTMLElement).style.getPropertyValue('--stagger')).toBe(`${wordCount * 40}ms`);
 
         // Figures: accessible text = the final value from the start, title + text rise in cascade (120 ms apart)
-        expect(items[0].querySelector('.sr-only')).toHaveTextContent('250 M€+');
+        expect(items[0].querySelector('.sr-only')).toHaveTextContent('25 ans');
         expect(items[1].querySelector('h3')!.parentElement).toHaveClass('animate-hero-rise');
         expect(items[1].style.getPropertyValue('--stagger')).toBe('120ms');
 
@@ -68,19 +68,19 @@ describe('AgencyManifesto', () => {
         const { container } = renderPage(<AgencyManifesto stats={stats} />);
         const visible = () => Array.from(container.querySelectorAll('li p[class*="font-heading"] [aria-hidden]')).map((el) => el.textContent);
 
-        expect(visible()).toEqual(['0 M€+', '0+', '0+', '0+']); // starts from zero
+        expect(visible()).toEqual(['0 ans', '0+', '0 M€+', '0,0/5']); // starts from zero
         await act(async () => {
             now = 700;
             frames.splice(0).forEach((cb) => cb(now));
         });
         const halfway = visible();
-        expect(halfway[0]).not.toBe('0 M€+');
-        expect(halfway[0]).not.toBe('250 M€+');
+        expect(halfway[2]).not.toBe('0 M€+');
+        expect(halfway[2]).not.toBe('450 M€+');
         await act(async () => {
             now = 1400;
             frames.splice(0).forEach((cb) => cb(now));
         });
-        expect(visible()).toEqual(['250 M€+', '25+', '500+', '120+']);
+        expect(visible()).toEqual(['25 ans', '300+', '450 M€+', '4,9/5']);
         expect(frames).toHaveLength(0); // the loop stops at the target
         vi.useRealTimers();
     });
@@ -100,10 +100,10 @@ describe('AgencyManifesto', () => {
         const { container } = renderPage(<AgencyManifesto stats={stats} />);
 
         expect(Array.from(container.querySelectorAll('li p[class*="font-heading"] [aria-hidden]')).map((el) => el.textContent)).toEqual([
-            '250 M€+',
-            '25+',
-            '500+',
-            '120+',
+            '25 ans',
+            '300+',
+            '450 M€+',
+            '4,9/5',
         ]);
         expect(raf).not.toHaveBeenCalled();
     });

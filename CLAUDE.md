@@ -294,6 +294,26 @@ Source : Figma « Website » › Color Kit (node `62-435`). Tokens dans `resourc
 - Modifier une couleur = modifier `tokens.css` ou le mapping `app.css`, jamais un hex en dur dans un composant. Plus aucun hex hérité du kit dans les pages publiques.
 - Pour ré-extraire la palette : `get_variable_defs` + `get_design_context` par groupe (`62:1542` Primary, `62:2468` Error, `62:2727` Success, `62:2985` Warning, `62:3243` Info, `62:4016` Grey).
 
+## Chiffres de l'agence — source unique
+
+Tout chiffre affiché sur le site vient de cette liste (décision utilisateur 2026-10-11) ; un nouveau chiffre = une ligne ici d'abord, puis la clé `ui.php` FR **et** EN. Jamais deux valeurs différentes pour le même fait.
+
+| Fait | Valeur | Où il apparaît |
+| --- | --- | --- |
+| Volume de transactions | **250 M€+** | `about.stats.0` (page À propos) |
+| Ancienneté | **25 ans** (« depuis plus de 25 ans », « 25+ ») | `about.stats.1`, `about.hero_slide_1_title`, `home.trust_text` |
+| Biens vendus et loués | **500+** | `about.stats.2`, bloc de confiance de la home (`TrustIntro` lit `about.stats.2`) |
+| Acquéreurs qualifiés actifs | **120+ par mois** | `about.stats.3` |
+| Délai de réponse | **24 h ouvrées** | `nav.estimate_badge` « Sous 24 h », `buy.record.facts.reply` |
+| Note Google | **`SEO_GOOGLE_RATING` / `SEO_GOOGLE_REVIEW_COUNT`** (4.9 / 150 en local), jamais en dur | `buy.record.facts.rating`, JSON-LD `aggregateRating`, `ProofLine` |
+| Conseillers | **6** (`team.members`), 3 avatars dans la carte CTA | page À propos, footer, CTA |
+| Adresse | **3 rue Grégoire de Tours, 75006 Paris** (`SEO_ORG_*`) | footer, JSON-LD, mentions légales, `buy.record.facts.address`, `llms.txt` (défaut `config/seo.php` corrigé de 75003 → 75006 le 2026-10-11) |
+| Langues | FR · EN | `buy.record.facts.languages`, `about.hero_slide_3_title` |
+| Prix au m² par arrondissement | Notaires du Grand Paris, dernier trimestre publié (T2 2026) | `districts.items`, `buy.districts.items` (voir Structure utile › Arrondissements) |
+| Délais des success stories | 18 à 42 jours (`stories.items`) | home, Vendre — fictifs, à remplacer par de vrais dossiers |
+
+Cohérence interne : 250 M€ sur ~250 ventes (le reste du « 500+ » = locations) ≈ 1 M€ le bien, plausible pour du prestige ; 500 biens sur 25 ans = 20 par an. Les valeurs sont celles fournies par l'utilisateur, à confirmer avant la mise en production.
+
 ## SEO / GEO — checklist complète (état actuel)
 
 Infrastructure

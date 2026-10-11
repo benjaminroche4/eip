@@ -69,7 +69,7 @@ return [
             'title' => 'About us',
             'seo_title' => 'About our luxury agency in Paris',
             'seo_description' => 'Estate in Paris, luxury real estate agency in Paris 6th: our team, our method and our commitments to buy, sell or value a property. Get in touch with us.',
-            'intro' => 'Estate in Paris brings together prestige property advisors who know every address in Paris and take the time to understand your project before advising you.',
+            'intro' => 'Estate in Paris: prestige property advisors who take the time to understand your project.',
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -899,10 +899,10 @@ return [
         'manifesto_2' => 'A successful transaction is a door you are still happy to open years later. So we never push a sale: we wait for the right property, the right moment, and we stay by your side long after the signature.',
         // Key figures (Figma 712-23876): real figures only, to keep in line with the JSON-LD and llms.txt
         'stats' => [
-            ['value' => '€250M+', 'title' => 'Transactions facilitated', 'text' => "Across Paris's premium districts."],
-            ['value' => '25+', 'title' => 'Years of market expertise', 'text' => "Expertise in Paris's luxury property market."],
-            ['value' => '500+', 'title' => 'Properties sold & rented', 'text' => 'Luxury homes and investment properties.'],
-            ['value' => '120+', 'title' => 'Qualified buyers active monthly', 'text' => 'Access our network of serious buyers.'],
+            ['value' => '25 years', 'title' => 'of experience in Paris', 'text' => 'In the luxury market, Left Bank first.'],
+            ['value' => '300+', 'title' => 'properties sold', 'text' => 'Apartments, private mansions, investments.'],
+            ['value' => '€450M+', 'title' => 'in transactions', 'text' => "In Paris's most sought-after districts."],
+            ['value' => ':rating/5', 'title' => 'from :count Google reviews', 'text' => "Our clients' rating, verifiable on Google."],
         ],
     ],
     'stories' => [
