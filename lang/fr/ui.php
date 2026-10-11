@@ -69,7 +69,7 @@ return [
             'title' => 'À propos',
             'seo_title' => 'À propos : agence de prestige à Paris',
             'seo_description' => 'Estate in Paris, agence de prestige à Paris 6e : notre équipe, notre méthode et nos engagements pour acheter, vendre ou estimer un bien. Contactez-nous.',
-            'intro' => 'Estate in Paris est une agence immobilière de prestige installée rue Grégoire de Tours, à Paris 6e, qui accompagne acquéreurs, vendeurs et investisseurs français et internationaux avec un conseiller dédié.',
+            'intro' => "L'expérience de Paris, le sens de l'écoute : des conseillers qui prennent le temps de vous connaître.",
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -862,7 +862,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => "L'agence immobilière de prestige à Paris",
+        'headline' => "Une agence de quartier, à l'écoute de vos projets",
         'marquee_label' => 'Nos engagements',
         'marquee_1' => 'Des relations clients de long terme',
         'marquee_2' => 'Un conseil personnalisé',

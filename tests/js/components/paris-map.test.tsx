@@ -181,7 +181,7 @@ describe('ParisMap + DistrictDetail', () => {
         expect(within(panel as HTMLElement).getByRole('heading', { level: 2, name: 'Paris 6e' })).toBeInTheDocument();
         expect(
             within(panel as HTMLElement)
-                .getAllByRole('heading', { level: 4 })
+                .getAllByRole('heading', { level: 3 })
                 .map((h) => h.textContent),
         ).toEqual([
             'Points forts',
@@ -219,8 +219,8 @@ describe('ParisMap + DistrictDetail', () => {
         expect(within(panel as HTMLElement).getByRole('img', { name: 'RER B' })).toHaveClass('bg-rer-b', 'rounded-none');
         expect(within(panel as HTMLElement).getByText('Gare Test')).toBeInTheDocument();
         // Places as chip lists under their iconed headings
-        expect(within(panel as HTMLElement).getByRole('heading', { level: 4, name: 'Se déplacer' })).toBeInTheDocument();
-        expect(within(panel as HTMLElement).getByRole('heading', { level: 4, name: 'Étudier' })).toBeInTheDocument();
+        expect(within(panel as HTMLElement).getByRole('heading', { level: 3, name: 'Se déplacer' })).toBeInTheDocument();
+        expect(within(panel as HTMLElement).getByRole('heading', { level: 3, name: 'Étudier' })).toBeInTheDocument();
         expect(within(panel as HTMLElement).getByText('Monument 6')).toBeInTheDocument();
         expect(within(panel as HTMLElement).getByText('Table 6')).toBeInTheDocument();
         expect(within(panel as HTMLElement).getByText('Jardin 6')).toBeInTheDocument();

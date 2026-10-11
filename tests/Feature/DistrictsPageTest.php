@@ -15,7 +15,7 @@ class DistrictsPageTest extends TestCase
             ->assertInertia(fn (Assert $p) => $p->component('districts')
                 ->has('items', 20)
                 ->has('faq.items', 6) // « investing » teaser + FAQPage JSON-LD (GEO, 2026-10-11)
-                ->where('faq.slug', 'investing')
+                ->where('faq.slug', 'investir-a-paris')
                 ->where('translations.districts.hero_cta', 'Parler à un conseiller')
                 ->where('items.0.n', 1)
                 ->where('items.5.name', 'Paris 6e')

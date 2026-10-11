@@ -69,7 +69,7 @@ return [
             'title' => 'About us',
             'seo_title' => 'About our luxury agency in Paris',
             'seo_description' => 'Estate in Paris, luxury real estate agency in Paris 6th: our team, our method and our commitments to buy, sell or value a property. Get in touch with us.',
-            'intro' => 'Estate in Paris is a luxury real estate agency located rue Grégoire de Tours, in the 6th arrondissement of Paris, assisting French and international buyers, sellers and investors with a dedicated advisor.',
+            'intro' => 'A deep knowledge of Paris, a true sense of listening: advisors who take the time to get to know you.',
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -870,7 +870,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => 'The luxury real estate agency in Paris',
+        'headline' => 'A neighbourhood agency, attentive to your plans',
         'marquee_label' => 'Our commitments',
         'marquee_1' => 'Long-term client relationships',
         'marquee_2' => 'Personalised advisory approach',

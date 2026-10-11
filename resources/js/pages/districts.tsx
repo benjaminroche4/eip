@@ -61,7 +61,7 @@ export default function Districts({ items, selected: initial, faq }: DistrictsPr
         const { top, bottom } = sheet.getBoundingClientRect();
         // Aims at the block, not the sheet: the sheet alone landed too low, hiding the picker and the arrows (user feedback 2026-09-25)
         if (top > window.innerHeight * 0.8 || bottom < 0) block.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
-    }, [selected]);
+    }, [selected, param]);
     // A shared anchor (`#arrondissement-14` / `#district-14`, the JSON-LD ItemList urls) also preselects, once, at mount
     useEffect(() => {
         const match = /^#(?:arrondissement|district)-(\d{1,2})$/.exec(window.location.hash);
