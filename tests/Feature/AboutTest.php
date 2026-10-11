@@ -8,6 +8,20 @@ use Tests\TestCase;
 /** « À propos » page: served in both languages, listed in the sitemap, llms.txt and the footer. */
 class AboutTest extends TestCase
 {
+    /** Every arrondissement has an advisor (user decision 2026-10-11): the favourite districts of the team cover Paris 1 to 20, in both languages. */
+    public function test_the_team_covers_every_arrondissement(): void
+    {
+        foreach (['fr' => '/(\d+)(?:er|e)\b/', 'en' => '/(\d+)(?:st|nd|rd|th)\b/'] as $locale => $pattern) {
+            $covered = [];
+            foreach (__('ui.team.members', [], $locale) as $member) {
+                preg_match_all($pattern, $member['area'], $m);
+                $covered = [...$covered, ...array_map(intval(...), $m[1])];
+            }
+            sort($covered);
+            $this->assertSame(range(1, 20), array_values(array_unique($covered)), "[$locale] every arrondissement must have an advisor");
+        }
+    }
+
     public function test_about_page_serves_the_localized_values(): void
     {
         $this->get('/a-propos')
@@ -16,7 +30,7 @@ class AboutTest extends TestCase
                 ->where('translations.about.headline', "L'art du conseil immobilier, au service de vos projets à Paris")
                 ->has('team', 8)
                 ->where('team.0.name', 'Julien L.')
-                ->where('team.0.area', 'Saint-Germain-des-Prés, Paris 6e')
+                ->where('team.0.area', 'Saint-Germain-des-Prés, Paris 5e et 6e')
                 ->has('testimonials', 20)
                 ->has('stats', 4)
                 ->where('stats.0.value', '25 ans')

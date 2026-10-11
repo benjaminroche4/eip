@@ -6,7 +6,7 @@ import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
 
 const members: TeamMember[] = [
-    { name: 'Julien L.', role: 'Conseiller senior', area: 'Saint-Germain-des-Prés, Paris 6e', photo: '/images/team/member-1.jpg' },
+    { name: 'Julien L.', role: 'Conseiller senior', area: 'Saint-Germain-des-Prés, Paris 5e et 6e', photo: '/images/team/member-1.jpg' },
     { name: 'Eva B.', role: 'Conseillère clientèle internationale', area: 'Invalides, Paris 7e', photo: '/images/team/member-2.jpg' },
     { name: 'Charles M.', role: 'Conseiller investissement', area: "Triangle d'or, Paris 8e", photo: '/images/team/member-3.jpg' },
 ];
@@ -22,9 +22,9 @@ describe('TeamGrid', () => {
         expect(card).toHaveClass('border-secondary-30', 'bg-card', 'p-2'); // the site's card
         expect(screen.getByText('Conseiller senior')).toBeInTheDocument();
         // Favourite district in the sand chip, with a sr-only label (replaces the language flags, 2026-10-11)
-        const chip = screen.getByText('Saint-Germain-des-Prés, Paris 6e');
+        const chip = screen.getByText('Saint-Germain-des-Prés, Paris 5e et 6e');
         expect(chip).toHaveClass('bg-background-08');
-        expect(chip).toHaveTextContent('Quartier de prédilection : Saint-Germain-des-Prés, Paris 6e');
+        expect(chip).toHaveTextContent('Quartier de prédilection : Saint-Germain-des-Prés, Paris 5e et 6e');
         expect(chip.querySelector('svg.lucide-map-pin')).toHaveAttribute('aria-hidden', 'true');
         expect(container.querySelector('ul.snap-x')).toHaveClass('lg:grid-cols-4'); // eight cards = two even rows on desktop
         expect(card.className).not.toMatch(/rounded|shadow/); // square, no shadow

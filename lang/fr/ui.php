@@ -986,14 +986,14 @@ return [
         'members' => [
             // Same eight first names as the Relocation in Paris team (user decision 2026-10-11); one job word (« conseiller ») for
             // everyone, and the favourite district instead of the languages (the whole team is bilingual, said once in the intro).
-            ['name' => 'Julien L.', 'role' => 'Conseiller senior', 'area' => 'Saint-Germain-des-Prés, Paris 6e', 'photo' => '/images/team/member-1.jpg'],
-            ['name' => 'Eva B.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Invalides, Paris 7e', 'photo' => '/images/team/member-2.jpg'],
-            ['name' => 'Charles M.', 'role' => 'Conseiller investissement', 'area' => 'Triangle d\'or, Paris 8e', 'photo' => '/images/team/member-3.jpg'],
-            ['name' => 'Sophie B.', 'role' => 'Conseillère off-market', 'area' => 'Passy, Paris 16e', 'photo' => '/images/team/member-4.jpg'],
-            ['name' => 'Élodie G.', 'role' => 'Conseillère senior', 'area' => 'Le Marais, Paris 3e et 4e', 'photo' => '/images/team/member-5.jpg'],
-            ['name' => 'Jean-Pierre A.', 'role' => 'Conseiller senior, négociation', 'area' => 'Monceau, Paris 17e', 'photo' => '/images/team/member-6.jpg'],
-            ['name' => 'David K.', 'role' => 'Conseiller senior', 'area' => 'Panthéon, Paris 5e', 'photo' => '/images/team/member-7.jpg'],
-            ['name' => 'Laura P.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Nouvelle Athènes, Paris 9e', 'photo' => '/images/team/member-8.jpg'],
+            ['name' => 'Julien L.', 'role' => 'Conseiller senior', 'area' => 'Saint-Germain-des-Prés, Paris 5e et 6e', 'photo' => '/images/team/member-1.jpg'],
+            ['name' => 'Eva B.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Invalides et Vaugirard, Paris 7e et 15e', 'photo' => '/images/team/member-2.jpg'],
+            ['name' => 'Charles M.', 'role' => 'Conseiller investissement', 'area' => 'Triangle d\'or et Monceau, Paris 8e et 17e', 'photo' => '/images/team/member-3.jpg'],
+            ['name' => 'Sophie B.', 'role' => 'Conseillère off-market', 'area' => 'Passy et Auteuil, Paris 16e', 'photo' => '/images/team/member-4.jpg'],
+            ['name' => 'Élodie G.', 'role' => 'Conseillère senior', 'area' => 'Le Marais et le Louvre, Paris 1er, 2e, 3e et 4e', 'photo' => '/images/team/member-5.jpg'],
+            ['name' => 'Jean-Pierre A.', 'role' => 'Conseiller senior, négociation', 'area' => 'Canal Saint-Martin et Belleville, Paris 10e, 11e, 19e et 20e', 'photo' => '/images/team/member-6.jpg'],
+            ['name' => 'David K.', 'role' => 'Conseiller senior', 'area' => 'Bercy et Montparnasse, Paris 12e, 13e et 14e', 'photo' => '/images/team/member-7.jpg'],
+            ['name' => 'Laura P.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Nouvelle Athènes et Montmartre, Paris 9e et 18e', 'photo' => '/images/team/member-8.jpg'],
         ],
     ],
     'values' => [
