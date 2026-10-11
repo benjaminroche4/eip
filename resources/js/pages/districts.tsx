@@ -2,12 +2,14 @@ import DistrictDetail from '@/components/districts/district-detail';
 import DistrictPicker from '@/components/districts/district-picker';
 import ParisMap, { type District } from '@/components/districts/paris-map';
 import CtaCard from '@/components/home/cta-card';
+import FaqTeaser, { type FaqTeaserData } from '@/components/page/faq-teaser';
 import ServiceHero from '@/components/page/service-hero';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
+import { stripFaqMarkup } from '@/lib/faq-markup';
 import { scrollBehavior } from '@/lib/focus-field';
-import { breadcrumbList, itemList } from '@/lib/json-ld';
+import { breadcrumbList, faqPage, itemList } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -15,6 +17,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 type DistrictsProps = {
     items: District[];
     /** Preselected from `?arrondissement=` / `?district=`, the 6e by default (DistrictsController). */ selected: number | null;
+    /** First six « investing » questions of the FAQ (GEO block + FAQPage JSON-LD, 2026-10-11). */
+    faq: FaqTeaserData;
 };
 
 /**
@@ -23,9 +27,10 @@ type DistrictsProps = {
  * arrondissement's detail panel under the map (all 20 in the HTML, one shown), preceded by a text picker with
  * previous / next arrows (2026-09-25), then the CTA card. The selection lives in the URL (`?arrondissement=` /
  * `?district=`, read server-side for SSR and sharing) and the sheet scrolls into view when selected out of sight.
- * JSON-LD: breadcrumb + ItemList of the 20 arrondissements (anchors on the panels).
+ * JSON-LD: breadcrumb + ItemList of the 20 arrondissements as `Place` nodes (name, summary, postal code, localized anchor on
+ * the panel) + FAQPage of the « investing » teaser placed before the CTA (SEO / GEO audit 2026-10-11).
  */
-export default function Districts({ items, selected: initial }: DistrictsProps) {
+export default function Districts({ items, selected: initial, faq }: DistrictsProps) {
     const { t } = useTranslation();
     const { ziggy } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
@@ -34,7 +39,7 @@ export default function Districts({ items, selected: initial }: DistrictsProps) 
     // Selection (map, picker, arrows) — 2026-09-25: the choice is written to the URL (`?arrondissement=14` in FR,
     // `?district=14` in EN, replaceState: no history entry per click) so the link can be copied, and the sheet is
     // brought into view when it sits out of the viewport (the map is in the hero, the profile below the fold).
-    const param = t('districts.url_param');
+    const param = t('districts.url_param'); // also the anchor prefix: `#arrondissement-6` in FR, `#district-6` in EN (2026-10-11)
     const scrollOnNext = useRef(false);
     const select = useCallback(
         (n: number | null) => {
@@ -50,16 +55,16 @@ export default function Districts({ items, selected: initial }: DistrictsProps) 
     useEffect(() => {
         if (!scrollOnNext.current || selected === null) return;
         scrollOnNext.current = false;
-        const sheet = document.getElementById(`arrondissement-${selected}`);
+        const sheet = document.getElementById(`${param}-${selected}`);
         const block = document.getElementById('districts-profile'); // picker + sheet, `scroll-mt-24` keeps it under the header
         if (!sheet || !block) return;
         const { top, bottom } = sheet.getBoundingClientRect();
         // Aims at the block, not the sheet: the sheet alone landed too low, hiding the picker and the arrows (user feedback 2026-09-25)
         if (top > window.innerHeight * 0.8 || bottom < 0) block.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
     }, [selected]);
-    // A shared anchor (`#arrondissement-14`, the JSON-LD ItemList urls) also preselects, once, at mount
+    // A shared anchor (`#arrondissement-14` / `#district-14`, the JSON-LD ItemList urls) also preselects, once, at mount
     useEffect(() => {
-        const match = /^#arrondissement-(\d{1,2})$/.exec(window.location.hash);
+        const match = /^#(?:arrondissement|district)-(\d{1,2})$/.exec(window.location.hash);
         const n = match ? Number(match[1]) : null;
         if (n !== null && n >= 1 && n <= 20 && !window.location.search) setSelected(n); // the default (6e) yields to a shared anchor
     }, []);
@@ -75,7 +80,25 @@ export default function Districts({ items, selected: initial }: DistrictsProps) 
                 description={t('pages.districts.seo_description')}
                 jsonLd={[
                     breadcrumbList(crumbs, origin),
-                    itemList(items.map((d) => ({ name: `${d.name} · ${d.areas}`, url: `${url}#arrondissement-${d.n}` }))),
+                    itemList(
+                        items.map((d) => ({
+                            name: `${d.name} · ${d.areas}`,
+                            url: `${url}#${param}-${d.n}`,
+                            item: {
+                                '@type': 'Place',
+                                name: d.name,
+                                description: d.summary,
+                                url: `${url}#${param}-${d.n}`,
+                                address: {
+                                    '@type': 'PostalAddress',
+                                    addressLocality: 'Paris',
+                                    postalCode: `750${String(d.n).padStart(2, '0')}`,
+                                    addressCountry: 'FR',
+                                },
+                            },
+                        })),
+                    ),
+                    faqPage(faq.items.map((i) => ({ question: i.question, answer: stripFaqMarkup(i.answer) }))),
                 ]}
             />
             <PublicLayout className="flex max-w-7xl flex-col gap-20 sm:gap-28">
@@ -112,6 +135,18 @@ export default function Districts({ items, selected: initial }: DistrictsProps) 
                         <DistrictDetail items={items} selected={selected} className="max-w-none" />
                     </div>
                 </section>
+
+                {/* GEO: the « investing » questions before the closing CTA (2026-10-11), the Buy / Sell pages' block with its own texts */}
+                <FaqTeaser
+                    id="districts-faq-title"
+                    texts={{
+                        eyebrow: t('districts.faq.eyebrow'),
+                        title: t('districts.faq.title'),
+                        intro: t('districts.faq.intro'),
+                        all: t('districts.faq.all'),
+                    }}
+                    faq={faq}
+                />
 
                 {/* No extra margin: the sand band above already ends with its own padding (2026-09-25) */}
                 <div className="mx-auto w-full max-w-5xl">

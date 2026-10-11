@@ -18,7 +18,7 @@ type DistrictDetailProps = { items: District[]; selected: number | null; /** Lay
  * with the metro / RER badges in the lines' colours and the railway stations, and chip lists of sights, food,
  * green spaces and schools / universities, « À retenir » sand double card with its icon tile), on the right the site's card (sticky) with the name, districts, the price per m²
  * in large, the profile chip and a contact button. All 20 blocks are in the HTML (`hidden` except the selected one,
- * ids `arrondissement-N` for the JSON-LD anchors); while nothing is selected a **skeleton** of the profile shows (greyed
+ * ids `arrondissement-N` / `district-N` (localized, `districts.url_param`) for the JSON-LD anchors); while nothing is selected a **skeleton** of the profile shows (greyed
  * lines on the left, the card with the hint on the right — ui.sh variant chosen among 15, user decision 2026-09-25; `aria-live`).
  */
 export default function DistrictDetail({ items, selected, className }: DistrictDetailProps) {
@@ -64,8 +64,8 @@ export default function DistrictDetail({ items, selected, className }: DistrictD
             {items.map((d) => (
                 <section
                     key={d.n}
-                    id={`arrondissement-${d.n}`}
-                    aria-labelledby={`arrondissement-${d.n}-title`}
+                    id={`${t('districts.url_param')}-${d.n}`}
+                    aria-labelledby={`${t('districts.url_param')}-${d.n}-title`}
                     hidden={d.n !== selected}
                     className={cn('flex-col gap-10 lg:grid lg:grid-cols-[3fr_2fr] lg:items-start lg:gap-16', d.n === selected && 'flex')}
                 >

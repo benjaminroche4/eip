@@ -74,7 +74,7 @@ describe('BuyDistricts', () => {
         const price = within(cards[0]).getByText('≈ 14 500 €/m²');
         expect(price.closest('li')!.querySelector('[aria-hidden]')!.className).toMatch(/animate-sweep-shimmer/); // discreet shimmer
         const source = document.getElementById(price.closest('li')!.getAttribute('aria-describedby')!)!;
-        expect(source).toHaveTextContent(/Notaires du Grand Paris \(2026\)/); // GEO: dated, named source, once under the grid
+        expect(source).toHaveTextContent(/Notaires du Grand Paris \(2e trimestre 2026\)/); // GEO: dated, named source, once under the grid
         expect(container.querySelectorAll('#' + CSS.escape(source.id))).toHaveLength(1);
         expect(cards[0].style.getPropertyValue('--stagger')).toBe('0ms'); // cascade on entry
         expect(cards[3].style.getPropertyValue('--stagger')).toBe('240ms');

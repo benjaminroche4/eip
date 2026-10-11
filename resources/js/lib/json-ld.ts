@@ -253,10 +253,18 @@ export function realEstateListings(
         }));
 }
 
-export function itemList(items: { name: string; url: string }[]): JsonLd {
+/** ItemList; an optional `item` node (Place, Product…) describes the entry beyond its name and URL (districts page, 2026-10-11). */
+export function itemList(items: { name: string; url: string; item?: Record<string, unknown> }[]): JsonLd {
     return {
         '@type': 'ItemList',
-        itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, url: it.url })),
+        numberOfItems: items.length,
+        itemListElement: items.map((it, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            name: it.name,
+            url: it.url,
+            ...(it.item ? { item: it.item } : {}),
+        })),
     };
 }
 

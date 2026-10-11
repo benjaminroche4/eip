@@ -151,7 +151,7 @@ class PropertiesTest extends TestCase
                 ->where('district.slug', 'paris-6e')
                 ->where('district.name', 'Paris 6e')
                 ->where('district.areas', 'Saint-Germain-des-Prés, Luxembourg')
-                ->where('district.price', '14 500') // the arrondissement's profile feeds an editorial paragraph (SEO audit 2026-09-30)
+                ->where('district.price', '14 000') // the arrondissement's profile feeds an editorial paragraph (SEO audit 2026-09-30)
                 ->where('district.summary', fn (string $s) => str_starts_with($s, 'Le 6e est Saint-Germain-des-Prés'))
                 ->where('landing', null)
                 ->where('indexing', ['noindex' => false, 'canonical' => url('/nos-biens/paris-6e'), 'prev' => null, 'next' => null])

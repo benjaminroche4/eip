@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Content\Actions\ExcerptFaqCategory;
 use App\Domain\Content\Actions\ListArrondissements;
 use App\Domain\Content\Support\ContentList;
 use Illuminate\Http\Request;
@@ -24,11 +25,12 @@ class DistrictsController extends Controller
     /** Opened by default (user decision 2026-09-25): the agency's own arrondissement, the most valued market, also the map's demo. */
     public const DEFAULT = 6;
 
-    public function __invoke(Request $request, ListArrondissements $arrondissements): Response
+    public function __invoke(Request $request, ListArrondissements $arrondissements, ExcerptFaqCategory $faq): Response
     {
         return Inertia::render('districts', [
             'items' => ContentList::toArray($arrondissements()),
             'selected' => self::selectedFrom($request) ?? self::DEFAULT,
+            'faq' => $faq('investing', 6)->toArray(), // GEO block + FAQPage JSON-LD (2026-10-11)
         ]);
     }
 

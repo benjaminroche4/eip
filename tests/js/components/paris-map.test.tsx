@@ -178,7 +178,7 @@ describe('ParisMap + DistrictDetail', () => {
         expect(shapes[5]).toHaveAttribute('aria-pressed', 'true');
         const panel = container.querySelector('#arrondissement-6')!;
         expect(panel).not.toHaveAttribute('hidden');
-        expect(within(panel as HTMLElement).getByRole('heading', { level: 3, name: 'Paris 6e' })).toBeInTheDocument();
+        expect(within(panel as HTMLElement).getByRole('heading', { level: 2, name: 'Paris 6e' })).toBeInTheDocument();
         expect(
             within(panel as HTMLElement)
                 .getAllByRole('heading', { level: 4 })

@@ -14,12 +14,14 @@ class DistrictsPageTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('districts')
                 ->has('items', 20)
+                ->has('faq.items', 6) // « investing » teaser + FAQPage JSON-LD (GEO, 2026-10-11)
+                ->where('faq.slug', 'investing')
                 ->where('translations.districts.hero_cta', 'Parler à un conseiller')
                 ->where('items.0.n', 1)
                 ->where('items.5.name', 'Paris 6e')
-                ->where('items.5.price', '14 500') // same rounded figure as the Buy districts
+                ->where('items.5.price', '14 000') // same rounded figure as the Buy districts
                 ->where('items.5.profile', 'Prestige')
-                ->where('items.18.price', '8 600')
+                ->where('items.18.price', '7 700')
                 ->has('items.5.positives', 3)
                 ->where('items.5.audience', fn (string $a) => str_contains($a, 'prestige'))
                 // Detailed profile (2026-09-25): summary, metro / RER lines, stations, sights, food, green spaces, schools
@@ -37,7 +39,7 @@ class DistrictsPageTest extends TestCase
 
         $this->withLocale('en')->get('/en/paris-districts')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('districts')->has('items', 20)->where('items.5.name', 'Paris 6th')->where('items.5.price', '14,500'));
+            ->assertInertia(fn (Assert $p) => $p->component('districts')->has('items', 20)->where('items.5.name', 'Paris 6th')->where('items.5.price', '14,000'));
 
         $this->withLocale('en')->get('/en/arrondissements-paris')->assertNotFound();
     }

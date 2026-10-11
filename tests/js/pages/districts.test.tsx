@@ -1,9 +1,15 @@
 import { type District } from '@/components/districts/paris-map';
+import { type FaqTeaserData } from '@/components/page/faq-teaser';
 import Districts from '@/pages/districts';
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { page, renderPage, sharedProps } from '../inertia';
+
+const FAQ: FaqTeaserData = {
+    slug: 'investing',
+    items: [{ question: 'Pourquoi investir dans l\'immobilier de prestige à Paris ?', answer: 'Une valeur refuge.', slug: 'pourquoi-investir' }],
+};
 
 const ITEMS: District[] = Array.from({ length: 20 }, (_, i) => ({
     n: i + 1,
@@ -30,7 +36,7 @@ describe('Districts page', () => {
         const user = userEvent.setup();
         page.props = sharedProps();
         window.history.replaceState(null, '', '/arrondissements-paris?arrondissement=14');
-        const { container } = renderPage(<Districts items={ITEMS} selected={14} />);
+        const { container } = renderPage(<Districts items={ITEMS} faq={FAQ} selected={14} />);
 
         expect(container.querySelector('#arrondissement-14')).not.toHaveAttribute('hidden'); // preselected server-side
         expect(container.querySelector('#districts-profile')).toHaveClass('w-screen', 'from-background-05', 'from-40%'); // sand band breakout (2026-09-25)
@@ -65,7 +71,7 @@ describe('Districts page', () => {
     it('preselects from a shared anchor when the URL has no parameter', () => {
         page.props = sharedProps();
         window.history.replaceState(null, '', '/arrondissements-paris#arrondissement-3');
-        const { container } = renderPage(<Districts items={ITEMS} selected={6} />); // the server's default…
+        const { container } = renderPage(<Districts items={ITEMS} faq={FAQ} selected={6} />); // the server's default…
         expect(container.querySelector('#arrondissement-3')).not.toHaveAttribute('hidden'); // …yields to the anchor
         expect(container.querySelector('#arrondissement-6')).toHaveAttribute('hidden');
         window.history.replaceState(null, '', '/');

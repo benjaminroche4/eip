@@ -30,9 +30,9 @@ function Header({ d, className }: { d: District; className?: string }) {
     return (
         <div className={cn('flex flex-col', className)}>
             <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">{t('districts.detail_title')}</p>
-            <h3 id={`arrondissement-${d.n}-title`} className="mt-2 text-2xl font-medium tracking-tight sm:text-3xl">
+            <h2 id={`${t('districts.url_param')}-${d.n}-title`} className="mt-2 text-2xl font-medium tracking-tight sm:text-3xl">
                 {d.name}
-            </h3>
+            </h2>
             <p className="text-muted-foreground mt-2 text-base/7 sm:text-sm/6">{d.areas}</p>
         </div>
     );
@@ -106,13 +106,13 @@ function Transport({ d, className }: { d: District; className?: string }) {
 function Extra({ d, className }: { d: District; className?: string }) {
     const { t } = useTranslation();
     return (
-        <aside className={cn('bg-background-08 p-2', className)} aria-labelledby={`arrondissement-${d.n}-extra`}>
-            <h4 id={`arrondissement-${d.n}-extra`} className="flex items-center gap-3 px-2 py-3 text-lg font-medium tracking-tight">
+        <aside className={cn('bg-background-08 p-2', className)} aria-labelledby={`${t('districts.url_param')}-${d.n}-extra`}>
+            <h3 id={`${t('districts.url_param')}-${d.n}-extra`} className="flex items-center gap-3 px-2 py-3 text-lg font-medium tracking-tight">
                 <span aria-hidden className="border-secondary-30 bg-card flex size-9 shrink-0 items-center justify-center border">
                     <Lightbulb className="size-4" strokeWidth={1.5} />
                 </span>
                 {t('districts.extra_label')}
-            </h4>
+            </h3>
             <p className="bg-card p-4 text-base/7 text-pretty sm:p-6">{d.extra}</p>
         </aside>
     );
@@ -164,10 +164,10 @@ export default function DistrictProfile({ d }: DistrictProfileProps) {
                         <li key={r.key} className="relative flex flex-col gap-3">
                             <span aria-hidden className="bg-secondary-60 absolute top-2.5 -left-8 size-3 rounded-full" />
                             {/* Place rubrics carry their icon, the three text rubrics do not: two families at a glance (2026-09-25) */}
-                            <h4 className="flex items-center gap-2 text-xl font-medium">
+                            <h3 className="flex items-center gap-2 text-xl font-medium">
                                 {r.icon && <r.icon aria-hidden className="text-secondary-80 size-5" strokeWidth={1.5} />}
                                 {r.label}
-                            </h4>
+                            </h3>
                             {r.body}
                         </li>
                     ))}

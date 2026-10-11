@@ -198,7 +198,7 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
     // sits under the hero, out of view when tapping — 2026-09-25)
     const selectedDistrict = selected === null ? null : (byNumber.get(selected) ?? null);
     const scrollToSheet = (e: MouseEvent<HTMLAnchorElement>) => {
-        const target = document.getElementById(`arrondissement-${selected}`);
+        const target = document.getElementById(`${t('districts.url_param')}-${selected}`);
         if (!target) return;
         e.preventDefault();
         target.scrollIntoView({ block: 'start', behavior: scrollBehavior() });
@@ -511,7 +511,11 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                             <span className="font-medium">{selectedDistrict.name}</span>
                             <span className="text-muted-foreground"> · {selectedDistrict.price} €/m²</span>
                         </span>
-                        <a href={`#arrondissement-${selectedDistrict.n}`} onClick={scrollToSheet} className={cn(linkClass, 'shrink-0 font-medium')}>
+                        <a
+                            href={`#${t('districts.url_param')}-${selectedDistrict.n}`}
+                            onClick={scrollToSheet}
+                            className={cn(linkClass, 'shrink-0 font-medium')}
+                        >
                             {t('districts.see_profile')}
                         </a>
                     </>
