@@ -49,9 +49,9 @@ return [
         ],
         'sell' => [
             'title' => 'Vendre',
-            'seo_title' => 'Vendre un bien',
+            'seo_title' => 'Vendre un bien à Paris',
             'seo_description' => 'Confiez la vente de votre appartement ou hôtel particulier à Paris à Estate in Paris : estimation, mise en valeur, acquéreurs qualifiés. Vendez au bon prix.',
-            'intro' => "Nous vous accompagnons de l'estimation à la signature, et présentons votre bien à Paris aux seuls acquéreurs qualifiés.",
+            'intro' => "Nous vous accompagnons de l'estimation à la signature, auprès d'acquéreurs qualifiés à Paris.",
         ],
         'buy' => [
             'title' => 'Acheter',
@@ -752,10 +752,10 @@ return [
             'photo_alt' => "Chambre contemporaine aux larges baies vitrées d'un appartement vendu en confidentialité par Estate in Paris",
         ],
         'why_eyebrow' => 'Pourquoi Estate in Paris',
-        'why_title' => 'Pourquoi vendre avec Estate in Paris ?',
+        'why_title' => 'Pourquoi vendre à nos côtés ?',
         // GEO: a self-contained answer (brand + what + where)
-        'why_intro' => 'Vos appartements et hôtels particuliers de prestige à Paris vendus au juste prix : une estimation fondée sur les ventes réelles, une mise en valeur soignée et des acquéreurs qualifiés.',
-        'why_valuation_title' => 'Estimation fondée sur les ventes réelles',
+        'why_intro' => 'Une estimation fondée sur les ventes réelles, une mise en valeur soignée et des acquéreurs qualifiés : trois garanties pour vendre sereinement à Paris.',
+        'why_valuation_title' => 'Estimation juste',
         'why_valuation_text' => 'Les transactions récentes du quartier et les qualités de votre bien, pas les prix affichés.',
         'why_exposure_title' => 'Mise en valeur soignée',
         'why_exposure_text' => 'Photos et vidéo professionnelles, plans, puis diffusion ciblée auprès de nos acquéreurs.',

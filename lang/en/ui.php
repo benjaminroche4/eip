@@ -49,9 +49,9 @@ return [
         ],
         'sell' => [
             'title' => 'Sell',
-            'seo_title' => 'Sell a property',
+            'seo_title' => 'Sell a property in Paris',
             'seo_description' => 'Entrust the sale of your Paris apartment or private mansion to Estate in Paris: valuation, presentation, qualified buyers. Sell at the best price with us.',
-            'intro' => 'We guide you from valuation to signing, and present your Paris property only to qualified buyers.',
+            'intro' => 'We guide you from valuation to signing, with qualified buyers in Paris.',
         ],
         'buy' => [
             'title' => 'Buy',
@@ -751,10 +751,10 @@ return [
             'photo_alt' => 'Contemporary bedroom with large windows in an apartment sold confidentially by Estate in Paris',
         ],
         'why_eyebrow' => 'Why Estate in Paris',
-        'why_title' => 'Why sell with Estate in Paris?',
+        'why_title' => 'Why sell with us?',
         // GEO: a self-contained answer (brand + what + where)
-        'why_intro' => 'Your luxury apartments and private mansions in Paris sold at the right price: a valuation based on actual sales, careful presentation and qualified buyers.',
-        'why_valuation_title' => 'Valuation based on actual sales',
+        'why_intro' => 'A valuation based on actual sales, careful presentation and qualified buyers: three guarantees for a serene sale in Paris.',
+        'why_valuation_title' => 'A fair valuation',
         'why_valuation_text' => 'Recent transactions in the neighbourhood and the qualities of your property, not asking prices.',
         'why_exposure_title' => 'Careful presentation',
         'why_exposure_text' => 'Professional photos and video, floor plans, then targeted exposure to our buyers.',
