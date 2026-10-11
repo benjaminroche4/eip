@@ -69,7 +69,7 @@ return [
             'title' => 'À propos',
             'seo_title' => 'À propos : agence de prestige à Paris',
             'seo_description' => 'Estate in Paris, agence de prestige à Paris 6e : notre équipe, notre méthode et nos engagements pour acheter, vendre ou estimer un bien. Contactez-nous.',
-            'intro' => 'Estate in Paris : des conseillers en immobilier de prestige qui prennent le temps de comprendre votre projet.',
+            'intro' => 'Des conseillers qui connaissent chaque adresse de Paris et prennent le temps de comprendre votre projet.',
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -872,13 +872,13 @@ return [
         'marquee_pause' => 'Mettre en pause le défilement',
         'marquee_play' => 'Reprendre le défilement',
         'hero_eyebrow' => 'À propos',
-        'hero_cta' => 'Rencontrer nos conseillers',
+        'hero_cta' => 'Découvrir nos conseillers',
         'hero_photo_alt' => 'Façade haussmannienne à Paris, dans un quartier suivi par Estate in Paris',
         'hero_slides_label' => 'Aller à un message',
         'hero_go_to' => 'Message :number sur :total',
         'hero_slide_1_eyebrow' => 'Expertise',
         'hero_slide_1_title' => "25 ans d'expertise du marché",
-        'hero_slide_1_text' => "Nos conseillers cumulent des décennies d'expérience dans les quartiers les plus recherchés de Paris.",
+        'hero_slide_1_text' => "Nos conseillers cumulent des années d'expérience dans les quartiers les plus recherchés de Paris.",
         'hero_slide_2_eyebrow' => 'Confidentialité',
         'hero_slide_2_title' => 'Des ventes discrètes, hors marché',
         'hero_slide_2_text' => 'Une part de nos transactions ne sont jamais publiées : elles se concluent entre acquéreurs qualifiés.',
@@ -893,10 +893,10 @@ return [
         'stats' => [
             // Coherent set (user decision 2026-10-11): 300 properties for 450 M€ = 1,5 M€ per property, the 6e's reality; the
             // Google tile reads `seo.reviews` (`:rating` / `:count` replaced by ListStats, tile dropped without real figures).
-            ['value' => '25 ans', 'title' => "d'expérience à Paris", 'text' => 'Sur le marché de prestige, rive gauche en premier.'],
-            ['value' => '300+', 'title' => 'biens vendus', 'text' => 'Appartements, hôtels particuliers, investissements.'],
-            ['value' => '450 M€+', 'title' => 'de transactions', 'text' => 'Dans les quartiers les plus recherchés de Paris.'],
-            ['value' => ':rating/5', 'title' => 'sur :count avis Google', 'text' => 'La note de nos clients, vérifiable sur Google.'],
+            ['value' => '25 ans', 'title' => "d'expérience à Paris", 'text' => 'Le marché de prestige, connu de l\'intérieur.'],
+            ['value' => '300+', 'title' => 'biens vendus', 'text' => 'Du simple pied-à-terre à l\'hôtel particulier.'],
+            ['value' => '450 M€+', 'title' => 'de transactions', 'text' => 'Des biens d\'exception, vendus au juste prix.'],
+            ['value' => ':rating/5', 'title' => 'sur :count avis Google', 'text' => 'La parole de nos clients, publique et vérifiable.'],
         ],
     ],
     'stories' => [

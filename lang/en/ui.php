@@ -69,7 +69,7 @@ return [
             'title' => 'About us',
             'seo_title' => 'About our luxury agency in Paris',
             'seo_description' => 'Estate in Paris, luxury real estate agency in Paris 6th: our team, our method and our commitments to buy, sell or value a property. Get in touch with us.',
-            'intro' => 'Estate in Paris: prestige property advisors who take the time to understand your project.',
+            'intro' => 'Advisors who know every address in Paris and take the time to understand your project.',
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -886,7 +886,7 @@ return [
         'hero_go_to' => 'Message :number of :total',
         'hero_slide_1_eyebrow' => 'Expertise',
         'hero_slide_1_title' => '25 years of market expertise',
-        'hero_slide_1_text' => "Our advisors combine decades of experience across Paris's most sought-after neighbourhoods.",
+        'hero_slide_1_text' => "Our advisors bring years of experience across Paris's most sought-after neighbourhoods.",
         'hero_slide_2_eyebrow' => 'Confidentiality',
         'hero_slide_2_title' => 'Discreet, off-market sales',
         'hero_slide_2_text' => 'Part of our transactions are never published: they close between qualified buyers.',
@@ -899,10 +899,10 @@ return [
         'manifesto_2' => 'A successful transaction is a door you are still happy to open years later. So we never push a sale: we wait for the right property, the right moment, and we stay by your side long after the signature.',
         // Key figures (Figma 712-23876): real figures only, to keep in line with the JSON-LD and llms.txt
         'stats' => [
-            ['value' => '25 years', 'title' => 'of experience in Paris', 'text' => 'In the luxury market, Left Bank first.'],
-            ['value' => '300+', 'title' => 'properties sold', 'text' => 'Apartments, private mansions, investments.'],
-            ['value' => '€450M+', 'title' => 'in transactions', 'text' => "In Paris's most sought-after districts."],
-            ['value' => ':rating/5', 'title' => 'from :count Google reviews', 'text' => "Our clients' rating, verifiable on Google."],
+            ['value' => '25 years', 'title' => 'of experience in Paris', 'text' => 'The luxury market, known from the inside.'],
+            ['value' => '300+', 'title' => 'properties sold', 'text' => 'From a simple pied-à-terre to a private mansion.'],
+            ['value' => '€450M+', 'title' => 'in transactions', 'text' => 'Exceptional properties, sold at the right price.'],
+            ['value' => ':rating/5', 'title' => 'from :count Google reviews', 'text' => 'What our clients say, public and verifiable.'],
         ],
     ],
     'stories' => [

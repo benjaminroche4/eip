@@ -25,7 +25,7 @@ class AboutTest extends TestCase
                 ->where('stats.3.title', 'sur 150 avis Google')
                 ->where('translations.about.manifesto_title', 'Qui sommes-nous ?')
                 ->where('translations.values.value_1_title', 'Confidentialité')
-                ->where('translations.pages.about.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'prestige'))); // GEO: brand + what + where (2026-10-11) / address (user decision 2026-10-11)
+                ->where('translations.pages.about.intro', fn (string $intro) => str_contains($intro, 'Paris') && str_contains($intro, 'projet'))); // no brand in the hero intro (user decision 2026-10-11), the h1 and the manifesto carry it / address (user decision 2026-10-11)
 
         $this->withLocale('en')->get('/en/about-us')
             ->assertOk()

@@ -5,10 +5,10 @@ import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
 const stats: AgencyStat[] = [
-    { value: '25 ans', title: "d'expérience à Paris", text: 'Sur le marché de prestige, rive gauche en premier.' },
-    { value: '300+', title: 'biens vendus', text: 'Appartements, hôtels particuliers, investissements.' },
-    { value: '450 M€+', title: 'de transactions', text: 'Dans les quartiers les plus recherchés de Paris.' },
-    { value: '4,9/5', title: 'sur 150 avis Google', text: 'La note de nos clients, vérifiable sur Google.' },
+    { value: '25 ans', title: "d'expérience à Paris", text: "Le marché de prestige, connu de l'intérieur." },
+    { value: '300+', title: 'biens vendus', text: "Du simple pied-à-terre à l'hôtel particulier." },
+    { value: '450 M€+', title: 'de transactions', text: "Des biens d'exception, vendus au juste prix." },
+    { value: '4,9/5', title: 'sur 150 avis Google', text: 'La parole de nos clients, publique et vérifiable.' },
 ];
 
 describe('AgencyManifesto', () => {

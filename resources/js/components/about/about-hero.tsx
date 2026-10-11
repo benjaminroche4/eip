@@ -16,7 +16,7 @@ const SLIDES: { n: 1 | 2 | 3; icon: LucideIcon }[] = [
 
 /**
  * « À propos » hero (Figma 712-23809 / 712-23841 desktop, 712-24213 / 712-24243 mobile), in the site's tone: on the
- * left, one block centred vertically in the column and aligned left on desktop, centred on mobile (user decision 2026-09-16): the header (eyebrow, h1, answer-first intro), a « Rencontrer nos conseillers » button that jumps to the team
+ * left, one block centred vertically in the column and aligned left on desktop, centred on mobile (user decision 2026-09-16): the header (eyebrow, h1, answer-first intro), a « Découvrir nos conseillers » button that jumps to the team
  * section, and at the bottom the proof line (round advisor portraits, sand stars, the real Google rating and count);
  * on the right a Paris façade photo (portrait crop of the home hero photo, user decision 2026-09-16) with a dark bottom veil and, over it, a glass card (square corners) cycling three
  * messages — three small dots on its side, swipe on the card. Mobile / tablet: header centred, then the photo panel edge to edge (`-mx-6`) in 16:9 with the
