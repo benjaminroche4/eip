@@ -45,7 +45,7 @@ return [
             'title' => 'Property Valuation',
             'seo_title' => 'Property valuation',
             'seo_description' => 'Have your Paris apartment or private mansion valued by an Estate in Paris expert: a figure grounded in real market data. Request your free valuation.',
-            'intro' => 'Your apartment, private mansion or exceptional property in Paris, valued for free from the neighbourhood\'s real transactions.',
+            'intro' => 'Your property in Paris, valued for free from the neighbourhood\'s real transactions.',
         ],
         'sell' => [
             'title' => 'Sell',

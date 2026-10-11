@@ -65,7 +65,10 @@ export default function Estimate({ propertyTypes, contactMethods, floors, featur
                         googleMapsKey={googleMapsKey}
                     />
                     {/* How a valuation goes (GEO content under the form, user decision 2026-09-22) */}
-                    <EstimateProcess />
+                    {/* Column gap 48/64px + `mt-8 sm:mt-12` = the section rhythm of the closing card and the Buy / Sell pages (80/112px); the short gap alone is for header → form (user decision 2026-10-11) */}
+                    <div className="mt-8 sm:mt-12">
+                        <EstimateProcess />
+                    </div>
                 </div>
                 {/* Same closing call to action as the home, About and Buy pages */}
                 <div className="mx-auto mt-20 w-full max-w-5xl sm:mt-28">

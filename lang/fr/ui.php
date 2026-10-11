@@ -45,7 +45,7 @@ return [
             'title' => 'Estimation',
             'seo_title' => 'Estimation immobilière',
             'seo_description' => 'Faites estimer votre appartement ou hôtel particulier à Paris par un expert Estate in Paris : une valeur fondée sur le marché réel. Demandez votre estimation.',
-            'intro' => "Votre appartement, hôtel particulier ou bien d'exception à Paris, estimé gratuitement à partir des transactions réelles du quartier.",
+            'intro' => 'Votre bien à Paris, estimé gratuitement à partir des transactions réelles du quartier.',
         ],
         'sell' => [
             'title' => 'Vendre',
