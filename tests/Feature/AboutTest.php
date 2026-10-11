@@ -13,7 +13,7 @@ class AboutTest extends TestCase
         $this->get('/a-propos')
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('about')
-                ->where('translations.about.headline', "Une maison parisienne dédiée à l'immobilier de prestige")
+                ->where('translations.about.headline', "Une équipe d'experts dédiée à vos projets à Paris")
                 ->has('team', 6)
                 ->where('team.0.name', 'Alexandre Moreau')
                 ->where('team.0.flags', ['FR', 'GB'])
@@ -23,11 +23,11 @@ class AboutTest extends TestCase
                 ->where('stats.0.title', 'Transactions réalisées')
                 ->where('translations.about.manifesto_title', 'Qui sommes-nous ?')
                 ->where('translations.values.value_1_title', 'Confidentialité')
-                ->where('translations.pages.about.intro', fn (string $intro) => str_contains($intro, 'Paris') && str_contains($intro, 'écoute'))); // warm hero, no brand / address (user decision 2026-10-11)
+                ->where('translations.pages.about.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'prestige'))); // GEO: brand + what + where (2026-10-11) / address (user decision 2026-10-11)
 
         $this->withLocale('en')->get('/en/about-us')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('about')->where('translations.about.headline', 'A Parisian house devoted to prestige real estate'));
+            ->assertInertia(fn (Assert $p) => $p->component('about')->where('translations.about.headline', 'A team of experts dedicated to your projects in Paris'));
 
         $this->get('/en/a-propos')->assertNotFound();
 

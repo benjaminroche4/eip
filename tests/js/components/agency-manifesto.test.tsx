@@ -17,8 +17,8 @@ describe('AgencyManifesto', () => {
         const { container } = renderPage(<AgencyManifesto stats={stats} />);
 
         expect(screen.getByRole('heading', { level: 2, name: 'Qui sommes-nous ?' })).toBeInTheDocument();
-        // GEO statement: brand + street + district, no stray space before the comma
-        expect(container.querySelector('p')).toHaveTextContent(/^Estate in Paris, agence installée rue Grégoire de Tours à Paris 6e, allie/);
+        // The brand opens the first sentence, with a single space before the verb (emotional manifesto, user decision 2026-10-11)
+        expect(container.querySelector('p')).toHaveTextContent(/^Estate in Paris accompagne des moments de vie : un premier appartement à Paris,/);
         container.querySelectorAll('p > span.font-semibold').forEach((w) => expect(['Estate', 'in', 'Paris']).toContain(w.textContent));
         // Brand key mark as a decorative watermark (the Figma vector is this very glyph)
         const mark = container.querySelector('img[src="/brand/logo-mark.svg"]')!;

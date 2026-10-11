@@ -69,7 +69,7 @@ return [
             'title' => 'About us',
             'seo_title' => 'About our luxury agency in Paris',
             'seo_description' => 'Estate in Paris, luxury real estate agency in Paris 6th: our team, our method and our commitments to buy, sell or value a property. Get in touch with us.',
-            'intro' => 'A deep knowledge of Paris, a true sense of listening: advisors who take the time to get to know you.',
+            'intro' => 'Estate in Paris brings together prestige property advisors who know every address in Paris and take the time to understand your project before advising you.',
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -870,7 +870,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => 'A Parisian house devoted to prestige real estate',
+        'headline' => 'A team of experts dedicated to your projects in Paris',
         'marquee_label' => 'Our commitments',
         'marquee_1' => 'Long-term client relationships',
         'marquee_2' => 'Personalised advisory approach',
@@ -895,8 +895,8 @@ return [
         'hero_slide_3_text' => 'Remote viewings, powers of attorney, financing from abroad: we follow every step for you.',
         'manifesto_title' => 'Who are we?',
         'manifesto_brand' => 'Estate in Paris',
-        'manifesto_1' => ', based rue Grégoire de Tours in Paris 6e, connects local expertise, international reach and personalised guidance to deliver exceptional real estate experiences.',
-        'manifesto_2' => "From luxury apartments and family residences to investment opportunities and off-market properties, we help clients make confident decisions in one of the world's most sought-after markets.",
+        'manifesto_1' => " is there for life's turning points: a first apartment in Paris, a house that has become too big, an investment for the children, a move back to France after years abroad.",
+        'manifesto_2' => 'We believe a successful transaction is measured years later, when you are still happy to open your door in the evening. That is why we never push a sale: we listen, we advise, we wait for the right property, the right buyer, the right moment. And we stay by your side, long after the signature.',
         // Key figures (Figma 712-23876): real figures only, to keep in line with the JSON-LD and llms.txt
         'stats' => [
             ['value' => '€250M+', 'title' => 'Transactions facilitated', 'text' => "Across Paris's premium districts."],

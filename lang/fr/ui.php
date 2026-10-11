@@ -69,7 +69,7 @@ return [
             'title' => 'À propos',
             'seo_title' => 'À propos : agence de prestige à Paris',
             'seo_description' => 'Estate in Paris, agence de prestige à Paris 6e : notre équipe, notre méthode et nos engagements pour acheter, vendre ou estimer un bien. Contactez-nous.',
-            'intro' => "L'expérience de Paris, le sens de l'écoute : des conseillers qui prennent le temps de vous connaître.",
+            'intro' => 'Estate in Paris réunit des conseillers en immobilier de prestige qui connaissent chaque adresse de Paris et prennent le temps de comprendre votre projet avant de vous conseiller.',
         ],
         'faq' => [
             'title' => 'FAQ',
@@ -862,7 +862,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => "Une maison parisienne dédiée à l'immobilier de prestige",
+        'headline' => "Une équipe d'experts dédiée à vos projets à Paris",
         'marquee_label' => 'Nos engagements',
         'marquee_1' => 'Des relations clients de long terme',
         'marquee_2' => 'Un conseil personnalisé',
@@ -887,8 +887,8 @@ return [
         'hero_slide_3_text' => 'Visites à distance, procuration, financement depuis l\'étranger : nous suivons chaque étape pour vous.',
         'manifesto_title' => 'Qui sommes-nous ?',
         'manifesto_brand' => 'Estate in Paris',
-        'manifesto_1' => ", agence installée rue Grégoire de Tours à Paris 6e, allie expertise locale, rayonnement international et accompagnement personnalisé pour offrir une expérience immobilière d'exception.",
-        'manifesto_2' => "Appartements de luxe, résidences familiales, opportunités d'investissement ou biens off-market : nous aidons nos clients à décider en confiance sur l'un des marchés les plus recherchés au monde.",
+        'manifesto_1' => " accompagne des moments de vie : un premier appartement à Paris, une maison devenue trop grande, un investissement pour les enfants, un retour en France après des années à l'étranger.",
+        'manifesto_2' => "Nous croyons qu'une transaction réussie se mesure des années après, quand vous êtes toujours heureux d'ouvrir la porte le soir. C'est pourquoi nous ne poussons jamais une vente : nous écoutons, nous conseillons, nous attendons le bon bien, le bon acquéreur, le bon moment. Et nous restons là, bien après la signature.",
         // Key figures (Figma 712-23876): real figures only, to keep in line with the JSON-LD and llms.txt
         'stats' => [
             ['value' => '250 M€+', 'title' => 'Transactions réalisées', 'text' => 'Dans les quartiers les plus prisés de Paris.'],
