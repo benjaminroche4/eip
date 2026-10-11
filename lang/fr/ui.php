@@ -51,7 +51,7 @@ return [
             'title' => 'Vendre',
             'seo_title' => 'Vendre un bien',
             'seo_description' => 'Confiez la vente de votre appartement ou hôtel particulier à Paris à Estate in Paris : estimation, mise en valeur, acquéreurs qualifiés. Vendez au bon prix.',
-            'intro' => "La vente de votre bien de prestige à Paris, de l'estimation à la signature, auprès d'acquéreurs français et internationaux qualifiés.",
+            'intro' => "Nous vous accompagnons de l'estimation à la signature, et présentons votre bien à Paris aux seuls acquéreurs qualifiés.",
         ],
         'buy' => [
             'title' => 'Acheter',
@@ -735,7 +735,7 @@ return [
     'sell' => [
         'photo_alt' => "Séjour d'un appartement de prestige avec vue sur la tour Eiffel, un bien comme ceux qu'Estate in Paris vend à Paris",
         'eyebrow' => 'Vendre à Paris',
-        'headline' => 'Vendez votre bien de prestige à Paris au juste prix',
+        'headline' => 'Vendez votre bien à Paris avec un conseiller dédié',
         'video_title' => 'Estate in Paris, vendre un bien de prestige à Paris',
         'play_video' => 'Lire la vidéo : :title',
         'stats_label' => 'Chiffres clés',
@@ -756,13 +756,13 @@ return [
         // GEO: a self-contained answer (brand + what + where)
         'why_intro' => 'Vos appartements et hôtels particuliers de prestige à Paris vendus au juste prix : une estimation fondée sur les ventes réelles, une mise en valeur soignée et des acquéreurs qualifiés.',
         'why_valuation_title' => 'Estimation fondée sur les ventes réelles',
-        'why_valuation_text' => 'Votre bien est estimé à partir des transactions récentes du quartier et de ses qualités propres (étage, vue, calme, prestations), pas des prix affichés.',
+        'why_valuation_text' => 'Les transactions récentes du quartier et les qualités de votre bien, pas les prix affichés.',
         'why_exposure_title' => 'Mise en valeur soignée',
-        'why_exposure_text' => 'Photographies et vidéo professionnelles, plans, home staging si nécessaire, puis diffusion ciblée auprès de nos acquéreurs et des portails spécialisés.',
+        'why_exposure_text' => 'Photos et vidéo professionnelles, plans, puis diffusion ciblée auprès de nos acquéreurs.',
         'why_buyers_title' => 'Acquéreurs qualifiés',
-        'why_buyers_text' => 'Chaque acquéreur, français ou international, est qualifié avant toute visite : projet, calendrier, capacité de financement. Vous ne recevez que des visiteurs sérieux.',
+        'why_buyers_text' => 'Projet, calendrier, financement : chaque acquéreur est qualifié avant de visiter.',
         'why_negotiation_title' => "Négociation jusqu'à l'acte",
-        'why_negotiation_text' => "Un conseiller dédié défend votre prix de l'offre à la signature chez le notaire et vous rend compte après chaque visite.",
+        'why_negotiation_text' => "Un conseiller dédié défend votre prix, de l'offre à la signature chez le notaire.",
         'why_cta' => 'Faire estimer mon bien',
         'process' => [
             'eyebrow' => 'Notre méthode',

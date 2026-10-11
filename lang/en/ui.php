@@ -51,7 +51,7 @@ return [
             'title' => 'Sell',
             'seo_title' => 'Sell a property',
             'seo_description' => 'Entrust the sale of your Paris apartment or private mansion to Estate in Paris: valuation, presentation, qualified buyers. Sell at the best price with us.',
-            'intro' => 'The sale of your luxury property in Paris, from valuation to signing, to qualified French and international buyers.',
+            'intro' => 'We guide you from valuation to signing, and present your Paris property only to qualified buyers.',
         ],
         'buy' => [
             'title' => 'Buy',
@@ -734,7 +734,7 @@ return [
     'sell' => [
         'photo_alt' => 'Living room of a luxury apartment overlooking the Eiffel Tower, the kind of property Estate in Paris sells in Paris',
         'eyebrow' => 'Selling in Paris',
-        'headline' => 'Sell your luxury property in Paris at the right price',
+        'headline' => 'Sell your property in Paris with a dedicated advisor',
         'video_title' => 'Estate in Paris, selling a luxury property in Paris',
         'play_video' => 'Play the video: :title',
         'stats_label' => 'Key figures',
@@ -755,13 +755,13 @@ return [
         // GEO: a self-contained answer (brand + what + where)
         'why_intro' => 'Your luxury apartments and private mansions in Paris sold at the right price: a valuation based on actual sales, careful presentation and qualified buyers.',
         'why_valuation_title' => 'Valuation based on actual sales',
-        'why_valuation_text' => 'Your property is valued from recent transactions in the neighbourhood and its own qualities (floor, view, quietness, features), not asking prices.',
+        'why_valuation_text' => 'Recent transactions in the neighbourhood and the qualities of your property, not asking prices.',
         'why_exposure_title' => 'Careful presentation',
-        'why_exposure_text' => 'Professional photography and video, floor plans, home staging when useful, then targeted exposure to our buyers and the specialised portals.',
+        'why_exposure_text' => 'Professional photos and video, floor plans, then targeted exposure to our buyers.',
         'why_buyers_title' => 'Qualified buyers',
-        'why_buyers_text' => 'Every buyer, French or international, is qualified before any viewing: project, timeline, financing capacity. You only receive serious visitors.',
+        'why_buyers_text' => 'Project, timeline, financing: every buyer is qualified before viewing.',
         'why_negotiation_title' => 'Negotiation through to the deed',
-        'why_negotiation_text' => "A dedicated advisor defends your price from the offer to the signing at the notary's and reports back after every viewing.",
+        'why_negotiation_text' => "A dedicated advisor defends your price, from the offer to the signing at the notary's.",
         'why_cta' => 'Get my property valued',
         'process' => [
             'eyebrow' => 'Our method',
