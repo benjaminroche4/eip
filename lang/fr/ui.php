@@ -862,7 +862,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => "Une équipe d'experts dédiée à vos projets à Paris",
+        'headline' => "L'art du conseil immobilier, au service de vos projets à Paris",
         'marquee_label' => 'Nos engagements',
         'marquee_1' => 'Des relations clients de long terme',
         'marquee_2' => 'Un conseil personnalisé',
@@ -888,7 +888,7 @@ return [
         'manifesto_title' => 'Qui sommes-nous ?',
         'manifesto_brand' => 'Estate in Paris',
         'manifesto_1' => " accompagne des moments de vie : un premier appartement à Paris, une maison devenue trop grande, un investissement pour les enfants, un retour en France après des années à l'étranger.",
-        'manifesto_2' => "Nous croyons qu'une transaction réussie se mesure des années après, quand vous êtes toujours heureux d'ouvrir la porte le soir. C'est pourquoi nous ne poussons jamais une vente : nous écoutons, nous conseillons, nous attendons le bon bien, le bon acquéreur, le bon moment. Et nous restons là, bien après la signature.",
+        'manifesto_2' => "Une transaction réussie, c'est une porte que vous êtes encore heureux d'ouvrir des années après. Alors nous ne poussons jamais une vente : nous attendons le bon bien, le bon moment, et nous restons là bien après la signature.",
         // Key figures (Figma 712-23876): real figures only, to keep in line with the JSON-LD and llms.txt
         'stats' => [
             ['value' => '250 M€+', 'title' => 'Transactions réalisées', 'text' => 'Dans les quartiers les plus prisés de Paris.'],

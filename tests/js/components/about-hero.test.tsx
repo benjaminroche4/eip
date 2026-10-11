@@ -10,7 +10,7 @@ describe('AboutHero', () => {
         page.props = sharedProps();
         const { container } = renderPage(<AboutHero />);
 
-        expect(screen.getByRole('heading', { level: 1, name: "Une équipe d'experts dédiée à vos projets à Paris" })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: "L'art du conseil immobilier, au service de vos projets à Paris" })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Rencontrer nos conseillers' })).toHaveAttribute('href', '#team-title');
         expect(screen.getByText(/Basé sur 150 avis/)).toBeInTheDocument();
         // The owner's portrait clip in place of the photo (2026-09-23): decorative, poster = its first frame, alt kept as a hidden caption

@@ -870,7 +870,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => 'A team of experts dedicated to your projects in Paris',
+        'headline' => 'The art of property advice, at the service of your projects in Paris',
         'marquee_label' => 'Our commitments',
         'marquee_1' => 'Long-term client relationships',
         'marquee_2' => 'Personalised advisory approach',
@@ -896,7 +896,7 @@ return [
         'manifesto_title' => 'Who are we?',
         'manifesto_brand' => 'Estate in Paris',
         'manifesto_1' => " is there for life's turning points: a first apartment in Paris, a house that has become too big, an investment for the children, a move back to France after years abroad.",
-        'manifesto_2' => 'We believe a successful transaction is measured years later, when you are still happy to open your door in the evening. That is why we never push a sale: we listen, we advise, we wait for the right property, the right buyer, the right moment. And we stay by your side, long after the signature.',
+        'manifesto_2' => 'A successful transaction is a door you are still happy to open years later. So we never push a sale: we wait for the right property, the right moment, and we stay by your side long after the signature.',
         // Key figures (Figma 712-23876): real figures only, to keep in line with the JSON-LD and llms.txt
         'stats' => [
             ['value' => '€250M+', 'title' => 'Transactions facilitated', 'text' => "Across Paris's premium districts."],

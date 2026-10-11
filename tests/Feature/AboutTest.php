@@ -13,7 +13,7 @@ class AboutTest extends TestCase
         $this->get('/a-propos')
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('about')
-                ->where('translations.about.headline', "Une équipe d'experts dédiée à vos projets à Paris")
+                ->where('translations.about.headline', "L'art du conseil immobilier, au service de vos projets à Paris")
                 ->has('team', 6)
                 ->where('team.0.name', 'Alexandre Moreau')
                 ->where('team.0.flags', ['FR', 'GB'])
@@ -27,7 +27,7 @@ class AboutTest extends TestCase
 
         $this->withLocale('en')->get('/en/about-us')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('about')->where('translations.about.headline', 'A team of experts dedicated to your projects in Paris'));
+            ->assertInertia(fn (Assert $p) => $p->component('about')->where('translations.about.headline', 'The art of property advice, at the service of your projects in Paris'));
 
         $this->get('/en/a-propos')->assertNotFound();
 
