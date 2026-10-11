@@ -43,7 +43,7 @@ return [
         ],
         'estimate' => [
             'title' => 'Estimation',
-            'seo_title' => 'Estimation immobilière',
+            'seo_title' => 'Estimation immobilière à Paris',
             'seo_description' => 'Faites estimer votre bien à Paris par un conseiller Estate in Paris : une valeur fondée sur les ventes signées dans le quartier, réponse sous 24 h ouvrées.',
             'intro' => 'Décrivez votre bien à Paris : un conseiller l\'estime sur les ventes signées dans le quartier et vous répond sous 24 heures ouvrées.',
         ],
@@ -470,7 +470,7 @@ return [
     'estimate' => [
         'headline' => 'Combien vaut votre bien ?',
         'step_type' => 'Quel type de bien possédez-vous ?',
-        'step_contact' => 'Qui contacter au sujet de cette estimation ?',
+        'step_contact' => 'À qui adresser cette estimation ?',
         'step_details' => 'Quelles sont les caractéristiques de votre bien ?',
         'step_method' => 'Comment souhaitez-vous être contacté ?',
         'step_more' => 'Y a-t-il autre chose à savoir ?',

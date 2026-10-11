@@ -43,7 +43,7 @@ return [
         ],
         'estimate' => [
             'title' => 'Property Valuation',
-            'seo_title' => 'Property valuation',
+            'seo_title' => 'Property valuation in Paris',
             'seo_description' => 'Have your Paris property valued by an Estate in Paris advisor: a figure grounded in the sales signed in the neighbourhood, with a reply within 24 working hours.',
             'intro' => 'Describe your Paris property: an advisor values it on the sales signed in the neighbourhood and replies within 24 working hours.',
         ],
@@ -470,7 +470,7 @@ return [
     'estimate' => [
         'headline' => 'How much is your property worth?',
         'step_type' => 'What kind of property do you own?',
-        'step_contact' => 'Who should we contact regarding this valuation?',
+        'step_contact' => 'Who should receive this valuation?',
         'step_details' => 'What are the key details of your property?',
         'step_method' => 'How would you like to be contacted?',
         'step_more' => 'Is there anything else we should know?',

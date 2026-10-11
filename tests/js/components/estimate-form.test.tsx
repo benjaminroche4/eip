@@ -40,7 +40,7 @@ describe('EstimateForm', () => {
 
         expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual([
             'Étape 1 1Quel type de bien possédez-vous ?',
-            'Étape 2 2Qui contacter au sujet de cette estimation ?',
+            'Étape 2 2À qui adresser cette estimation ?',
             'Étape 3 3Quelles sont les caractéristiques de votre bien ?',
             'Étape 4 4Comment souhaitez-vous être contacté ?',
             'Étape 5 5Y a-t-il autre chose à savoir ?',
@@ -252,7 +252,7 @@ describe('EstimateForm', () => {
         expect(progress).toHaveAttribute('aria-valuenow', '71');
         expect(recap().getAllByText('Complet')).toHaveLength(3); // the contact group is done
         expect(screen.getAllByText('Valide')).toHaveLength(2); // e-mail + phone
-        expect(screen.getByRole('heading', { level: 2, name: /Qui contacter/ })).toHaveClass('text-foreground');
+        expect(screen.getByRole('heading', { level: 2, name: /À qui adresser/ })).toHaveClass('text-foreground');
         expect(screen.getByRole('heading', { level: 2, name: /caractéristiques/ })).toHaveClass('text-muted-foreground');
     });
 
