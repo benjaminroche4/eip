@@ -753,7 +753,7 @@ return [
         'why_eyebrow' => 'Why Estate in Paris',
         'why_title' => 'Why sell with us?',
         // GEO: a self-contained answer (brand + what + where)
-        'why_intro' => 'A valuation based on actual sales, careful presentation and qualified buyers: three guarantees for a serene sale in Paris.',
+        'why_intro' => 'A price set on the sales signed in your street, professional photography, and every visitor qualified before they walk through the door of your Paris property.',
         'why_valuation_title' => 'A fair valuation',
         'why_valuation_text' => 'Recent transactions in the neighbourhood and the qualities of your property, not asking prices.',
         'why_exposure_title' => 'Careful presentation',

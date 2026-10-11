@@ -88,6 +88,7 @@ app/Domain/Localization/Support/SharedTranslations.php   **prop `translations` d
 lang/{fr,en}/ui.php · routes.php       textes UI partagés au front · slugs d'URL traduits
 resources/js/hooks/use-translation.ts  t() / tc() côté React
 resources/js/hooks/use-reveal.ts       `useReveal(ref, offset)` : vrai une fois l'élément entré dans le viewport (voir Animations)
+resources/js/hooks/use-scroll-lock.ts  `useScrollLock(active)` : verrouille le défilement de la page (`body` fixé à l'offset courant, remis en place à la fermeture, fiable sur iOS) pendant qu'un tiroir non modal est ouvert — barre mobile de l'estimation (bug 2026-10-11)
 resources/js/hooks/use-scrolled.ts     header compact après 24px de scroll (SSR-safe)
 resources/js/hooks/use-scroll-direction.ts  masque le header mobile au scroll bas, le ramène au scroll haut (hystérésis 8px)
 resources/js/components/language-switcher.tsx

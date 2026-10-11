@@ -54,7 +54,7 @@ export default function Estimate({ propertyTypes, contactMethods, floors, featur
                             <PageEyebrow>{t('pages.estimate.title')}</PageEyebrow>
                             <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{t('estimate.headline')}</h1>
                         </div>
-                        <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{t('pages.estimate.intro')}</p>
+                        <p className="text-muted-foreground max-w-2xl text-base/7 text-balance sm:text-sm/6">{t('pages.estimate.intro')}</p>
                     </div>
                     <EstimateForm
                         propertyTypes={propertyTypes}

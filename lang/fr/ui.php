@@ -754,7 +754,7 @@ return [
         'why_eyebrow' => 'Pourquoi Estate in Paris',
         'why_title' => 'Pourquoi vendre à nos côtés ?',
         // GEO: a self-contained answer (brand + what + where)
-        'why_intro' => 'Une estimation fondée sur les ventes réelles, une mise en valeur soignée et des acquéreurs qualifiés : trois garanties pour vendre sereinement à Paris.',
+        'why_intro' => 'Un prix fixé sur les ventes signées dans votre rue, des photos professionnelles, et chaque visiteur qualifié avant de franchir la porte de votre bien à Paris.',
         'why_valuation_title' => 'Estimation juste',
         'why_valuation_text' => 'Les transactions récentes du quartier et les qualités de votre bien, pas les prix affichés.',
         'why_exposure_title' => 'Mise en valeur soignée',

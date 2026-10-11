@@ -309,11 +309,11 @@ describe('EstimateForm', () => {
         expect(arrow.querySelector('svg')).toHaveClass('rotate-x-180'); // the chevron flips over while the recap is up
         const sheet = screen.getByRole('dialog', { name: 'Votre demande' });
         expect(within(sheet).getByRole('complementary', { name: 'Votre demande' })).toBeInTheDocument();
+        expect(document.body.style.position).toBe('fixed'); // page scroll locked while the recap is up (bug 2026-10-11: the sticky bar rode away)
         expect(sheet.querySelector('.shadow-lg')).toBeNull(); // no card inside the sheet
         await user.click(screen.getByRole('button', { name: 'Voir le récapitulatif' })); // the arrow stays reachable and closes it
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-        // The page scroll is locked while the recap is up (bug 2026-10-11: the sticky bar rode away on scroll)
-        expect(document.body.style.position).toBe('fixed');
+        expect(document.body.style.position).toBe(''); // released on close
     });
 
     it('brings the mobile bar back to the screen bottom when the recap opens past the end of the form', async () => {
