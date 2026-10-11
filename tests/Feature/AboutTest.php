@@ -55,8 +55,8 @@ class AboutTest extends TestCase
             $this->assertLessThan(3 * 1024 * 1024, filesize($path), "$file must stay under 3 MB (hero background, performance)");
         }
         $this->assertFileExists(public_path('images/about/hero-poster-856.jpg'));
-        foreach (range(1, 6) as $i) {
-            $this->assertFileExists(public_path("images/team/member-$i.jpg"));
+        foreach (range(1, 8) as $i) {
+            $this->assertFileExists(public_path("images/team/member-$i.webp")); // the eight portraits, matched by name with Relocation in Paris (2026-10-11)
         }
     }
 

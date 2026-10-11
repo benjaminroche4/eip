@@ -6,9 +6,9 @@ import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
 
 const members: TeamMember[] = [
-    { name: 'Julien L.', role: 'Conseiller senior', area: 'Saint-Germain-des-Prés, Paris 5e et 6e', photo: '/images/team/member-1.jpg' },
-    { name: 'Eva B.', role: 'Conseillère clientèle internationale', area: 'Invalides, Paris 7e', photo: '/images/team/member-2.jpg' },
-    { name: 'Charles M.', role: 'Conseiller investissement', area: "Triangle d'or, Paris 8e", photo: '/images/team/member-3.jpg' },
+    { name: 'Julien L.', role: 'Conseiller senior', area: 'Saint-Germain-des-Prés, Paris 5e et 6e', photo: '/images/team/member-1.webp' },
+    { name: 'Eva B.', role: 'Conseillère clientèle internationale', area: 'Invalides, Paris 7e', photo: '/images/team/member-2.webp' },
+    { name: 'Charles M.', role: 'Conseiller investissement', area: "Triangle d'or, Paris 8e", photo: '/images/team/member-3.webp' },
 ];
 
 describe('TeamGrid', () => {
@@ -17,7 +17,7 @@ describe('TeamGrid', () => {
 
         expect(screen.getByRole('heading', { level: 2, name: 'Qui sont nos conseillers ?' })).toBeInTheDocument();
         expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual(['Julien L.', 'Eva B.', 'Charles M.']);
-        expect(container.querySelector('img[src="/images/team/member-1.jpg"]')).toHaveAttribute('alt', 'Portrait de Julien L., Conseiller senior chez Estate in Paris'); // informative portrait (SEO audit 2026-10-11)
+        expect(container.querySelector('img[src="/images/team/member-1.webp"]')).toHaveAttribute('alt', 'Portrait de Julien L., Conseiller senior chez Estate in Paris'); // informative portrait (SEO audit 2026-10-11)
         const card = container.querySelector('ul.snap-x > li > div')!;
         expect(card).toHaveClass('border-secondary-30', 'bg-card', 'p-2'); // the site's card
         expect(screen.getByText('Conseiller senior')).toBeInTheDocument();

@@ -24,7 +24,7 @@ class ContentDataTest extends TestCase
     public static function completeItems(): array
     {
         return [
-            'team member' => [TeamMember::class, ['name' => 'Julien L.', 'role' => 'Conseiller senior', 'area' => 'Saint-Germain-des-Prés, Paris 5e et 6e', 'photo' => '/images/team/member-1.jpg']],
+            'team member' => [TeamMember::class, ['name' => 'Julien L.', 'role' => 'Conseiller senior', 'area' => 'Saint-Germain-des-Prés, Paris 5e et 6e', 'photo' => '/images/team/member-1.webp']],
             'testimonial with photo' => [Testimonial::class, ['name' => 'Sophie M.', 'context' => "Achat d'un loft", 'quote' => 'Parfait.', 'source' => 'trustpilot', 'photo' => '/images/testimonials/client-1.webp']],
             'success story' => [SuccessStory::class, ['title' => '12 % au-dessus', 'place' => 'Paris 16e', 'duration' => '28 jours', 'result' => '+12 %', 'photo' => '/images/stories/story-1-{w}.jpg', 'alt' => 'Séjour']],
             'stat' => [Stat::class, ['value' => '250 M€+', 'title' => 'Transactions réalisées', 'text' => 'Dans Paris.']],

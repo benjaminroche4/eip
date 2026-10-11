@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { sharedProps } from '../inertia';
 
 const MEMBERS = [
-    { name: 'Julien L.', role: 'Conseiller senior', photo: '/images/team/member-1.jpg' },
+    { name: 'Julien L.', role: 'Conseiller senior', photo: '/images/team/member-1.webp' },
     { name: 'Eva B.', role: 'Conseillère clientèle internationale', photo: 'https://cdn.example/eva.jpg' },
 ];
 
@@ -16,7 +16,7 @@ describe('team JSON-LD (About page E-E-A-T)', () => {
             '@id': 'https://example.test/#person-1',
             name: 'Julien L.',
             jobTitle: 'Conseiller senior',
-            image: 'https://example.test/images/team/member-1.jpg',
+            image: 'https://example.test/images/team/member-1.webp',
             knowsLanguage: ['fr', 'en'],
             worksFor: { '@id': 'https://example.test/#organization' },
         });

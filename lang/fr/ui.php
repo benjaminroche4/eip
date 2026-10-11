@@ -319,7 +319,7 @@ return [
         'title' => 'Blog',
         'seo_title' => 'Blog : vivre et investir à Paris',
         'seo_description' => "Conseils d'experts pour acheter, vendre ou s'installer à Paris : quartiers, prix, démarches et fiscalité. Découvrez les articles du blog Estate in Paris.",
-        'intro' => 'Estate in Paris, agence immobilière de prestige à Paris, publie chaque semaine des guides pour acheter, vendre ou estimer un appartement à Paris : prix au m², quartiers, démarches et fiscalité.',
+        'intro' => 'Nos guides pour acheter, vendre ou estimer un bien à Paris : prix au m², quartiers, démarches et fiscalité.',
         'headline' => 'Le blog pour acheter à Paris',
         'read_article' => "Lire l'article",
         'count' => '{0} Aucun article|{1} :count article|[2,*] :count articles',
@@ -984,16 +984,16 @@ return [
         'previous' => 'Membre précédent',
         'next' => 'Membre suivant',
         'members' => [
-            // Same eight first names as the Relocation in Paris team (user decision 2026-10-11); one job word (« conseiller ») for
+            // Same eight first names and portraits as the Relocation in Paris team (user decision 2026-10-11, `public/images/team/member-N.webp`); one job word (« conseiller ») for
             // everyone, and the favourite district instead of the languages (the whole team is bilingual, said once in the intro).
-            ['name' => 'Julien L.', 'role' => 'Conseiller senior', 'area' => 'Saint-Germain-des-Prés, Paris 5e et 6e', 'photo' => '/images/team/member-1.jpg'],
-            ['name' => 'Eva B.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Invalides et Vaugirard, Paris 7e et 15e', 'photo' => '/images/team/member-2.jpg'],
-            ['name' => 'Charles M.', 'role' => 'Conseiller investissement', 'area' => 'Triangle d\'or et Monceau, Paris 8e et 17e', 'photo' => '/images/team/member-3.jpg'],
-            ['name' => 'Sophie B.', 'role' => 'Conseillère off-market', 'area' => 'Passy et Auteuil, Paris 16e', 'photo' => '/images/team/member-4.jpg'],
-            ['name' => 'Élodie G.', 'role' => 'Conseillère senior', 'area' => 'Le Marais et le Louvre, Paris 1er, 2e, 3e et 4e', 'photo' => '/images/team/member-5.jpg'],
-            ['name' => 'Jean-Pierre A.', 'role' => 'Conseiller senior, négociation', 'area' => 'Canal Saint-Martin et Belleville, Paris 10e, 11e, 19e et 20e', 'photo' => '/images/team/member-6.jpg'],
-            ['name' => 'David K.', 'role' => 'Conseiller senior', 'area' => 'Bercy et Montparnasse, Paris 12e, 13e et 14e', 'photo' => '/images/team/member-7.jpg'],
-            ['name' => 'Laura P.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Nouvelle Athènes et Montmartre, Paris 9e et 18e', 'photo' => '/images/team/member-8.jpg'],
+            ['name' => 'Julien L.', 'role' => 'Conseiller senior', 'area' => 'Saint-Germain-des-Prés, Paris 5e et 6e', 'photo' => '/images/team/member-1.webp'],
+            ['name' => 'Eva B.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Invalides et Vaugirard, Paris 7e et 15e', 'photo' => '/images/team/member-2.webp'],
+            ['name' => 'Charles M.', 'role' => 'Conseiller investissement', 'area' => 'Triangle d\'or et Monceau, Paris 8e et 17e', 'photo' => '/images/team/member-3.webp'],
+            ['name' => 'Sophie B.', 'role' => 'Conseillère off-market', 'area' => 'Passy et Auteuil, Paris 16e, et extra-muros', 'photo' => '/images/team/member-4.webp'],
+            ['name' => 'Élodie G.', 'role' => 'Conseillère senior', 'area' => 'Le Marais et le Louvre, Paris 1er, 2e, 3e et 4e', 'photo' => '/images/team/member-5.webp'],
+            ['name' => 'Jean-Pierre A.', 'role' => 'Conseiller senior, négociation', 'area' => 'Canal Saint-Martin et Belleville, Paris 10e, 11e, 19e et 20e', 'photo' => '/images/team/member-6.webp'],
+            ['name' => 'David K.', 'role' => 'Conseiller senior', 'area' => 'Bercy et Montparnasse, Paris 12e, 13e et 14e', 'photo' => '/images/team/member-7.webp'],
+            ['name' => 'Laura P.', 'role' => 'Conseillère clientèle internationale', 'area' => 'Nouvelle Athènes et Montmartre, Paris 9e et 18e', 'photo' => '/images/team/member-8.webp'],
         ],
     ],
     'values' => [
