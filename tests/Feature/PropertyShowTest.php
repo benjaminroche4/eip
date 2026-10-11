@@ -31,7 +31,7 @@ class PropertyShowTest extends TestCase
                 ->where('district.name', 'Paris 7e')
                 ->where('district.url', url('/nos-biens/paris-7e'))
                 ->where('district.profileUrl', url('/arrondissements-paris?arrondissement=7'))
-                ->where('advisor', ['id' => 3, 'photo' => '/images/advisors/advisor-3.webp', 'name' => 'Emma Lefèvre', 'role' => 'Conseillère investissement']) // the team member of the same rank
+                ->where('advisor', ['id' => 3, 'photo' => '/images/advisors/advisor-3.webp', 'name' => 'Charles M.', 'role' => 'Conseiller investissement']) // the team member of the same rank
                 ->where('district.price', '13 000') // average price of the 7e, read against the listing's own
                 // Meta built from the data, keyword first (type, rooms, quartier, arrondissement), never the editorial title
                 ->where('meta.title', 'Appartement 5 pièces, Champ-de-Mars · Paris 7e')

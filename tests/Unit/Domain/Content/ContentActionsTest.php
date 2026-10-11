@@ -29,7 +29,7 @@ class ContentActionsTest extends TestCase
     public function test_every_list_is_readable_in_both_languages_with_the_same_length(): void
     {
         $lists = [
-            [ListTeamMembers::class, TeamMember::class, 6],
+            [ListTeamMembers::class, TeamMember::class, 8],
             [ListTestimonials::class, Testimonial::class, 10],
             [ListSuccessStories::class, SuccessStory::class, 10],
             [ListStats::class, Stat::class, 4],
@@ -52,7 +52,7 @@ class ContentActionsTest extends TestCase
     public function test_the_locale_argument_selects_the_language_and_defaults_to_the_current_one(): void
     {
         $this->assertSame('Conseiller senior', app(ListTeamMembers::class)('fr')[0]->role);
-        $this->assertSame('Senior property advisor', app(ListTeamMembers::class)('en')[0]->role);
+        $this->assertSame('Senior advisor', app(ListTeamMembers::class)('en')[0]->role);
         $this->assertSame("d'expérience à Paris", app(ListStats::class)('fr')[0]->title);
         $this->assertSame('of experience in Paris', app(ListStats::class)('en')[0]->title);
         $this->assertSame('4,9/5', app(ListStats::class)('fr')[3]->value); // Google tile from seo.reviews, decimal per language
@@ -64,7 +64,7 @@ class ContentActionsTest extends TestCase
         $this->assertSame('Buying property', app(ListFaqCategories::class)('en')[0]->title);
 
         app()->setLocale('en');
-        $this->assertSame('Senior property advisor', app(ListTeamMembers::class)()[0]->role);
+        $this->assertSame('Senior advisor', app(ListTeamMembers::class)()[0]->role);
         app()->setLocale('fr');
         $this->assertSame('Conseiller senior', app(ListTeamMembers::class)()[0]->role);
     }

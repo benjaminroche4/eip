@@ -5,29 +5,27 @@ namespace App\Domain\Content\Data;
 use App\Domain\Content\Support\ArrayShape;
 use Illuminate\Contracts\Support\Arrayable;
 
-/** One person of the « Notre équipe » grid (`team.members` in lang/{locale}/ui.php, portrait in public/images/team). */
+/** An advisor of the About page (`team.members`): name, unified role, favourite district (replaces the languages, user decision 2026-10-11), portrait. */
 final readonly class TeamMember implements Arrayable
 {
-    /** @param list<string> $flags ISO country codes rendered as flags (FR, GB…) */
     public function __construct(
         public string $name,
         public string $role,
-        public string $languages,
-        public array $flags,
+        public string $area,
         public string $photo,
     ) {}
 
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
-        ArrayShape::validate(self::class, $data, ['name' => 'string', 'role' => 'string', 'languages' => 'string', 'flags' => 'array', 'photo' => 'string']);
+        ArrayShape::validate(self::class, $data, ['name' => 'string', 'role' => 'string', 'area' => 'string', 'photo' => 'string']);
 
-        return new self(name: $data['name'], role: $data['role'], languages: $data['languages'], flags: array_values($data['flags']), photo: $data['photo']);
+        return new self(name: $data['name'], role: $data['role'], area: $data['area'], photo: $data['photo']);
     }
 
-    /** @return array{name: string, role: string, languages: string, flags: list<string>, photo: string} */
+    /** @return array{name: string, role: string, area: string, photo: string} */
     public function toArray(): array
     {
-        return ['name' => $this->name, 'role' => $this->role, 'languages' => $this->languages, 'flags' => $this->flags, 'photo' => $this->photo];
+        return ['name' => $this->name, 'role' => $this->role, 'area' => $this->area, 'photo' => $this->photo];
     }
 }

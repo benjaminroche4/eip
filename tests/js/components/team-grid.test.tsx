@@ -6,27 +6,9 @@ import { axe } from 'vitest-axe';
 import { renderPage } from '../inertia';
 
 const members: TeamMember[] = [
-    {
-        name: 'Alexandre Moreau',
-        role: 'Conseiller senior',
-        languages: 'Parle français et anglais',
-        flags: ['FR', 'GB'],
-        photo: '/images/team/member-1.jpg',
-    },
-    {
-        name: 'Sophie Dubois',
-        role: 'Spécialiste acquéreurs internationaux',
-        languages: 'Parle français et anglais',
-        flags: ['FR', 'GB'],
-        photo: '/images/team/member-2.jpg',
-    },
-    {
-        name: 'Emma Lefèvre',
-        role: 'Conseillère investissement',
-        languages: 'Parle français et anglais',
-        flags: ['FR', 'GB'],
-        photo: '/images/team/member-3.jpg',
-    },
+    { name: 'Julien L.', role: 'Conseiller senior', area: 'Saint-Germain-des-Prés, Paris 6e', photo: '/images/team/member-1.jpg' },
+    { name: 'Eva B.', role: 'Conseillère clientèle internationale', area: 'Invalides, Paris 7e', photo: '/images/team/member-2.jpg' },
+    { name: 'Charles M.', role: 'Conseiller investissement', area: "Triangle d'or, Paris 8e", photo: '/images/team/member-3.jpg' },
 ];
 
 describe('TeamGrid', () => {
@@ -34,16 +16,17 @@ describe('TeamGrid', () => {
         const { container } = renderPage(<TeamGrid members={members} />);
 
         expect(screen.getByRole('heading', { level: 2, name: 'Qui sont nos conseillers ?' })).toBeInTheDocument();
-        expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual(['Alexandre Moreau', 'Sophie Dubois', 'Emma Lefèvre']);
+        expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual(['Julien L.', 'Eva B.', 'Charles M.']);
         expect(container.querySelector('img[src="/images/team/member-1.jpg"]')).toHaveAttribute('alt', ''); // the name is right below
         const card = container.querySelector('ul.snap-x > li > div')!;
         expect(card).toHaveClass('border-secondary-30', 'bg-card', 'p-2'); // the site's card
         expect(screen.getByText('Conseiller senior')).toBeInTheDocument();
-        // Languages as flags in the sand chip (decorative), the readable label in sr-only
-        const chip = screen.getAllByText('Parle français et anglais')[0].parentElement!;
+        // Favourite district in the sand chip, with a sr-only label (replaces the language flags, 2026-10-11)
+        const chip = screen.getByText('Saint-Germain-des-Prés, Paris 6e');
         expect(chip).toHaveClass('bg-background-08');
-        expect(chip.querySelectorAll('[aria-hidden="true"] svg')).toHaveLength(2);
-        expect(screen.queryByText('FR & EN')).toBeNull();
+        expect(chip).toHaveTextContent('Quartier de prédilection : Saint-Germain-des-Prés, Paris 6e');
+        expect(chip.querySelector('svg.lucide-map-pin')).toHaveAttribute('aria-hidden', 'true');
+        expect(container.querySelector('ul.snap-x')).toHaveClass('lg:grid-cols-4'); // eight cards = two even rows on desktop
         expect(card.className).not.toMatch(/rounded|shadow/); // square, no shadow
         expect(screen.getByRole('button', { name: 'Membre précédent' })).toBeDisabled();
         expect(screen.getByRole('button', { name: 'Membre suivant' })).toBeEnabled();

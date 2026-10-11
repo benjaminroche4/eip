@@ -1,16 +1,14 @@
-import CountryFlag from '@/components/i18n/country-flag';
 import GradientHairline from '@/components/layout/gradient-hairline';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoImage from '@/components/seo/seo-image';
 import { Button } from '@/components/ui/button';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { useTranslation } from '@/hooks/use-translation';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { type Country } from 'react-phone-number-input';
 
-/** `languages` = readable label (« Français et anglais », sr-only), `flags` = the flags shown in the chip (user decision 2026-09-16). */
-export type TeamMember = { name: string; role: string; languages: string; flags: Country[]; photo: string };
+/** `area` = the advisor's favourite district, shown in the sand chip (replaces the language flags of 2026-09-16, user decision 2026-10-11). */
+export type TeamMember = { name: string; role: string; area: string; photo: string };
 
 type TeamGridProps = { members: TeamMember[] };
 
@@ -132,7 +130,7 @@ export default function TeamGrid({ members }: TeamGridProps) {
                 <ul
                     ref={rowRef}
                     role="list"
-                    className="-mx-6 flex w-[calc(100%+3rem)] cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-[calc(50%-9rem)] pb-1 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none sm:px-[calc(50%-10rem)] lg:mx-0 lg:grid lg:w-full lg:cursor-auto lg:grid-cols-3 lg:gap-5 lg:overflow-visible lg:px-0 lg:select-auto [&::-webkit-scrollbar]:hidden"
+                    className="-mx-6 flex w-[calc(100%+3rem)] cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-[calc(50%-9rem)] pb-1 select-none [scrollbar-width:none] data-[dragging=true]:cursor-grabbing data-[dragging=true]:snap-none sm:px-[calc(50%-10rem)] lg:mx-0 lg:grid lg:w-full lg:cursor-auto lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:px-0 lg:select-auto [&::-webkit-scrollbar]:hidden"
                 >
                     {members.map((member) => (
                         <li key={member.name} className="w-72 shrink-0 snap-center sm:w-80 lg:w-auto">
@@ -145,18 +143,17 @@ export default function TeamGrid({ members }: TeamGridProps) {
                                     {/* Footer (ui.sh variant « Aligné à gauche, hairline, chip langues », kept again among 15 card variants, user decisions 2026-09-16) */}
                                     <div className="flex flex-col gap-4">
                                         <GradientHairline />
-                                        <div className="flex items-start justify-between gap-3">
+                                        <div className="flex flex-col gap-3">
                                             <div className="flex flex-col gap-1">
                                                 <h3 className="text-lg font-medium">{member.name}</h3>
                                                 <p className="text-muted-foreground text-sm">{member.role}</p>
                                             </div>
-                                            {/* Languages as flags (user decision 2026-09-16), the readable label stays for assistive tech */}
-                                            <span className="bg-background-08 flex shrink-0 items-center gap-1.5 px-2 py-1.5">
-                                                <span className="sr-only">{member.languages}</span>
-                                                {member.flags.map((flag) => (
-                                                    <CountryFlag key={flag} country={flag} />
-                                                ))}
-                                            </span>
+                                            {/* Favourite district in the sand chip (user decision 2026-10-11: the flags said the same thing eight times) */}
+                                            <p className="bg-background-08 flex items-center gap-1.5 self-start px-2 py-1.5 text-xs">
+                                                <MapPin aria-hidden className="text-muted-foreground size-3.5 shrink-0" strokeWidth={1.5} />
+                                                <span className="sr-only">{t('team.area')} : </span>
+                                                {member.area}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

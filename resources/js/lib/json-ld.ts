@@ -297,22 +297,19 @@ export function contactPage(seo: SeoShared, origin: string, url: string, name: s
     };
 }
 
-/** Language codes (BCP 47) behind the team members' flags. */
-const FLAG_LANGUAGES: Record<string, string> = { FR: 'fr', GB: 'en', US: 'en' };
-
 /**
  * `Person` nodes for the advisors of the About page (E-E-A-T, 2026-09-22): one per team member, `worksFor` the
- * organisation node, `knowsLanguage` derived from the flags, `jobTitle` from the role. The organisation lists them as
+ * organisation node, `knowsLanguage` fr + en (the whole team is bilingual, 2026-10-11), `jobTitle` from the role. The organisation lists them as
  * `employee` through `teamOrganizationNode()`.
  */
-export function teamNodes(members: { name: string; role: string; flags: string[]; photo: string }[], origin: string): JsonLd[] {
+export function teamNodes(members: { name: string; role: string; photo: string }[], origin: string): JsonLd[] {
     return members.map((member, i) => ({
         '@type': 'Person',
         '@id': `${origin}/#person-${i + 1}`,
         name: member.name,
         jobTitle: member.role,
         image: member.photo.startsWith('http') ? member.photo : `${origin}${member.photo}`,
-        knowsLanguage: Array.from(new Set(member.flags.map((flag) => FLAG_LANGUAGES[flag]).filter(Boolean))),
+        knowsLanguage: ['fr', 'en'],
         worksFor: { '@id': `${origin}/#organization` },
     }));
 }

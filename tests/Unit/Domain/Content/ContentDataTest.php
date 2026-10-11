@@ -24,7 +24,7 @@ class ContentDataTest extends TestCase
     public static function completeItems(): array
     {
         return [
-            'team member' => [TeamMember::class, ['name' => 'Alexandre Moreau', 'role' => 'Conseiller senior', 'languages' => 'Parle français et anglais', 'flags' => ['FR', 'GB'], 'photo' => '/images/team/member-1.jpg']],
+            'team member' => [TeamMember::class, ['name' => 'Julien L.', 'role' => 'Conseiller senior', 'area' => 'Saint-Germain-des-Prés, Paris 6e', 'photo' => '/images/team/member-1.jpg']],
             'testimonial with photo' => [Testimonial::class, ['name' => 'Sophie M.', 'context' => "Achat d'un loft", 'quote' => 'Parfait.', 'source' => 'trustpilot', 'photo' => '/images/testimonials/client-1.webp']],
             'success story' => [SuccessStory::class, ['title' => '12 % au-dessus', 'place' => 'Paris 16e', 'duration' => '28 jours', 'result' => '+12 %', 'photo' => '/images/stories/story-1-{w}.jpg', 'alt' => 'Séjour']],
             'stat' => [Stat::class, ['value' => '250 M€+', 'title' => 'Transactions réalisées', 'text' => 'Dans Paris.']],
@@ -56,8 +56,8 @@ class ContentDataTest extends TestCase
     public function test_a_wrong_type_is_rejected(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('"flags" must be a array, string given');
-        TeamMember::fromArray(['name' => 'A', 'role' => 'B', 'languages' => 'C', 'flags' => 'FR', 'photo' => '/p.jpg']);
+        $this->expectExceptionMessage('"area" must be a string, array given');
+        TeamMember::fromArray(['name' => 'A', 'role' => 'B', 'area' => ['FR'], 'photo' => '/p.jpg']);
     }
 
     public function test_array_shape_lists_every_missing_key_and_the_keys_it_got(): void
