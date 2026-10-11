@@ -988,7 +988,7 @@ return [
     'values' => [
         'eyebrow' => 'Our values',
         'title' => 'What guides our work?',
-        'intro' => 'Estate in Paris supports every sale and purchase in Paris with five commitments, from the first conversation to the signing.',
+        'intro' => 'Every sale and purchase in Paris rests on five commitments, from the first conversation to the signing.',
         'advisor_line' => 'Your single point of contact',
         'cta' => 'Contact an advisor',
         'value_1_title' => 'Confidentiality',

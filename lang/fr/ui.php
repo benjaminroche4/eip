@@ -983,7 +983,7 @@ return [
     'values' => [
         'eyebrow' => 'Nos valeurs',
         'title' => 'Qu\'est-ce qui guide nos missions ?',
-        'intro' => 'Estate in Paris accompagne chaque vente et chaque acquisition à Paris avec cinq engagements, du premier échange à la signature.',
+        'intro' => 'Chaque vente et chaque acquisition à Paris s\'appuie sur cinq engagements, du premier échange à la signature.',
         'advisor_line' => 'Votre interlocuteur unique',
         'cta' => 'Contacter un conseiller',
         'value_1_title' => 'Confidentialité',
