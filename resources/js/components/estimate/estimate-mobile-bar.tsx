@@ -2,6 +2,7 @@ import EstimateRecap from '@/components/estimate/estimate-recap';
 import { type EstimateFormData, FORM_ID } from '@/components/estimate/types';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { useScrollLock } from '@/hooks/use-scroll-lock';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { ArrowUpRight, ChevronUp } from 'lucide-react';
@@ -16,10 +17,13 @@ type EstimateMobileBarProps = {
  * Mobile only (`lg:hidden`): the submit bar sticks to the bottom of the screen while the form is on screen, then scrolls
  * away with it (no second button: the in-form one is desktop only). Its arrow opens the recap in a non-modal bottom
  * sheet that stops above the bar (the chevron flips over as it opens); a dim over the page closes it on tap. Closed as soon as the viewport reaches `lg`.
+ * While the recap is up the page scroll is locked (`useScrollLock`, 2026-10-11): the bar is `sticky` in the form column and rode
+ * away with the end of the form on scroll while the fixed sheet stayed on screen.
  */
 export default function EstimateMobileBar({ values, processing }: EstimateMobileBarProps) {
     const { t } = useTranslation();
     const [recapOpen, setRecapOpen] = useState(false);
+    useScrollLock(recapOpen);
     // The sheet belongs to the mobile layout: close it as soon as the viewport reaches the desktop breakpoint (lg)
     useEffect(() => {
         const desktop = window.matchMedia('(min-width: 64rem)');

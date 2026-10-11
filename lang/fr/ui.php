@@ -789,7 +789,7 @@ return [
     ],
     'buy' => [
         'eyebrow' => 'Acheter à Paris',
-        'headline' => "Trouvez l'appartement ou l'hôtel particulier qui vous ressemble à Paris",
+        'headline' => 'Acheter le bien qui vous correspond à Paris',
         'cta' => 'Parler à un conseiller',
         'photo_alt' => 'Séjour lumineux d\'un appartement parisien avec parquet, balcons et salle à manger, le type de bien qu\'Estate in Paris sélectionne à Paris',
         'video_title' => 'Estate in Paris, acheter un bien de prestige à Paris',

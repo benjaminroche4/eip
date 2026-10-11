@@ -14,7 +14,7 @@ class BuyTest extends TestCase
         $this->get('/acheter-immobilier-paris')
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('buy')
-                ->where('translations.buy.headline', "Trouvez l'appartement ou l'hôtel particulier qui vous ressemble à Paris")
+                ->where('translations.buy.headline', 'Acheter le bien qui vous correspond à Paris')
                 ->where('translations.pages.buy.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.buy.why_intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.buy.why_title', 'Pourquoi acheter avec Estate in Paris ?')
@@ -43,7 +43,7 @@ class BuyTest extends TestCase
 
         $this->withLocale('en')->get('/en/buy-property-paris')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('buy')->where('translations.buy.headline', 'Find the apartment or townhouse that suits you in Paris'));
+            ->assertInertia(fn (Assert $p) => $p->component('buy')->where('translations.buy.headline', 'Buy the property that suits you in Paris'));
 
         $this->assertFileExists(public_path('images/home/hero-2000.jpg')); // the home hero photo, for now
         foreach ([1, 2, 3] as $i) {

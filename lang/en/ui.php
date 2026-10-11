@@ -788,7 +788,7 @@ return [
     ],
     'buy' => [
         'eyebrow' => 'Buying in Paris',
-        'headline' => 'Find the apartment or townhouse that suits you in Paris',
+        'headline' => 'Buy the property that suits you in Paris',
         'cta' => 'Talk to an advisor',
         'photo_alt' => 'Bright living room of a Paris apartment with parquet floors, balconies and a dining area, the kind of property Estate in Paris selects in Paris',
         'video_title' => 'Estate in Paris, buying a luxury property in Paris',
