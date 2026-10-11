@@ -1,3 +1,4 @@
+import GoogleReviewsLink from '@/components/page/google-reviews-link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
@@ -57,10 +58,10 @@ export default function TrustIntro({ figure }: TrustIntroProps) {
                         <p className="flex items-center gap-2 text-sm">
                             <img src="/images/social/google.svg" alt="" width={16} height={16} className="size-4 shrink-0" />
                             <span className="font-medium tabular-nums">{reviews.rating.toLocaleString('fr-FR')}/5</span>
-                            <span className="text-muted-foreground">
+                            <GoogleReviewsLink href={reviews.url} className="text-muted-foreground">
                                 {tc('testimonials.based_on', reviews.count, { count: reviews.count.toLocaleString('fr-FR') })}
                                 <span className="sr-only"> Google</span>
-                            </span>
+                            </GoogleReviewsLink>
                         </p>
                     </div>
                 )}

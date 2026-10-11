@@ -28,7 +28,7 @@ describe('Hero', () => {
         expect(search).toHaveAttribute('method', 'get');
         expect(search.parentElement).toHaveClass('flex-1', 'items-center', 'pt-24'); // centred in the screen at every width (mobile too, 2026-09-25)
         expect(search).toHaveClass('mx-auto', 'max-w-3xl'); // centred block
-        expect(within(search).queryByText(/Basé sur 400 avis/)).toBeNull(); // nothing under the card any more (proof line removed, 2026-09-25)
+        expect(within(search).queryByText(/Basé sur 150 avis/)).toBeNull(); // nothing under the card any more (proof line removed, 2026-09-25)
         expect(within(search).getByRole('combobox', { name: 'Arrondissement' })).not.toHaveAttribute('placeholder'); // « + Ajouter » sits in the field at rest
         const values = within(screen.getByRole('list', { name: 'Nos engagements' })).getAllByRole('listitem');
         expect(values.map((li) => li.textContent)).toEqual([

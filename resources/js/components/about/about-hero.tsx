@@ -135,7 +135,7 @@ export default function AboutHero() {
                             {t('about.headline')}
                         </h1>
                         {/* GEO: a self-contained sentence (brand + what + where) */}
-                        <p className="text-muted-foreground max-w-xl text-base/7 text-pretty sm:text-sm/6">{t('pages.about.intro')}</p>
+                        <p className="text-muted-foreground max-w-md text-base/7 text-pretty sm:text-sm/6">{t('pages.about.intro')}</p>
                     </div>
                     <Button asChild size="lg">
                         <a href="#team-title">

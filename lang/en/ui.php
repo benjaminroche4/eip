@@ -870,7 +870,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => 'A neighbourhood agency, attentive to your plans',
+        'headline' => 'A Parisian house devoted to prestige real estate',
         'marquee_label' => 'Our commitments',
         'marquee_1' => 'Long-term client relationships',
         'marquee_2' => 'Personalised advisory approach',
@@ -937,7 +937,7 @@ return [
         'eyebrow' => 'Testimonials',
         'title' => 'What do our clients say?',
         'intro' => 'Owners and buyers share how Estate in Paris supported them, from valuation to signing, with discretion and method.',
-        // Giant-rating column of the testimonials block (user decision 2026-09-22: « +400 avis » instead of « Basé sur 400 avis »)
+        // Giant-rating column of the testimonials block (user decision 2026-09-22: « +150 avis » instead of « Basé sur 150 avis »)
         'count_short' => 'From +:count reviews',
         'based_on' => '{1} Based on :count review|[2,*] Based on :count reviews',
         'previous' => 'Previous testimonial',

@@ -10,7 +10,7 @@ class BuyTest extends TestCase
 {
     public function test_buy_page_serves_the_hero_with_the_key_figures(): void
     {
-        config(['seo.reviews.rating' => 4.9, 'seo.reviews.count' => 400]);
+        config(['seo.reviews.rating' => 4.9, 'seo.reviews.count' => 150]);
         $this->get('/acheter-immobilier-paris')
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('buy')
@@ -37,7 +37,7 @@ class BuyTest extends TestCase
                 ->where('translations.buy.record.title', 'La confiance des propriétaires et acquéreurs à Paris')
                 ->has('facts', 4) // rating tile present: seo.reviews set above
                 ->where('facts.0.value', '4,9/5')
-                ->where('facts.0.text', 'Sur 400 avis clients publiés.')
+                ->where('facts.0.text', 'Sur 150 avis clients publiés.')
                 ->where('facts.1.value', '24 h')
                 ->where('translations.buy.record.intro', fn (string $intro) => str_contains($intro, 'Estate in Paris') && str_contains($intro, 'Paris')));
 

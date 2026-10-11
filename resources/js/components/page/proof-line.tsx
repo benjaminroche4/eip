@@ -1,3 +1,4 @@
+import GoogleReviewsLink from '@/components/page/google-reviews-link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
@@ -50,7 +51,9 @@ export default function ProofLine({ align = 'center', className }: ProofLineProp
                 </span>
                 <p className="text-muted-foreground text-sm">
                     <span className="text-foreground font-semibold tabular-nums">{reviews.rating.toLocaleString('fr-FR')}/5</span>{' '}
-                    {tc('testimonials.based_on', reviews.count, { count: reviews.count.toLocaleString('fr-FR') })} Google
+                    <GoogleReviewsLink href={reviews.url}>
+                        {tc('testimonials.based_on', reviews.count, { count: reviews.count.toLocaleString('fr-FR') })} Google
+                    </GoogleReviewsLink>
                 </p>
             </div>
         </div>

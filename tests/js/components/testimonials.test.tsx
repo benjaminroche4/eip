@@ -22,12 +22,12 @@ describe('Testimonials', () => {
         expect(screen.getByText('4,9').closest('div')!.querySelectorAll('svg.lucide-star')).toHaveLength(0); // no stars under the rating (they stay on the cards)
         expect(screen.getByText('4,9').className).toMatch(/\btext-5xl\b.*\bsm:text-7xl\b/); // giant on desktop, tamer on mobile
         expect(screen.getByText('4,9').className).toMatch(/\btext-5xl\b.*\bsm:text-7xl\b/); // giant on desktop, tamer on mobile
-        const reviewsLink = screen.getByText(/\+400 avis/).closest('a')!;
+        const reviewsLink = screen.getByText(/\+150 avis/).closest('a')!;
         expect(reviewsLink).toHaveAttribute('href', 'https://www.google.com/maps');
-        expect(reviewsLink).toHaveTextContent('Sur +400 avis Google'); // the logo sits right before the visible word « Google »
+        expect(reviewsLink).toHaveTextContent('Sur +150 avis Google'); // the logo sits right before the visible word « Google »
         expect(reviewsLink.querySelector('img')!.nextElementSibling).toHaveTextContent('Google');
         expect(container.querySelector('img[src="/images/social/google.svg"]')).not.toBeNull();
-        expect(screen.getByText('+397')).toBeInTheDocument();
+        expect(screen.getByText('+147')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Témoignage précédent' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Témoignage suivant' })).toBeInTheDocument();
         expect(container.querySelector('img[src="/brand/logo-mark.svg"]')).toBeNull(); // no logo
@@ -65,7 +65,7 @@ describe('Testimonials', () => {
         window.HTMLElement.prototype.scrollBy = scrollBy;
         const { container } = renderPage(<Testimonials items={items} />);
 
-        expect(screen.queryByText(/\+400 avis/)).toBeNull();
+        expect(screen.queryByText(/\+150 avis/)).toBeNull();
         expect(screen.getAllByRole('listitem')).toHaveLength(4); // the cards only (loop copies are aria-hidden)
         // The row stays keyboard-operable: one pair of arrows, under the row
         expect(screen.getAllByRole('button', { name: 'Témoignage précédent' })).toHaveLength(1);

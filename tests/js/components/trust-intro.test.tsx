@@ -13,7 +13,11 @@ describe('TrustIntro', () => {
         expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('500+ biens vendus à Paris.Un interlocuteur unique.'); // the page's h1 since the hero lost its text (2026-09-25)
         expect(screen.getByRole('list', { name: 'Nos conseillers' }).querySelectorAll('li')).toHaveLength(3);
         expect(screen.getByText('4,9/5')).toBeInTheDocument();
-        expect(screen.getByText(/Basé sur 400 avis/)).toBeInTheDocument(); // seo.reviews, never a made-up count
+        expect(screen.getByText(/Basé sur 150 avis/)).toBeInTheDocument(); // seo.reviews, never a made-up count
+        const reviewsLink = screen.getByText(/Basé sur 150 avis/).closest('a')!; // the count links to the Google reviews page (user decision 2026-10-11)
+        expect(reviewsLink).toHaveAttribute('href', 'https://www.google.com/maps');
+        expect(reviewsLink).toHaveAttribute('target', '_blank');
+        expect(reviewsLink.className).toContain('after:origin-right'); // the site's underline that draws itself on hover
         expect(container.querySelector('img[src="/images/social/google.svg"]')).toHaveAttribute('alt', ''); // Google logo, no star
         expect(container.querySelector('svg.lucide-star')).toBeNull();
         expect(screen.getByText(/^Depuis plus de 25 ans, Estate in Paris/)).toBeInTheDocument(); // GEO sentence
@@ -23,10 +27,12 @@ describe('TrustIntro', () => {
         expect(buy).toHaveAttribute('href', '/acheter-immobilier-paris');
         expect(contact).toHaveAttribute('href', '/contact');
         await userEvent.tab();
+        expect(reviewsLink).toHaveFocus(); // the Google reviews link comes first in the tab order (2026-10-11)
+        await userEvent.tab();
         expect(buy).toHaveFocus();
         await userEvent.tab();
         expect(contact).toHaveFocus();
-        expect(container.querySelectorAll('a, button')).toHaveLength(2);
+        expect(container.querySelectorAll('a, button')).toHaveLength(3); // reviews link + the two CTAs
 
         expect(await axe(container)).toHaveNoViolations();
     });

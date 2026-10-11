@@ -862,7 +862,7 @@ return [
         ],
     ],
     'about' => [
-        'headline' => "Une agence de quartier, à l'écoute de vos projets",
+        'headline' => "Une maison parisienne dédiée à l'immobilier de prestige",
         'marquee_label' => 'Nos engagements',
         'marquee_1' => 'Des relations clients de long terme',
         'marquee_2' => 'Un conseil personnalisé',
@@ -930,7 +930,7 @@ return [
         'eyebrow' => 'Témoignages',
         'title' => 'Que disent nos clients ?',
         'intro' => "Propriétaires et acquéreurs racontent comment Estate in Paris les a accompagnés, de l'estimation à la signature, avec discrétion et méthode.",
-        // Giant-rating column of the testimonials block (user decision 2026-09-22: « +400 avis » instead of « Basé sur 400 avis »)
+        // Giant-rating column of the testimonials block (user decision 2026-09-22: « +150 avis » instead of « Basé sur 150 avis »)
         'count_short' => 'Sur +:count avis',
         'based_on' => '{1} Basé sur :count avis|[2,*] Basé sur :count avis',
         'previous' => 'Témoignage précédent',

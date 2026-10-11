@@ -5,7 +5,7 @@ import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
 
 const FACTS = [
-    { key: 'rating' as const, value: '4,9/5', title: 'Note Google', text: 'Sur 400 avis clients publiés.' },
+    { key: 'rating' as const, value: '4,9/5', title: 'Note Google', text: 'Sur 150 avis clients publiés.' },
     { key: 'reply' as const, value: '24 h', title: 'Réponse garantie', text: 'Chaque demande reçoit une réponse sous 24 h ouvrées.' },
     { key: 'languages' as const, value: 'FR · EN', title: 'Conseil bilingue', text: 'Acquéreurs français et internationaux.' },
     { key: 'address' as const, value: 'Paris 6e', title: 'Agence à Saint-Germain-des-Prés', text: 'Rue Grégoire de Tours.' },

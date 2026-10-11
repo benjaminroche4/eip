@@ -1,4 +1,5 @@
 import GradientHairline from '@/components/layout/gradient-hairline';
+import GoogleReviewsLink from '@/components/page/google-reviews-link';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -264,7 +265,6 @@ type RatingColumnProps = {
  * previous / next arrows on one line. Closes the block on mobile.
  */
 function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColumnProps) {
-    const { t } = useTranslation();
     // « Sur +N avis [G] Google »: the count, then the Google logo right before the visible word (user decision 2026-09-22)
     const google = (
         <span className="inline-flex items-center gap-1.5">
@@ -284,14 +284,7 @@ function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColum
                 </p>
                 {/* Count with the Google logo right under the rating, no stars here (user decision 2026-09-16: the stars stay on the cards) */}
                 <p className="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-                    {reviews.url ? (
-                        <a href={reviews.url} target="_blank" rel="noopener noreferrer" className="focus-ring hover:text-foreground">
-                            {google}
-                            <span className="sr-only"> {t('footer.new_tab')}</span>
-                        </a>
-                    ) : (
-                        google
-                    )}
+                    <GoogleReviewsLink href={reviews.url}>{google}</GoogleReviewsLink>
                 </p>
             </div>
             <div className="flex items-center justify-between gap-4 max-lg:order-last">
