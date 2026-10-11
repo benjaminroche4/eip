@@ -319,7 +319,7 @@ return [
         'title' => 'Blog',
         'seo_title' => 'Blog : vivre et investir à Paris',
         'seo_description' => "Conseils d'experts pour acheter, vendre ou s'installer à Paris : quartiers, prix, démarches et fiscalité. Découvrez les articles du blog Estate in Paris.",
-        'intro' => 'Nos guides pour acheter, vendre ou estimer un bien à Paris : prix au m², quartiers, démarches et fiscalité.',
+        'intro' => 'Nos articles pour comprendre le marché immobilier parisien et préparer votre projet.',
         'headline' => 'Le blog pour acheter à Paris',
         'read_article' => "Lire l'article",
         'count' => '{0} Aucun article|{1} :count article|[2,*] :count articles',
@@ -980,7 +980,7 @@ return [
         'title' => 'Qui sont nos conseillers ?',
         'intro' => 'Huit conseillers, chacun avec sa spécialité, tous bilingues : vous parlez à une seule personne, qui parle votre langue.',
         'area' => 'Quartier de prédilection',
-        'portrait_alt' => 'Portrait de :name, :role chez Estate in Paris',
+        'portrait_alt' => ':name, :role chez Estate in Paris',
         'previous' => 'Membre précédent',
         'next' => 'Membre suivant',
         'members' => [

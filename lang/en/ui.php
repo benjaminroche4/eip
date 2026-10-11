@@ -319,7 +319,7 @@ return [
         'title' => 'Blog',
         'seo_title' => 'Blog: living and investing in Paris',
         'seo_description' => 'Expert advice on buying, selling or settling in Paris: neighbourhoods, prices, procedures and taxes. Discover the latest articles from Estate in Paris.',
-        'intro' => 'Our guides to buying, selling or valuing a property in Paris: prices per m², neighbourhoods, procedures and tax.',
+        'intro' => 'Our articles to understand the Paris property market and prepare your project.',
         'headline' => 'The blog for buying in Paris',
         'read_article' => 'Read the article',
         'count' => '{0} No articles|{1} :count article|[2,*] :count articles',
@@ -985,7 +985,7 @@ return [
         'title' => 'Who are our advisors?',
         'intro' => 'Eight advisors, each with their own specialty, all bilingual: you speak to one person, who speaks your language.',
         'area' => 'Favourite district',
-        'portrait_alt' => 'Portrait of :name, :role at Estate in Paris',
+        'portrait_alt' => ':name, :role at Estate in Paris',
         'previous' => 'Previous member',
         'next' => 'Next member',
         'members' => [

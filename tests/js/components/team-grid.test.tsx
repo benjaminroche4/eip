@@ -17,7 +17,7 @@ describe('TeamGrid', () => {
 
         expect(screen.getByRole('heading', { level: 2, name: 'Qui sont nos conseillers ?' })).toBeInTheDocument();
         expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual(['Julien L.', 'Eva B.', 'Charles M.']);
-        expect(container.querySelector('img[src="/images/team/member-1.webp"]')).toHaveAttribute('alt', 'Portrait de Julien L., Conseiller senior chez Estate in Paris'); // informative portrait (SEO audit 2026-10-11)
+        expect(container.querySelector('img[src="/images/team/member-1.webp"]')).toHaveAttribute('alt', 'Julien L., Conseiller senior chez Estate in Paris'); // informative portrait (SEO audit 2026-10-11)
         const card = container.querySelector('ul.snap-x > li > div')!;
         expect(card).toHaveClass('border-secondary-30', 'bg-card', 'p-2'); // the site's card
         expect(screen.getByText('Conseiller senior')).toBeInTheDocument();
