@@ -17,6 +17,19 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
+    build: {
+        rollupOptions: {
+            output: {
+                // Lighthouse 2026-10-12: every lucide icon and Radix primitive shipped as its own 0-1 KB chunk, a 50-request
+                // critical chain. Icons go in one shared chunk; Rollup merges anything still under 20 KB.
+                manualChunks(id) {
+                    if (id.includes('node_modules/lucide-react')) return 'icons';
+                    return undefined; // Radix stays split per page: one shared chunk would load 53 KB gzip everywhere
+                },
+                experimentalMinChunkSize: 20000,
+            },
+        },
+    },
     resolve: {
         alias: {
             'ziggy-js': resolve(import.meta.dirname, 'vendor/tightenco/ziggy'),

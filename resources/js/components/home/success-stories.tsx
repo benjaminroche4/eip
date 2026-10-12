@@ -212,7 +212,7 @@ function StoryPhoto({ story }: { story: SuccessStory }) {
         <div className="relative h-96 overflow-hidden sm:h-112 lg:h-120">
             <SeoImage
                 src={story.photo.replace('{w}', '960')}
-                srcSet={`${story.photo.replace('{w}', '480')} 480w, ${story.photo.replace('{w}', '960')} 960w`}
+                srcSet={`${story.photo.replace('{w}', '480')} 480w, ${story.photo.replace('{w}', '720')} 720w, ${story.photo.replace('{w}', '960')} 960w`}
                 sizes="(min-width: 64rem) 26rem, (min-width: 40rem) 24rem, 20rem"
                 alt={story.alt}
                 width={960}

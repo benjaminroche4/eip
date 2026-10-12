@@ -369,7 +369,7 @@ Performance (Core Web Vitals)
 
 - [x] Fonts self-hosted, Vite code-splitting + preload headers (`AddLinkHeadersForPreloadedAssets`), `<Link prefetch>`
 - [x] `<SeoImage>` : dimensions explicites (pas de CLS), lazy/async, `priority` pour le LCP, `srcSet`/`sizes` (défaut `100vw`) pour les images de contenu
-- [ ] En prod : HTTP/2 + compression (Brotli/gzip) et cache immuable sur `/build/*` côté serveur (Nginx/Forge), CDN pour les images
+- [ ] En prod : HTTP/2 + compression (Brotli/gzip) et cache immuable sur `/build/*` côté serveur, CDN pour les images — **Lighthouse 2026-10-12 : aucun `Cache-Control` sur les statiques de Laravel Cloud (1 Mo rechargé à chaque visite)** : à activer dans Cloud ou via Cloudflare devant le site (règles de cache `/build/*` 1 an immuable, `/images/*` `/fonts/*` `/videos/*` 30 jours)
 - [ ] Mesurer : Lighthouse / PageSpeed sur `/` et `/recherche` après chaque refonte de page
 
 Variables d'environnement SEO (`.env`)

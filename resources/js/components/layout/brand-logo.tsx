@@ -12,7 +12,9 @@ type BrandLogoProps = { className?: string; priority?: boolean; light?: boolean 
 
 export default function BrandLogo({ className, priority = false, light = false }: BrandLogoProps) {
     const { seo } = usePage<SharedData>().props;
-    const fetchPriority = priority ? 'high' : 'auto';
+    // The visible variant gets the priority (Lighthouse 2026-10-12: the light mobile logo was the LCP of the home, lazy and unprioritised)
+    const dark = { fetchPriority: priority && !light ? ('high' as const) : ('auto' as const), loading: light ? ('lazy' as const) : undefined };
+    const lightImg = { fetchPriority: priority && light ? ('high' as const) : ('auto' as const), loading: light ? undefined : ('lazy' as const) };
 
     return (
         <span className={cn('inline-flex items-center', className)}>
@@ -23,7 +25,7 @@ export default function BrandLogo({ className, priority = false, light = false }
                 width={112}
                 height={28}
                 className={cn('h-6.5 w-auto sm:hidden dark:hidden', light && 'hidden')}
-                fetchPriority={fetchPriority}
+                {...dark}
             />
             <img
                 src="/brand/logo_light_mobile.svg"
@@ -31,7 +33,7 @@ export default function BrandLogo({ className, priority = false, light = false }
                 width={112}
                 height={28}
                 className={cn('hidden h-6.5 w-auto sm:hidden dark:block', light && 'block')}
-                loading={light ? undefined : 'lazy'} // hidden in light mode: no preload hoisted for it (audit 2026-10-12)
+                {...lightImg}
             />
             {/* Desktop */}
             <img
@@ -40,7 +42,7 @@ export default function BrandLogo({ className, priority = false, light = false }
                 width={213}
                 height={24}
                 className={cn('hidden h-5.5 w-auto sm:block dark:sm:hidden', light && 'sm:max-lg:hidden')}
-                fetchPriority={fetchPriority}
+                {...dark}
             />
             <img
                 src="/brand/logo_light_desktop.svg"
@@ -48,7 +50,7 @@ export default function BrandLogo({ className, priority = false, light = false }
                 width={213}
                 height={24}
                 className={cn('hidden h-5.5 w-auto dark:sm:block', light && 'sm:max-lg:block')}
-                loading={light ? undefined : 'lazy'}
+                {...lightImg}
             />
         </span>
     );
