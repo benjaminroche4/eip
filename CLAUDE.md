@@ -375,7 +375,7 @@ Performance (Core Web Vitals)
 Variables d'environnement SEO (`.env`)
 
 ```
-SEO_OPENING_HOURS="Mo-Sa 09:00-19:00" (+ SEO_OPENING_HOURS_FR/EN libellés)   # footer + JSON-LD openingHours
+SEO_OPENING_HOURS="Mo-Fr 08:00-20:00, Sa 08:00-12:00" (+ SEO_OPENING_HOURS_FR="Lun - Ven, 8h - 20h · Sam, 8h - 12h" / _EN) — horaires réels de la fiche Google (2026-10-12), dimanche fermé   # footer, badge ouvert / fermé, JSON-LD, page contact, FAQ
 SEO_GOOGLE_RATING=4.9 / SEO_GOOGLE_REVIEW_COUNT=150 / SEO_GOOGLE_REVIEWS_URL=   # AggregateRating JSON-LD uniquement (plus de badge visible) — UNIQUEMENT des chiffres réels
 SEO_GOOGLE_MAPS_URL=   # lien de la fiche Google Business Profile (« Voir sur Google Maps » page contact + adresse dans le pied des e-mails via AgencyCard) ; vide = recherche de l'adresse sur Google Maps — décision utilisateur 2026-09-22
 SEO_ORG_EMAIL= / SEO_ORG_PHONE= / SEO_ORG_STREET= / SEO_ORG_POSTAL_CODE= / SEO_ORG_CITY=   # footer + JSON-LD
