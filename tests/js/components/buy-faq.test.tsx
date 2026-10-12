@@ -19,7 +19,7 @@ describe('BuyFaq', () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyFaq faq={FAQ} />);
 
-        expect(screen.getByRole('heading', { level: 2, name: "Vos questions avant d'acheter à Paris" })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: 'Vos questions, nos réponses' })).toBeInTheDocument();
         const triggers = screen.getAllByRole('button', { name: /\?$/ });
         expect(triggers).toHaveLength(3);
         expect(triggers[0]).toHaveAttribute('aria-expanded', 'true');

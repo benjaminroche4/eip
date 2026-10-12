@@ -405,15 +405,15 @@ return [
                 'key' => 'buying',
                 'title' => 'Acheter un bien',
                 'items' => [
-                    ['question' => 'Un étranger peut-il acheter un bien immobilier à Paris ?', 'answer' => "Oui. Aucune restriction ne s'applique aux acquéreurs étrangers pour l'achat d'un bien résidentiel en France. Nos conseillers accompagnent les acheteurs internationaux à chaque étape, du financement à la signature chez le notaire."],
+                    ['question' => 'Un étranger peut-il acheter un bien immobilier à Paris ?', 'answer' => "Aucune restriction ne s'applique aux acquéreurs étrangers pour un bien résidentiel en France. Nos conseillers accompagnent les acheteurs internationaux à chaque étape, du financement à la signature chez le notaire."],
                     ['question' => 'Combien de temps faut-il pour acheter un bien à Paris ?', 'answer' => "Comptez trois à quatre mois entre l'offre acceptée et la signature de l'acte définitif : dix jours de rétractation après la promesse, puis le délai d'obtention du prêt et les vérifications du notaire. Sans financement, l'achat peut se conclure en deux mois."],
                     ['question' => "Quels sont les frais lors d'un achat immobilier à Paris ?", 'answer' => "Les frais de notaire représentent environ 7 à 8 % du prix pour un bien ancien, et 2 à 3 % pour un bien neuf. S'y ajoutent, le cas échéant, les honoraires d'agence lorsqu'ils sont à la charge de l'acquéreur, indiqués dans chaque annonce."],
-                    ['question' => 'Pouvez-vous me trouver des biens off-market ?', 'answer' => "Oui. Une partie des biens que nous proposons ne sont jamais publiés : ils sont présentés en toute discrétion à un cercle restreint d'acquéreurs qualifiés. [Confiez-nous votre recherche](contact) pour y accéder."],
-                    ['question' => 'Dois-je être en France pour acheter ?', 'answer' => "Non. Les visites peuvent se faire à distance, et la signature de la promesse comme de l'acte définitif peut se faire par procuration. Nous coordonnons le notaire, le financement et la gestion du bien après l'acquisition."],
-                    ['question' => 'Un acquéreur étranger peut-il obtenir un prêt en France ?', 'answer' => "Oui, les banques françaises prêtent aux non-résidents, généralement jusqu'à 50 à 70 % du prix avec un apport plus élevé qu'un résident. Nous vous mettons en relation avec des courtiers habitués aux dossiers internationaux."],
+                    ['question' => 'Pouvez-vous me trouver des biens off-market ?', 'answer' => "Une partie des biens que nous proposons ne sont jamais publiés : ils sont présentés en toute discrétion à un cercle restreint d'acquéreurs qualifiés. [Confiez-nous votre recherche](contact) pour y accéder."],
+                    ['question' => 'Dois-je être en France pour acheter ?', 'answer' => "Votre présence n'est pas nécessaire : les visites se font à distance, et la promesse comme l'acte définitif se signent par procuration. Nous coordonnons le notaire, le financement et la gestion du bien après l'acquisition."],
+                    ['question' => 'Un acquéreur étranger peut-il obtenir un prêt en France ?', 'answer' => "Les banques françaises prêtent aux non-résidents, généralement jusqu'à 50 à 70 % du prix, avec un apport plus élevé que pour un résident. Nous vous mettons en relation avec des courtiers habitués aux dossiers internationaux."],
                     ['question' => 'Quelle est la différence entre promesse et compromis de vente ?', 'answer' => "La promesse unilatérale engage le vendeur pendant un délai donné, l'acquéreur verse une indemnité d'immobilisation de 5 à 10 %. Le compromis engage les deux parties dès la signature. À Paris, la promesse est la formule la plus courante."],
                     ['question' => "Qu'est-ce que le délai de rétractation ?", 'answer' => "Après la signature de la promesse, l'acquéreur non professionnel dispose de dix jours pour se rétracter sans justification ni pénalité. Passé ce délai, il est engagé sous réserve des conditions suspensives, comme l'obtention du prêt."],
-                    ['question' => 'Comment se déroule une visite avec Estate in Paris ?', 'answer' => 'Nous sélectionnons en amont les biens qui correspondent à vos critères, puis organisons des visites groupées sur une même journée si vous venez de loin. Un conseiller vous accompagne à chaque visite et répond à vos questions sur le quartier et la copropriété.'],
+                    ['question' => 'Comment se déroule une visite ?', 'answer' => 'Nous sélectionnons en amont les biens qui correspondent à vos critères, puis organisons des visites groupées sur une même journée si vous venez de loin. Un conseiller vous accompagne à chaque visite et répond à vos questions sur le quartier et la copropriété.'],
                     ['question' => "Quels documents vérifier avant d'acheter en copropriété ?", 'answer' => "Les trois derniers procès-verbaux d'assemblée générale, le règlement de copropriété, le carnet d'entretien, les diagnostics techniques et le montant des charges. Nous les réunissons et les analysons avec vous avant toute offre."],
                 ],
             ],
@@ -822,9 +822,9 @@ return [
         ],
         'faq' => [
             'eyebrow' => 'Questions fréquentes',
-            'title' => 'Vos questions avant d\'acheter à Paris',
+            'title' => 'Vos questions, nos réponses',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Délais, frais, financement depuis l\'étranger : les réponses aux questions les plus posées par les acquéreurs à Paris.',
+            'intro' => 'Ce que les acquéreurs nous demandent le plus souvent avant d\'acheter à Paris.',
             'all' => 'Voir toutes les questions',
         ],
         'record' => [

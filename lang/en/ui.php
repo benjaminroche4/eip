@@ -405,15 +405,15 @@ return [
                 'key' => 'buying',
                 'title' => 'Buying property',
                 'items' => [
-                    ['question' => 'Can foreigners buy property in Paris?', 'answer' => 'Yes. There are no restrictions on foreign nationals purchasing residential property in France. Our advisors guide international buyers through every step, from financing to the signing at the notary.'],
+                    ['question' => 'Can foreigners buy property in Paris?', 'answer' => 'There are no restrictions on foreign nationals purchasing residential property in France. Our advisors guide international buyers through every step, from financing to the signing at the notary.'],
                     ['question' => 'How long does it take to buy a property in Paris?', 'answer' => 'Allow three to four months between the accepted offer and the final deed: a ten-day cooling-off period after the preliminary agreement, then the mortgage approval and the notary checks. Without financing, a purchase can complete in two months.'],
                     ['question' => 'What additional costs should I expect when buying?', 'answer' => 'Notary fees represent about 7 to 8% of the price for an existing property and 2 to 3% for a new build. Agency fees, when payable by the buyer, are stated in each listing.'],
-                    ['question' => 'Can you help me find off-market properties?', 'answer' => 'Yes. Part of the properties we offer are never published: they are presented discreetly to a restricted circle of qualified buyers. [Entrust us with your search](contact) to gain access.'],
-                    ['question' => 'Do I need to be in France to purchase a property?', 'answer' => 'No. Viewings can be done remotely, and both the preliminary agreement and the final deed can be signed by power of attorney. We coordinate the notary, the financing and the management of the property after the purchase.'],
-                    ['question' => 'Can a foreign buyer get a mortgage in France?', 'answer' => 'Yes, French banks lend to non-residents, usually up to 50 to 70% of the price with a higher deposit than for residents. We introduce you to brokers used to international files.'],
+                    ['question' => 'Can you help me find off-market properties?', 'answer' => 'Part of the properties we offer are never published: they are presented discreetly to a restricted circle of qualified buyers. [Entrust us with your search](contact) to gain access.'],
+                    ['question' => 'Do I need to be in France to purchase a property?', 'answer' => 'Your presence is not required: viewings are done remotely, and both the preliminary agreement and the final deed are signed by power of attorney. We coordinate the notary, the financing and the management of the property after the purchase.'],
+                    ['question' => 'Can a foreign buyer get a mortgage in France?', 'answer' => 'French banks lend to non-residents, usually up to 50 to 70% of the price, with a higher deposit than for residents. We introduce you to brokers used to international files.'],
                     ['question' => 'What is the difference between a promesse and a compromis de vente?', 'answer' => 'A promesse binds the seller for a set period while the buyer pays a deposit of 5 to 10%. A compromis binds both parties from signing. In Paris the promesse is the most common form.'],
                     ['question' => 'What is the cooling-off period?', 'answer' => 'After signing the preliminary agreement, a non-professional buyer has ten days to withdraw without reason or penalty. After that, the buyer is bound subject to the conditions precedent, such as obtaining the loan.'],
-                    ['question' => 'How does a viewing with Estate in Paris work?', 'answer' => 'We shortlist the properties matching your criteria beforehand, then group the viewings on a single day if you travel from afar. An advisor accompanies every viewing and answers your questions about the neighbourhood and the building.'],
+                    ['question' => 'How does a viewing work?', 'answer' => 'We shortlist the properties matching your criteria beforehand, then group the viewings on a single day if you travel from afar. An advisor accompanies every viewing and answers your questions about the neighbourhood and the building.'],
                     ['question' => 'Which documents should I check before buying in a co-owned building?', 'answer' => 'The minutes of the last three general meetings, the co-ownership rules, the maintenance log, the technical surveys and the amount of the service charges. We gather and review them with you before any offer.'],
                 ],
             ],
@@ -820,9 +820,9 @@ return [
         ],
         'faq' => [
             'eyebrow' => 'Frequently asked questions',
-            'title' => 'Your questions before buying in Paris',
+            'title' => 'Your questions, our answers',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Timelines, costs, financing from abroad: answers to the questions buyers in Paris ask most.',
+            'intro' => 'What buyers ask us most often before buying in Paris.',
             'all' => 'See all questions',
         ],
         'record' => [
