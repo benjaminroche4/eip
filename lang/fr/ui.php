@@ -460,7 +460,7 @@ return [
                     ['question' => 'Comment garantissez-vous la confidentialité ?', 'answer' => "Aucune information sur un bien ou un client n'est diffusée sans accord écrit. Les biens off-market sont présentés sans adresse et sous accord de confidentialité aux seuls acquéreurs qualifiés."],
                     ['question' => "Travaillez-vous avec d'autres agences ?", 'answer' => "Oui, lorsque c'est dans l'intérêt de nos clients : nous collaborons avec un réseau de confrères en France et à l'étranger pour élargir la recherche ou la diffusion d'un bien."],
                     ['question' => 'Proposez-vous un service de recherche sur mesure ?', 'answer' => "Oui. En mandat de recherche, un conseiller dédié sélectionne les biens, organise les visites, négocie et vous accompagne jusqu'à la signature, y compris pour les biens hors marché."],
-                    ['question' => 'Quels sont vos horaires ?', 'answer' => 'Du lundi au vendredi de 8h à 20h et le samedi de 8h à 12h. En dehors de ces horaires, laissez-nous un message : nous vous rappelons dès l\'ouverture.'],
+                    ['question' => 'Quels sont vos horaires ?', 'answer' => 'Nos horaires : :hours. En dehors de ces créneaux, laissez-nous un message : nous vous rappelons dès l\'ouverture.'], // :hours = SEO_OPENING_HOURS_FR
                     ['question' => 'Où se situe votre agence ?', 'answer' => "Au cœur de Saint-Germain-des-Prés, dans le 6e arrondissement. L'adresse et un lien vers le plan figurent sur [la page contact](contact) ; nous recevons sur rendez-vous."],
                     ['question' => 'Comment recevoir vos analyses du marché ?', 'answer' => 'En vous inscrivant à [notre newsletter hebdomadaire](newsletter) : tendances, prix, sélection de biens et opportunités off-market, chaque lundi dans votre boîte mail.'],
                 ],
@@ -635,7 +635,6 @@ return [
         'visit_us' => 'Venez nous voir',
         'head_office' => 'Bureau principal',
         'view_on_maps' => 'Voir sur Google Maps',
-        'hours_line' => 'Lundi au vendredi 8h à 20h, samedi 8h à 12h, fermé le dimanche',
         'email_response' => "Réponse sous 30 min, aux heures d'ouverture.",
         'available' => 'Disponible',
         'form_title' => 'Demandez un rappel',

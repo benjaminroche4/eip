@@ -49,7 +49,7 @@ export default function ContactDetails() {
                         <a href={`tel:${phone.replace(/\s/g, '')}`} className="focus-ring w-fit text-lg font-semibold">
                             {phone}
                         </a>
-                        <p className="text-muted-foreground text-balance">{t('contact.hours_line')}</p>
+                        <p className="text-muted-foreground text-balance">{seo.hours.label}</p>
                         {whatsapp && (
                             <p className="flex items-center gap-1.5">
                                 {t('contact.available_on')}

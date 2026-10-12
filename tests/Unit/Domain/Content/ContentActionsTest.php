@@ -94,6 +94,8 @@ class ContentActionsTest extends TestCase
 
         $this->assertSame('selling-property', app(ExcerptFaqCategory::class)('selling', 2, 'en')->slug);
         $this->assertCount(2, app(ExcerptFaqCategory::class)('selling', 2, 'en')->items);
+        $hours = collect(app(ListFaqCategories::class)('fr'))->firstWhere('key', 'working')->items;
+        $this->assertStringContainsString(config('seo.hours.labels.fr'), collect($hours)->firstWhere('question', 'Quels sont vos horaires ?')->answer); // « :hours » = the configured opening hours, never hard-coded (2026-10-12)
         $this->assertSame('Quels sont vos honoraires ?', app(ExcerptFaqCategory::class)('buying', 6, 'fr', 5)->items[0]->question); // offset skips the first questions
         $this->assertCount(5, app(ExcerptFaqCategory::class)('buying', 6, 'fr', 6)->items); // 11 questions: the last window is short
 

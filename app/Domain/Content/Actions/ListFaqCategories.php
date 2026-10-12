@@ -13,6 +13,14 @@ final class ListFaqCategories
     /** @return list<FaqCategory> */
     public function __invoke(?string $locale = null): array
     {
-        return array_map(FaqCategory::fromArray(...), array_values(__('ui.faq.categories', [], $locale)));
+        // « :hours » in an answer = the configured opening hours of that locale (SEO_OPENING_HOURS_FR / _EN), the footer's label (2026-10-12)
+        $hours = (string) config('seo.hours.labels.'.($locale ?? app()->getLocale()), config('seo.hours.spec'));
+        $categories = array_map(function (array $category) use ($hours) {
+            $category['items'] = array_map(fn (array $item) => ['answer' => str_replace(':hours', $hours, (string) ($item['answer'] ?? ''))] + $item, $category['items'] ?? []);
+
+            return $category;
+        }, array_values(__('ui.faq.categories', [], $locale)));
+
+        return array_map(FaqCategory::fromArray(...), $categories);
     }
 }

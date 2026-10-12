@@ -460,7 +460,7 @@ return [
                     ['question' => 'How do you guarantee confidentiality?', 'answer' => 'No information about a property or a client is shared without written consent. Off-market properties are presented without an address and under a confidentiality agreement to qualified buyers only.'],
                     ['question' => 'Do you work with other agencies?', 'answer' => 'Yes, whenever it serves our clients: we collaborate with a network of fellow agents in France and abroad to widen a search or the distribution of a property.'],
                     ['question' => 'Do you offer a bespoke search service?', 'answer' => 'Yes. Under a search mandate, a dedicated advisor shortlists the properties, organises the viewings, negotiates and accompanies you through to signing, including for off-market properties.'],
-                    ['question' => 'What are your opening hours?', 'answer' => 'Monday to Friday from 8am to 8pm and Saturday from 8am to noon. Outside these hours, leave us a message: we call you back as soon as we open.'],
+                    ['question' => 'What are your opening hours?', 'answer' => 'Our opening hours: :hours. Outside these hours, leave us a message: we call you back as soon as we open.'], // :hours = SEO_OPENING_HOURS_EN
                     ['question' => 'Where is your agency located?', 'answer' => 'In the heart of Saint-Germain-des-Prés, in the 6th arrondissement. The address and a map link are on [the contact page](contact); we welcome you by appointment.'],
                     ['question' => 'How can I receive your market insights?', 'answer' => 'By subscribing to [our weekly newsletter](newsletter): trends, prices, a selection of properties and off-market opportunities, every Monday in your inbox.'],
                 ],
@@ -634,7 +634,6 @@ return [
         'visit_us' => 'Visit our office',
         'head_office' => 'Main office',
         'view_on_maps' => 'View on Google Maps',
-        'hours_line' => 'Monday to Friday 8am to 8pm, Saturday 8am to 12pm, closed on Sunday',
         'email_response' => 'Reply within 30 min during opening hours.',
         'available' => 'Available',
         'form_title' => 'Request a callback',
