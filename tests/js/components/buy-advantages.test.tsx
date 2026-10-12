@@ -11,7 +11,7 @@ describe('BuyAdvantages', () => {
         const { container } = renderPage(<BuyAdvantages />);
 
         expect(screen.getByRole('heading', { level: 2, name: 'Pourquoi acheter avec Estate in Paris ?' })).toBeInTheDocument();
-        expect(screen.getByText(/^Une connaissance fine du marché parisien/)).toBeInTheDocument(); // GEO answer-first intro
+        expect(screen.getByText(/^Le marché parisien, des relations exclusives/)).toBeInTheDocument(); // GEO answer-first intro
         const items = screen.getAllByRole('listitem');
         expect(items).toHaveLength(4);
         expect(within(items[0]).getByRole('heading', { level: 3, name: 'Sourcing de biens' })).toBeInTheDocument();
