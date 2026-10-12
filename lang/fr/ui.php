@@ -743,12 +743,13 @@ return [
         'hero_cta' => 'Faire estimer mon bien',
         'confidential' => [
             'eyebrow' => 'Vente confidentielle',
-            'title' => 'Faut-il rendre votre vente publique ?',
-            // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Non : la vente confidentielle hors marché existe à Paris. Votre bien n'est présenté qu'à des acquéreurs qualifiés de notre réseau, sans annonce ni portail, et vous décidez à tout moment d'élargir la diffusion.",
-            'point_1' => 'Aucune annonce publique, aucune photo en ligne sans votre accord',
-            'point_2' => 'Acquéreurs qualifiés avant toute visite (projet, calendrier, financement)',
-            'point_3' => 'Discrétion garantie vis-à-vis des voisins, locataires et copropriétaires',
+            // Affirmative title around the network access, never an answer opening with « Non » (user decision 2026-10-12)
+            'title' => "Un accès à notre réseau exclusif d'acquéreurs",
+            // GEO: a self-contained answer (what + where)
+            'intro' => "Votre bien est partagé en avant-première avec notre réseau exclusif d'acquéreurs qualifiés, à Paris et à l'international, sans annonce ni portail. Vous décidez à tout moment d'élargir la diffusion.",
+            'point_1' => 'Partagé en priorité avec nos acquéreurs qualifiés, avant toute diffusion',
+            'point_2' => 'Un réseau exclusif, français et international, à la recherche de ce type de bien',
+            'point_3' => 'Aucune annonce, aucune photo en ligne : vous gardez la main sur la diffusion',
             'photo_alt' => "Chambre contemporaine aux larges baies vitrées d'un appartement vendu en confidentialité par Estate in Paris",
         ],
         'why_eyebrow' => 'Pourquoi Estate in Paris',
@@ -768,12 +769,12 @@ return [
             'eyebrow' => 'Notre méthode',
             'title' => 'Comment vendons-nous votre bien ?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Un bien de prestige à Paris se vend en trois étapes : une estimation au prix du marché, une mise en valeur professionnelle, puis la négociation et la signature avec un acquéreur qualifié.',
+            'intro' => 'Trois étapes et un seul interlocuteur, de la première visite à la signature chez le notaire, à Paris.',
             'photo_alt' => "Terrasse d'un appartement de prestige au coucher du soleil avec vue sur la tour Eiffel, Paris",
             'items' => [
-                ['title' => 'Estimation', 'text' => 'Une valeur fondée sur les ventes réelles du quartier et les qualités de votre bien, remise sous 24 heures ouvrées, gratuite et sans engagement.'],
-                ['title' => 'Mise en valeur', 'text' => 'Photographies et vidéo professionnelles, plans, dossier de présentation bilingue, puis diffusion ciblée ou vente confidentielle hors marché selon votre choix.'],
-                ['title' => 'Négociation et signature', 'text' => "Visites avec des acquéreurs qualifiés, compte rendu après chacune, négociation de l'offre et accompagnement jusqu'à l'acte chez le notaire."],
+                ['title' => 'Estimation', 'text' => 'Votre conseiller visite le bien et fixe sa valeur sur les ventes signées du quartier, sous 24 heures ouvrées.'],
+                ['title' => 'Mise en valeur', 'text' => 'Photos, vidéo, plans et dossier bilingue, puis diffusion ciblée ou vente confidentielle : vous choisissez.'],
+                ['title' => 'Négociation et signature', 'text' => "Visiteurs qualifiés, compte rendu après chaque visite, offre négociée jusqu'à l'acte."],
             ],
         ],
         'faq' => [

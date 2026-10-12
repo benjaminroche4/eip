@@ -742,12 +742,12 @@ return [
         'hero_cta' => 'Get my property valued',
         'confidential' => [
             'eyebrow' => 'Confidential sale',
-            'title' => 'Does your sale have to be public?',
-            // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'No: confidential off-market sales exist in Paris. Your property is shown only to qualified buyers from our network, with no listing or portal, and you can widen the exposure whenever you decide.',
-            'point_1' => 'No public listing, no photo online without your agreement',
-            'point_2' => 'Buyers qualified before any viewing (project, timeline, financing)',
-            'point_3' => 'Discretion guaranteed towards neighbours, tenants and co-owners',
+            'title' => 'Access to our exclusive network of buyers',
+            // GEO: a self-contained answer (what + where)
+            'intro' => 'Your property is shared first with our exclusive network of qualified buyers, in Paris and abroad, with no listing or portal. You can widen the exposure whenever you decide.',
+            'point_1' => 'Shared first with our qualified buyers, before any wider exposure',
+            'point_2' => 'An exclusive network, French and international, looking for this kind of property',
+            'point_3' => 'No listing, no photo online: you stay in control of the exposure',
             'photo_alt' => 'Contemporary bedroom with large windows in an apartment sold confidentially by Estate in Paris',
         ],
         'why_eyebrow' => 'Why Estate in Paris',
@@ -767,12 +767,12 @@ return [
             'eyebrow' => 'Our method',
             'title' => 'How do we sell your property?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'A luxury property in Paris sells in three steps: a valuation at market price, professional presentation, then negotiation and signing with a qualified buyer.',
+            'intro' => 'Three steps and one point of contact, from the first visit to the signing at the notary\'s, in Paris.',
             'photo_alt' => 'Terrace of a luxury apartment at sunset overlooking the Eiffel Tower, Paris',
             'items' => [
-                ['title' => 'Valuation', 'text' => 'A value based on actual sales in the neighbourhood and the qualities of your property, delivered within 24 business hours, free and without obligation.'],
-                ['title' => 'Presentation', 'text' => 'Professional photography and video, floor plans, a bilingual presentation file, then targeted exposure or a confidential off-market sale, as you prefer.'],
-                ['title' => 'Negotiation and signing', 'text' => "Viewings with qualified buyers, a report after each one, negotiation of the offer and support through to the deed at the notary's."],
+                ['title' => 'Valuation', 'text' => 'Your advisor visits the property and sets its value on the neighbourhood\'s signed sales, within 24 working hours.'],
+                ['title' => 'Presentation', 'text' => 'Photos, video, floor plans and a bilingual file, then targeted exposure or a confidential sale: you choose.'],
+                ['title' => 'Negotiation and signing', 'text' => 'Qualified visitors, a report after each viewing, the offer negotiated through to the deed.'],
             ],
         ],
         'faq' => [

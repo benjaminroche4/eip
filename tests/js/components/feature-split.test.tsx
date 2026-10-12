@@ -11,14 +11,14 @@ describe('FeatureSplit', () => {
             <FeatureSplit
                 id="split-title"
                 eyebrow="Vente confidentielle"
-                title="Faut-il rendre votre vente publique ?"
+                title="Un accès à notre réseau exclusif d'acquéreurs"
                 intro="Non : Estate in Paris propose la vente confidentielle hors marché à Paris."
                 points={['Aucune annonce publique', 'Acquéreurs qualifiés']}
                 image={{ src: '/img-1600.jpg', srcSet: '/img-800.jpg 800w, /img-1600.jpg 1600w', alt: 'Chambre contemporaine' }}
             />,
         );
 
-        expect(screen.getByRole('region', { name: 'Faut-il rendre votre vente publique ?' })).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: "Un accès à notre réseau exclusif d'acquéreurs" })).toBeInTheDocument();
         expect(screen.getByText(/^Non : Estate in Paris/)).toBeInTheDocument(); // GEO answer-first
         expect(screen.getAllByRole('listitem').map((li) => li.textContent)).toEqual(['Aucune annonce publique', 'Acquéreurs qualifiés']);
         expect(screen.getByRole('img', { name: 'Chambre contemporaine' })).toHaveAttribute('loading', 'lazy');
