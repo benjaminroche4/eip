@@ -97,7 +97,7 @@ export default function NumberedSteps({ id, texts: header, items, photos: pictur
                     {header.title}
                 </h2>
                 {/* GEO: a self-contained sentence (brand + what + where) */}
-                <p className="text-muted-foreground max-w-2xl text-base/7 text-pretty sm:text-sm/6">{header.intro}</p>
+                <p className="text-muted-foreground max-w-2xl text-base/7 text-balance sm:text-sm/6">{header.intro}</p>
             </div>
 
             <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-20">
