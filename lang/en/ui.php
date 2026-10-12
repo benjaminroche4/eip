@@ -57,7 +57,7 @@ return [
             'title' => 'Buy',
             'seo_title' => 'Buy a property',
             'seo_description' => 'Apartments, private mansions and off-market properties: Estate in Paris helps you buy an exceptional home in Paris. Discover our curated selection today.',
-            'intro' => 'Apartments, private mansions and off-market properties hand-picked for you in Paris, with guidance all the way to the purchase.',
+            'intro' => 'Properties selected for you in Paris, and guidance all the way to the purchase.',
         ],
         'newsletter' => [
             'title' => 'Newsletter',

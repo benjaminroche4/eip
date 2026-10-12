@@ -57,7 +57,7 @@ return [
             'title' => 'Acheter',
             'seo_title' => 'Acheter un bien',
             'seo_description' => "Appartements, hôtels particuliers et biens off-market : Estate in Paris vous accompagne pour acheter un bien d'exception à Paris. Découvrez notre sélection.",
-            'intro' => "Appartements, hôtels particuliers et biens off-market sélectionnés pour vous à Paris, avec un accompagnement jusqu'à l'acquisition.",
+            'intro' => "Des biens sélectionnés pour vous à Paris, et un accompagnement jusqu'à l'acquisition.",
         ],
         'newsletter' => [
             'title' => 'Newsletter',
