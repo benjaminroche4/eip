@@ -806,7 +806,7 @@ return [
         'why_negotiation_title' => 'Négociation experte',
         'why_negotiation_text' => "Un conseiller dédié défend vos intérêts, de l'offre à la signature.",
         'why_international_title' => 'Acheteurs internationaux',
-        'why_international_text' => "Visites à distance, procuration, financement : un accompagnement bilingue depuis l'étranger.",
+        'why_international_text' => 'Visites à distance, procuration, financement : un accompagnement bilingue.',
         'why_cta' => 'Parler à un conseiller',
         'strategies' => [
             'eyebrow' => 'Opportunités d\'investissement',

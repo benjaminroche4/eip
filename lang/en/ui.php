@@ -804,7 +804,7 @@ return [
         'why_negotiation_title' => 'Expert negotiation',
         'why_negotiation_text' => 'A dedicated advisor protects your interests, from the offer to the signing.',
         'why_international_title' => 'International buyers',
-        'why_international_text' => 'Remote viewings, power of attorney, financing: bilingual guidance from abroad.',
+        'why_international_text' => 'Remote viewings, power of attorney, financing: bilingual guidance.',
         'why_cta' => 'Talk to an advisor',
         'strategies' => [
             'eyebrow' => 'Investment opportunities',
