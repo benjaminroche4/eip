@@ -808,7 +808,7 @@ return [
         'why_negotiation_text' => "Un conseiller dédié défend vos intérêts, de l'offre à la signature.",
         'why_international_title' => 'Acheteurs internationaux',
         'service_type' => "Accompagnement à l'achat", // JSON-LD Service.serviceType (2026-10-12)
-        'why_international_text' => 'Visites à distance, procuration, financement : un accompagnement dans votre langue.',
+        'why_international_text' => 'Visites à distance, procuration, financement : conseil dans votre langue.',
         'why_cta' => 'Parler à un conseiller',
         'strategies' => [
             'eyebrow' => 'Notre accompagnement',

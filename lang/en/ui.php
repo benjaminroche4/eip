@@ -806,7 +806,7 @@ return [
         'why_negotiation_text' => 'A dedicated advisor protects your interests, from the offer to the signing.',
         'why_international_title' => 'International buyers',
         'service_type' => 'Buyer representation', // JSON-LD Service.serviceType (2026-10-12)
-        'why_international_text' => 'Remote viewings, power of attorney, financing: guidance in your language.',
+        'why_international_text' => 'Remote viewings, power of attorney, financing: advice in your language.',
         'why_cta' => 'Talk to an advisor',
         'strategies' => [
             'eyebrow' => 'How we support you',
