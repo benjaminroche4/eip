@@ -833,7 +833,7 @@ return [
             // GEO: a self-contained answer (brand + what + where)
             'intro' => 'A dedicated advisor, a selection of properties in your image, an intimate knowledge of Paris.',
             'commitment_title' => 'Our commitment',
-            'commitment_text' => 'We guide every buyer from the first viewing to the handover of the keys: tailored selection, negotiation and coordination of the notary, financing and works.',
+            'commitment_text' => 'We guide every buyer from the first viewing to the handover of the keys: tailored selection, negotiation, notary and financing.',
             'advisors_label' => 'Your dedicated advisors',
             'advisors_label' => 'Your dedicated advisors',
             'trusted_sub' => 'From the first viewing to the handover of the keys.',
@@ -842,7 +842,7 @@ return [
             'facts' => [
                 ['key' => 'rating', 'value' => ':rating/5', 'title' => 'Google rating', 'text' => 'Across :count published client reviews.'],
                 ['key' => 'reply', 'value' => '30 min', 'title' => 'Quick callback', 'text' => 'An advisor calls you back within 30 minutes during opening hours.'],
-                ['key' => 'languages', 'value' => 'FR · EN · ES', 'title' => 'Advice in three languages', 'text' => 'French and international buyers guided in French, English or Spanish.'],
+                ['key' => 'languages', 'value' => 'FR · EN · ES', 'title' => 'Advice in three languages', 'text' => 'Guidance in French, English or Spanish.'],
                 ['key' => 'address', 'value' => 'Paris 6th', 'title' => 'Agency in Saint-Germain-des-Prés', 'text' => 'Rue Grégoire de Tours, in the heart of the districts we sell.'],
             ],
             // Four facts that are NOT the hero's key figures (decision 2026-09-22: no duplicate on the same page). Real data only:

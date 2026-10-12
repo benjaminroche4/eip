@@ -835,7 +835,7 @@ return [
             // GEO: a self-contained answer (brand + what + where)
             'intro' => 'Un conseiller dédié, une sélection de biens à votre image, une connaissance intime de Paris.',
             'commitment_title' => 'Notre engagement',
-            'commitment_text' => 'Nous accompagnons chaque acquéreur de la première visite à la remise des clés : sélection sur mesure, négociation et coordination du notaire, du financement et des travaux.',
+            'commitment_text' => 'Nous accompagnons chaque acquéreur de la première visite à la remise des clés : sélection sur mesure, négociation, notaire et financement.',
             'advisors_label' => 'Vos conseillers dédiés',
             'trusted_sub' => 'De la première visite à la remise des clés.',
             // Four facts that are NOT the hero's key figures (decision 2026-09-22: no duplicate on the same page). Real data only:
@@ -843,7 +843,7 @@ return [
             'facts' => [
                 ['key' => 'rating', 'value' => ':rating/5', 'title' => 'Note Google', 'text' => 'Sur :count avis clients publiés.'],
                 ['key' => 'reply', 'value' => '30 min', 'title' => 'Rappel rapide', 'text' => "Un conseiller vous rappelle sous 30 minutes, aux heures d'ouverture."],
-                ['key' => 'languages', 'value' => 'FR · EN · ES', 'title' => 'Conseil en trois langues', 'text' => 'Acquéreurs français et internationaux accompagnés en français, en anglais ou en espagnol.'],
+                ['key' => 'languages', 'value' => 'FR · EN · ES', 'title' => 'Conseil en trois langues', 'text' => 'Un accompagnement en français, en anglais ou en espagnol.'],
                 ['key' => 'address', 'value' => 'Paris 6e', 'title' => 'Agence à Saint-Germain-des-Prés', 'text' => 'Rue Grégoire de Tours, au cœur des quartiers que nous vendons.'],
             ],
         ],
