@@ -21,7 +21,8 @@ return [
 
     'ssr' => [
 
-        'enabled' => (bool) env('INERTIA_SSR_ENABLED', true),
+        // Off unless the environment says so: `true` without an SSR process made the whole site unreachable on 2026-09-16 (audit 2026-10-12)
+        'enabled' => (bool) env('INERTIA_SSR_ENABLED', false),
 
         'url' => env('INERTIA_SSR_URL', 'http://127.0.0.1:13714'),
 
