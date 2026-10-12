@@ -771,7 +771,7 @@ return [
             'title' => 'Comment vendons-nous votre bien ?',
             // GEO: a self-contained answer (brand + what + where)
             'intro' => 'Trois étapes et un seul interlocuteur, de la première visite à la signature chez le notaire, à Paris.',
-            'photo_alt' => "Terrasse d'un appartement de prestige au coucher du soleil avec vue sur la tour Eiffel, Paris",
+            'photo_alt' => 'Séjour lumineux aux canapés beiges ouvert sur les façades haussmanniennes, un appartement vendu à Paris',
             'items' => [
                 ['title' => 'Estimation', 'text' => 'Votre conseiller visite le bien et fixe sa valeur sur les ventes signées du quartier, sous 24 heures ouvrées.'],
                 ['title' => 'Mise en valeur', 'text' => 'Photos, vidéo, plans et dossier bilingue, puis diffusion ciblée ou vente confidentielle : vous choisissez.'],
@@ -815,7 +815,7 @@ return [
             'title' => 'Comment se passe un achat avec nous ?',
             // GEO: a self-contained answer (brand + what + where)
             'intro' => "Un conseiller dédié, de la première conversation à la remise des clés : vous n'avez rien à gérer seul à Paris.",
-            'photo_alt' => 'Séjour lumineux aux canapés beiges ouvert sur les façades haussmanniennes, un appartement à Paris',
+            'photo_alt' => 'Salon aux fauteuils crème sous un lustre circulaire, bibliothèque en arche et cheminée de marbre noir, un appartement à Paris',
             'items' => [
                 ['title' => 'Nous écoutons votre projet', 'text' => 'Quartiers, budget, mode de vie : un échange pour cerner ce que vous cherchez, et ce que vous ne voulez pas.'],
                 ['title' => 'Nous sélectionnons et visitons avec vous', 'text' => 'Seuls les biens qui correspondent, y compris hors marché. Visites groupées sur une même journée si vous venez de loin.'],

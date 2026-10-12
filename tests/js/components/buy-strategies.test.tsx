@@ -24,8 +24,8 @@ describe('BuyStrategies', () => {
         expect(screen.getByText('Notre accompagnement')).toBeInTheDocument();
         const photos = container.querySelectorAll('img');
         expect(photos).toHaveLength(3); // one per strategy
-        expect(photos[0]).toHaveAttribute('src', '/images/sell/process-1-1600.webp');
-        expect(photos[0]).toHaveAccessibleName(/canapés beiges/) // the first Sell interior (other session, 2026-10-12);
+        expect(photos[0]).toHaveAttribute('src', '/images/buy/process-1-1600.webp');
+        expect(photos[0]).toHaveAccessibleName(/lustre circulaire/); // the first Buy interior (2026-10-12)
         expect(photos[1]).toHaveAttribute('alt', ''); // the others are decorative and desktop-only
         expect(photos[1]).toHaveClass('hidden', 'lg:block', 'opacity-0');
         expect(container.querySelectorAll('ul')).toHaveLength(0); // no sentence, no check points over the photo

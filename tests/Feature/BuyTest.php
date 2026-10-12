@@ -47,8 +47,8 @@ class BuyTest extends TestCase
 
         $this->assertFileExists(public_path('images/home/hero-2000.jpg')); // the home hero photo, for now
         foreach ([1, 2, 3] as $i) {
-            $this->assertFileExists(public_path("images/buy/strategies-$i-1600.jpg"));
-            $this->assertFileExists(public_path("images/buy/strategies-$i-800.jpg"));
+            $this->assertFileExists(public_path("images/buy/process-$i-1600.webp"));
+            $this->assertFileExists(public_path("images/buy/process-$i-800.webp"));
         }
         foreach ([1, 2, 3, 4] as $i) {
             $this->assertFileExists(public_path("images/buy/district-$i-1600.webp"));

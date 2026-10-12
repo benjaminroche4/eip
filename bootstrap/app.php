@@ -3,6 +3,7 @@
 use App\Http\Middleware\CanonicalUrl;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\NoSsr;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -29,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Global (before routing) so "/fr/..." and host/scheme variants redirect even when no route matches.
         // Appended, not prepended: it must run AFTER TrustProxies to read the real scheme/host.
         $middleware->append(CanonicalUrl::class);
+
+        // Baseline security headers on every response, redirects and robots.txt included (audit 2026-10-12).
+        $middleware->append(SecurityHeaders::class);
 
         $middleware->web(append: [
             HandleInertiaRequests::class,

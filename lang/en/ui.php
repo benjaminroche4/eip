@@ -813,7 +813,7 @@ return [
             'title' => 'What does buying with us look like?',
             // GEO: a self-contained answer (brand + what + where)
             'intro' => 'A dedicated advisor from the first conversation to the handover of the keys: nothing to handle on your own in Paris.',
-            'photo_alt' => 'Terrace of a luxury apartment at sunset overlooking the Eiffel Tower, Paris',
+            'photo_alt' => 'Living room with cream armchairs under a circular chandelier, arched bookcase and black marble fireplace, an apartment in Paris',
             'items' => [
                 ['title' => 'We listen to your project', 'text' => 'Neighbourhoods, budget, lifestyle: a conversation to pin down what you are looking for, and what you are not.'],
                 ['title' => 'We select and visit with you', 'text' => 'Only the properties that fit, including off-market ones. Viewings grouped on a single day if you come from afar.'],
