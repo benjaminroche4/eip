@@ -67,9 +67,8 @@ final class SitemapBuilder
                 $url = Url::create($this->localized($locale, $page['path']))
                     ->setPriority($page['priority'] ?? 0.5)
                     ->setChangeFrequency($page['freq'] ?? Url::CHANGE_FREQUENCY_WEEKLY);
-                if (isset($page['lastmod'])) {
-                    $url->setLastModificationDate($page['lastmod']);
-                }
+                // Every static page carries a lastmod: the current release by default (audit 2026-10-12: entries had none)
+                $url->setLastModificationDate($page['lastmod'] ?? $this->pagesLastmod());
 
                 foreach ($locales as $alt) {
                     $url->addAlternate($this->localized($alt, $page['path']), $alt);
@@ -254,10 +253,10 @@ final class SitemapBuilder
             ['path' => 'routes.sell', 'priority' => 0.9, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['path' => 'routes.estimate', 'priority' => 0.9, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['path' => 'routes.contact', 'priority' => 0.6, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
-            ['path' => 'routes.newsletter', 'priority' => 0.5, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
-            ['path' => 'routes.about', 'priority' => 0.6, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
-            ['path' => 'routes.districts', 'priority' => 0.7, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
-            ['path' => 'routes.faq', 'priority' => 0.6, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
+            ['path' => 'routes.newsletter', 'priority' => 0.4, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
+            ['path' => 'routes.about', 'priority' => 0.6, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY], // team and figures move
+            ['path' => 'routes.districts', 'priority' => 0.8, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY], // 20 profiles + quarterly prices: a pillar page
+            ['path' => 'routes.faq', 'priority' => 0.7, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['path' => 'routes.blog', 'priority' => 0.7, 'freq' => Url::CHANGE_FREQUENCY_DAILY],
             ['path' => 'routes.privacy', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],
             ['path' => 'routes.legal', 'priority' => 0.2, 'freq' => Url::CHANGE_FREQUENCY_YEARLY],

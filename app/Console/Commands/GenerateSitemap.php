@@ -18,6 +18,13 @@ class GenerateSitemap extends Command
             mkdir($dir, 0775, true);
         }
         foreach ($builder->build() as $file => $sitemap) {
+            // A family that came back empty (Sanity unreachable at generation time) never replaces a previous, fuller file (audit 2026-10-12)
+            $xml = $sitemap->render();
+            if (! str_contains($xml, '<url>') && ! str_contains($xml, '<sitemap>') && file_exists($dir.'/'.$file)) {
+                $this->warn("$file came back empty: previous file kept.");
+
+                continue;
+            }
             $sitemap->writeToFile($dir.'/'.$file);
             $this->line("$file written.");
         }
