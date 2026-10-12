@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { useTranslation } from '@/hooks/use-translation';
+import { formatNumber } from '@/lib/number-locale';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
@@ -64,9 +65,9 @@ function Portrait({ item, className, withPhoto = false }: { item: Testimonial; c
  */
 export default function Testimonials({ items }: TestimonialsProps) {
     const { t, tc } = useTranslation();
-    const { seo } = usePage<SharedData>().props;
+    const { seo, locale } = usePage<SharedData>().props;
     const reviews = seo.reviews;
-    const count = reviews ? tc('testimonials.count_short', reviews.count, { count: reviews.count.toLocaleString('fr-FR') }) : '';
+    const count = reviews ? tc('testimonials.count_short', reviews.count, { count: formatNumber(reviews.count, locale) }) : '';
     const rowRef = useRef<HTMLUListElement>(null);
     // The row can be dragged with the mouse (touch scrolls natively). Below `lg` a card is always centred (snap to
     // centres, side padding = half the viewport minus half a card); from `lg` the snap settles on a card's start
@@ -229,9 +230,16 @@ function QuoteCard({ item }: { item: Testimonial }) {
                         <span className="flex items-center" title={t(`testimonials.source_${item.source ?? 'google'}`)}>
                             {item.source === 'trustpilot' ? (
                                 /* Trustpilot = the full wordmark (star + name), Google = its mark alone — both 16px high (user decision 2026-09-23) */
-                                <img src="/images/social/trustpilot-wordmark.svg" alt="" width={230} height={48} className="h-4 w-auto shrink-0" />
+                                <img
+                                    src="/images/social/trustpilot-wordmark.svg"
+                                    alt=""
+                                    width={230}
+                                    height={48}
+                                    loading="lazy"
+                                    className="h-4 w-auto shrink-0"
+                                />
                             ) : (
-                                <img src="/images/social/google.svg" alt="" width={16} height={16} className="size-4 shrink-0" />
+                                <img src="/images/social/google.svg" alt="" width={16} height={16} loading="lazy" className="size-4 shrink-0" />
                             )}
                             <span className="sr-only">{t(`testimonials.source_${item.source ?? 'google'}`)}</span>
                         </span>
@@ -269,10 +277,11 @@ type RatingColumnProps = {
  * previous / next arrows on one line. Closes the block on mobile.
  */
 function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColumnProps) {
+    const { locale } = usePage<SharedData>().props;
     // « Sur +N avis [G] Google »: the count, then the Google logo right before the visible word (user decision 2026-09-22)
     const google = (
         <span className="inline-flex items-center gap-1.5">
-            {count} <img src="/images/social/google.svg" alt="" width={14} height={14} className="size-3.5 shrink-0" />
+            {count} <img src="/images/social/google.svg" alt="" width={14} height={14} loading="lazy" className="size-3.5 shrink-0" />
             <span>Google</span>
         </span>
     );
@@ -282,7 +291,7 @@ function RatingColumn({ items, reviews, count, onPrevious, onNext }: RatingColum
             <div className="flex flex-col gap-3">
                 <p className="flex items-baseline gap-1.5">
                     <span className="font-heading text-5xl font-semibold tracking-tight tabular-nums sm:text-7xl">
-                        {reviews.rating.toLocaleString('fr-FR')}
+                        {formatNumber(reviews.rating, locale)}
                     </span>
                     <span className="text-muted-foreground text-lg font-medium">/5</span>
                 </p>

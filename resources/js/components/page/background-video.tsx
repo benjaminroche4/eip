@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { useEffect, useRef } from 'react';
+import { preload } from 'react-dom';
 
 type BackgroundVideoProps = {
     /** Path prefix of the four encodings: `{base}-{small}.webm|mp4` (below `sm`) and `{base}-{large}.webm|mp4`. */
@@ -23,6 +24,8 @@ type BackgroundVideoProps = {
 export default function BackgroundVideo({ base, poster, className, widths = [720, 1280] }: BackgroundVideoProps) {
     const [small, large] = widths;
     const ref = useRef<HTMLVideoElement>(null);
+    // The poster is the page's LCP image until the first frame plays: a high-priority preload in the SSR head (audit 2026-10-12)
+    preload(poster, { as: 'image', fetchPriority: 'high' });
 
     useEffect(() => {
         const video = ref.current;
@@ -45,7 +48,7 @@ export default function BackgroundVideo({ base, poster, className, widths = [720
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata" // the poster wins the first bytes (LCP); autoplay fetches the clip right after (audit 2026-10-12)
             poster={poster}
             aria-hidden
             className={cn('animate-hero-photo absolute inset-0 size-full object-cover motion-reduce:animate-none', className)}
