@@ -26,7 +26,7 @@ type Props = {
 /** Listing: centred eyebrow + h1 + answer-first intro (same header as the valuation page), latest post "à la une" on page 1, category tabs, then the grid. */
 export default function BlogIndex({ posts, featured, filter, indexing }: Props) {
     const { t, tc } = useTranslation();
-    const { ziggy } = usePage<SharedData>().props;
+    const { ziggy, seo } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
     const crumbs = [
         { name: t('nav.home'), url: route('home') },
@@ -78,7 +78,13 @@ export default function BlogIndex({ posts, featured, filter, indexing }: Props) 
                 prev={indexing.prev}
                 next={indexing.next}
                 jsonLd={[
-                    { '@type': 'CollectionPage', name: title, url: indexing.canonical },
+                    {
+                        '@type': 'CollectionPage',
+                        name: title,
+                        url: indexing.canonical,
+                        description: category ? t('blog.seo_description_category', { category: category.name }) : t('blog.seo_description'),
+                        inLanguage: seo.locale.replace('_', '-'),
+                    },
                     breadcrumbList(crumbs, origin),
                     itemList(listed.map((p) => ({ name: p.title, url: p.url }))),
                 ]}

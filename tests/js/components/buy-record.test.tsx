@@ -31,7 +31,7 @@ describe('BuyRecord', () => {
         // « FR · EN · ES » is drawn as three flags, the text stays for assistive tech (user decision 2026-09-25, Spanish 2026-10-12)
         expect(within(figures[2]).getByText('FR · EN · ES')).toHaveClass('sr-only');
         expect(figures[2].querySelectorAll('.h-6.w-9')).toHaveLength(3); // FR, GB, ES flags (decorative)
-        expect(figures[2].querySelectorAll('span[aria-hidden] svg')).toHaveLength(3); // three flags since Spanish (2026-10-12)
+        expect(figures[2].querySelectorAll('img[src^="/images/flags/"]')).toHaveLength(3); // three static flags since Spanish (2026-10-12), decorative
         expect(screen.queryByText('450 M€+')).not.toBeInTheDocument(); // the hero's figures are not repeated here
         expect(figures[1].querySelector('svg')).toHaveAttribute('aria-hidden');
         expect(figures[3].className).toMatch(/animate-hero-rise|opacity-0/); // cascade on reveal

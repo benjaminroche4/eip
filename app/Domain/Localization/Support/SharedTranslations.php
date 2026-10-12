@@ -23,7 +23,7 @@ final class SharedTranslations
         'buy' => ['buy', 'faq', 'testimonials'],
         'sell' => ['sell', 'faq', 'testimonials', 'stories'], // stories: the home's photo row (arrow labels)
         'estimate' => ['estimate', 'contact'],
-        'contact' => ['contact'],
+        'contact' => ['contact', 'faq'],
         'newsletter' => ['newsletter', 'contact'],
         'about' => ['about', 'team', 'values', 'testimonials'],
         'faq' => ['faq'],

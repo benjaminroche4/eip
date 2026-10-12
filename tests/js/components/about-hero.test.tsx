@@ -16,7 +16,7 @@ describe('AboutHero', () => {
         // The owner's portrait clip in place of the photo (2026-09-23): decorative, poster = its first frame, alt kept as a hidden caption
         const clip = container.querySelector('video')!;
         expect(clip).toHaveAttribute('aria-hidden');
-        expect(clip).toHaveAttribute('poster', '/images/about/hero-poster-856.jpg');
+        expect(clip).toHaveAttribute('poster', '/images/about/hero-poster-856.webp');
         expect(Array.from(clip.querySelectorAll('source')).map((s) => s.getAttribute('src'))).toEqual([
             '/videos/about/hero-640.webm',
             '/videos/about/hero-640.mp4',
@@ -62,7 +62,7 @@ describe('AboutHero', () => {
         expect(screen.getByRole('heading', { level: 2 }).closest('.animate-reel-in-down')).not.toBeNull();
         fireEvent.pointerDown(card, { clientY: 100 });
         fireEvent.pointerUp(card, { clientY: 180 });
-        expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Un accompagnement en français et en anglais'); // wraps around
+        expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Un accompagnement en français, en anglais et en espagnol'); // wraps around
 
         // Mouse wheel over the card: on the last message a notch down is NOT trapped (no wrap): the page scrolls on (2026-09-22)
         const past = new WheelEvent('wheel', { deltaY: 120, cancelable: true, bubbles: true });
@@ -70,7 +70,7 @@ describe('AboutHero', () => {
             card.dispatchEvent(past);
         });
         expect(past.defaultPrevented).toBe(false);
-        expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Un accompagnement en français et en anglais');
+        expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Un accompagnement en français, en anglais et en espagnol');
         // A notch up = previous message, with a cooldown; the page does not scroll meanwhile
         const wheel = new WheelEvent('wheel', { deltaY: -120, cancelable: true, bubbles: true });
         act(() => {

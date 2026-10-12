@@ -67,8 +67,9 @@ class SeoTest extends TestCase
         $this->assertStringNotContainsString('<url>', $index, 'the index only lists sitemaps');
 
         $pages = file_get_contents($this->sitemapPath('sitemap.pages.xml'));
-        $this->assertStringContainsString('<loc>'.url('/recherche').'</loc>', $pages);
-        $this->assertStringContainsString('<loc>'.url('/en/search').'</loc>', $pages);
+        $this->assertStringContainsString('<loc>'.url('/contact').'</loc>', $pages);
+        $this->assertStringContainsString('<loc>'.url('/en/contact').'</loc>', $pages);
+        $this->assertStringNotContainsString('<loc>'.url('/recherche').'</loc>', $pages, 'the search page runs on a placeholder dataset: out of the sitemap (audit 2026-10-12)');
         $this->assertStringContainsString('hreflang="x-default"', $pages);
         $this->assertStringNotContainsString('<loc>'.url('/blog').'/', $pages, 'articles live in the blog sitemap'); // url() trims the trailing slash
     }

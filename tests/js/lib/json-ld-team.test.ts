@@ -17,11 +17,11 @@ describe('team JSON-LD (About page E-E-A-T)', () => {
             name: 'Julien L.',
             jobTitle: 'Conseiller senior',
             image: 'https://example.test/images/team/member-1.webp',
-            knowsLanguage: ['fr', 'en'],
+            knowsLanguage: ['fr', 'en', 'es'],
             worksFor: { '@id': 'https://example.test/#organization' },
         });
         expect(nodes[1].image).toBe('https://cdn.example/eva.jpg'); // absolute URLs kept as is
-        expect(nodes[1].knowsLanguage).toEqual(['fr', 'en']); // the whole team is bilingual
+        expect(nodes[1].knowsLanguage).toEqual(['fr', 'en', 'es']); // the whole team works in three languages
     });
 
     it('lists the advisors as employees of the organisation node', () => {

@@ -29,7 +29,7 @@ export default function LanguageSwitcher({ className, compact = false }: Languag
                 {localization.current}
                 <ChevronDown
                     aria-hidden
-                    className="text-muted-foreground size-3.5 transition-transform duration-300 group-data-[state=open]:rotate-180"
+                    className="text-muted-foreground size-3.5 transition-transform duration-300 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
                 />
             </DropdownMenuTrigger>
             <DropdownMenuContent

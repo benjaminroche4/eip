@@ -249,7 +249,7 @@ final class SitemapBuilder
     {
         return [
             ['path' => '/', 'priority' => 1.0, 'freq' => Url::CHANGE_FREQUENCY_WEEKLY],
-            ['path' => 'routes.search', 'priority' => 0.8, 'freq' => Url::CHANGE_FREQUENCY_DAILY],
+            // `/recherche` stays out until it runs on real data (placeholder dataset in Domain/Search, audit 2026-10-12)
             ['path' => 'routes.buy', 'priority' => 0.9, 'freq' => Url::CHANGE_FREQUENCY_WEEKLY],
             ['path' => 'routes.sell', 'priority' => 0.9, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],
             ['path' => 'routes.estimate', 'priority' => 0.9, 'freq' => Url::CHANGE_FREQUENCY_MONTHLY],

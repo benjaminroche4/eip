@@ -17,7 +17,7 @@ export default function SellHero({ stats, video, ref }: SellHeroProps) {
             id="sell-title"
             href={route('estimate')}
             photo={{ src: '/images/sell/photo-{w}.jpg', widths: [800, 1600], width: 1600, height: 630 }}
-            backgroundVideo={{ base: '/videos/sell/hero', poster: '/images/sell/hero-poster-1280.jpg' }}
+            backgroundVideo={{ base: '/videos/sell/hero', poster: '/images/sell/hero-poster-1280.webp' }}
             stats={stats}
             video={video}
             texts={{

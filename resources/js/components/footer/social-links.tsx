@@ -31,6 +31,7 @@ export default function SocialLinks({ className }: SocialLinksProps) {
                             alt=""
                             width={14}
                             height={14}
+                            loading="lazy"
                             className="size-3.5 invert transition-[filter] duration-300 group-hover:invert-0 group-focus-visible:invert-0 motion-reduce:transition-none"
                         />
                     </a>

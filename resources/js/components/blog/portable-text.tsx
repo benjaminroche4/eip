@@ -91,6 +91,9 @@ function Node({ node }: { node: PortableNode }) {
         return <YoutubeEmbed id={id} title={node.shortDescription ?? 'YouTube'} caption={node.shortDescription} />;
     }
 
+    // An empty heading block (a stray style on an empty line in Sanity) renders nothing: no empty <h2>/<h3> in the outline (audit 2026-10-12)
+    if (['h2', 'h3', 'h4'].includes(node.style ?? '') && !node.children.some((c) => c.text.trim())) return null;
+
     switch (node.style) {
         case 'h2':
             return (

@@ -45,7 +45,6 @@ class BuyTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('buy')->where('translations.buy.headline', 'Buy the property that suits you in Paris'));
 
-        $this->assertFileExists(public_path('images/home/hero-2000.jpg')); // the home hero photo, for now
         foreach ([1, 2, 3] as $i) {
             $this->assertFileExists(public_path("images/buy/process-$i-1600.webp"));
             $this->assertFileExists(public_path("images/buy/process-$i-800.webp"));
@@ -63,7 +62,7 @@ class BuyTest extends TestCase
             $this->assertFileExists($path);
             $this->assertLessThan(3 * 1024 * 1024, filesize($path), "$file must stay under 3 MB (hero background, performance)");
         }
-        $this->assertFileExists(public_path('images/buy/hero-poster-1280.jpg'));
+        $this->assertFileExists(public_path('images/buy/hero-poster-1280.webp'));
     }
 
     public function test_buy_page_exposes_the_configured_video_id(): void

@@ -35,6 +35,14 @@ class CanonicalUrl
             }
         }
 
+        // The front controller never appears in a URL: « /index.php » and « /index.php/contact » are the bare paths (audit 2026-10-12)
+        // Symfony already strips the script name from `getPathInfo()`: the raw request URI is the one to look at
+        $raw = (string) parse_url($request->getRequestUri(), PHP_URL_PATH);
+        if ($raw === '/index.php' || str_starts_with($raw, '/index.php/')) {
+            // Absolute target: a relative one would be generated under the request's base URL, i.e. « /index.php » again (loop)
+            return redirect()->to($request->getSchemeAndHttpHost().'/'.ltrim(substr($raw, strlen('/index.php')), '/').$suffix, 301);
+        }
+
         if (! app()->isProduction()) {
             return $next($request);
         }

@@ -270,7 +270,10 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
                                     aria-label={t('property.gallery_prev')}
                                     className="group absolute left-2 active:scale-90 sm:left-4"
                                 >
-                                    <ChevronLeft aria-hidden className="transition-transform group-active:-translate-x-0.5" />
+                                    <ChevronLeft
+                                        aria-hidden
+                                        className="transition-transform group-active:-translate-x-0.5 motion-reduce:transition-none"
+                                    />
                                 </Button>
                                 <Button
                                     type="button"
@@ -280,7 +283,10 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
                                     aria-label={t('property.gallery_next')}
                                     className="group absolute right-2 active:scale-90 sm:right-4"
                                 >
-                                    <ChevronRight aria-hidden className="transition-transform group-active:translate-x-0.5" />
+                                    <ChevronRight
+                                        aria-hidden
+                                        className="transition-transform group-active:translate-x-0.5 motion-reduce:transition-none"
+                                    />
                                 </Button>
                             </>
                         )}

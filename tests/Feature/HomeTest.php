@@ -82,7 +82,7 @@ class HomeTest extends TestCase
         $this->fakeSanity();
         $this->get('/en')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('home')->where('translations.home.trust_title_2', 'One trusted advisor.')->where('testimonials.1.context', 'Bought a family apartment in Paris 6'));
+            ->assertInertia(fn (Assert $p) => $p->component('home')->where('translations.home.trust_title_2', 'One trusted advisor.')->where('testimonials.1.context', 'Bought a family apartment in Paris 6th'));
     }
 
     public function test_home_hides_the_blog_preview_when_sanity_fails(): void

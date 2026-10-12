@@ -25,7 +25,7 @@ describe('SellHero', () => {
         // The owner's clip in place of the photo (2026-09-23): decorative, poster = its first frame, the alt kept as a hidden caption
         const clip = container.querySelector('video')!;
         expect(clip).toHaveAttribute('aria-hidden');
-        expect(clip).toHaveAttribute('poster', '/images/sell/hero-poster-1280.jpg');
+        expect(clip).toHaveAttribute('poster', '/images/sell/hero-poster-1280.webp');
         expect(clip.querySelectorAll('source')[2]).toHaveAttribute('src', '/videos/sell/hero-1280.webm');
         expect(container.querySelector('img')).toBeNull();
         expect(screen.getByText(/tour Eiffel/)).toHaveClass('sr-only');

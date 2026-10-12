@@ -70,7 +70,7 @@ export default function BlogRelated({ posts, header, cta }: BlogRelatedProps) {
                 {posts.map((post) => (
                     // Mobile: the last card snaps on its end, otherwise its start lies past the maximum scroll and it stays cut (2026-09-22)
                     <li key={post.id} data-url={post.url} className="flex snap-start max-sm:last:snap-end">
-                        <BlogPostCard post={post} />
+                        <BlogPostCard post={post} headingLevel="h3" />
                     </li>
                 ))}
             </ul>

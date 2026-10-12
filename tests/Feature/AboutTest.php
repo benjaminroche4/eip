@@ -48,14 +48,13 @@ class AboutTest extends TestCase
 
         $this->get('/en/a-propos')->assertNotFound();
 
-        $this->assertFileExists(public_path('images/about/hero-1400.jpg'));
         $this->assertFileExists(public_path('images/about/hero-800.jpg'));
         foreach (['hero-856.webm', 'hero-856.mp4', 'hero-640.webm', 'hero-640.mp4'] as $file) {
             $path = public_path("videos/about/$file");
             $this->assertFileExists($path);
             $this->assertLessThan(3 * 1024 * 1024, filesize($path), "$file must stay under 3 MB (hero background, performance)");
         }
-        $this->assertFileExists(public_path('images/about/hero-poster-856.jpg'));
+        $this->assertFileExists(public_path('images/about/hero-poster-856.webp'));
         foreach (range(1, 8) as $i) {
             $this->assertFileExists(public_path("images/team/member-$i.webp")); // the eight portraits, matched by name with Relocation in Paris (2026-10-11)
         }

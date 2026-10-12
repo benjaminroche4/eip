@@ -6,14 +6,18 @@ import BlogCategoryPill from './blog-category-pill';
 import BlogPostMeta from './blog-post-meta';
 import { type BlogPostSummary } from './types';
 
-type BlogPostCardProps = { post: BlogPostSummary };
+type BlogPostCardProps = {
+    post: BlogPostSummary;
+    /** `h3` inside a block that already carries an `h2` (related posts on the home / article pages), `h2` on the blog index under the h1 (SEO audit 2026-10-12). */
+    headingLevel?: 'h2' | 'h3';
+};
 
 /**
  * Article card (user decision 2026-09-15, ui.sh variant "Pilule sur la photo" refined): light frame, inset photo with a
  * glass category pill (dot in the category colour) over a soft top shade, author avatar + name · short date, title clamped to two lines,
  * excerpt, then a discreet "read" link with an arrow. Hover = the frame darkens and the photo zooms (no underline on links).
  */
-export default function BlogPostCard({ post }: BlogPostCardProps) {
+export default function BlogPostCard({ post, headingLevel: Heading = 'h2' }: BlogPostCardProps) {
     const { t } = useTranslation();
 
     return (
@@ -27,7 +31,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
                             sizes="(min-width: 1024px) 24rem, (min-width: 640px) 50vw, 100vw"
                             width={post.image.width}
                             height={post.image.height}
-                            alt=""
+                            alt={post.image.alt}
                             className="aspect-[3/2] w-full object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none"
                         />
                         {/* Soft shade so the pill stays readable on a light photo. */}
@@ -40,11 +44,11 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
             </div>
             <div className="flex flex-1 flex-col gap-3 p-5 pt-3">
                 <BlogPostMeta post={post} />
-                <h2 className="line-clamp-2 text-lg font-medium">
+                <Heading className="line-clamp-2 text-lg font-medium">
                     <Link href={post.url} prefetch className="focus-ring">
                         {post.title}
                     </Link>
-                </h2>
+                </Heading>
                 {post.excerpt && (
                     <p className="text-muted-foreground line-clamp-3 text-base/7 text-pretty sm:line-clamp-2 sm:text-sm/6">{post.excerpt}</p>
                 )}

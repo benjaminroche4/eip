@@ -25,12 +25,16 @@ export default function EstimateSuccess({ message }: EstimateSuccessProps) {
     const advisor = seo.advisor;
     const reference = flash.valuationReference;
 
+    const copiedTimer = useRef<number | undefined>(undefined);
+    useEffect(() => () => window.clearTimeout(copiedTimer.current), []); // no state update after unmount (audit 2026-10-12)
+
     const copy = async () => {
         if (!reference) return;
         try {
             await navigator.clipboard.writeText(reference);
             setCopied(true);
-            window.setTimeout(() => setCopied(false), 2000);
+            window.clearTimeout(copiedTimer.current);
+            copiedTimer.current = window.setTimeout(() => setCopied(false), 2000);
         } catch {
             /* clipboard unavailable: the reference stays visible anyway */
         }

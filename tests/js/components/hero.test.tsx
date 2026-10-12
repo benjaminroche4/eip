@@ -40,7 +40,7 @@ describe('Hero', () => {
         expect(screen.getByRole('list', { name: 'Nos engagements' })).toHaveClass('overflow-x-auto', 'snap-x', 'snap-mandatory', 'cursor-grab'); // one line: snap carousel, draggable with the mouse on mobile
         expect(values[0]).toHaveClass('snap-center');
         expect(values[1].querySelector('span[aria-hidden]')).toHaveClass('via-white/60', 'bg-linear-to-b'); // gradient hairline separators, at every width
-        expect(container.querySelector('video')).toHaveAttribute('poster', '/images/home/hero-1200.jpg'); // the photo only as the video's poster
+        expect(container.querySelector('video')).toHaveAttribute('poster', '/images/home/hero-poster-1200.webp'); // the photo only as the video's poster
         expect(container.querySelector('img')).toBeNull(); // no separate photo fading into the video
         // Reveal on load: the photo settles from a zoom, the row rises first in the cascade
         expect(container.querySelector('video')).toHaveClass('animate-hero-photo');

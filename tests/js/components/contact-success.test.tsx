@@ -14,7 +14,7 @@ describe('ContactSuccess', () => {
         const card = screen.getByRole('region', { name: 'Votre conseiller' });
         expect(within(card).getByText('Maris Moreau')).toBeInTheDocument();
         expect(within(card).getByText('Conseillère senior')).toBeInTheDocument();
-        expect(within(card).getByRole('img', { name: 'Parle français et anglais' })).toBeInTheDocument();
+        expect(within(card).getByRole('img', { name: 'Parle français, anglais et espagnol' })).toBeInTheDocument();
         expect(within(card).getByText('Il vous contactera dans un délai de :')).toBeInTheDocument();
         expect(within(card).getByText('30 minutes maximum')).toBeInTheDocument();
         expect(within(card).getByText("Durant les heures d'ouverture.")).toBeInTheDocument();

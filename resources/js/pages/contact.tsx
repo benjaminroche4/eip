@@ -1,10 +1,12 @@
 import ContactDetails from '@/components/contact/contact-details';
 import ContactForm from '@/components/contact/contact-form';
+import FaqTeaser, { type FaqTeaserData } from '@/components/page/faq-teaser';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
-import { breadcrumbList, contactPage } from '@/lib/json-ld';
+import { stripFaqMarkup } from '@/lib/faq-markup';
+import { breadcrumbList, contactPage, faqPage } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
@@ -14,10 +16,12 @@ type ContactProps = {
         topic: string;
         message: string;
     } | null;
+    /** First six « working » questions (FAQ teaser + FAQPage JSON-LD, 2026-10-12). */
+    faq: FaqTeaserData;
 };
 
 /** Contact page (Figma 261-7354 desktop / 131-5711 mobile): intro + details on the left, consultation form on the right. */
-export default function Contact({ topics, prefill }: ContactProps) {
+export default function Contact({ topics, prefill, faq }: ContactProps) {
     const { t } = useTranslation();
     const { ziggy, seo } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
@@ -31,9 +35,13 @@ export default function Contact({ topics, prefill }: ContactProps) {
             <SeoHead
                 title={t('pages.contact.seo_title')}
                 description={t('pages.contact.seo_description')}
-                jsonLd={[contactPage(seo, origin, route('contact'), t('pages.contact.seo_title')), breadcrumbList(crumbs, origin)]}
+                jsonLd={[
+                    contactPage(seo, origin, route('contact'), t('pages.contact.seo_title')),
+                    breadcrumbList(crumbs, origin),
+                    faqPage(faq.items.map((i) => ({ question: i.question, answer: stripFaqMarkup(i.answer) }))),
+                ]}
             />
-            <PublicLayout>
+            <PublicLayout className="flex flex-col gap-20 sm:gap-28">
                 {/* Mobile: intro → form → details. Desktop: intro + details in the left column, form spanning both rows on the right. */}
                 <div className="grid gap-10 lg:grid-cols-5 lg:grid-rows-[auto_1fr] lg:gap-x-20 lg:gap-y-12 lg:px-10">
                     <div className="flex flex-col gap-4 text-center lg:col-span-2 lg:text-left">
@@ -48,6 +56,18 @@ export default function Contact({ topics, prefill }: ContactProps) {
                         <ContactDetails />
                     </div>
                 </div>
+
+                {/* GEO: the « working with us » questions (contact, languages, properties, confidentiality…), FAQPage JSON-LD above (2026-10-12) */}
+                <FaqTeaser
+                    id="contact-faq-title"
+                    texts={{
+                        eyebrow: t('contact.faq.eyebrow'),
+                        title: t('contact.faq.title'),
+                        intro: t('contact.faq.intro'),
+                        all: t('contact.faq.all'),
+                    }}
+                    faq={faq}
+                />
             </PublicLayout>
         </>
     );

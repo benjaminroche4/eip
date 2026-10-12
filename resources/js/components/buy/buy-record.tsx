@@ -1,5 +1,4 @@
 import { type BuyStat } from '@/components/buy/buy-hero';
-import CountryFlag from '@/components/i18n/country-flag';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useReveal } from '@/hooks/use-reveal';
@@ -112,9 +111,10 @@ export default function BuyRecord({ facts }: BuyRecordProps) {
                                     {stat.key === 'languages' ? (
                                         // Flags instead of « FR · EN · ES » (user decision 2026-09-25, Spanish added 2026-10-12); the text stays for assistive tech
                                         <p className="flex items-center gap-2">
-                                            <CountryFlag country="FR" className="h-6 w-9" />
-                                            <CountryFlag country="GB" className="h-6 w-9" />
-                                            <CountryFlag country="ES" className="h-6 w-9" />
+                                            {/* Three static SVGs (`public/images/flags/`): the phone picker's 250-flag bundle (52 kB gzip) was loaded for these three, audit 2026-10-12 */}
+                                            <img src="/images/flags/fr.svg" alt="" width={36} height={24} className="h-6 w-9" />
+                                            <img src="/images/flags/gb.svg" alt="" width={36} height={24} className="h-6 w-9" />
+                                            <img src="/images/flags/es.svg" alt="" width={36} height={24} className="h-6 w-9" />
                                             <span className="sr-only">{stat.value}</span>
                                         </p>
                                     ) : (

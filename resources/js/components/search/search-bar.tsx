@@ -421,16 +421,20 @@ export default function SearchBar({
     const id = useId();
     // A removed pill fades and shrinks for 200 ms before leaving (immediately under reduced motion)
     const [leaving, setLeaving] = useState<number[]>([]);
+    const leaveTimers = useRef(new Set<number>());
+    useEffect(() => () => leaveTimers.current.forEach((t) => window.clearTimeout(t)), []); // pill-out timers never update an unmounted bar (audit 2026-10-12)
     const removeCity = (n: number) => {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             setCities((c) => c.filter((x) => x !== n));
             return;
         }
         setLeaving((l) => [...l, n]);
-        window.setTimeout(() => {
-            setCities((c) => c.filter((x) => x !== n));
-            setLeaving((l) => l.filter((x) => x !== n));
-        }, 200);
+        leaveTimers.current.add(
+            window.setTimeout(() => {
+                setCities((c) => c.filter((x) => x !== n));
+                setLeaving((l) => l.filter((x) => x !== n));
+            }, 200),
+        );
     };
     const toggleCity = (n: number | null) => {
         if (n === null) setCities([]);

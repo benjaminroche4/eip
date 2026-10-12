@@ -45,7 +45,7 @@ class ContactFormTest extends TestCase
     {
         $this->get('/contact')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('contact')->where('topics', ['buy', 'sell', 'valuation', 'other']));
+            ->assertInertia(fn (Assert $p) => $p->component('contact')->has('faq.items', 6)->where('topics', ['buy', 'sell', 'valuation', 'other']));
 
         foreach (['fr', 'en'] as $locale) {
             app()->setLocale($locale);

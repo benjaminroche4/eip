@@ -13,7 +13,7 @@ describe('HeroVideo', () => {
         expect(video).toHaveAttribute('loop');
         expect(video).toHaveAttribute('playsinline');
         expect(video).toHaveAttribute('autoplay');
-        expect(video).toHaveAttribute('poster', '/images/home/hero-1200.jpg');
+        expect(video).toHaveAttribute('poster', '/images/home/hero-poster-1200.webp');
         expect(video.muted).toBe(true);
         expect(video).not.toHaveClass('opacity-0'); // shown at once, no fade from a photo
         expect(Array.from(container.querySelectorAll('source')).map((s) => s.getAttribute('src'))).toEqual([

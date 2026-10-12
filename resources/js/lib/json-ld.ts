@@ -314,7 +314,7 @@ export function teamNodes(members: { name: string; role: string; photo: string; 
         name: member.name,
         jobTitle: member.role,
         image: member.photo.startsWith('http') ? member.photo : `${origin}${member.photo}`,
-        knowsLanguage: ['fr', 'en'],
+        knowsLanguage: ['fr', 'en', 'es'], // the whole team works in French, English and Spanish (2026-10-12)
         ...(member.area ? { knowsAbout: member.area } : {}), // favourite district (2026-10-11)
         worksFor: { '@id': `${origin}/#organization` },
     }));

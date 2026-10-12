@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Contact\Actions\SendContactMessage;
 use App\Domain\Contact\Data\ContactMessage;
+use App\Domain\Content\Actions\ExcerptFaqCategory;
 use App\Domain\Content\Actions\ListArrondissements;
 use App\Domain\Properties\Actions\ShowProperty;
 use App\Http\Requests\ContactRequest;
@@ -14,9 +15,13 @@ use Inertia\Response;
 
 class ContactController extends Controller
 {
-    public function show(Request $request, ListArrondissements $arrondissements): Response
+    public function show(Request $request, ListArrondissements $arrondissements, ExcerptFaqCategory $faq): Response
     {
-        return Inertia::render('contact', ['topics' => ContactMessage::TOPICS, 'prefill' => $this->prefill($request, $arrondissements)]);
+        return Inertia::render('contact', [
+            'topics' => ContactMessage::TOPICS,
+            'prefill' => $this->prefill($request, $arrondissements),
+            'faq' => $faq('working', 6)->toArray(), // « Travailler avec… » : contact, langues, biens, confidentialité… (GEO, 2026-10-12)
+        ]);
     }
 
     /**

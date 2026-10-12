@@ -31,6 +31,7 @@ export default function BrandLogo({ className, priority = false, light = false }
                 width={112}
                 height={28}
                 className={cn('hidden h-6.5 w-auto sm:hidden dark:block', light && 'block')}
+                loading={light ? undefined : 'lazy'} // hidden in light mode: no preload hoisted for it (audit 2026-10-12)
             />
             {/* Desktop */}
             <img
@@ -47,6 +48,7 @@ export default function BrandLogo({ className, priority = false, light = false }
                 width={213}
                 height={24}
                 className={cn('hidden h-5.5 w-auto dark:sm:block', light && 'sm:max-lg:block')}
+                loading={light ? undefined : 'lazy'}
             />
         </span>
     );

@@ -64,6 +64,6 @@ class SellTest extends TestCase
             $this->assertFileExists($path);
             $this->assertLessThan(3 * 1024 * 1024, filesize($path), "$file must stay under 3 MB (hero background, performance)");
         }
-        $this->assertFileExists(public_path('images/sell/hero-poster-1280.jpg'));
+        $this->assertFileExists(public_path('images/sell/hero-poster-1280.webp'));
     }
 }

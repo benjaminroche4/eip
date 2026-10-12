@@ -22,7 +22,7 @@ export default function LanguageLinks({ className }: LanguageLinksProps) {
                         lang={l.code}
                         aria-current={l.current ? 'page' : undefined}
                         className={cn(
-                            'focus-ring rounded-none px-4 py-3 transition-opacity',
+                            'focus-ring rounded-none px-4 py-3 transition-opacity motion-reduce:transition-none',
                             l.current ? 'text-foreground' : 'text-muted-foreground opacity-50 hover:opacity-100',
                         )}
                     >

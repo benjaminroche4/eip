@@ -1,6 +1,7 @@
 import GoogleReviewsLink from '@/components/page/google-reviews-link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useTranslation } from '@/hooks/use-translation';
+import { formatNumber } from '@/lib/number-locale';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
@@ -28,6 +29,7 @@ export default function ProofLine({ align = 'center', className }: ProofLineProp
     const { t, tc } = useTranslation();
     const { seo } = usePage<SharedData>().props;
     const reviews = seo.reviews;
+    const { locale } = usePage<SharedData>().props;
 
     if (!reviews) return null;
 
@@ -50,9 +52,9 @@ export default function ProofLine({ align = 'center', className }: ProofLineProp
                     ))}
                 </span>
                 <p className="text-muted-foreground text-sm">
-                    <span className="text-foreground font-semibold tabular-nums">{reviews.rating.toLocaleString('fr-FR')}/5</span>{' '}
+                    <span className="text-foreground font-semibold tabular-nums">{formatNumber(reviews.rating, locale)}/5</span>{' '}
                     <GoogleReviewsLink href={reviews.url}>
-                        {tc('testimonials.based_on', reviews.count, { count: reviews.count.toLocaleString('fr-FR') })} Google
+                        {tc('testimonials.based_on', reviews.count, { count: formatNumber(reviews.count, locale) })} Google
                     </GoogleReviewsLink>
                 </p>
             </div>

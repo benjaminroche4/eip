@@ -1,5 +1,4 @@
 import FormField from '@/components/contact/form-field';
-import PhoneInput from '@/components/contact/phone-input';
 import { type Property } from '@/components/properties/property-card';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,7 +9,10 @@ import { useTranslation } from '@/hooks/use-translation';
 import { type SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
 import { ArrowUpRight, CalendarCheck, CircleCheckBig, X } from 'lucide-react';
-import { type FormEvent, useEffect, useId, useRef, useState } from 'react';
+import { type FormEvent, lazy, Suspense, useEffect, useId, useRef, useState } from 'react';
+
+/** The phone field with its country picker (libphonenumber + cmdk + 250 flags, ~110 kB gzip) is fetched when the dialog opens, never with the property page (audit 2026-10-12). */
+const PhoneInput = lazy(() => import('@/components/contact/phone-input'));
 
 type VisitFormData = {
     first_name: string;
@@ -161,7 +163,21 @@ export default function VisitForm({ property, reference }: VisitFormProps) {
                             )}
                         </FormField>
                         <FormField id={`${id}-phone`} label={t('contact.phone')} error={errors.phone} required>
-                            {(aria) => <PhoneInput {...aria} name="phone" value={data.phone} onChange={(v) => setData('phone', v)} />}
+                            {(aria) => (
+                                <Suspense
+                                    fallback={
+                                        <Input
+                                            {...aria}
+                                            type="tel"
+                                            name="phone"
+                                            value={data.phone}
+                                            onChange={(e) => setData('phone', e.target.value)}
+                                        />
+                                    }
+                                >
+                                    <PhoneInput {...aria} name="phone" value={data.phone} onChange={(v) => setData('phone', v)} />
+                                </Suspense>
+                            )}
                         </FormField>
                         <FormField id={`${id}-message`} label={t('contact.message')} error={errors.message} optional>
                             {(aria) => <Textarea {...aria} name="note" rows={3} value={note} onChange={(e) => setNote(e.target.value)} />}

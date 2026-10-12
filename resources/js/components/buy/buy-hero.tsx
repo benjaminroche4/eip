@@ -13,7 +13,7 @@ export default function BuyHero({ stats, video }: BuyHeroProps) {
             id="buy-title"
             href={route('contact')}
             photo={{ src: '/images/home/hero-{w}.jpg', widths: [800, 1200, 2000, 2800], width: 2000, height: 1269 }}
-            backgroundVideo={{ base: '/videos/buy/hero', poster: '/images/buy/hero-poster-1280.jpg' }}
+            backgroundVideo={{ base: '/videos/buy/hero', poster: '/images/buy/hero-poster-1280.webp' }}
             stats={stats}
             video={video}
             texts={{

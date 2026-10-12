@@ -60,6 +60,7 @@ export default function ContactSuccess({ message }: ContactSuccessProps) {
                                     <span role="img" aria-label={t('contact.advisor_languages')} className="flex items-center gap-1">
                                         <CountryFlag country="FR" />
                                         <CountryFlag country="GB" />
+                                        <CountryFlag country="ES" />
                                     </span>
                                 </p>
                                 {advisor.role && <p className="text-muted-foreground text-sm">{advisor.role}</p>}

@@ -274,6 +274,8 @@ export default function ParisMap({ items, selected, onSelect, className }: Paris
                     <img
                         src="/images/home/hero-800.jpg"
                         alt=""
+                        width={800}
+                        height={507}
                         loading="lazy"
                         decoding="async"
                         className="size-full scale-110 object-cover opacity-70 blur-2xl saturate-50"

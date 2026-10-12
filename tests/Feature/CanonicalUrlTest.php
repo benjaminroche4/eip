@@ -43,4 +43,11 @@ class CanonicalUrlTest extends TestCase
         $this->get('/fr//evil.com/x?a=1')->assertRedirect('/evil.com/x?a=1');
         $this->get('/fr/contact')->assertRedirect('/contact');
     }
+
+    public function test_the_front_controller_path_is_redirected_to_the_bare_url(): void
+    {
+        // The target is absolute on the request's host (a relative one would be generated under « /index.php » again)
+        $this->get('https://www.example.test/index.php')->assertRedirect('https://www.example.test/')->assertStatus(301);
+        $this->get('https://www.example.test/index.php/contact?district=6')->assertRedirect('https://www.example.test/contact?district=6')->assertStatus(301);
+    }
 }

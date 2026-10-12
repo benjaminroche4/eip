@@ -2,6 +2,7 @@ import GoogleReviewsLink from '@/components/page/google-reviews-link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
+import { formatNumber } from '@/lib/number-locale';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { ArrowUpRight } from 'lucide-react';
@@ -29,6 +30,7 @@ export default function TrustIntro({ figure }: TrustIntroProps) {
     const { t, tc } = useTranslation();
     const { seo } = usePage<SharedData>().props;
     const reviews = seo.reviews;
+    const { locale } = usePage<SharedData>().props;
 
     return (
         <section
@@ -57,9 +59,9 @@ export default function TrustIntro({ figure }: TrustIntroProps) {
                         {/* Google logo (brand mark as <img>, like the testimonials block) instead of the Figma's star; « Google » stays for screen readers */}
                         <p className="flex items-center gap-2 text-sm">
                             <img src="/images/social/google.svg" alt="" width={16} height={16} className="size-4 shrink-0" />
-                            <span className="font-medium tabular-nums">{reviews.rating.toLocaleString('fr-FR')}/5</span>
+                            <span className="font-medium tabular-nums">{formatNumber(reviews.rating, locale)}/5</span>
                             <GoogleReviewsLink href={reviews.url} className="text-muted-foreground">
-                                {tc('testimonials.based_on', reviews.count, { count: reviews.count.toLocaleString('fr-FR') })}
+                                {tc('testimonials.based_on', reviews.count, { count: formatNumber(reviews.count, locale) })}
                                 <span className="sr-only"> Google</span>
                             </GoogleReviewsLink>
                         </p>
