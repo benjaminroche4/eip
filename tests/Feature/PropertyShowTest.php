@@ -6,6 +6,7 @@ use App\Domain\Blog\Support\SeoText;
 use App\Domain\Properties\Actions\ListProperties;
 use App\Domain\Properties\Support\PropertySeo;
 use App\Domain\Seo\Support\SitemapBuilder;
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -128,8 +129,9 @@ class PropertyShowTest extends TestCase
 
     public function test_detail_pages_are_in_the_properties_sitemap_with_their_twin_as_hreflang(): void
     {
+        Http::fake(); // the blog part of the sitemap is not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $properties = file_get_contents(public_path('sitemap.properties.xml'));
+        $properties = file_get_contents($this->sitemapPath('sitemap.properties.xml'));
         $this->assertStringContainsString('<loc>'.url('/nos-biens/achat/paris-7e/appartement-champ-de-mars').'</loc>', $properties);
         $this->assertStringContainsString('<loc>'.url('/en/properties/buy/paris-7th/apartment-champ-de-mars').'</loc>', $properties);
         $this->assertStringContainsString('hreflang="en" href="'.url('/en/properties/buy/paris-7th/apartment-champ-de-mars').'"', $properties);

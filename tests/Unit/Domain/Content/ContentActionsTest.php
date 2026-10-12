@@ -4,6 +4,7 @@ namespace Tests\Unit\Domain\Content;
 
 use App\Domain\Content\Actions\ExcerptFaqCategory;
 use App\Domain\Content\Actions\ListArrondissements;
+use App\Domain\Content\Actions\ListBuyFacts;
 use App\Domain\Content\Actions\ListDistricts;
 use App\Domain\Content\Actions\ListFaqCategories;
 use App\Domain\Content\Actions\ListSellSteps;
@@ -57,6 +58,11 @@ class ContentActionsTest extends TestCase
         $this->assertSame('of experience in Paris', app(ListStats::class)('en')[0]->title);
         $this->assertSame('4,9/5', app(ListStats::class)('fr')[3]->value); // Google tile from seo.reviews, decimal per language
         $this->assertSame('4.9/5', app(ListStats::class)('en')[3]->value);
+        $this->assertSame('4,9/5', app(ListBuyFacts::class)('fr')[0]->value); // same formatter on the Buy record (audit 2026-10-12)
+        $this->assertSame('4.9/5', app(ListBuyFacts::class)('en')[0]->value);
+        $this->assertSame('rating', app(ListBuyFacts::class)('en')[0]->key);
+        config(['seo.reviews.rating' => null]);
+        $this->assertSame('reply', app(ListBuyFacts::class)('fr')[0]->key); // no Google tile without real figures
         $this->assertSame('Saint-Germain-des-Prés', app(ListDistricts::class)('en')[0]->area);
         $this->assertSame('Estimation', app(ListSellSteps::class)('fr')[0]->title);
         $this->assertSame('Negotiation and signing', app(ListSellSteps::class)('en')[2]->title);

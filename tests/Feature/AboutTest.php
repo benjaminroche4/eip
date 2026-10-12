@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -62,8 +63,9 @@ class AboutTest extends TestCase
 
     public function test_about_page_is_in_the_sitemap_and_llms_txt(): void
     {
+        Http::fake(); // the blog part of the sitemap is not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $pages = file_get_contents(public_path('sitemap.pages.xml'));
+        $pages = file_get_contents($this->sitemapPath('sitemap.pages.xml'));
         $this->assertStringContainsString('<loc>'.url('/a-propos').'</loc>', $pages);
         $this->assertStringContainsString('<loc>'.url('/en/about-us').'</loc>', $pages);
 

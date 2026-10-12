@@ -10,6 +10,8 @@
 
 return [
     'site_name' => env('SEO_SITE_NAME', env('APP_NAME', 'Laravel')),
+    // Where `sitemap:generate` writes (`SEO_SITEMAP_DIR`, relative to the project root): `public/` by default, a scratch dir in tests.
+    'sitemap_dir' => env('SEO_SITEMAP_DIR') ? base_path(env('SEO_SITEMAP_DIR')) : public_path(),
     'title_separator' => ' - ',
     'default_description' => env('SEO_DESCRIPTION', 'Application Laravel + Inertia + React : rapide, accessible et optimisée pour le référencement.'),
     'default_image' => env('SEO_DEFAULT_IMAGE', '/og-default.png'), // 1200×630, absolute or relative to APP_URL

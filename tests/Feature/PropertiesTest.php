@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Domain\Properties\Actions\ListProperties;
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -187,10 +188,11 @@ class PropertiesTest extends TestCase
 
     public function test_properties_have_their_own_sitemap_file_and_a_llms_entry(): void
     {
+        Http::fake(); // the blog part of the sitemap is not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
 
-        $this->assertStringContainsString('<loc>'.url('/sitemap.properties.xml').'</loc>', file_get_contents(public_path('sitemap.xml')));
-        $properties = file_get_contents(public_path('sitemap.properties.xml'));
+        $this->assertStringContainsString('<loc>'.url('/sitemap.properties.xml').'</loc>', file_get_contents($this->sitemapPath('sitemap.xml')));
+        $properties = file_get_contents($this->sitemapPath('sitemap.properties.xml'));
         $this->assertStringContainsString('<loc>'.url('/nos-biens').'</loc>', $properties);
         $this->assertStringContainsString('<loc>'.url('/en/properties').'</loc>', $properties);
         $this->assertStringContainsString('hreflang="x-default"', $properties);
@@ -199,7 +201,7 @@ class PropertiesTest extends TestCase
         $this->assertStringContainsString('<loc>'.url('/en/properties/paris-6th').'</loc>', $properties);
         $this->assertStringContainsString('hreflang="en" href="'.url('/en/properties/paris-6th').'"', $properties);
         $this->assertStringNotContainsString('/nos-biens/paris-20e', $properties, 'no property in the 20e: no page to index');
-        $this->assertStringNotContainsString('/nos-biens', file_get_contents(public_path('sitemap.pages.xml')), 'the listing lives in its own family, not in the pages file');
+        $this->assertStringNotContainsString('/nos-biens', file_get_contents($this->sitemapPath('sitemap.pages.xml')), 'the listing lives in its own family, not in the pages file');
 
         $llms = $this->get('/llms.txt')->assertOk()->getContent();
         $this->assertStringContainsString(url('/nos-biens'), $llms);
@@ -226,8 +228,9 @@ class PropertiesTest extends TestCase
         // The card payload carries the card fields only (SEO audit 2026-09-30: half the HTML weight)
         $this->get('/nos-biens')->assertInertia(fn (Assert $p) => $p->missing('properties.0.description')->missing('properties.0.rooms_detail')->where('properties.0.price_sqm', fn ($v) => is_int($v)));
 
+        Http::fake(); // the blog part of the sitemap is not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $sitemap = file_get_contents(public_path('sitemap.properties.xml'));
+        $sitemap = file_get_contents($this->sitemapPath('sitemap.properties.xml'));
         $this->assertStringContainsString('<loc>'.url('/nos-biens/location').'</loc>', $sitemap);
         $this->assertStringContainsString('<loc>'.url('/en/properties/rent').'</loc>', $sitemap);
         $llms = $this->get('/llms.txt')->getContent();

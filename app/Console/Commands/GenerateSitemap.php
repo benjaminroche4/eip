@@ -13,8 +13,12 @@ class GenerateSitemap extends Command
 
     public function handle(SitemapBuilder $builder): int
     {
+        $dir = rtrim((string) config('seo.sitemap_dir'), '/');
+        if (! is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
         foreach ($builder->build() as $file => $sitemap) {
-            $sitemap->writeToFile(public_path($file));
+            $sitemap->writeToFile($dir.'/'.$file);
             $this->line("$file written.");
         }
         $this->info('Sitemap index generated.');

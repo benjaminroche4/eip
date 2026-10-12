@@ -3,6 +3,7 @@
 namespace App\Domain\Content\Actions;
 
 use App\Domain\Content\Data\Stat;
+use App\Domain\Content\Support\LocaleNumber;
 
 /**
  * The agency's key figures (About manifesto, Buy / Sell heroes, home trust figure), from `about.stats` in
@@ -16,8 +17,8 @@ final class ListStats
     {
         $rating = config('seo.reviews.rating');
         $count = config('seo.reviews.count');
-        $decimal = ($locale ?? app()->getLocale()) === 'fr' ? ',' : '.';
-        $replace = [':rating' => number_format((float) $rating, 1, $decimal, ''), ':count' => number_format((int) $count, 0, $decimal, ' ')];
+        $lang = $locale ?? app()->getLocale();
+        $replace = [':rating' => LocaleNumber::decimal((float) $rating, $lang), ':count' => LocaleNumber::integer((int) $count, $lang)];
         $isGoogleTile = fn (array $stat): bool => str_contains($stat['value'].$stat['title'], ':rating') || str_contains($stat['value'].$stat['title'], ':count');
 
         $stats = array_values(__('ui.about.stats', [], $locale));

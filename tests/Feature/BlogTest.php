@@ -234,10 +234,10 @@ class BlogTest extends TestCase
         $this->fakeSanity(null);
 
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $pages = file_get_contents(public_path('sitemap.pages.xml'));
+        $pages = file_get_contents($this->sitemapPath('sitemap.pages.xml'));
         $this->assertStringContainsString('<loc>'.url('/blog').'</loc>', $pages);
         $this->assertStringContainsString('<loc>'.url('/en/blog').'</loc>', $pages);
-        $blog = file_get_contents(public_path('sitemap.blog.xml'));
+        $blog = file_get_contents($this->sitemapPath('sitemap.blog.xml'));
         $this->assertStringContainsString('<loc>'.url('/blog/acheter-a-paris').'</loc>', $blog);
         $this->assertStringContainsString('hreflang="en" href="'.url('/en/blog/buying-in-paris').'"', $blog);
         $this->assertStringNotContainsString('<loc>'.url('/blog').'</loc>', $blog, 'the listing page belongs to the pages sitemap');
@@ -253,7 +253,7 @@ class BlogTest extends TestCase
         Http::fake(fn () => Http::response('down', 503));
 
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $this->assertStringContainsString('<loc>'.url('/blog').'</loc>', file_get_contents(public_path('sitemap.pages.xml')));
-        $this->assertStringContainsString('<loc>'.url('/sitemap.blog.xml').'</loc>', file_get_contents(public_path('sitemap.xml')));
+        $this->assertStringContainsString('<loc>'.url('/blog').'</loc>', file_get_contents($this->sitemapPath('sitemap.pages.xml')));
+        $this->assertStringContainsString('<loc>'.url('/sitemap.blog.xml').'</loc>', file_get_contents($this->sitemapPath('sitemap.xml')));
     }
 }

@@ -57,7 +57,7 @@ class ServicePagesTest extends TestCase
     {
         Http::fake();
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $xml = file_get_contents(public_path('sitemap.pages.xml'));
+        $xml = file_get_contents($this->sitemapPath('sitemap.pages.xml'));
         $llms = $this->get('/llms.txt')->assertOk()->getContent();
 
         foreach ($this->slugs() as $urls) {

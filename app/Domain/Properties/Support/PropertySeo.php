@@ -3,6 +3,7 @@
 namespace App\Domain\Properties\Support;
 
 use App\Domain\Blog\Support\SeoText;
+use App\Domain\Content\Support\LocaleNumber;
 use App\Domain\Properties\Data\Property;
 
 /**
@@ -52,6 +53,6 @@ final class PropertySeo
     /** « 1 890 000 » / « 1,890,000 » (as `lib/format-price.ts`, narrow no-break space in French). */
     private static function number(int $amount, string $locale): string
     {
-        return $locale === 'fr' ? number_format($amount, 0, ',', "\u{202F}") : number_format($amount);
+        return LocaleNumber::integer($amount, $locale);
     }
 }

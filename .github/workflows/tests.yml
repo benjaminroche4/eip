@@ -23,31 +23,34 @@ jobs:
         with:
           php-version: 8.4
           tools: composer:v2
-          coverage: xdebug
+          coverage: none
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version-file: .nvmrc
+          cache: npm
 
-      - name: Install Node Dependencies
-        run: npm ci
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
-      - name: Build Assets
-        run: npm run build
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+          npm ci
 
-      - name: Create SQLite Database
-        run: touch database/database.sqlite
+      - name: Prepare the application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
 
-      - name: Install Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+      # The same gate as before every push (CLAUDE.md): tsc, eslint, prettier --check, vitest, pint --test, phpunit
+      - name: Check
+        run: composer run check
 
-      - name: Copy Environment File
-        run: cp .env.example .env
-
-      - name: Generate Application Key
-        run: php artisan key:generate
-
-      - name: Tests
-        run: ./vendor/bin/phpunit
+      - name: Build client and SSR bundles
+        run: npm run build:ssr

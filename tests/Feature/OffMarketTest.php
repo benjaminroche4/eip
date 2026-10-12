@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Domain\Properties\Support\OffMarketAccess;
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -24,8 +25,9 @@ class OffMarketTest extends TestCase
         $this->withLocale('en')->get('/en/biens-off-market')->assertNotFound();
 
         // Confidential: absent from the sitemap and llms.txt
+        Http::fake(); // the blog part of the sitemap is not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
-        $this->assertStringNotContainsString('biens-off-market', file_get_contents(public_path('sitemap.pages.xml')));
+        $this->assertStringNotContainsString('biens-off-market', file_get_contents($this->sitemapPath('sitemap.pages.xml')));
         $this->assertStringNotContainsString(url('/biens-off-market'), $this->get('/llms.txt')->getContent());
     }
 }

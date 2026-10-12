@@ -3,16 +3,22 @@
 namespace App\Domain\Blog\Support;
 
 use App\Domain\Blog\Exceptions\SanityRequestFailed;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 /**
  * Minimal GROQ client over the Sanity HTTP API (server-side only: the token never reaches the browser).
- * Reads go through the CDN when `services.sanity.use_cdn` is true; every query is cached briefly.
+ * Reads go through the CDN when `services.sanity.use_cdn` is true; every query is cached (`CACHE_TTL_SECONDS`) and the
+ * scheduled `sanity:warm` command refreshes the queries the public pages depend on, so a visitor never pays the round
+ * trip. A failure is remembered for `FAILURE_TTL_SECONDS` (negative cache): during an outage the home, the blog and the
+ * sitemap page fail fast instead of each waiting the 10 s timeout (audit 2026-10-12).
  */
 final class SanityClient
 {
-    public const CACHE_TTL_SECONDS = 300;
+    public const CACHE_TTL_SECONDS = 900;
+
+    public const FAILURE_TTL_SECONDS = 60;
 
     /** @var array{project_id: string, dataset: string, api_version: string, token: string, use_cdn: bool} */
     private readonly array $config;
@@ -45,18 +51,32 @@ final class SanityClient
         $url = $this->endpoint();
         $key = 'sanity:'.md5($url.serialize($query));
 
-        return Cache::remember($key, self::CACHE_TTL_SECONDS, function () use ($url, $query) {
+        if (($hit = Cache::get($key)) !== null) {
+            return $hit;
+        }
+        if (Cache::has($key.':down')) {
+            throw SanityRequestFailed::recentlyDown();
+        }
+
+        try {
             $response = Http::withToken($this->config['token'])
                 ->acceptJson()
                 ->timeout(10)
                 ->get($url, $query);
+        } catch (ConnectionException $e) {
+            Cache::put($key.':down', true, self::FAILURE_TTL_SECONDS);
+            throw SanityRequestFailed::fromThrowable($e);
+        }
 
-            if ($response->failed()) {
-                throw SanityRequestFailed::fromResponse($response);
-            }
+        if ($response->failed()) {
+            Cache::put($key.':down', true, self::FAILURE_TTL_SECONDS);
+            throw SanityRequestFailed::fromResponse($response);
+        }
 
-            return $response->json('result');
-        });
+        $result = $response->json('result');
+        Cache::put($key, $result, self::CACHE_TTL_SECONDS);
+
+        return $result;
     }
 
     public function projectId(): string

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -53,18 +54,19 @@ class SeoTest extends TestCase
 
     public function test_sitemap_command_writes_an_index_and_one_sitemap_per_content_family(): void
     {
+        Http::fake(); // the blog part of the sitemap is not under test here
         $this->artisan('sitemap:generate')->assertSuccessful();
 
-        $index = file_get_contents(public_path('sitemap.xml'));
+        $index = file_get_contents($this->sitemapPath('sitemap.xml'));
         $this->assertStringContainsString('<sitemapindex', $index);
         foreach (['sitemap.pages.xml', 'sitemap.blog.xml', 'sitemap.properties.xml'] as $file) {
             $this->assertStringContainsString('<loc>'.url('/'.$file).'</loc>', $index);
-            $this->assertFileExists(public_path($file));
+            $this->assertFileExists($this->sitemapPath($file));
         }
         $this->assertMatchesRegularExpression('/<lastmod>\d{4}-\d{2}-\d{2}T/', $index);
         $this->assertStringNotContainsString('<url>', $index, 'the index only lists sitemaps');
 
-        $pages = file_get_contents(public_path('sitemap.pages.xml'));
+        $pages = file_get_contents($this->sitemapPath('sitemap.pages.xml'));
         $this->assertStringContainsString('<loc>'.url('/recherche').'</loc>', $pages);
         $this->assertStringContainsString('<loc>'.url('/en/search').'</loc>', $pages);
         $this->assertStringContainsString('hreflang="x-default"', $pages);

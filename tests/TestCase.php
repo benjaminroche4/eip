@@ -3,10 +3,24 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Http;
 use Mcamara\LaravelLocalization\LaravelLocalization;
 
 abstract class TestCase extends BaseTestCase
 {
+    /** No test may reach the network (audit 2026-10-12: five Feature tests used to call the real Sanity API): fake what you need. */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Http::preventStrayRequests();
+    }
+
+    /** Where `sitemap:generate` writes in tests (`SEO_SITEMAP_DIR` in phpunit.xml), never `public/`. */
+    protected function sitemapPath(string $file): string
+    {
+        return rtrim((string) config('seo.sitemap_dir'), '/').'/'.$file;
+    }
+
     /**
      * Localized routes (/fr/..., /en/...) are registered from the request URL at boot.
      * In tests the app boots before any request, so the locale must be forced through

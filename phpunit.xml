@@ -27,6 +27,7 @@
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>
+        <env name="SEO_SITEMAP_DIR" value="storage/framework/testing/sitemap"/>
         <env name="SEO_GOOGLE_RATING" value="4.9"/>
         <env name="SEO_GOOGLE_REVIEW_COUNT" value="150"/>
         <env name="SEO_GOOGLE_REVIEWS_URL" value="https://www.google.com/maps"/>
