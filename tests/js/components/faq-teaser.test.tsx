@@ -21,14 +21,14 @@ describe('FaqTeaser', () => {
                 faq={{ ...FAQ, slug: 'vendre-un-bien' }}
                 texts={{
                     eyebrow: 'Questions fréquentes',
-                    title: 'Vos questions avant de vendre à Paris',
+                    title: 'Vos questions, nos réponses',
                     intro: 'Estate in Paris répond aux vendeurs à Paris.',
                     all: 'Toutes les questions',
                 }}
             />,
         );
 
-        const title = screen.getByRole('heading', { level: 2, name: 'Vos questions avant de vendre à Paris' });
+        const title = screen.getByRole('heading', { level: 2, name: 'Vos questions, nos réponses' });
         expect(title).toHaveAttribute('id', 'sell-faq-title');
         expect(screen.getByText('Estate in Paris répond aux vendeurs à Paris.')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Toutes les questions' })).toHaveAttribute('href', '/questions-frequentes#vendre-un-bien');

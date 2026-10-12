@@ -777,9 +777,9 @@ return [
         ],
         'faq' => [
             'eyebrow' => 'Frequently asked questions',
-            'title' => 'Your questions before selling in Paris',
+            'title' => 'Your questions, our answers',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Timelines, surveys, taxation, mandate: answers to the questions sellers of luxury properties in Paris ask most.',
+            'intro' => 'What sellers ask us most often before entrusting us with their property.',
             'all' => 'See all questions',
         ],
         'cta_title' => 'How much is your property worth in Paris?',

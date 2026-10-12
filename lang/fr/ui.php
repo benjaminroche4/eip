@@ -779,9 +779,9 @@ return [
         ],
         'faq' => [
             'eyebrow' => 'Questions fréquentes',
-            'title' => 'Vos questions avant de vendre à Paris',
+            'title' => 'Vos questions, nos réponses',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Délais, diagnostics, fiscalité, mandat : les réponses aux questions les plus posées par les vendeurs de biens de prestige à Paris.',
+            'intro' => 'Ce que les vendeurs nous demandent le plus souvent avant de confier leur bien.',
             'all' => 'Voir toutes les questions',
         ],
         'cta_title' => 'Combien vaut votre bien à Paris ?',

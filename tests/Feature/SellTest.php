@@ -38,8 +38,8 @@ class SellTest extends TestCase
                 ->has('stories', 10) // the home's photo row
                 ->has('testimonials', 20)
                 // FAQ: the first six questions of the « selling » topic
-                ->where('translations.sell.faq.title', 'Vos questions avant de vendre à Paris')
-                ->where('translations.sell.faq.intro', $geo)
+                ->where('translations.sell.faq.title', 'Vos questions, nos réponses')
+                ->where('translations.sell.faq.intro', fn (string $intro) => ! str_contains($intro, 'Estate in Paris')) // short teaser line, no place needed here (user decision 2026-10-12)
                 ->where('faq.slug', 'vendre-un-bien')
                 ->has('faq.items', 6)
                 ->where('faq.items.0.question', 'Combien de temps faut-il pour vendre un bien de prestige à Paris ?')
