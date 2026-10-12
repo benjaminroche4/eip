@@ -15,17 +15,17 @@ import { stripFaqMarkup } from '@/lib/faq-markup';
 import { breadcrumbList, faqPage, serviceNode } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { Camera, ChartLine, Handshake, Search, Sparkles, Users, UsersRound } from 'lucide-react';
+import { EyeOff, Globe, Search, Sparkles, UserCheck, Users, UsersRound } from 'lucide-react';
 import { useRef } from 'react';
 
 type SellProps = { stories: SuccessStory[]; steps: Step[]; testimonials: Testimonial[]; faq: FaqTeaserData; stats: BuyStat[]; video: string | null };
 
-/** The four reasons to sell with the agency (`sell.why_*`): valuation, presentation, buyers, negotiation — one fact each. */
+/** The four reasons to sell with the agency (`sell.why_*`, rewritten 2026-10-12 as true differentiators): the qualified buyers' network, the off-market sale, international buyers, one point of contact to the deed. */
 const ADVANTAGES = [
-    { key: 'valuation', icon: ChartLine },
-    { key: 'exposure', icon: Camera },
-    { key: 'buyers', icon: Users },
-    { key: 'negotiation', icon: Handshake },
+    { key: 'valuation', icon: Users },
+    { key: 'exposure', icon: EyeOff },
+    { key: 'buyers', icon: Globe },
+    { key: 'negotiation', icon: UserCheck },
 ] as const;
 
 /**

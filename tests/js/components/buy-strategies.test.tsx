@@ -20,7 +20,7 @@ describe('BuyStrategies', () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyStrategies items={ITEMS} />);
 
-        expect(screen.getByRole('heading', { level: 2, name: "Comment vous accompagnons-nous jusqu'aux clés ?" })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: 'Comment se passe un achat avec nous ?' })).toBeInTheDocument();
         expect(screen.getByText('Notre accompagnement')).toBeInTheDocument();
         const photos = container.querySelectorAll('img');
         expect(photos).toHaveLength(3); // one per strategy

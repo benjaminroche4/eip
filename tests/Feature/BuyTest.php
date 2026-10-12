@@ -18,7 +18,7 @@ class BuyTest extends TestCase
                 ->where('translations.pages.buy.intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.buy.why_intro', fn (string $intro) => str_contains($intro, 'Paris') && ! str_contains($intro, 'Estate in Paris'))
                 ->where('translations.buy.why_title', 'Pourquoi acheter à nos côtés ?')
-                ->where('translations.buy.why_international_title', 'Acheteurs internationaux')
+                ->where('translations.buy.why_international_title', "Achat depuis l'étranger")
                 ->has('stats', 4)
                 ->where('stats.1.value', '300+')
                 ->where('video', null)

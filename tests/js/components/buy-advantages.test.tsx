@@ -14,8 +14,8 @@ describe('BuyAdvantages', () => {
         expect(screen.getByText(/^Le marché parisien, des relations exclusives/)).toBeInTheDocument(); // GEO answer-first intro
         const items = screen.getAllByRole('listitem');
         expect(items).toHaveLength(4);
-        expect(within(items[0]).getByRole('heading', { level: 3, name: 'Sourcing de biens' })).toBeInTheDocument();
-        expect(within(items[3]).getByRole('heading', { level: 3, name: 'Acheteurs internationaux' })).toBeInTheDocument();
+        expect(within(items[0]).getByRole('heading', { level: 3, name: 'Accès off-market' })).toBeInTheDocument();
+        expect(within(items[3]).getByRole('heading', { level: 3, name: "Achat depuis l'étranger" })).toBeInTheDocument();
         expect(items[3]).toHaveTextContent('04'); // sand numbering, like the About values
         expect(items[0].querySelector('svg')).toHaveAttribute('aria-hidden'); // watermark + tile icons are decorative
         expect(items[0].className).toMatch(/animate-hero-rise|opacity-0/); // cascade on reveal
