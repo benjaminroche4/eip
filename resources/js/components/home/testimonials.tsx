@@ -83,6 +83,10 @@ export default function Testimonials({ items }: TestimonialsProps) {
     // Infinite loop (user decision 2026-09-16): the row is rendered three times and kept inside the middle copy, so
     // arrows, drag and touch never meet an end. `span()` = width of one copy; a jump of exactly one span is invisible.
     const loop = items.length > 1;
+    // The two loop copies are rendered after hydration only (SEO audit 2026-10-12): the SSR HTML carried every quote three
+    // times — 60 cards and 360 inline star SVGs on the Sell page, 300 KB of a 440 KB document — and crawlers read duplicates.
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
     const span = useCallback(() => {
         const el = rowRef.current;
         if (!el || !loop) return 0;
@@ -103,7 +107,7 @@ export default function Testimonials({ items }: TestimonialsProps) {
         };
         el.addEventListener('scroll', onScroll, { passive: true });
         return () => el.removeEventListener('scroll', onScroll);
-    }, [loop, span]);
+    }, [loop, span, mounted]); // once the copies exist
     // Arrows scroll the row by one card (its width + gap); scroll-snap settles it on the next card. If the smooth
     // scroll would cross a loop threshold, the row is first recentred by one span (invisible) so it is never interrupted.
     const scrollBy = useCallback(
@@ -151,7 +155,7 @@ export default function Testimonials({ items }: TestimonialsProps) {
         scrollBy(direction);
         setTick((n) => n + 1);
     };
-    const rendered = loop ? [...items, ...items, ...items] : items;
+    const rendered = loop && mounted ? [...items, ...items, ...items] : items;
 
     return (
         <section ref={sectionRef} aria-labelledby="testimonials-title" className="from-background-05 to-background bg-linear-to-b from-40%">

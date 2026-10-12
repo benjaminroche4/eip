@@ -24,7 +24,7 @@ class SellTest extends TestCase
                 // Reasons: h2 as a question, answer-first intro, four cards, outline valuation button
                 ->where('translations.sell.why_title', 'Pourquoi vendre à nos côtés ?')
                 ->where('translations.sell.why_intro', $geo)
-                ->where('translations.sell.why_valuation_title', 'Estimation juste')
+                ->where('translations.sell.why_valuation_title', 'Estimation sur les ventes signées')
                 ->where('translations.sell.why_negotiation_title', "Négociation jusqu'à l'acte")
                 ->where('translations.sell.why_cta', 'Faire estimer mon bien')
                 // Process: three steps read by ListSellSteps

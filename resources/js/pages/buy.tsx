@@ -10,7 +10,7 @@ import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
 import { stripFaqMarkup } from '@/lib/faq-markup';
-import { breadcrumbList, faqPage } from '@/lib/json-ld';
+import { breadcrumbList, faqPage, serviceNode } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 
@@ -30,9 +30,10 @@ export default function Buy({ stats, video, strategies, districts, testimonials,
     const { t } = useTranslation();
     const { ziggy } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
+    const url = route('buy');
     const crumbs = [
         { name: t('nav.home'), url: route('home') },
-        { name: t('pages.buy.title'), url: route('buy') },
+        { name: t('pages.buy.title'), url },
     ];
 
     return (
@@ -40,7 +41,15 @@ export default function Buy({ stats, video, strategies, districts, testimonials,
             <SeoHead
                 title={t('pages.buy.seo_title')}
                 description={t('pages.buy.seo_description')}
-                jsonLd={[breadcrumbList(crumbs, origin), faqPage(faq.items.map((i) => ({ question: i.question, answer: stripFaqMarkup(i.answer) })))]}
+                jsonLd={[
+                    breadcrumbList(crumbs, origin),
+                    // Service node of the buyer's support (SEO audit 2026-10-12): provider = the agency, Paris, no « free » offer
+                    serviceNode(
+                        { name: t('pages.buy.seo_title'), serviceType: t('buy.service_type'), description: t('pages.buy.intro'), url, free: false },
+                        origin,
+                    ),
+                    faqPage(faq.items.map((i) => ({ question: i.question, answer: stripFaqMarkup(i.answer) }))),
+                ]}
             />
             <BuyHero stats={stats} video={video} />
             <BuyAdvantages />

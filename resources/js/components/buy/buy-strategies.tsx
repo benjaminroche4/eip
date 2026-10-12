@@ -12,8 +12,8 @@ type BuyStrategiesProps = {
 /** One lucide icon per strategy, in order (the Figma's line-chart / coins / shield glyphs). */
 const ICONS: LucideIcon[] = [TrendingUp, Coins, ShieldCheck];
 
-/** One photo per strategy, `public/images/buy/strategies-{1,2,3}-{800,1600}.jpg` (placeholders: 1 = the Figma terrace, 2 and 3 = copies of the success stories photos, to replace by three distinct subjects). */
-const PHOTOS: StepPhoto[] = [1, 2, 3].map((i) => ({ src: `/images/buy/strategies-${i}-{w}.jpg`, alt: '' }));
+/** One photo per step: the three interiors of the Sell process, `public/images/sell/process-{1,2,3}-{800,1600}.webp` (user decision 2026-10-12, replacing the Buy placeholders). */
+const PHOTOS: StepPhoto[] = [1, 2, 3].map((i) => ({ src: `/images/sell/process-${i}-{w}.webp`, alt: '' }));
 
 /**
  * « Des stratégies conçues autour de vos objectifs » (Figma 712-18511 desktop / 712-18821 mobile), under the buy hero:

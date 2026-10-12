@@ -12,7 +12,7 @@ import SeoHead from '@/components/seo/seo-head';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
 import { stripFaqMarkup } from '@/lib/faq-markup';
-import { breadcrumbList, faqPage } from '@/lib/json-ld';
+import { breadcrumbList, faqPage, serviceNode } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { Camera, ChartLine, Handshake, Search, Sparkles, Users, UsersRound } from 'lucide-react';
@@ -43,9 +43,10 @@ export default function Sell({ stories, steps, testimonials, faq, stats, video }
     const { t } = useTranslation();
     const { ziggy } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
+    const url = route('sell');
     const crumbs = [
         { name: t('nav.home'), url: route('home') },
-        { name: t('pages.sell.title'), url: route('sell') },
+        { name: t('pages.sell.title'), url },
     ];
     const heroRef = useRef<HTMLElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
@@ -60,7 +61,21 @@ export default function Sell({ stories, steps, testimonials, faq, stats, video }
             <SeoHead
                 title={t('pages.sell.seo_title')}
                 description={t('pages.sell.seo_description')}
-                jsonLd={[breadcrumbList(crumbs, origin), faqPage(faq.items.map((i) => ({ question: i.question, answer: stripFaqMarkup(i.answer) })))]}
+                jsonLd={[
+                    breadcrumbList(crumbs, origin),
+                    // Service node of the sale mandate (SEO audit 2026-10-12): provider = the agency, Paris, no « free » offer
+                    serviceNode(
+                        {
+                            name: t('pages.sell.seo_title'),
+                            serviceType: t('sell.service_type'),
+                            description: t('pages.sell.intro'),
+                            url,
+                            free: false,
+                        },
+                        origin,
+                    ),
+                    faqPage(faq.items.map((i) => ({ question: i.question, answer: stripFaqMarkup(i.answer) }))),
+                ]}
             />
             {/* Exactly the Buy header (user decision 2026-09-22): shared `ServiceHero`, valuation as the single full button */}
             <SellHero ref={heroRef} stats={stats} video={video} />
@@ -75,12 +90,12 @@ export default function Sell({ stories, steps, testimonials, faq, stats, video }
             />
 
             {/* The three steps of the sale, in the Buy strategies block `NumberedSteps` (numbered list, scroll lock-in, cross-fading photos).
-                Photos: the Buy placeholders `public/images/buy/strategies-{1,2,3}` for now, to replace by three sale subjects. */}
+                Photos: three interiors provided by the user (2026-10-12), `public/images/sell/process-{1,2,3}-{800,1600}.webp` (WebP q80 from 2048 px PNGs). */}
             <NumberedSteps
                 id="sell-process-title"
                 items={steps}
                 texts={{ eyebrow: t('sell.process.eyebrow'), title: t('sell.process.title'), intro: t('sell.process.intro') }}
-                photos={[1, 2, 3].map((i) => ({ src: `/images/buy/strategies-${i}-{w}.jpg`, alt: i === 1 ? t('sell.process.photo_alt') : '' }))}
+                photos={[1, 2, 3].map((i) => ({ src: `/images/sell/process-${i}-{w}.webp`, alt: i === 1 ? t('sell.process.photo_alt') : '' }))}
                 icons={[Search, Sparkles, UsersRound]}
             />
 

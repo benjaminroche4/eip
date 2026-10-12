@@ -28,7 +28,7 @@ type BuyRecordProps = { facts: BuyFact[] };
  * left and the answer-first intro on the right (stacked and centred on mobile), then a sand « Notre engagement » card
  * (title, sentence, the three advisor portraits with their label) beside a 2×2 grid of four **facts distinct from the
  * hero's key figures** (user decision 2026-09-22, the same four numbers twice on one page read as a duplicate): the
- * real Google rating (`seo.reviews`, tile dropped without figures), the 24 h reply, FR · EN advice and the Paris 6e
+ * real Google rating (`seo.reviews`, tile dropped without figures), the 30-minute callback, FR · EN · ES advice and the Paris 6e
  * address — plain Montserrat values (no counter: « 4,9/5 » and « FR · EN » are not counts), title, sentence and a
  * lucide icon in the corner. Every card is the site's card (sand hairline, `p-2`, inner sand gradient, square corners,
  * no shadow), rising in cascade when the block enters the viewport (`animate-hero-rise`, `--stagger` 80 ms).
@@ -110,10 +110,11 @@ export default function BuyRecord({ facts }: BuyRecordProps) {
                                         />
                                     )}
                                     {stat.key === 'languages' ? (
-                                        // Flags instead of « FR · EN » (user decision 2026-09-25); the text stays for assistive tech
+                                        // Flags instead of « FR · EN · ES » (user decision 2026-09-25, Spanish added 2026-10-12); the text stays for assistive tech
                                         <p className="flex items-center gap-2">
                                             <CountryFlag country="FR" className="h-6 w-9" />
                                             <CountryFlag country="GB" className="h-6 w-9" />
+                                            <CountryFlag country="ES" className="h-6 w-9" />
                                             <span className="sr-only">{stat.value}</span>
                                         </p>
                                     ) : (

@@ -50,13 +50,13 @@ return [
         'sell' => [
             'title' => 'Sell',
             'seo_title' => 'Sell a property in Paris',
-            'seo_description' => 'Entrust the sale of your Paris apartment or private mansion to Estate in Paris: valuation, presentation, qualified buyers. Sell at the best price with us.',
+            'seo_description' => 'Sell your property in Paris with a dedicated Estate in Paris advisor: valuation on signed sales, presentation, qualified buyers, confidential sale.',
             'intro' => 'We guide you from valuation to signing, with qualified buyers in Paris.',
         ],
         'buy' => [
             'title' => 'Buy',
             'seo_title' => 'Buy a property in Paris',
-            'seo_description' => 'Apartments, private mansions and off-market properties: Estate in Paris helps you buy an exceptional home in Paris. Discover our curated selection today.',
+            'seo_description' => 'Buy your property in Paris with a dedicated Estate in Paris advisor: tailored selection, off-market properties, viewings, negotiation and guidance to the keys.',
             'intro' => 'Properties selected for you in Paris, and guidance all the way to the purchase.',
         ],
         'newsletter' => [
@@ -754,7 +754,8 @@ return [
         'why_title' => 'Why sell with us?',
         // GEO: a self-contained answer (brand + what + where)
         'why_intro' => 'A price set on the sales signed in your street, professional photography, and every visitor qualified before they walk through the door of your Paris property.',
-        'why_valuation_title' => 'A fair valuation',
+        'why_valuation_title' => 'A valuation on signed sales',
+        'service_type' => 'Property sale', // JSON-LD Service.serviceType (2026-10-12)
         'why_valuation_text' => 'Recent transactions in the neighbourhood and the qualities of your property, not asking prices.',
         'why_exposure_title' => 'Careful presentation',
         'why_exposure_text' => 'Professional photos and video, floor plans, then targeted exposure to our buyers.',
@@ -768,7 +769,7 @@ return [
             'title' => 'How do we sell your property?',
             // GEO: a self-contained answer (brand + what + where)
             'intro' => 'Three steps and one point of contact, from the first visit to the signing at the notary\'s, in Paris.',
-            'photo_alt' => 'Terrace of a luxury apartment at sunset overlooking the Eiffel Tower, Paris',
+            'photo_alt' => 'Bright living room with beige sofas opening onto Haussmann façades, an apartment sold in Paris',
             'items' => [
                 ['title' => 'Valuation', 'text' => 'Your advisor visits the property and sets its value on the neighbourhood\'s signed sales, within 24 working hours.'],
                 ['title' => 'Presentation', 'text' => 'Photos, video, floor plans and a bilingual file, then targeted exposure or a confidential sale: you choose.'],
@@ -783,7 +784,7 @@ return [
             'all' => 'See all questions',
         ],
         'cta_title' => 'How much is your property worth in Paris?',
-        'cta_text' => 'Receive within 24 business hours a valuation based on actual sales in your neighbourhood, free, confidential and without obligation.',
+        'cta_text' => 'Receive within 24 working hours a valuation based on the sales signed in your neighbourhood, in complete confidentiality.',
         'cta_button' => 'Request a valuation',
     ],
     'buy' => [
@@ -795,7 +796,7 @@ return [
         'play_video' => 'Play the presentation video',
         'stats_label' => 'Key figures',
         'why_eyebrow' => 'Why Estate in Paris',
-        'why_title' => 'Why buy with Estate in Paris?',
+        'why_title' => 'Why buy with us?',
         'why_intro' => 'The Paris market, exclusive relationships and a dedicated advisor for your purchase in Paris.',
         'why_sourcing_title' => 'Property sourcing',
         'why_sourcing_text' => 'A curated selection across Paris, including off-market properties never advertised.',
@@ -804,18 +805,19 @@ return [
         'why_negotiation_title' => 'Expert negotiation',
         'why_negotiation_text' => 'A dedicated advisor protects your interests, from the offer to the signing.',
         'why_international_title' => 'International buyers',
-        'why_international_text' => 'Remote viewings, power of attorney, financing: bilingual guidance.',
+        'service_type' => 'Buyer representation', // JSON-LD Service.serviceType (2026-10-12)
+        'why_international_text' => 'Remote viewings, power of attorney, financing: guidance in your language.',
         'why_cta' => 'Talk to an advisor',
         'strategies' => [
-            'eyebrow' => 'Investment opportunities',
-            'title' => 'Strategies designed around your investment goals',
+            'eyebrow' => 'How we support you',
+            'title' => 'How do we guide you all the way to the keys?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Capital appreciation, rental income or diversification: our advisors identify the Paris properties that match your objective.',
+            'intro' => 'A dedicated advisor from the first conversation to the handover of the keys: nothing to handle on your own in Paris.',
             'photo_alt' => 'Terrace of a luxury apartment at sunset overlooking the Eiffel Tower, Paris',
             'items' => [
-                ['title' => 'Capital appreciation', 'text' => 'Acquire premium properties positioned for long-term value growth.'],
-                ['title' => 'Rental investment', 'text' => 'Build recurring income through carefully selected residential assets.'],
-                ['title' => 'Off-market opportunities', 'text' => 'Gain access to exclusive properties never listed on public platforms.'],
+                ['title' => 'We listen to your project', 'text' => 'Neighbourhoods, budget, lifestyle: a conversation to pin down what you are looking for, and what you are not.'],
+                ['title' => 'We select and visit with you', 'text' => 'Only the properties that fit, including off-market ones. Viewings grouped on a single day if you come from afar.'],
+                ['title' => 'We negotiate and stay by your side', 'text' => 'Offer, notary, financing, works: your advisor coordinates everything, up to the keys and beyond.'],
             ],
         ],
         'faq' => [
@@ -827,20 +829,20 @@ return [
         ],
         'record' => [
             'eyebrow' => 'Our track record',
-            'title' => 'Trusted by property owners and buyers across Paris',
+            'title' => 'What sets us apart',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Buyers and sellers of exceptional properties in Paris, guided by a dedicated advisor, qualified buyers and deep knowledge of the Paris luxury market.',
+            'intro' => 'A dedicated advisor, a selection of properties in your image, an intimate knowledge of Paris.',
             'commitment_title' => 'Our commitment',
-            'commitment_text' => 'We help every owner maximise the value of their property through a tailored strategy, qualified buyers and expert support through to signature.',
+            'commitment_text' => 'We guide every buyer from the first viewing to the handover of the keys: tailored selection, negotiation and coordination of the notary, financing and works.',
             'advisors_label' => 'Your dedicated advisors',
             'advisors_label' => 'Your dedicated advisors',
-            'trusted_sub' => 'From valuation to final signature.',
+            'trusted_sub' => 'From the first viewing to the handover of the keys.',
             // Four facts that are NOT the hero's key figures (decision 2026-09-22: no duplicate on the same page). Real data only:
             // :rating / :count come from seo.reviews (the tile is dropped without figures), the rest from the agency's promises and address.
             'facts' => [
                 ['key' => 'rating', 'value' => ':rating/5', 'title' => 'Google rating', 'text' => 'Across :count published client reviews.'],
-                ['key' => 'reply', 'value' => '24 h', 'title' => 'Guaranteed reply', 'text' => 'Every request is answered within 24 working hours by a dedicated advisor.'],
-                ['key' => 'languages', 'value' => 'FR · EN', 'title' => 'Bilingual advice', 'text' => 'French and international buyers guided in their own language.'],
+                ['key' => 'reply', 'value' => '30 min', 'title' => 'Quick callback', 'text' => 'An advisor calls you back within 30 minutes during opening hours.'],
+                ['key' => 'languages', 'value' => 'FR · EN · ES', 'title' => 'Advice in three languages', 'text' => 'French and international buyers guided in French, English or Spanish.'],
                 ['key' => 'address', 'value' => 'Paris 6th', 'title' => 'Agency in Saint-Germain-des-Prés', 'text' => 'Rue Grégoire de Tours, in the heart of the districts we sell.'],
             ],
             // Four facts that are NOT the hero's key figures (decision 2026-09-22: no duplicate on the same page). Real data only:
@@ -854,18 +856,18 @@ return [
         ],
         'districts' => [
             'eyebrow' => 'Explore Paris',
-            'title' => 'Which Paris districts to invest in?',
+            'title' => 'Which Paris districts should you buy in?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'The Paris districts combining strong rental demand, long-term appreciation and luxury properties: the Left Bank, the Golden Triangle, Champ-de-Mars and the 16th.',
+            'intro' => 'Four Paris districts where we guide the most buyers, each with its own character: the Left Bank, the Golden Triangle, Champ-de-Mars and the 16th.',
             'price_label' => 'Average price',
             // GEO: dated, named source shown once under the grid and linked to each price by aria-describedby
             'price_source' => 'Rounded average prices per m², based on the latest figures published by the Notaires du Grand Paris (Q2 2026).',
             // Prices: rounded averages per m² (to check against the latest notaires figures before each release)
             'items' => [
-                ['name' => 'Paris 6th', 'area' => 'Saint-Germain-des-Prés', 'text' => 'Where timeless Parisian elegance meets refined city living.', 'price' => '≈ €14,000/m²', 'tags' => ['High demand', 'Stable yield'], 'photo_alt' => 'Boulevard Saint-Germain and the bell tower of Saint-Germain-des-Prés church under a blue sky, Paris 6th'],
-                ['name' => 'Paris 8th', 'area' => 'Golden Triangle', 'text' => "Home to Paris's most exclusive addresses and luxury lifestyle.", 'price' => '≈ €11,600/m²', 'tags' => ['Luxury market', 'Strong appreciation'], 'photo_alt' => 'Haussmann buildings with arcades on rue de Rivoli and the gilded statue of Joan of Arc, place des Pyramides, Paris'],
-                ['name' => 'Paris 7th', 'area' => 'Champ-de-Mars', 'text' => "Prestigious residences around Paris's most iconic landmark.", 'price' => '≈ €13,000/m²', 'tags' => ['Limited supply', 'Safe investment'], 'photo_alt' => 'Champ-de-Mars lawn facing the Eiffel Tower, Paris 7th'],
-                ['name' => 'Paris 16th', 'area' => 'Passy & La Muette', 'text' => 'For families seeking space, privacy and international schools.', 'price' => '≈ €10,200/m²', 'tags' => ['Rental demand', 'Long-term growth'], 'photo_alt' => 'Tree-lined street of Haussmann buildings with flowered balconies, Paris 16th'],
+                ['name' => 'Paris 6th', 'area' => 'Saint-Germain-des-Prés', 'text' => 'Cafés, galleries and bookshops at the foot of the building: the district you never leave.', 'price' => '≈ €14,000/m²', 'tags' => ['Village life', 'Period apartments'], 'photo_alt' => 'Boulevard Saint-Germain and the bell tower of Saint-Germain-des-Prés church under a blue sky, Paris 6th'],
+                ['name' => 'Paris 8th', 'area' => 'Golden Triangle', 'text' => 'Avenues and reception apartments, steps from the palaces and the couture houses.', 'price' => '≈ €11,600/m²', 'tags' => ['Reception apartments', 'Serviced buildings'], 'photo_alt' => 'Haussmann buildings with arcades on rue de Rivoli and the gilded statue of Joan of Arc, place des Pyramides, Paris'],
+                ['name' => 'Paris 7th', 'area' => 'Champ-de-Mars', 'text' => 'The largest apartments of the Left Bank, with the Eiffel Tower at the end of the street.', 'price' => '≈ €13,000/m²', 'tags' => ['Large apartments', 'Open views'], 'photo_alt' => 'Champ-de-Mars lawn facing the Eiffel Tower, Paris 7th'],
+                ['name' => 'Paris 16th', 'area' => 'Passy & La Muette', 'text' => 'Calm, greenery and renowned schools: the choice of French and international families.', 'price' => '≈ €10,200/m²', 'tags' => ['Families', 'International schools'], 'photo_alt' => 'Tree-lined street of Haussmann buildings with flowered balconies, Paris 16th'],
             ],
         ],
     ],

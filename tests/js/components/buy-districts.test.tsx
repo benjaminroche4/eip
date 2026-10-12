@@ -44,8 +44,8 @@ describe('BuyDistricts', () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyDistricts items={ITEMS} />);
 
-        expect(screen.getByRole('heading', { level: 2, name: 'Dans quels quartiers de Paris investir ?' })).toBeInTheDocument();
-        expect(screen.getByText(/^Les quartiers de Paris qui allient/)).toBeInTheDocument(); // GEO answer-first intro
+        expect(screen.getByRole('heading', { level: 2, name: 'Dans quels quartiers de Paris acheter ?' })).toBeInTheDocument();
+        expect(screen.getByText(/^Quatre quartiers de Paris où nous accompagnons/)).toBeInTheDocument(); // GEO answer-first intro
         const cards = within(container.querySelector('ul.grid')!)
             .getAllByRole('listitem')
             .filter((li) => li.classList.contains('group'));

@@ -329,7 +329,9 @@ export function teamOrganizationNode(seo: SeoShared, origin: string, teamCount: 
  * `Service` node of a free service offered by the agency (valuation page, 2026-09-22): provider = the organisation
  * node, served in Paris, offered at no charge.
  */
-export function serviceNode(input: { name: string; description: string; url: string; serviceType: string }, origin: string): JsonLd {
+/** `free` adds the « price 0 » offer (valuation); a paid service (sale mandate) carries no offer node (2026-10-12). */
+export function serviceNode(input: { name: string; description: string; url: string; serviceType: string; free?: boolean }, origin: string): JsonLd {
+    const { free = true } = input;
     return {
         '@type': 'Service',
         '@id': `${input.url}#service`,
@@ -339,6 +341,6 @@ export function serviceNode(input: { name: string; description: string; url: str
         url: input.url,
         provider: { '@id': `${origin}/#organization` },
         areaServed: { '@type': 'City', name: 'Paris' },
-        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+        ...(free ? { offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' } } : {}),
     };
 }

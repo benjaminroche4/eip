@@ -20,12 +20,12 @@ describe('BuyStrategies', () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyStrategies items={ITEMS} />);
 
-        expect(screen.getByRole('heading', { level: 2, name: 'Des stratégies conçues autour de vos objectifs' })).toBeInTheDocument();
-        expect(screen.getByText("Opportunités d'investissement")).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: "Comment vous accompagnons-nous jusqu'aux clés ?" })).toBeInTheDocument();
+        expect(screen.getByText('Notre accompagnement')).toBeInTheDocument();
         const photos = container.querySelectorAll('img');
         expect(photos).toHaveLength(3); // one per strategy
-        expect(photos[0]).toHaveAttribute('src', '/images/buy/strategies-1-1600.jpg');
-        expect(photos[0]).toHaveAccessibleName(/tour Eiffel/);
+        expect(photos[0]).toHaveAttribute('src', '/images/sell/process-1-1600.webp');
+        expect(photos[0]).toHaveAccessibleName(/canapés beiges/) // the first Sell interior (other session, 2026-10-12);
         expect(photos[1]).toHaveAttribute('alt', ''); // the others are decorative and desktop-only
         expect(photos[1]).toHaveClass('hidden', 'lg:block', 'opacity-0');
         expect(container.querySelectorAll('ul')).toHaveLength(0); // no sentence, no check points over the photo

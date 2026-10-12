@@ -50,13 +50,13 @@ return [
         'sell' => [
             'title' => 'Vendre',
             'seo_title' => 'Vendre un bien à Paris',
-            'seo_description' => 'Confiez la vente de votre appartement ou hôtel particulier à Paris à Estate in Paris : estimation, mise en valeur, acquéreurs qualifiés. Vendez au bon prix.',
+            'seo_description' => 'Vendez votre bien à Paris avec un conseiller Estate in Paris : estimation sur les ventes signées, mise en valeur, acquéreurs qualifiés, vente confidentielle.',
             'intro' => "Nous vous accompagnons de l'estimation à la signature, auprès d'acquéreurs qualifiés à Paris.",
         ],
         'buy' => [
             'title' => 'Acheter',
             'seo_title' => 'Acheter un bien à Paris',
-            'seo_description' => "Appartements, hôtels particuliers et biens off-market : Estate in Paris vous accompagne pour acheter un bien d'exception à Paris. Découvrez notre sélection.",
+            'seo_description' => "Achetez votre bien à Paris avec un conseiller Estate in Paris : sélection sur mesure, biens off-market, visites, négociation, accompagnement jusqu'aux clés.",
             'intro' => "Des biens sélectionnés pour vous à Paris, et un accompagnement jusqu'à l'acquisition.",
         ],
         'newsletter' => [
@@ -756,7 +756,8 @@ return [
         'why_title' => 'Pourquoi vendre à nos côtés ?',
         // GEO: a self-contained answer (brand + what + where)
         'why_intro' => 'Un prix fixé sur les ventes signées dans votre rue, des photos professionnelles, et chaque visiteur qualifié avant de franchir la porte de votre bien à Paris.',
-        'why_valuation_title' => 'Estimation juste',
+        'why_valuation_title' => 'Estimation sur les ventes signées',
+        'service_type' => 'Vente immobilière', // JSON-LD Service.serviceType (2026-10-12)
         'why_valuation_text' => 'Les transactions récentes du quartier et les qualités de votre bien, pas les prix affichés.',
         'why_exposure_title' => 'Mise en valeur soignée',
         'why_exposure_text' => 'Photos et vidéo professionnelles, plans, puis diffusion ciblée auprès de nos acquéreurs.',
@@ -785,7 +786,7 @@ return [
             'all' => 'Voir toutes les questions',
         ],
         'cta_title' => 'Combien vaut votre bien à Paris ?',
-        'cta_text' => 'Recevez sous 24 heures ouvrées une estimation fondée sur les ventes réelles de votre quartier, gratuite, confidentielle et sans engagement.',
+        'cta_text' => 'Recevez sous 24 heures ouvrées une estimation fondée sur les ventes signées de votre quartier, en toute confidentialité.',
         'cta_button' => 'Demander une estimation',
     ],
     'buy' => [
@@ -797,7 +798,7 @@ return [
         'play_video' => 'Lire la vidéo de présentation',
         'stats_label' => 'Chiffres clés',
         'why_eyebrow' => 'Pourquoi Estate in Paris',
-        'why_title' => 'Pourquoi acheter avec Estate in Paris ?',
+        'why_title' => 'Pourquoi acheter à nos côtés ?',
         'why_intro' => 'Le marché parisien, des relations exclusives et un conseiller dédié pour votre achat à Paris.',
         'why_sourcing_title' => 'Sourcing de biens',
         'why_sourcing_text' => 'Une sélection dans tout Paris, dont des biens off-market jamais publiés.',
@@ -806,18 +807,19 @@ return [
         'why_negotiation_title' => 'Négociation experte',
         'why_negotiation_text' => "Un conseiller dédié défend vos intérêts, de l'offre à la signature.",
         'why_international_title' => 'Acheteurs internationaux',
-        'why_international_text' => 'Visites à distance, procuration, financement : un accompagnement bilingue.',
+        'service_type' => "Accompagnement à l'achat", // JSON-LD Service.serviceType (2026-10-12)
+        'why_international_text' => 'Visites à distance, procuration, financement : un accompagnement dans votre langue.',
         'why_cta' => 'Parler à un conseiller',
         'strategies' => [
-            'eyebrow' => 'Opportunités d\'investissement',
-            'title' => 'Des stratégies conçues autour de vos objectifs',
+            'eyebrow' => 'Notre accompagnement',
+            'title' => "Comment vous accompagnons-nous jusqu'aux clés ?",
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Plus-value, revenus locatifs ou diversification : nos conseillers identifient à Paris les biens qui répondent à votre objectif.',
-            'photo_alt' => 'Terrasse d\'un appartement de prestige au coucher du soleil avec vue sur la tour Eiffel, Paris',
+            'intro' => "Un conseiller dédié, de la première conversation à la remise des clés : vous n'avez rien à gérer seul à Paris.",
+            'photo_alt' => 'Séjour lumineux aux canapés beiges ouvert sur les façades haussmanniennes, un appartement à Paris',
             'items' => [
-                ['title' => 'Plus-value', 'text' => 'Acquérez des biens de prestige positionnés pour prendre de la valeur dans le temps.'],
-                ['title' => 'Investissement locatif', 'text' => 'Construisez des revenus réguliers avec des biens résidentiels choisis avec soin.'],
-                ['title' => 'Opportunités hors marché', 'text' => 'Accédez à des biens confidentiels, jamais publiés sur les portails.'],
+                ['title' => 'Nous écoutons votre projet', 'text' => 'Quartiers, budget, mode de vie : un échange pour cerner ce que vous cherchez, et ce que vous ne voulez pas.'],
+                ['title' => 'Nous sélectionnons et visitons avec vous', 'text' => 'Seuls les biens qui correspondent, y compris hors marché. Visites groupées sur une même journée si vous venez de loin.'],
+                ['title' => 'Nous négocions et restons à vos côtés', 'text' => "Offre, notaire, financement, travaux : votre conseiller coordonne tout, jusqu'aux clés et après."],
             ],
         ],
         'faq' => [
@@ -829,36 +831,36 @@ return [
         ],
         'record' => [
             'eyebrow' => 'Notre bilan',
-            'title' => 'La confiance des propriétaires et acquéreurs à Paris',
+            'title' => 'Ce qui nous distingue',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Acquéreurs et vendeurs de biens d'exception à Paris, accompagnés par un conseiller dédié, des acheteurs qualifiés et une connaissance fine du marché de prestige parisien.",
+            'intro' => 'Un conseiller dédié, une sélection de biens à votre image, une connaissance intime de Paris.',
             'commitment_title' => 'Notre engagement',
-            'commitment_text' => "Nous aidons chaque propriétaire à valoriser son bien grâce à une stratégie sur mesure, des acquéreurs qualifiés et un accompagnement expert jusqu'à la signature.",
+            'commitment_text' => 'Nous accompagnons chaque acquéreur de la première visite à la remise des clés : sélection sur mesure, négociation et coordination du notaire, du financement et des travaux.',
             'advisors_label' => 'Vos conseillers dédiés',
-            'trusted_sub' => "De l'estimation à la signature finale.",
+            'trusted_sub' => 'De la première visite à la remise des clés.',
             // Four facts that are NOT the hero's key figures (decision 2026-09-22: no duplicate on the same page). Real data only:
             // :rating / :count come from seo.reviews (the tile is dropped without figures), the rest from the agency's promises and address.
             'facts' => [
                 ['key' => 'rating', 'value' => ':rating/5', 'title' => 'Note Google', 'text' => 'Sur :count avis clients publiés.'],
-                ['key' => 'reply', 'value' => '24 h', 'title' => 'Réponse garantie', 'text' => 'Chaque demande reçoit une réponse sous 24 h ouvrées, par un conseiller dédié.'],
-                ['key' => 'languages', 'value' => 'FR · EN', 'title' => 'Conseil bilingue', 'text' => 'Acquéreurs français et internationaux accompagnés dans leur langue.'],
+                ['key' => 'reply', 'value' => '30 min', 'title' => 'Rappel rapide', 'text' => "Un conseiller vous rappelle sous 30 minutes, aux heures d'ouverture."],
+                ['key' => 'languages', 'value' => 'FR · EN · ES', 'title' => 'Conseil en trois langues', 'text' => 'Acquéreurs français et internationaux accompagnés en français, en anglais ou en espagnol.'],
                 ['key' => 'address', 'value' => 'Paris 6e', 'title' => 'Agence à Saint-Germain-des-Prés', 'text' => 'Rue Grégoire de Tours, au cœur des quartiers que nous vendons.'],
             ],
         ],
         'districts' => [
             'eyebrow' => 'Explorer Paris',
-            'title' => 'Dans quels quartiers de Paris investir ?',
+            'title' => 'Dans quels quartiers de Paris acheter ?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => "Les quartiers de Paris qui allient forte demande locative, valorisation à long terme et biens de prestige : Rive gauche, Triangle d'or, Champ-de-Mars et 16e.",
+            'intro' => "Quatre quartiers de Paris où nous accompagnons le plus d'acquéreurs, chacun avec son caractère : Rive gauche, Triangle d'or, Champ-de-Mars et 16e.",
             'price_label' => 'Prix moyen',
             // GEO: dated, named source shown once under the grid and linked to each price by aria-describedby
             'price_source' => "Prix moyens au m² arrondis, d'après les dernières données publiées par les Notaires du Grand Paris (2e trimestre 2026).",
             // Prices: rounded averages per m² (to check against the latest notaires figures before each release)
             'items' => [
-                ['name' => 'Paris 6e', 'area' => 'Saint-Germain-des-Prés', 'text' => "L'élégance parisienne intemporelle et une vie de quartier raffinée.", 'price' => '≈ 14 000 €/m²', 'tags' => ['Forte demande', 'Rendement stable'], 'photo_alt' => 'Boulevard Saint-Germain et clocher de l\'église Saint-Germain-des-Prés sous un ciel bleu, Paris 6e'],
-                ['name' => 'Paris 8e', 'area' => "Triangle d'or", 'text' => 'Les adresses les plus exclusives de Paris et un art de vivre luxueux.', 'price' => '≈ 11 600 €/m²', 'tags' => ['Marché de luxe', 'Forte valorisation'], 'photo_alt' => 'Immeubles haussmanniens à arcades de la rue de Rivoli et statue dorée de Jeanne d\'Arc, place des Pyramides, Paris'],
-                ['name' => 'Paris 7e', 'area' => 'Champ-de-Mars', 'text' => 'Des résidences prestigieuses autour du monument le plus emblématique de Paris.', 'price' => '≈ 13 000 €/m²', 'tags' => ['Offre limitée', 'Valeur refuge'], 'photo_alt' => 'Pelouse du Champ-de-Mars face à la tour Eiffel, Paris 7e'],
-                ['name' => 'Paris 16e', 'area' => 'Passy & La Muette', 'text' => "Pour les familles en quête d'espace, de calme et d'écoles internationales.", 'price' => '≈ 10 200 €/m²', 'tags' => ['Demande locative', 'Croissance durable'], 'photo_alt' => 'Rue arborée bordée d\'immeubles haussmanniens à balcons fleuris, Paris 16e'],
+                ['name' => 'Paris 6e', 'area' => 'Saint-Germain-des-Prés', 'text' => "Cafés, galeries et librairies au pied de l'immeuble : le quartier qu'on ne quitte plus.", 'price' => '≈ 14 000 €/m²', 'tags' => ['Vie de quartier', 'Appartements anciens'], 'photo_alt' => 'Boulevard Saint-Germain et clocher de l\'église Saint-Germain-des-Prés sous un ciel bleu, Paris 6e'],
+                ['name' => 'Paris 8e', 'area' => "Triangle d'or", 'text' => 'Avenues et appartements de réception, à deux pas des palaces et des maisons de couture.', 'price' => '≈ 11 600 €/m²', 'tags' => ['Appartements de réception', 'Immeubles avec services'], 'photo_alt' => 'Immeubles haussmanniens à arcades de la rue de Rivoli et statue dorée de Jeanne d\'Arc, place des Pyramides, Paris'],
+                ['name' => 'Paris 7e', 'area' => 'Champ-de-Mars', 'text' => 'Les grandes surfaces de la Rive gauche, avec la tour Eiffel au bout de la rue.', 'price' => '≈ 13 000 €/m²', 'tags' => ['Grandes surfaces', 'Vues dégagées'], 'photo_alt' => 'Pelouse du Champ-de-Mars face à la tour Eiffel, Paris 7e'],
+                ['name' => 'Paris 16e', 'area' => 'Passy & La Muette', 'text' => 'Calme, verdure et lycées réputés : le choix des familles, françaises et internationales.', 'price' => '≈ 10 200 €/m²', 'tags' => ['Familles', 'Lycées et écoles internationales'], 'photo_alt' => 'Rue arborée bordée d\'immeubles haussmanniens à balcons fleuris, Paris 16e'],
             ],
         ],
     ],

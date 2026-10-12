@@ -10,7 +10,7 @@ describe('BuyAdvantages', () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyAdvantages />);
 
-        expect(screen.getByRole('heading', { level: 2, name: 'Pourquoi acheter avec Estate in Paris ?' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 2, name: 'Pourquoi acheter à nos côtés ?' })).toBeInTheDocument();
         expect(screen.getByText(/^Le marché parisien, des relations exclusives/)).toBeInTheDocument(); // GEO answer-first intro
         const items = screen.getAllByRole('listitem');
         expect(items).toHaveLength(4);
