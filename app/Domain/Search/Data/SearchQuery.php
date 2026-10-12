@@ -16,7 +16,7 @@ final readonly class SearchQuery
     public static function fromRequest(Request $request, int $perPage = 10): self
     {
         return new self(
-            term: trim((string) $request->string('q')),
+            term: is_scalar($q = $request->query('q')) ? trim((string) $q) : '', // an array-shaped `q[]` is ignored, not a 500 (audit 2026-10-12)
             page: max(1, $request->integer('page', 1)),
             perPage: $perPage,
         );

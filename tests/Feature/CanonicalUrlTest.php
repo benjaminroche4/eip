@@ -35,4 +35,12 @@ class CanonicalUrlTest extends TestCase
             ->assertRedirect('https://www.example.test/recherche')
             ->assertStatus(301);
     }
+
+    /** « /fr//evil.com » used to 301 to the scheme-relative « //evil.com » (open redirect, audit 2026-10-12): the stripped path is re-rooted on this host. */
+    public function test_stripping_the_default_locale_never_produces_a_scheme_relative_redirect(): void
+    {
+        $this->get('/fr//evil.com')->assertRedirect('/evil.com');
+        $this->get('/fr//evil.com/x?a=1')->assertRedirect('/evil.com/x?a=1');
+        $this->get('/fr/contact')->assertRedirect('/contact');
+    }
 }

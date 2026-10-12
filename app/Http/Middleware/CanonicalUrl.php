@@ -28,7 +28,8 @@ class CanonicalUrl
         if (config('laravellocalization.hideDefaultLocaleInURL')) {
             $default = LaravelLocalization::getDefaultLocale();
             if ($path === "/$default" || str_starts_with($path, "/$default/")) {
-                $stripped = substr($path, strlen("/$default")) ?: '/';
+                // Re-rooted on this host: « /fr//evil.com » must become « /evil.com », never the scheme-relative « //evil.com » (open redirect, audit 2026-10-12)
+                $stripped = '/'.ltrim(substr($path, strlen("/$default")) ?: '', '/');
 
                 return redirect()->to($stripped.$suffix, 301);
             }

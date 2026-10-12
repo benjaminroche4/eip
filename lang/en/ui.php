@@ -156,7 +156,7 @@ return [
         'rent_seo_description' => 'Furnished apartments and luxury rentals in Paris, selected by Estate in Paris with a dedicated advisor. Discover our properties to rent.',
         'rent_intro' => 'The luxury properties currently to rent in Paris: furnished apartments, terraces and views, selected by our advisors.',
         'district_seo_title' => 'Properties for sale in :name',
-        'district_seo_description' => 'Apartments, private mansions and lofts for sale in :name, selected by Estate in Paris with a dedicated advisor. Discover our properties in the district.',
+        'district_seo_description' => 'Apartments, private mansions and lofts for sale in :name, selected by Estate in Paris with a dedicated advisor. Discover our properties.',
         'district_intro' => 'The prestige properties for sale in :name (:areas): apartments, private mansions and lofts selected by our advisors.',
         'by_district' => 'Our properties by arrondissement',
         'by_district_link' => ':name (:count)',
@@ -845,14 +845,6 @@ return [
                 ['key' => 'languages', 'value' => 'FR · EN · ES', 'title' => 'Advice in three languages', 'text' => 'Guidance in French, English or Spanish.'],
                 ['key' => 'address', 'value' => 'Paris 6th', 'title' => 'Agency in Saint-Germain-des-Prés', 'text' => 'Rue Grégoire de Tours, in the heart of the districts we sell.'],
             ],
-            // Four facts that are NOT the hero's key figures (decision 2026-09-22: no duplicate on the same page). Real data only:
-            // :rating / :count come from seo.reviews (the tile is dropped without figures), the rest from the agency's promises and address.
-            'facts' => [
-                ['value' => ':rating/5', 'title' => 'Google rating', 'text' => 'Across :count published client reviews.'],
-                ['value' => '24 h', 'title' => 'Guaranteed reply', 'text' => 'Every request is answered within 24 working hours by a dedicated advisor.'],
-                ['value' => 'FR · EN', 'title' => 'Bilingual advice', 'text' => 'French and international buyers guided in their own language.'],
-                ['value' => 'Paris 6th', 'title' => 'Agency in Saint-Germain-des-Prés', 'text' => 'Rue Grégoire de Tours, in the heart of the districts we sell.'],
-            ],
         ],
         'districts' => [
             'eyebrow' => 'Explore Paris',
@@ -1042,7 +1034,7 @@ return [
     ],
     'home' => [
         'title' => 'Home',
-        'seo_title' => 'Luxury Real Estate in Paris',
+        'seo_title' => 'Luxury real estate agency in Paris',
         'seo_description' => 'Apartments, private mansions and off-market properties in Paris. Estate in Paris selects and sells prestige real estate with a dedicated advisor.',
         'values_label' => 'Our commitments',
         'search_title' => 'The Paris agency for international clients',

@@ -61,20 +61,23 @@ final readonly class PropertyQuery
 
     public static function fromRequest(Request $request, int $perPage = self::PER_PAGE): self
     {
-        $cities = collect((array) $request->query('city', []))
+        // A query value may be shaped as an array by the client (`?budget[]=1`): scalars only, never a 500 (audit 2026-10-12)
+        $str = fn (string $key): string => is_scalar($v = $request->query($key)) ? (string) $v : '';
+        $list = fn (string $key): Collection => collect((array) $request->query($key, []))->filter(fn ($v) => is_scalar($v));
+        $cities = $list('city')
             ->map(fn ($n) => (int) $n)
             ->filter(fn (int $n) => $n >= 1 && $n <= 20)
             ->unique()
             ->values()
             ->all();
-        $budget = (int) preg_replace('/\D/', '', (string) $request->query('budget', ''));
-        $types = collect((array) $request->query('type', []))
+        $budget = (int) preg_replace('/\D/', '', $str('budget'));
+        $types = $list('type')
             ->map(fn ($t) => (string) $t)
             ->filter(fn (string $t) => in_array($t, self::TYPES, true))
             ->unique()
             ->values()
             ->all();
-        $rooms = collect((array) $request->query('rooms', []))
+        $rooms = $list('rooms')
             ->map(fn ($n) => (int) $n)
             ->filter(fn (int $n) => $n >= 1 && $n <= 5)
             ->unique()
@@ -82,22 +85,22 @@ final readonly class PropertyQuery
             ->values()
             ->all();
 
-        $ints = fn (string $key, int $min, int $max) => collect((array) $request->query($key, []))
+        $ints = fn (string $key, int $min, int $max) => $list($key)
             ->map(fn ($n) => (int) $n)->filter(fn (int $n) => $n >= $min && $n <= $max)->unique()->sort()->values()->all();
-        $among = fn (string $key, array $allowed) => collect((array) $request->query($key, []))
+        $among = fn (string $key, array $allowed) => $list($key)
             ->map(fn ($v) => (string) $v)->filter(fn (string $v) => in_array($v, $allowed, true))->unique()->values()->all();
-        $budgetMin = (int) preg_replace('/\D/', '', (string) $request->query('budget_min', ''));
-        $surfaceMin = (int) preg_replace('/\D/', '', (string) $request->query('surface_min', ''));
-        $furnished = $request->query('furnished');
+        $budgetMin = (int) preg_replace('/\D/', '', $str('budget_min'));
+        $surfaceMin = (int) preg_replace('/\D/', '', $str('surface_min'));
+        $furnished = $str('furnished');
 
         return new self(
             cities: $cities,
             budget: $budget > 0 ? $budget : null,
-            transaction: $request->query('transaction') === 'rent' ? 'rent' : 'sale',
+            transaction: $str('transaction') === 'rent' ? 'rent' : 'sale',
             types: $types,
             rooms: $rooms,
-            sort: in_array($sort = (string) $request->query('sort', ''), self::SORTS, true) ? $sort : 'recent',
-            bounds: self::boundsFrom((string) $request->query('bounds', '')),
+            sort: in_array($sort = $str('sort'), self::SORTS, true) ? $sort : 'recent',
+            bounds: self::boundsFrom($str('bounds')),
             page: max(1, $request->integer('page', 1)),
             perPage: $perPage,
             budgetMin: $budgetMin > 0 ? $budgetMin : null,
@@ -107,8 +110,8 @@ final readonly class PropertyQuery
             conditions: $among('condition', Property::CONDITIONS),
             floors: $among('floor', self::FLOORS),
             furnished: $furnished === '1' ? true : ($furnished === '0' ? false : null),
-            availableOnly: $request->query('available') === '1',
-            areas: collect((array) $request->query('area', []))->map(fn ($v) => trim((string) $v))->filter()->unique()->values()->all(),
+            availableOnly: $str('available') === '1',
+            areas: $list('area')->map(fn ($v) => trim((string) $v))->filter()->unique()->values()->all(),
         );
     }
 

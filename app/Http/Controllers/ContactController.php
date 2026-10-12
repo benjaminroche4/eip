@@ -28,7 +28,7 @@ class ContactController extends Controller
     private function prefill(Request $request, ListArrondissements $arrondissements): ?array
     {
         // From a listing's detail page (`?property=slug`, 2026-09-28): the listing named in the message
-        $slug = (string) $request->query('property', '');
+        $slug = is_string($v = $request->query('property')) ? $v : ''; // scalar only (audit 2026-10-12)
         if ($slug !== '' && ($page = app(ShowProperty::class)($slug)) !== null) {
             $p = $page->property;
             $name = collect($arrondissements())->firstWhere('n', $p->arrondissement)?->name ?? "Paris {$p->arrondissement}";

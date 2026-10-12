@@ -18,7 +18,7 @@ class NewsletterController extends Controller
         return Inertia::render('newsletter', [
             'nextIssue' => NextIssue::compute(),
             // « Recevoir les nouveaux biens » from the listing: the search to attach, echoed to the form (2026-09-28)
-            'search' => mb_substr(ltrim((string) $request->query('search', ''), '?'), 0, 500) ?: null,
+            'search' => mb_substr(ltrim(is_string($v = $request->query('search')) ? $v : '', '?'), 0, 500) ?: null, // scalar only (audit 2026-10-12)
         ]);
     }
 
