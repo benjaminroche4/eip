@@ -95,6 +95,7 @@ class ContactFormTest extends TestCase
             'seo.organization.phone' => '+33 1 84 80 43 44',
             'seo.organization.email' => 'contact@estate-in-paris.fr',
             'seo.organization.whatsapp' => '33184804344',
+            'seo.organization.maps_url' => null, // the address search link, whatever the local env says (2026-10-12)
             'seo.organization.address' => ['street' => '3 rue Grégoire de Tours', 'postal_code' => '75006', 'city' => 'Paris', 'country' => 'FR'],
             'seo.advisor.name' => 'Charles Mata',
             'seo.advisor.role' => ['fr' => 'Conseiller senior', 'en' => 'Senior advisor'],
