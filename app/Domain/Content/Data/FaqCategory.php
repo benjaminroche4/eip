@@ -32,9 +32,10 @@ final readonly class FaqCategory implements Arrayable
     }
 
     /** The same topic limited to its first questions (teaser blocks on other pages). */
-    public function take(int $limit): self
+    /** `$offset` skips the first questions: two teasers of the same topic can show different ones (home / Buy, 2026-10-12). */
+    public function take(int $limit, int $offset = 0): self
     {
-        return new self($this->key, $this->title, $this->slug, array_slice($this->items, 0, $limit));
+        return new self($this->key, $this->title, $this->slug, array_slice($this->items, $offset, $limit));
     }
 
     public function toArray(): array

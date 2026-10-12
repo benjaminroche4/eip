@@ -19,7 +19,7 @@ class FaqTest extends TestCase
                 ->where('categories.0.key', 'buying')
                 ->where('categories.0.title', 'Acheter un bien')
                 ->where('categories.0.slug', 'acheter-un-bien')
-                ->has('categories.0.items', 10)
+                ->has('categories.0.items', 11) // + « Quels sont vos honoraires ? » moved from the « working » topic (2026-10-12)
                 ->where('categories.0.items.0.slug', 'un-etranger-peut-il-acheter-un-bien-immobilier-a-paris'));
 
         $this->withLocale('en')->get('/en/faq')
@@ -35,7 +35,7 @@ class FaqTest extends TestCase
 
             $questions = [];
             foreach ($categories as $category) {
-                $this->assertCount(10, $category['items'], "[$locale] {$category['key']}: 10 questions");
+                $this->assertGreaterThanOrEqual(9, count($category['items']), "[$locale] {$category['key']}: at least nine questions");
                 foreach ($category['items'] as $item) {
                     $this->assertStringEndsWith('?', $item['question']);
                     $this->assertGreaterThan(80, mb_strlen($item['answer']), "[$locale] answer too short to be quotable: {$item['question']}");

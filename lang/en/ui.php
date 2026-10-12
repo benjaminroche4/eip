@@ -224,7 +224,7 @@ return [
         'types' => ['apartment' => 'Apartment', 'house' => 'House', 'mansion' => 'Private mansion', 'loft' => 'Loft'],
         'empty' => 'No property is available at the moment. Contact us: our advisors have access to off-market properties that are never published.',
         'cta' => 'Interested in this property?',
-        'source' => 'Asking prices, agency fees included. Every property is shown by private appointment.',
+        'source' => 'Asking prices, 6% agency fees (incl. VAT) included. Every property is shown by private appointment.',
     ],
     'districts' => [
         'eyebrow' => 'Paris, district by district',
@@ -409,7 +409,8 @@ return [
                     ['question' => 'How long does it take to buy a property in Paris?', 'answer' => 'Allow three to four months between the accepted offer and the final deed: a ten-day cooling-off period after the preliminary agreement, then the mortgage approval and the notary checks. Without financing, a purchase can complete in two months.'],
                     ['question' => 'What additional costs should I expect when buying?', 'answer' => 'Notary fees represent about 7 to 8% of the price for an existing property and 2 to 3% for a new build. Agency fees, when payable by the buyer, are stated in each listing.'],
                     ['question' => 'Can you help me find off-market properties?', 'answer' => 'Part of the properties we offer are never published: they are presented discreetly to a restricted circle of qualified buyers. [Entrust us with your search](contact) to gain access.'],
-                    ['question' => 'Do I need to be in France to purchase a property?', 'answer' => 'Your presence is not required: viewings are done remotely, and both the preliminary agreement and the final deed are signed by power of attorney. We coordinate the notary, the financing and the management of the property after the purchase.'],
+                    ['question' => 'Do I need to be in France to purchase a property?', 'answer' => 'No. Viewings take place on site or remotely, as you prefer, and both the preliminary agreement and the final deed can be signed by power of attorney. We coordinate the notary, the financing and the management of the property after the purchase.'],
+                    ['question' => 'What are your fees?', 'answer' => '6% of the sale price including VAT, paid by the seller and included in the displayed price. When they are payable by the buyer, the listing says so, as the regulations require.'],
                     ['question' => 'Can a foreign buyer get a mortgage in France?', 'answer' => 'French banks lend to non-residents, usually up to 50 to 70% of the price, with a higher deposit than for residents. We introduce you to brokers used to international files.'],
                     ['question' => 'What is the difference between a promesse and a compromis de vente?', 'answer' => 'A promesse binds the seller for a set period while the buyer pays a deposit of 5 to 10%. A compromis binds both parties from signing. In Paris the promesse is the most common form.'],
                     ['question' => 'What is the cooling-off period?', 'answer' => 'After signing the preliminary agreement, a non-professional buyer has ten days to withdraw without reason or penalty. After that, the buyer is bound subject to the conditions precedent, such as obtaining the loan.'],
@@ -455,7 +456,6 @@ return [
                 'items' => [
                     ['question' => 'How can I get in touch with an advisor?', 'answer' => 'Through the [contact page form](contact), by phone during opening hours, or by email. An advisor calls you back within 30 minutes during opening hours.'],
                     ['question' => 'Which languages do you work in?', 'answer' => 'Our advisors work in French, English and Spanish and coordinate everyone a transaction from abroad requires: notary, financing, power of attorney, property management.'],
-                    ['question' => 'What are your fees?', 'answer' => 'Our fees are a percentage of the sale price and are set out in the mandate before any listing. They are stated in each listing, as required by regulation.'],
                     ['question' => 'Which types of property do you offer?', 'answer' => "High-end apartments, private mansions, whole buildings, artists' studios and unusual properties in Paris and its immediate surroundings, listed publicly or off-market."],
                     ['question' => 'How do you guarantee confidentiality?', 'answer' => 'No information about a property or a client is shared without written consent. Off-market properties are presented without an address and under a confidentiality agreement to qualified buyers only.'],
                     ['question' => 'Do you work with other agencies?', 'answer' => 'Yes, whenever it serves our clients: we collaborate with a network of fellow agents in France and abroad to widen a search or the distribution of a property.'],
@@ -969,8 +969,8 @@ return [
     ],
     'services' => [
         'eyebrow' => 'What we do',
-        'title' => 'What can we do for your property project in Paris?',
-        'intro' => 'Buying, selling, valuing or being guided: our advisors support you at every stage of your property project in Paris.',
+        'title' => 'How can we help you?',
+        'intro' => 'A dedicated advisor guides you at every stage of your property project in Paris.',
         'buy_title' => 'Buy property',
         'buy_text' => 'Access exceptional residences and off-market opportunities.',
         'sell_title' => 'Sell property',
@@ -1048,7 +1048,7 @@ return [
         'search_title' => 'The Paris agency for international clients',
         'hero_value_1' => 'Confidential and off-market',
         'hero_value_2' => 'Prime locations in Paris',
-        'hero_value_3' => 'End-to-end support',
+        'hero_value_3' => 'A dedicated advisor at every step',
         'headline' => 'Prestige real estate in Paris',
         'intro' => 'Apartments, townhouses and off-market properties, hand-picked by our advisors.',
         // Trust intro under the hero (Figma 712-25112 / 712-25584): the figure comes from about.stats (real numbers only)
@@ -1060,13 +1060,13 @@ return [
         // Conversion order of the home (2026-09-22): market data and FAQ teaser texts, h2 as questions
         'faq' => [
             'eyebrow' => 'Your questions',
-            'title' => 'How does working with Estate in Paris go?',
+            'title' => 'How do we work with you?',
             // GEO: a self-contained answer (brand + what + where)
-            'intro' => 'Answers to the questions buyers and sellers ask before entrusting us with a project in Paris: fees, timing, confidentiality, support.',
+            'intro' => 'Clear answers before your first viewing in Paris.',
             'all' => 'See every question',
         ],
         // Blog preview (2026-09-22)
-        'blog_title' => 'What should you know before buying or selling in Paris?',
+        'blog_title' => 'The Paris market, from the inside',
         'blog_intro' => 'Our articles to understand the Paris property market and prepare your project.',
         'blog_cta' => 'See all articles',
     ],
@@ -1112,7 +1112,7 @@ return [
         'answer' => 'For sale: :rooms-room :type (:surface sqm, :bedrooms bedrooms) in :area, :arrondissement, priced at :price.',
         'answer_rent' => 'For rent: :rooms-room :type (:surface sqm, :bedrooms bedrooms) in :area, :arrondissement, at :price per month.',
         'legal_title' => 'Notices',
-        'legal_sale' => 'Asking price, agency fees included and paid by the seller. Indicative surface, to be confirmed by the Carrez survey. Diagnostics (energy rating, co-ownership) are provided at the viewing.',
+        'legal_sale' => 'Asking price, 6% agency fees (incl. VAT) included and paid by the seller. Indicative surface, to be confirmed by the Carrez survey. Diagnostics (energy rating, co-ownership) are provided at the viewing.',
         'legal_rent' => 'Monthly rent shown with charges included, in a rent-control zone: the reference rent cap, the deposit and the tenant fees are provided on request. Indicative living area.',
         'legal_risks' => 'Information on the risks this property is exposed to is available on the Géorisques website.',
         'legal_risks_link' => 'www.georisques.gouv.fr',
@@ -1208,7 +1208,7 @@ return [
         'per_month' => '/ month',
         'charges_included' => 'Charges included',
         'charges_excluded' => 'Excluding charges',
-        'fees' => 'Agency fees included, paid by the seller.',
+        'fees' => 'Agency fees of 6% of the sale price including VAT, included and paid by the seller.',
         'fees_info' => 'Fees',
         'fees_rent' => 'Letting fees paid by the tenant, shared on request.',
         'similar_title' => 'Similar properties',

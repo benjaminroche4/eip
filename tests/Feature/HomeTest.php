@@ -64,7 +64,7 @@ class HomeTest extends TestCase
                 ->where('translations.home.trust_text', fn (string $text) => str_contains($text, 'Paris') && ! str_contains($text, 'Estate in Paris'))
                 ->has('testimonials', 20)
                 ->has('stories', 10)
-                ->where('faq.slug', 'travailler-avec-estate-in-paris')
+                ->where('faq.slug', 'acheter-un-bien') // buyer-side questions on the home (2026-10-12)
                 ->has('faq.items', 6)
                 ->where('translations.about.manifesto_title', 'Qui sommes-nous ?')
                 ->where('translations.home.faq.intro', fn (string $text) => str_contains($text, 'Paris') && ! str_contains($text, 'Estate in Paris'))

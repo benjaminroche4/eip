@@ -14,9 +14,9 @@ final readonly class FaqExcerpt implements Arrayable
         public array $items,
     ) {}
 
-    public static function of(FaqCategory $category, int $limit): self
+    public static function of(FaqCategory $category, int $limit, int $offset = 0): self
     {
-        return new self(slug: $category->slug, items: $category->take($limit)->items);
+        return new self(slug: $category->slug, items: $category->take($limit, $offset)->items);
     }
 
     /** No topic found: an empty block, never a broken page. */

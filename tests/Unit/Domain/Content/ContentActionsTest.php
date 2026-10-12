@@ -88,6 +88,8 @@ class ContentActionsTest extends TestCase
 
         $this->assertSame('selling-property', app(ExcerptFaqCategory::class)('selling', 2, 'en')->slug);
         $this->assertCount(2, app(ExcerptFaqCategory::class)('selling', 2, 'en')->items);
+        $this->assertSame('Quels sont vos honoraires ?', app(ExcerptFaqCategory::class)('buying', 6, 'fr', 5)->items[0]->question); // offset skips the first questions
+        $this->assertCount(5, app(ExcerptFaqCategory::class)('buying', 6, 'fr', 6)->items); // 11 questions: the last window is short
 
         $this->assertSame(['slug' => '', 'items' => []], app(ExcerptFaqCategory::class)('unknown', 6, 'fr')->toArray());
     }

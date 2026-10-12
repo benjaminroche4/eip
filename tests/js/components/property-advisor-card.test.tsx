@@ -21,13 +21,13 @@ describe('PropertyAdvisorCard', () => {
         );
 
         expect(screen.queryByText(/Mis en vente le/)).toBeNull();
-        expect(screen.queryByText("Honoraires d'agence inclus, à la charge du vendeur.")).toBeNull(); // not in the card any more
+        expect(screen.queryByText("Honoraires d'agence de 6 % TTC du prix de vente, inclus et à la charge du vendeur.")).toBeNull(); // not in the card any more
         const info = screen.getByRole('button', { name: 'Honoraires' });
         await user.hover(info);
-        expect((await screen.findAllByText("Honoraires d'agence inclus, à la charge du vendeur."))[0]).toBeInTheDocument();
+        expect((await screen.findAllByText("Honoraires d'agence de 6 % TTC du prix de vente, inclus et à la charge du vendeur."))[0]).toBeInTheDocument();
         await user.unhover(info);
         await user.tab(); // keyboard: the icon takes the focus and opens the tooltip
-        expect(await screen.findByRole('tooltip')).toHaveTextContent("Honoraires d'agence inclus");
+        expect(await screen.findByRole('tooltip')).toHaveTextContent("Honoraires d'agence de 6 % TTC");
         expect(await axe(container)).toHaveNoViolations();
 
         rerender(

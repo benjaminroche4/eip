@@ -20,7 +20,7 @@ class BuyController extends Controller
             'stats' => ContentList::toArray($stats()),
             'video' => config('seo.videos.buy') ?: null,
             'strategies' => ContentList::toArray($strategies()),
-            'faq' => $faq('buying', 6)->toArray(),
+            'faq' => $faq('buying', 6, null, 6)->toArray(), // questions 7-11: the home teaser shows 1-6, fees included (2026-10-12)
             'districts' => ContentList::toArray($districts()),
             'testimonials' => ContentList::toArray($testimonials()),
             'facts' => $this->facts(),

@@ -34,7 +34,7 @@ describe('Hero', () => {
         expect(values.map((li) => li.textContent)).toEqual([
             'Confidentiel et off-market',
             'Les meilleures adresses de Paris',
-            'Un accompagnement de A à Z',
+            'Un conseiller dédié à chaque étape',
         ]);
         values.forEach((li) => expect(li.querySelector('svg')).not.toBeNull());
         expect(screen.getByRole('list', { name: 'Nos engagements' })).toHaveClass('overflow-x-auto', 'snap-x', 'snap-mandatory', 'cursor-grab'); // one line: snap carousel, draggable with the mouse on mobile

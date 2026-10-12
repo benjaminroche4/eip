@@ -46,7 +46,7 @@ describe('Property detail page', () => {
             ),
         ).toBeInTheDocument();
         const legal = screen.getByRole('region', { name: 'Mentions' });
-        expect(legal).toHaveTextContent(/honoraires d'agence inclus/);
+        expect(legal).toHaveTextContent(/honoraires d'agence de 6 % TTC inclus/);
         expect(within(legal).getByRole('link', { name: 'www.georisques.gouv.fr' })).toHaveAttribute('href', 'https://www.georisques.gouv.fr');
         expect(screen.queryByRole('heading', { level: 2, name: 'Comment se passe une visite avec Estate in Paris ?' })).toBeNull(); // no FAQ nor CTA card on the listing page (user decision 2026-09-29)
         const graph = Array.from(document.querySelectorAll('script[type="application/ld+json"]')).map((n) => JSON.parse(n.textContent ?? '{}'));

@@ -24,7 +24,7 @@ class HomeController extends Controller
             'posts' => $latest,
             'testimonials' => ContentList::toArray($testimonials()),
             'stories' => ContentList::toArray($stories()),
-            'faq' => $faq('working', 6)->toArray(),
+            'faq' => $faq('buying', 6)->toArray(), // buyer-side questions (user decision 2026-10-12; the « working » topic stays on the FAQ page)
             // Trust intro headline figure: « properties sold » from about.stats (real numbers only, never a placeholder)
             'figure' => __('ui.about.stats.1.value'),
         ]);
