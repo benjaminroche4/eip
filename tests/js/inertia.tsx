@@ -57,7 +57,7 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
             siteName: 'Estate in Paris',
             separator: ' - ',
             description: '',
-            image: '/og-default.png',
+            image: '/og-default.jpg',
             locale: 'fr_FR',
             twitter: null,
             relocationUrl: 'https://relocation-in-paris.fr/',

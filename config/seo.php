@@ -14,7 +14,7 @@ return [
     'sitemap_dir' => env('SEO_SITEMAP_DIR') ? base_path(env('SEO_SITEMAP_DIR')) : public_path(),
     'title_separator' => ' - ',
     'default_description' => env('SEO_DESCRIPTION', 'Application Laravel + Inertia + React : rapide, accessible et optimisée pour le référencement.'),
-    'default_image' => env('SEO_DEFAULT_IMAGE', '/og-default.png'), // 1200×630, absolute or relative to APP_URL
+    'default_image' => env('SEO_DEFAULT_IMAGE', '/og-default.jpg'), // 1200×630 JPEG (every scraper reads it, WebP is not safe), absolute or relative to APP_URL
     'locale' => 'fr_FR',
     'language' => 'fr',
     'twitter' => env('SEO_TWITTER', null), // '@handle'
