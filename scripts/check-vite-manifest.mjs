@@ -7,6 +7,7 @@
 // answered 500 for a day). Run after `vite build`, before the SSR build, so a broken manifest never reaches a deploy.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import process from 'node:process';
 
 const root = new URL('..', import.meta.url).pathname;
 const pagesDir = join(root, 'resources/js/pages');
