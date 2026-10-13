@@ -1,6 +1,5 @@
 import NumberedSteps, { type Step } from '@/components/page/numbered-steps';
 import { act, screen, within } from '@testing-library/react';
-import { Search, Sparkles, UsersRound } from 'lucide-react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { axe } from 'vitest-axe';
 import { page, renderPage, sharedProps } from '../inertia';
@@ -24,7 +23,7 @@ describe('NumberedSteps', () => {
         vi.restoreAllMocks();
     });
 
-    it('renders the header, the cross-fading photos, the icons and the id it is given (the « Vendre » steps)', async () => {
+    it('renders the header, the cross-fading photos and the id it is given (the « Vendre » steps)', async () => {
         page.props = sharedProps();
         const { container } = renderPage(
             <NumberedSteps
@@ -40,7 +39,6 @@ describe('NumberedSteps', () => {
                     { src: '/images/sell/step-2-{w}.jpg', alt: '' },
                     { src: '/images/sell/step-3-{w}.jpg', alt: '' },
                 ]}
-                icons={[Search, Sparkles, UsersRound]}
             />,
         );
 
@@ -61,9 +59,7 @@ describe('NumberedSteps', () => {
 
     it('locks the step under the middle of the viewport, measured on scroll (a short step is never skipped)', async () => {
         page.props = sharedProps();
-        const { container } = renderPage(
-            <NumberedSteps id="sell-process-title" items={ITEMS} texts={TEXTS} photos={PHOTOS} icons={[Search, Sparkles, UsersRound]} />,
-        );
+        const { container } = renderPage(<NumberedSteps id="sell-process-title" items={ITEMS} texts={TEXTS} photos={PHOTOS} />);
         const list = container.querySelector('ol')!;
         const rows = Array.from(container.querySelectorAll('ol > li'));
         expect(container.querySelector('.animate-value-lock')).toBeNull(); // nothing active before the list reaches the middle

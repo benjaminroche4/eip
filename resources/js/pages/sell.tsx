@@ -15,7 +15,7 @@ import { stripFaqMarkup } from '@/lib/faq-markup';
 import { breadcrumbList, faqPage, serviceNode } from '@/lib/json-ld';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { EyeOff, Globe, Search, Sparkles, UserCheck, Users, UsersRound } from 'lucide-react';
+import { EyeOff, Globe, UserCheck, Users } from 'lucide-react';
 import { useRef } from 'react';
 
 type SellProps = { stories: SuccessStory[]; steps: Step[]; testimonials: Testimonial[]; faq: FaqTeaserData; stats: BuyStat[]; video: string | null };
@@ -96,7 +96,6 @@ export default function Sell({ stories, steps, testimonials, faq, stats, video }
                 items={steps}
                 texts={{ eyebrow: t('sell.process.eyebrow'), title: t('sell.process.title'), intro: t('sell.process.intro') }}
                 photos={[1, 2, 3].map((i) => ({ src: `/images/sell/process-${i}-{w}.webp`, alt: i === 1 ? t('sell.process.photo_alt') : '' }))}
-                icons={[Search, Sparkles, UsersRound]}
             />
 
             {/* Confidential sale, text + photo in two columns (user decision 2026-09-22, replaces the district cards tried the same day) */}

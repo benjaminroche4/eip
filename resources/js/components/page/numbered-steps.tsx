@@ -2,7 +2,6 @@ import GradientHairline from '@/components/layout/gradient-hairline';
 import PageEyebrow from '@/components/page/page-eyebrow';
 import SeoImage from '@/components/seo/seo-image';
 import { cn } from '@/lib/utils';
-import { type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 /** A titled step of the numbered list (`Strategy` DTO of `Domain/Content`: Buy strategies, Sell steps). */
@@ -24,28 +23,27 @@ type NumberedStepsProps = {
     items: Step[];
     /** One photo per step, in order (`{w}` = width placeholder); only the first alt is read. */
     photos: StepPhoto[];
-    /** One lucide icon per step, in order. */
-    icons: LucideIcon[];
 };
 
 /**
  * Numbered steps with cross-fading photos — « Des stratégies conçues autour de vos objectifs » (Figma 712-18511 desktop /
  * 712-18821 mobile) built for the « Acheter » page and extracted on 2026-09-22 to serve the « Vendre » process (three
- * steps of the sale) as well; `BuyStrategies` wraps it with the Buy texts, photos and icons. Under the buy hero:
+ * steps of the sale) as well; `BuyStrategies` wraps it with the Buy texts and photos. Under the buy hero:
  * centred header (eyebrow, h2, answer-first intro), then on the left one photo per strategy (`strategies-{1,2,3}`,
  * placeholders for now): on desktop they cross-fade (700 ms) to follow the active strategy, under `lg` and under
  * `prefers-reduced-motion` only the first one shows; square on desktop, 16/9 on mobile, bare — the Figma's sentence
  * and check points over it were dropped (user decisions 2026-09-21)
  * and on the right the three strategies numbered like the About values (ui.sh variant « Numéros sable », user decision
  * 2026-09-21 — the Figma's flat sand cards would have doubled the advantages cards above): sand vertical thread with a
- * dot per strategy, big sand Montserrat number, title with a small lucide icon, one sentence, generously spaced. The
+ * dot per strategy, big sand Montserrat number, title, one sentence, generously spaced (the small lucide icon after each
+ * title was removed on 2026-10-13, user decision). The
  * strategy under the middle line of the viewport (else the nearest to it, measured on every scroll frame — not an
  * IntersectionObserver band, which skipped a short step crossed between two callbacks, as on the About values) is the
  * active one: its number locks in (`animate-value-lock`) and the dot emits a ring (`animate-value-ring`), exactly like
  * the About values; nothing is active until the list has reached the middle of the viewport. Each row is also a button: a click (or Enter / Space) activates it, with
  * `aria-current` on the active one (user decision 2026-09-21). On mobile everything stacks, the photo first.
  */
-export default function NumberedSteps({ id, texts: header, items, photos: pictures, icons }: NumberedStepsProps) {
+export default function NumberedSteps({ id, texts: header, items, photos: pictures }: NumberedStepsProps) {
     const listRef = useRef<HTMLOListElement>(null);
     const [active, setActive] = useState<number | null>(null);
 
@@ -127,11 +125,10 @@ export default function NumberedSteps({ id, texts: header, items, photos: pictur
                     })}
                 </div>
 
-                {/* Strategies numbered like the About values: sand thread with a dot, big sand number, title + small icon, sentence */}
+                {/* Strategies numbered like the About values: sand thread with a dot, big sand number, title, sentence */}
                 <ol ref={listRef} className="relative flex flex-col gap-12 pl-6 lg:gap-14">
                     <GradientHairline vertical className="absolute top-2 bottom-2 left-0" />
                     {items.map((item, i) => {
-                        const Icon = icons[i % icons.length];
                         const isActive = active === i;
                         return (
                             <li key={item.title} className="relative">
@@ -169,10 +166,7 @@ export default function NumberedSteps({ id, texts: header, items, photos: pictur
                                         {String(i + 1).padStart(2, '0')}
                                     </span>
                                     <span className="flex flex-1 flex-col gap-2 pt-2">
-                                        <h3 className="flex items-center gap-3 text-lg font-medium">
-                                            {item.title}
-                                            <Icon aria-hidden className="text-muted-foreground size-4" strokeWidth={1.5} />
-                                        </h3>
+                                        <h3 className="text-lg font-medium">{item.title}</h3>
                                         <span className="text-muted-foreground block max-w-md text-base/7 text-pretty sm:text-sm/6">{item.text}</span>
                                     </span>
                                 </button>
