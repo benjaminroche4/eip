@@ -514,7 +514,6 @@ return [
         'conditions' => ['renovate' => 'To renovate', 'good' => 'Good condition', 'new' => 'Fully renovated'],
         'yes' => 'Yes',
         'errors_title' => '{1} :count field to correct|[2,*] :count fields to correct',
-        'whatsapp_hint' => "We'll message you on WhatsApp at the mobile number above.",
         'recap_edit' => 'Edit',
         'trust_confidential' => 'Confidential',
         'trust_free' => 'No obligation',
@@ -530,7 +529,6 @@ return [
         'contact_method' => 'Contact method',
         'contact_methods' => [
             'phone' => 'Phone',
-            'whatsapp' => 'WhatsApp',
             'email' => 'Email',
         ],
         'message' => 'Additional details',
@@ -628,8 +626,6 @@ return [
     'contact' => [
         'call_us' => 'Call the agency',
         'headline' => "Let's discuss your property project in Paris",
-        'available_on' => 'Available on',
-        'whatsapp' => 'WhatsApp',
         'email_us' => 'Email us',
         'visit_us' => 'Visit our office',
         'head_office' => 'Main office',

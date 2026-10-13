@@ -46,14 +46,14 @@ class EstimateFormTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p->component('estimate')
                 ->where('propertyTypes', ['apartment', 'duplex', 'studio', 'mansion', 'house', 'loft', 'building', 'other'])
-                ->where('contactMethods', ['phone', 'whatsapp', 'email'])
+                ->where('contactMethods', ['phone', 'email'])
                 ->where('floors.0', 'ground')
                 ->where('conditions', ['renovate', 'good', 'new'])
                 ->where('googleMapsKey', 'test-maps-key'));
 
         foreach (['fr', 'en'] as $locale) {
             app()->setLocale($locale);
-            foreach (['headline', 'step_type', 'submit', 'sent', 'consent_privacy', 'process_title', 'property_types.apartment', 'contact_methods.whatsapp'] as $key) {
+            foreach (['headline', 'step_type', 'submit', 'sent', 'consent_privacy', 'process_title', 'property_types.apartment'] as $key) {
                 $this->assertNotSame("ui.estimate.$key", __("ui.estimate.$key"), "[$locale] missing ui.estimate.$key");
             }
         }

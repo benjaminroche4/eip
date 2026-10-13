@@ -28,7 +28,7 @@ const render = (googleMapsKey: string | null = 'test-key') =>
     renderPage(
         <EstimateForm
             propertyTypes={['apartment']}
-            contactMethods={['phone', 'whatsapp', 'email']}
+            contactMethods={['phone', 'email']}
             floors={['ground']}
             features={['bright']}
             conditions={['good']}

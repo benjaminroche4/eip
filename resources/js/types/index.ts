@@ -69,8 +69,6 @@ export interface SeoShared {
         sameAs: string[];
         email: string | null;
         phone: string | null;
-        /** International number without spaces (wa.me link); null hides the WhatsApp link. */
-        whatsapp: string | null;
         /** Google Business Profile / Maps place link; null = search the address on Google Maps. */
         mapsUrl: string | null;
         address: { street?: string; city?: string; postal_code?: string; country?: string };

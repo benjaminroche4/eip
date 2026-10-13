@@ -12,7 +12,7 @@ final readonly class Valuation
     public const PROPERTY_TYPES = ['apartment', 'duplex', 'studio', 'mansion', 'house', 'loft', 'building', 'other'];
 
     /** How the prospect wants to be reached (keys of ui.estimate.contact_methods). */
-    public const CONTACT_METHODS = ['phone', 'whatsapp', 'email'];
+    public const CONTACT_METHODS = ['phone', 'email']; // no WhatsApp at the agency (user decision 2026-10-13)
 
     /** Floors offered by the form (keys of ui.estimate.floors). */
     public const FLOORS = ['ground', '1', '2', '3', '4', '5', '6', '7_plus', 'top'];

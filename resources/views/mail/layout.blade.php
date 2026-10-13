@@ -82,7 +82,6 @@
                                 @if($agency['phone'])<a href="{{ $agency['phoneHref'] }}" style="color:#0f1b29;text-decoration:none;font-weight:500;">{{ $agency['phone'] }}</a>@endif
                                 @if($agency['phone'] && $agency['email']) <span class="text-muted" style="color:#a19481;">·</span> @endif
                                 @if($agency['email'])<a href="mailto:{{ $agency['email'] }}" style="color:#0f1b29;text-decoration:none;font-weight:500;">{{ $agency['email'] }}</a>@endif
-                                @if($agency['whatsappUrl']) <span class="text-muted" style="color:#a19481;">·</span> <a href="{{ $agency['whatsappUrl'] }}" style="color:#0f1b29;text-decoration:none;font-weight:500;">WhatsApp</a>@endif
                             </p>
 
                             @if($agency['social'])

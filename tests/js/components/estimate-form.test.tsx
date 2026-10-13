@@ -9,7 +9,7 @@ import { formErrors, formPost, page, renderPage, sharedProps } from '../inertia'
 vi.setConfig({ testTimeout: 15000 });
 
 const TYPES = ['apartment', 'duplex', 'studio', 'mansion', 'house', 'loft', 'building', 'other'];
-const METHODS = ['phone', 'whatsapp', 'email'];
+const METHODS = ['phone', 'email'];
 const FLOORS = ['ground', '1', '2', '3', '7_plus', 'top'];
 const FEATURES = ['bright', 'view', 'quiet', 'outdoor', 'metro', 'central', 'parking', 'cellar'];
 const CONDITIONS = ['renovate', 'good', 'new'];
@@ -191,7 +191,7 @@ describe('EstimateForm', () => {
         await user.click(screen.getByRole('checkbox', { name: 'Ascenseur' }));
         await user.click(screen.getByRole('checkbox', { name: 'Lumineux' }));
         await user.click(screen.getByRole('checkbox', { name: 'Proche métro' }));
-        await user.click(screen.getByRole('radio', { name: 'WhatsApp' }));
+        await user.click(screen.getByRole('radio', { name: 'E-mail' }));
         await user.type(screen.getByLabelText(/^Informations complémentaires/), 'Vue sur cour.');
         await user.click(screen.getByRole('checkbox', { name: /J'accepte d'être contacté/ }));
         await user.type(screen.getByLabelText(/^Adresse e-mail/), 'jean@example.com');
@@ -199,12 +199,11 @@ describe('EstimateForm', () => {
         await user.type(screen.getByLabelText(/^Où se situe votre bien/), '12 rue de Seine, Paris');
 
         expect(screen.getByLabelText(/^Valeur estimée/)).toHaveValue((1500000).toLocaleString('fr-FR'));
-        expect(screen.getByText(/Nous vous écrirons sur WhatsApp/)).toBeInTheDocument();
         expect(recap().getByText('Jean Dupont')).toBeInTheDocument();
         expect(recap().getByText('120 m²')).toBeInTheDocument();
         expect(recap().getByText('Ascenseur')).toBeInTheDocument();
         expect(recap().getByRole('button', { name: 'Modifier : Atouts' })).toHaveTextContent('2 : Lumineux, Proche métro'); // count + accessible names
-        expect(recap().getByText('WhatsApp')).toBeInTheDocument();
+        expect(recap().getAllByText('E-mail').length).toBeGreaterThan(0); // the chosen contact method (the e-mail row carries the same word)
         expect(recap().getByRole('button', { name: 'Modifier : Valeur' })).toHaveTextContent(/1.500.000 €/); // Intl uses narrow no-break spaces
         expect(screen.getByText('13/2000')).toBeInTheDocument();
 

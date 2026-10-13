@@ -67,7 +67,6 @@ export function sharedProps(overrides: Partial<SharedData> = {}): SharedData {
                 sameAs: [],
                 email: 'contact@example.com',
                 phone: '+33 6 00 00 00 00',
-                whatsapp: '33600000000',
                 mapsUrl: null,
                 address: { street: '3 rue Grégoire de Tours', city: 'Paris', postal_code: '75006', country: 'FR' },
             },

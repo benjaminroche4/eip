@@ -78,7 +78,6 @@ class HandleInertiaRequests extends Middleware
                     'sameAs' => array_values(array_unique(array_filter([...config('seo.organization.same_as'), ...array_values(config('seo.social'))]))),
                     'email' => config('seo.organization.email'),
                     'phone' => config('seo.organization.phone'),
-                    'whatsapp' => config('seo.organization.whatsapp'),
                     'mapsUrl' => config('seo.organization.maps_url') ?: null,
                     'address' => array_filter(config('seo.organization.address')),
                 ],

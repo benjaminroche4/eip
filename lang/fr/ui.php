@@ -514,7 +514,6 @@ return [
         'conditions' => ['renovate' => 'À rénover', 'good' => 'Bon état', 'new' => 'Refait à neuf'],
         'yes' => 'Oui',
         'errors_title' => '{1} :count champ à corriger|[2,*] :count champs à corriger',
-        'whatsapp_hint' => 'Nous vous écrirons sur WhatsApp au numéro de mobile indiqué ci-dessus.',
         'recap_edit' => 'Modifier',
         'trust_confidential' => 'Confidentiel',
         'trust_free' => 'Sans engagement',
@@ -530,7 +529,6 @@ return [
         'contact_method' => 'Mode de contact',
         'contact_methods' => [
             'phone' => 'Téléphone',
-            'whatsapp' => 'WhatsApp',
             'email' => 'E-mail',
         ],
         'message' => 'Informations complémentaires',
@@ -629,8 +627,6 @@ return [
     'contact' => [
         'call_us' => 'Appeler l\'agence',
         'headline' => 'Parlons de votre projet immobilier à Paris', // the h1 names the place (SEO audit 2026-10-11)
-        'available_on' => 'Disponible sur',
-        'whatsapp' => 'WhatsApp',
         'email_us' => 'Écrivez-nous',
         'visit_us' => 'Venez nous voir',
         'head_office' => 'Bureau principal',

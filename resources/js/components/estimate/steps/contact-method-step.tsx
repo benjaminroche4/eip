@@ -3,15 +3,15 @@ import StepHeading from '@/components/estimate/step-heading';
 import { type EstimateStepProps } from '@/components/estimate/types';
 import { useTranslation } from '@/hooks/use-translation';
 import { focusField } from '@/lib/focus-field';
-import { Info, type LucideIcon, Mail, MessageCircle, Phone } from 'lucide-react';
+import { type LucideIcon, Mail, Phone } from 'lucide-react';
 
-const CONTACT_ICONS: Record<string, LucideIcon> = { phone: Phone, whatsapp: MessageCircle, email: Mail };
+const CONTACT_ICONS: Record<string, LucideIcon> = { phone: Phone, email: Mail };
 
 type ContactMethodStepProps = EstimateStepProps & {
     contactMethods: string[];
 };
 
-/** Step 4 — preferred contact method as selection cards (+ WhatsApp hint); picking one moves the focus to the note. */
+/** Step 4 — preferred contact method as selection cards; picking one moves the focus to the note. */
 export default function ContactMethodStep({ data, setData, errors, complete, contactMethods }: ContactMethodStepProps) {
     const { t } = useTranslation();
     const options: SelectionOption[] = contactMethods.map((value) => ({
@@ -37,12 +37,6 @@ export default function ContactMethodStep({ data, setData, errors, complete, con
                 aria-labelledby="step-method"
                 aria-invalid={Boolean(errors.contact_method)}
             />
-            {data.contact_method === 'whatsapp' && (
-                <p className="text-muted-foreground flex items-start gap-2 text-sm">
-                    <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
-                    {t('estimate.whatsapp_hint')}
-                </p>
-            )}
         </fieldset>
     );
 }

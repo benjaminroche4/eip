@@ -94,7 +94,6 @@ class ContactFormTest extends TestCase
         config([
             'seo.organization.phone' => '+33 1 88 83 73 30',
             'seo.organization.email' => 'contact@estate-in-paris.fr',
-            'seo.organization.whatsapp' => '33188837330',
             'seo.organization.maps_url' => null, // the address search link, whatever the local env says (2026-10-12)
             'seo.organization.address' => ['street' => '3 rue Grégoire de Tours', 'postal_code' => '75006', 'city' => 'Paris', 'country' => 'FR'],
             'seo.advisor.name' => 'Charles Mata',
@@ -118,7 +117,6 @@ class ContactFormTest extends TestCase
                 && str_contains($html, '3 rue Grégoire de Tours, 75006 Paris, France')
                 && str_contains($html, 'tel:+33188837330')
                 && str_contains($html, 'mailto:contact@estate-in-paris.fr')
-                && str_contains($html, 'https://wa.me/33188837330')
                 && str_contains($html, 'google.com/maps')
                 && str_contains($html, config('seo.hours.labels.fr'))
                 && str_contains($html, 'text/html') === false; // rendered body, not headers

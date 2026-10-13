@@ -8,11 +8,11 @@ import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 
-/** Left column of the contact page (Figma 261-7360): phone (+ WhatsApp), e-mail, office, social links. */
+/** Left column of the contact page (Figma 261-7360): phone, e-mail, office, social links. */
 export default function ContactDetails() {
     const { seo } = usePage<SharedData>().props;
     const { t } = useTranslation();
-    const { phone, whatsapp, email, address } = seo.organization;
+    const { phone, email, address } = seo.organization;
     const hasAddress = Boolean(address.street && address.city);
     // The Google Business Profile link when configured (user decision 2026-09-22), else a Maps search on the address
     const mapsUrl =
@@ -50,20 +50,6 @@ export default function ContactDetails() {
                             {phone}
                         </a>
                         <p className="text-muted-foreground text-balance">{seo.hours.label}</p>
-                        {whatsapp && (
-                            <p className="flex items-center gap-1.5">
-                                {t('contact.available_on')}
-                                <a
-                                    href={`https://wa.me/${whatsapp}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={cn('focus-ring text-success', linkClass)}
-                                >
-                                    {t('contact.whatsapp')}
-                                    <span className="sr-only"> {t('footer.new_tab')}</span>
-                                </a>
-                            </p>
-                        )}
                     </ContactDetail>
                     <GradientHairline />
                 </>

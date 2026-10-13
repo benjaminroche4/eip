@@ -23,7 +23,6 @@ final class AgencyCard
             'email' => $org['email'] ?? null,
             'phone' => $phone,
             'phoneHref' => $phone ? 'tel:'.preg_replace('/\s+/', '', $phone) : null,
-            'whatsappUrl' => ($org['whatsapp'] ?? null) ? 'https://wa.me/'.$org['whatsapp'] : null,
             'addressLine' => $line !== '' ? $line.(($address['country'] ?? 'FR') === 'FR' ? ', France' : '') : null,
             'mapsUrl' => ($org['maps_url'] ?? null) ?: ($line !== '' ? 'https://www.google.com/maps/search/?api=1&query='.urlencode($line) : null),
             'hours' => config('seo.hours.labels.'.$locale, config('seo.hours.labels.fr')),

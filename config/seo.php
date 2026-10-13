@@ -35,7 +35,6 @@ return [
         'logo' => '/brand/logo_dark_desktop.svg',
         'email' => env('SEO_ORG_EMAIL'),
         'phone' => env('SEO_ORG_PHONE'),
-        'whatsapp' => env('SEO_ORG_WHATSAPP'), // international number without spaces (e.g. 33659253695) — empty = link hidden
         'maps_url' => env('SEO_GOOGLE_MAPS_URL'), // Google Business Profile / Maps place link (« Voir sur Google Maps », mail footer) — empty = address search on Google Maps
         'same_as' => array_values(array_filter(explode(',', (string) env('SEO_ORG_SAME_AS', '')))), // social/profile URLs
         'address' => [
