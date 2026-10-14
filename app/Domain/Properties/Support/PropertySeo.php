@@ -24,7 +24,14 @@ final class PropertySeo
     {
         $title = self::title($property, $locale);
         if ($property->metaDescription !== null) {
-            return ['title' => $title, 'withBrand' => SeoText::fitsBrand($title), 'description' => SeoText::description($property->metaDescription)];
+            // The Studio's text verbatim; a short one (< 120) gets the call to action appended when the whole still fits (review 2026-10-14)
+            $description = trim($property->metaDescription);
+            $cta = __('ui.property.seo_cta', [], $locale);
+            if (mb_strlen($description) < SeoText::DESCRIPTION_MIN && mb_strlen("$description $cta") <= SeoText::DESCRIPTION_MAX) {
+                $description = "$description $cta";
+            }
+
+            return ['title' => $title, 'withBrand' => SeoText::fitsBrand($title), 'description' => SeoText::description($description), 'answer' => self::answer($property, $locale)];
         }
 
         // The excerpt is kept only when the whole description fits: the call to action must stay at the end, whole
@@ -35,16 +42,35 @@ final class PropertySeo
             $property->transaction === 'rent' => ['seo_description_rent', 'seo_description_short_rent'],
             default => ['seo_description', 'seo_description_short'],
         };
-        $description = __("ui.property.$long", $values, $locale);
+        $description = self::tidy(__("ui.property.$long", $values, $locale));
         if (mb_strlen($description) > SeoText::DESCRIPTION_MAX) {
-            $description = __("ui.property.$short", $values, $locale);
+            $description = self::tidy(__("ui.property.$short", $values, $locale));
         }
 
         return [
             'title' => $title,
             'withBrand' => SeoText::fitsBrand($title),
             'description' => SeoText::description($description),
+            'answer' => self::answer($property, $locale),
         ];
+    }
+
+    /** The GEO answer-first sentence under the h1 (« À la vente : appartement de 4 pièces (118 m², 3 chambres) à … »), built here since 2026-10-14 so a missing room count never reads « 0 pièce ». */
+    public static function answer(Property $property, string $locale): string
+    {
+        $key = match (true) {
+            $property->priceOnRequest => 'answer_on_request',
+            $property->transaction === 'rent' => 'answer_rent',
+            default => 'answer',
+        };
+
+        return self::tidy(__("ui.property.$key", self::values($property, $locale), $locale));
+    }
+
+    /** Collapses the doubled spaces a missing fact leaves behind. */
+    private static function tidy(string $text): string
+    {
+        return trim((string) preg_replace('/\s{2,}/u', ' ', $text));
     }
 
     /** The longest title tier within 60 characters (the keyword and the place stay whole: no clamp). */
@@ -52,6 +78,10 @@ final class PropertySeo
     {
         $values = self::values($property, $locale);
         foreach (self::TITLE_TIERS as $key) {
+            // No surface or no room count: the tiers that name them are skipped (never « 0 m² », « 0 pièce », review 2026-10-14)
+            if (($key === 'seo_title_full' && ($property->surface <= 0 || $property->rooms <= 0)) || ($key === 'seo_title' && $property->rooms <= 0)) {
+                continue;
+            }
             $candidate = trim(__("ui.property.$key", $values, $locale));
             if (mb_strlen($candidate) <= SeoText::TITLE_MAX) {
                 return $candidate;
@@ -69,11 +99,28 @@ final class PropertySeo
         $arrondissement = 'Paris '.DistrictSlug::ordinal($property->arrondissement, $locale);
         $area = $property->area !== '' ? $property->area : $arrondissement;
 
+        // The facts the listing has (a building has no room count, a studio no bedroom): never « 0 pièce » nor « 0 chambre »
+        $roomsLabel = $property->rooms > 0 ? trans_choice('ui.property.rooms_count', $property->rooms, ['count' => $property->rooms], $locale) : '';
+        $surface = $property->surface > 0 ? __('ui.property.surface_label', ['surface' => $property->surface], $locale) : '';
+        $bedrooms = $property->bedrooms > 0 ? trans_choice('ui.property.bedrooms_count', $property->bedrooms, ['count' => $property->bedrooms], $locale) : '';
+        $facts = implode(', ', array_filter([$roomsLabel, $surface, $bedrooms]));
+        $extras = implode(', ', array_filter([$surface, $bedrooms]));
+        $typeLower = mb_strtolower(mb_substr($type, 0, 1)).mb_substr($type, 1);
+        $typeRooms = $roomsLabel !== '' ? __('ui.property.type_rooms', ['type' => $type, 'type_lower' => $typeLower, 'rooms' => $property->rooms, 'rooms_label' => $roomsLabel], $locale) : $type;
+
         return [
             'type' => $type,
-            'type_lower' => mb_strtolower(mb_substr($type, 0, 1)).mb_substr($type, 1),
+            'type_lower' => $typeLower,
             'rooms' => $property->rooms,
-            'rooms_label' => trans_choice('ui.property.rooms_count', $property->rooms, ['count' => $property->rooms], $locale),
+            'rooms_label' => $roomsLabel,
+            // « 4 pièces, 118 m², 3 chambres » / « 118 m² » and « 4-room apartment » / « Building »: what the sentences can rely on
+            'facts' => $facts,
+            'type_rooms' => $typeRooms,
+            'type_rooms_lower' => mb_strtolower(mb_substr($typeRooms, 0, 1)).mb_substr($typeRooms, 1),
+            // « de 4 pièces (118 m², 3 chambres) » / « (118 sqm, 3 bedrooms) »
+            'facts_answer' => $roomsLabel !== ''
+                ? __('ui.property.facts_answer', ['rooms_label' => $roomsLabel, 'extras' => $extras], $locale)
+                : ($extras !== '' ? __('ui.property.facts_answer_no_rooms', ['extras' => $extras], $locale) : ''),
             'bedrooms' => $property->bedrooms,
             'surface' => $property->surface,
             'area' => $area,

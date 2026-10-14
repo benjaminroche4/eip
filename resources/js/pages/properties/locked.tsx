@@ -14,7 +14,7 @@ type LockedProps = {
 /**
  * The gate of the off-market listings (user decision 2026-09-29): rendered in place of a confidential detail page,
  * and of the off-market selection, until the session is unlocked. `noindex`; says only the listing's kind and
- * arrondissement; the six-digit code field (`OffMarketGate`) and the way to ask for one.
+ * arrondissement; the four-digit code field (`OffMarketGate`) and the way to ask for one.
  * Layout = ui.sh variant « Ticket » chosen among 16 on 2026-10-14 (user decision): one sand-lined card, a sand header
  * strip with the lock in a white disc, a dashed hairline like a tear-off, then the form.
  */

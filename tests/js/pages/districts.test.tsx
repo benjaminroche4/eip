@@ -8,7 +8,7 @@ import { page, renderPage, sharedProps } from '../inertia';
 
 const FAQ: FaqTeaserData = {
     slug: 'investing',
-    items: [{ question: 'Pourquoi investir dans l\'immobilier de prestige à Paris ?', answer: 'Une valeur refuge.', slug: 'pourquoi-investir' }],
+    items: [{ question: "Pourquoi investir dans l'immobilier de prestige à Paris ?", answer: 'Une valeur refuge.', slug: 'pourquoi-investir' }],
 };
 
 const ITEMS: District[] = Array.from({ length: 20 }, (_, i) => ({

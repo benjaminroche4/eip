@@ -70,10 +70,15 @@ class PropertiesController extends Controller
         $query = PropertyQuery::fromRequest($request)->withCities([$n]);
         $arrondissement = collect(($this->arrondissements)())->firstWhere('n', $n);
 
-        // The twin page in every language (hreflang, switcher): same arrondissement, that language's slug
-        $this->localizedUrls->override(collect(array_keys(LaravelLocalization::getSupportedLocales()))
-            ->mapWithKeys(fn (string $code) => [$code => LaravelLocalization::getURLFromRouteNameTranslated($code, 'routes.properties').'/'.DistrictSlug::make($n, $code)])
-            ->all());
+        // The twin page in every language (hreflang, switcher): same arrondissement, that language's slug. A language
+        // with no listing there has an empty, `noindex` page: no hreflang to it, the switcher goes to its listing page (review 2026-10-14)
+        $locales = collect(array_keys(LaravelLocalization::getSupportedLocales()));
+        $districtUrl = fn (string $code) => LaravelLocalization::getURLFromRouteNameTranslated($code, 'routes.properties').'/'.DistrictSlug::make($n, $code);
+        $twins = $locales->filter(fn (string $code) => $code === $locale || collect(($this->districtListings)($code))->contains('n', $n));
+        $this->localizedUrls->override(
+            $twins->mapWithKeys(fn (string $code) => [$code => $districtUrl($code)])->all(),
+            $locales->mapWithKeys(fn (string $code) => [$code => LaravelLocalization::getURLFromRouteNameTranslated($code, 'routes.properties')])->all(),
+        );
 
         return $this->render(
             $query,

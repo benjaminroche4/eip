@@ -58,7 +58,8 @@ final class ShowProperty
     private function similar(Collection $list, Property $property): Collection
     {
         // Smarter ranking (2026-09-28): same budget ± 20 % and same number of rooms first, then the arrondissement, then the type
-        $sameBudget = fn (Property $p) => abs($p->price - $property->price) <= $property->price * 0.2;
+        // A secret price (« sur demande », confidential) never ranks the row: the first cards would reveal its ± 20 % band (review 2026-10-14)
+        $sameBudget = fn (Property $p) => ! $property->hidesPrice() && ! $p->hidesPrice() && abs($p->price - $property->price) <= $property->price * 0.2;
         $rank = fn (Property $p) => match (true) {
             $sameBudget($p) && $p->rooms === $property->rooms => 0,
             $p->arrondissement === $property->arrondissement => 1,

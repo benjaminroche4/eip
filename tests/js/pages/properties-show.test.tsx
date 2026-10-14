@@ -32,6 +32,7 @@ const PROPS = {
         title: 'Appartement haussmannien, Saint-Germain-des-Prés',
         withBrand: true,
         description: 'Étage noble, parquet, moulures et cheminées.',
+        answer: 'À la vente : appartement de 4 pièces (128 m², 2 chambres) à Saint-Germain-des-Prés, Paris 6e, au prix de 2 450 000 €.',
     },
     map: { key: null, mapId: 'DEMO_MAP_ID' },
     neighbours: { previous: null, next: { title: 'Appartement Art déco, Passy', url: '/nos-biens/achat/paris-16e/appartement-passy' } },
@@ -222,10 +223,12 @@ describe('Property detail page', () => {
             <PropertyShow
                 {...PROPS}
                 property={{ ...LISTING, transaction: 'rent', price: 6500, furnished: true, charges_included: true, available: false }}
+                faq={{ ...PROPS.faq, slug: 'agency' }}
                 similar={[]}
             />,
         );
         const card = screen.getByRole('complementary', { name: 'Votre conseiller' });
+        expect(screen.getByRole('heading', { level: 2, name: 'Comment se passe la location de ce bien ?' })).toBeInTheDocument(); // rent wording of the FAQ (review 2026-10-14)
         expect(within(card).getByText(/6 500 €/)).toBeInTheDocument();
         expect(within(card).getByText('Charges comprises')).toBeInTheDocument();
         expect(within(card).getByText('Sous offre')).toBeInTheDocument();

@@ -7,6 +7,7 @@ use App\Domain\Blog\Actions\ListBlogUrls;
 use App\Domain\Blog\Exceptions\SanityRequestFailed;
 use App\Domain\Properties\Actions\ListDistrictListings;
 use App\Domain\Properties\Actions\ListProperties;
+use App\Domain\Properties\Data\Property;
 use App\Domain\Properties\Support\DistrictSlug;
 use App\Domain\Properties\Support\PropertyUrl;
 use Illuminate\Support\Facades\Log;
@@ -120,17 +121,34 @@ final class SitemapBuilder
             }
         }
 
-        // Detail pages (2026-09-28): every public listing in every locale, the twin rows sit at the same index; lastmod = its publication
+        // Detail pages (2026-09-28): every public listing in every language it exists in. The twin comes from the listing's
+        // `slugs` (Sanity translations, 2026-10-14; a language without a twin gets neither URL nor hreflang), else, for the
+        // fixture rows without slugs, from the same row index; lastmod = its publication
         $lists = collect($locales)->mapWithKeys(fn (string $locale) => [$locale => ($this->properties)($locale)]);
-        foreach ($lists[$default] as $index => $property) {
+        $twinOf = function (Property $property, int $index, string $locale) use ($lists): ?Property {
+            if ($property->slugs === []) {
+                return $lists[$locale][$index] ?? null;
+            }
+            $slug = $property->slugs[$locale] ?? null;
+
+            return $slug === null ? null : $lists[$locale]->first(fn (Property $p) => $p->slug === $slug);
+        };
+        // The default language's rows lead; a listing published in another language only (no twin yet) follows, with its own language as x-default
+        $leads = $lists[$default]->map(fn (Property $p, int $index) => [$default, $index, $p]);
+        foreach ($locales as $locale) {
+            if ($locale !== $default) {
+                $leads = $leads->concat($lists[$locale]->filter(fn (Property $p) => $p->slugs !== [] && ! isset($p->slugs[$default]))->map(fn (Property $p, int $index) => [$locale, $index, $p]));
+            }
+        }
+        foreach ($leads as [$lead, $index, $property]) {
             if ($property->offMarket) {
                 continue;
             }
-            $detailUrl = fn (string $locale) => PropertyUrl::make($property->transaction, $property->arrondissement, $lists[$locale][$index]?->slug ?? $property->slug, $locale);
+            $twins = collect($locales)->mapWithKeys(fn (string $locale) => [$locale => $locale === $lead ? $property : $twinOf($property, $index, $locale)])->filter();
+            $detailUrl = fn (string $locale) => PropertyUrl::make($property->transaction, $property->arrondissement, $twins[$locale]->slug, $locale);
             // lastmod = the last price change, else the publication (SEO audit 2026-09-30)
             $lastChange = collect($property->priceHistory)->pluck('date')->push($property->publishedAt)->filter()->max();
-            foreach ($locales as $locale) {
-                $twin = $lists[$locale][$index] ?? $property;
+            foreach ($twins as $locale => $twin) {
                 $url = Url::create($detailUrl($locale))
                     ->setPriority(0.8)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
@@ -139,25 +157,28 @@ final class SitemapBuilder
                 foreach (array_slice($property->photos, 0, 3) as $i => $photo) {
                     $url->addImage(url(str_replace('{w}', '1600', $photo)), $twin->photoAlt($i, $locale));
                 }
-                foreach ($locales as $alt) {
+                foreach ($twins->keys() as $alt) {
                     $url->addAlternate($detailUrl($alt), $alt);
                 }
-                $url->addAlternate($detailUrl($default), 'x-default');
+                $url->addAlternate($detailUrl($twins->has($default) ? $default : $lead), 'x-default');
                 $sitemap->add($url);
             }
         }
 
+        // District pages, in each language that has a listing there (an empty district page is `noindex`, 2026-10-14)
         $districtUrl = fn (string $locale, int $n) => $this->localized($locale, 'routes.properties').'/'.DistrictSlug::make($n, $locale);
-        foreach (($this->districtListings)($default) as $district) {
-            foreach ($locales as $locale) {
-                $url = Url::create($districtUrl($locale, $district['n']))
+        $districtsByLocale = collect($locales)->mapWithKeys(fn (string $locale) => [$locale => collect(($this->districtListings)($locale))->pluck('n')->all()]);
+        foreach ($districtsByLocale[$default] as $n) {
+            $with = collect($locales)->filter(fn (string $locale) => in_array($n, $districtsByLocale[$locale], true))->values();
+            foreach ($with as $locale) {
+                $url = Url::create($districtUrl($locale, $n))
                     ->setPriority(0.7)
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
                     ->setLastModificationDate($this->pagesLastmod());
-                foreach ($locales as $alt) {
-                    $url->addAlternate($districtUrl($alt, $district['n']), $alt);
+                foreach ($with as $alt) {
+                    $url->addAlternate($districtUrl($alt, $n), $alt);
                 }
-                $url->addAlternate($districtUrl($default, $district['n']), 'x-default');
+                $url->addAlternate($districtUrl($default, $n), 'x-default');
                 $sitemap->add($url);
             }
         }

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { axe } from 'vitest-axe';
 import { formErrors, formPost, page, renderPage, sharedProps } from '../inertia';
 
-/** The six-digit access code field of the off-market gate (user decision 2026-09-29). */
+/** The four-digit access code field of the off-market gate (user decision 2026-09-29). */
 describe('OffMarketGate', () => {
     beforeEach(() => {
         // `input-otp` reads the element under the pointer on mouse events; jsdom has no layout
@@ -32,8 +32,11 @@ describe('OffMarketGate', () => {
         await user.type(field, '4');
         expect(formPost).toHaveBeenCalledTimes(1); // submitted by itself on the fourth digit, once (user decision 2026-10-14)
         expect(formPost).toHaveBeenCalledWith('/off_market.unlock', expect.objectContaining({ preserveScroll: true, onError: expect.any(Function) }));
-        // The submit button never re-sends the same code, and an incomplete code is not sent
+        // The submit button never re-sends the code the effect just posted; after a refusal the same code can be sent again
         await user.click(screen.getByRole('button', { name: 'Déverrouiller' }));
+        expect(formPost).toHaveBeenCalledTimes(1);
+        (formPost.mock.calls[0][1] as { onError: () => void }).onError();
+        await user.type(field, '1234');
         expect(formPost).toHaveBeenCalledTimes(2);
         await user.clear(field);
         await user.type(field, '123');

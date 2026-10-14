@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Domain\Properties\Support\OffMarketAccess;
 use Illuminate\Foundation\Http\FormRequest;
 
-/** The six-digit access code typed on the off-market gate (2026-09-29). */
+/** The four-digit access code typed on the off-market gate (2026-09-29). */
 class OffMarketUnlockRequest extends FormRequest
 {
     public function authorize(): bool

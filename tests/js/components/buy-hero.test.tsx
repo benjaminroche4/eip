@@ -17,9 +17,7 @@ describe('BuyHero', () => {
         page.props = sharedProps();
         const { container } = renderPage(<BuyHero stats={STATS} video={null} />);
 
-        expect(
-            screen.getByRole('heading', { level: 1, name: 'Acheter le bien qui vous correspond à Paris' }),
-        ).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: 'Acheter le bien qui vous correspond à Paris' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Parler à un conseiller' })).toHaveAttribute('href', '/contact');
         // The owner's clip in place of the photo (2026-09-23): decorative, poster = its first frame, the alt kept as a hidden caption
         const clip = container.querySelector('video')!;

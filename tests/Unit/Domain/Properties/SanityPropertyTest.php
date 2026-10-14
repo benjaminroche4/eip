@@ -69,7 +69,8 @@ class SanityPropertyTest extends TestCase
         $this->assertStringContainsString('2300b8e331cbf6da056b2f5acb3106ccf84778dd-1024x1024.webp?w=64&h=64&fit=crop', (string) $property->advisor['photo']);
         $this->assertTrue($property->available);
         $this->assertNull($property->soldAt);
-        $this->assertSame([48.8585, 2.3031], [$property->lat, $property->lng]);
+        $this->assertSame(SanityProperty::CENTROIDS[7], [$property->lat, $property->lng], 'the Studio hides the address: the centroid, never the geopoint (review 2026-10-14)');
+        $this->assertSame([48.8585, 2.3031], (fn ($p) => [$p->lat, $p->lng])(Property::fromArray($this->mapper()->row(self::doc(['hideExactAddress' => false])))), 'the geopoint once the address is shown');
         $this->assertFalse($property->offMarket);
         $this->assertTrue($property->featured);
         $this->assertSame(['elevator', 'balcony', 'concierge', 'cellar', 'fireplace'], $property->features, 'equipment flags in the FEATURES order, the third floor of six is not the top');
@@ -114,6 +115,10 @@ class SanityPropertyTest extends TestCase
         $this->assertArrayNotHasKey('access_code', $top->toCard());
         $this->assertNull(Property::fromArray($this->mapper()->row(self::doc(['accessCode' => '12'])))->accessCode, 'four digits or nothing');
         $this->assertSame('14 Avenue Bosquet, 75007 Paris', $top->address);
+        // The address hidden: neither the address nor the exact position reach the site (review 2026-10-14)
+        $hidden = Property::fromArray($this->mapper()->row(self::doc(['hideExactAddress' => true, 'location' => ['lat' => 48.8565, 'lng' => 2.3035]])));
+        $this->assertNull($hidden->address);
+        $this->assertSame(SanityProperty::CENTROIDS[7], [$hidden->lat, $hidden->lng], 'a hidden address sits on the arrondissement centroid');
         $this->assertSame('to_renovate', $top->condition);
         $this->assertTrue($top->priceOnRequest);
         $this->assertSame('mansion', $top->type);
@@ -124,10 +129,41 @@ class SanityPropertyTest extends TestCase
         $this->assertFalse($top->procedure);
 
         $studio = Property::fromArray($this->mapper()->row(self::doc(['propertyType' => 'studio', 'main' => ['rooms' => 1, 'bedrooms' => 'studio'], 'surfaces' => ['living' => 24.6]])));
-        $this->assertSame(['studio', 0, 25], [$studio->type, $studio->bedrooms, $studio->surface]);
+        $this->assertSame(['studio', 0, 25, 1], [$studio->type, $studio->bedrooms, $studio->surface, $studio->rooms]);
+        $this->assertSame(1, Property::fromArray($this->mapper()->row(self::doc(['propertyType' => 'studio', 'main' => ['bedrooms' => 'studio']])))->rooms, 'a studio without a room count is one room, never « 0 pièce »');
         $bare = Property::fromArray($this->mapper()->row(self::doc(['main' => ['rooms' => 2], 'surfaces' => ['carrez' => 40], 'floors' => null, 'categories' => null, 'dpe' => null])));
         $this->assertSame([null, null, null, [], null, null], [$bare->bathrooms, $bare->surfaceLiving, $bare->totalFloors, $bare->tags, $bare->floor, $bare->dpe], 'unfilled fields stay null, never 0');
         $this->assertSame('apartment', Property::fromArray($this->mapper()->row(self::doc(['propertyType' => 'yurt'])))->type, 'unknown type = apartment');
+        // No agent in the Studio: no name (the card says « Votre conseiller »), never the brand as a person (review 2026-10-14)
+        $this->assertSame(['name' => '', 'photo' => null], Property::fromArray($this->mapper()->row(self::doc(['agent' => null])))->advisor);
+        // A building sold without a room count is complete; an apartment is not
+        $this->assertNull(SanityProperty::missing($b = self::doc(['propertyType' => 'immeuble', 'main' => ['rooms' => null]]), $this->mapper()->row($b, [])));
+    }
+
+    public function test_a_listing_missing_a_fact_the_pages_need_is_named(): void
+    {
+        $missing = fn (array $over) => SanityProperty::missing($doc = self::doc($over), $this->mapper()->row($doc, []));
+        $this->assertNull($missing([]));
+        $this->assertSame('photo', $missing(['mainPhoto' => null, 'photos' => []]));
+        $this->assertSame('arrondissement', $missing(['arrondissement' => null]));
+        $this->assertSame('arrondissement', $missing(['arrondissement' => 21]));
+        $this->assertSame('rooms', $missing(['main' => ['rooms' => null, 'bedrooms' => '2']]));
+        $this->assertSame('surface', $missing(['surfaces' => null]));
+        $this->assertSame('price', $missing(['price' => 0]));
+        $this->assertNull($missing(['price' => 0, 'priceOnRequest' => true]), 'no price needed when it is on request');
+    }
+
+    public function test_portable_text_keeps_the_text_blocks_only(): void
+    {
+        // Lists become plain paragraphs, images and unknown blocks are dropped (documented behaviour, review 2026-10-14)
+        $this->assertSame(['Un point', 'Deux', 'Suite'], SanityProperty::paragraphs([
+            ['_type' => 'block', 'listItem' => 'bullet', 'children' => [['_type' => 'span', 'text' => 'Un point']]],
+            ['_type' => 'block', 'listItem' => 'bullet', 'children' => [['_type' => 'span', 'text' => 'Deux']]],
+            ['_type' => 'image', 'asset' => ['_ref' => 'image-x']],
+            ['_type' => 'callout', 'text' => 'ignored'],
+            ['_type' => 'block', 'children' => [['_type' => 'span', 'text' => 'Suite', 'marks' => ['strong']]]],
+            'not a block',
+        ]));
     }
 
     public function test_only_published_documents_with_a_clean_slug_and_a_language_are_usable(): void

@@ -36,10 +36,7 @@ class WarmSanityCache extends Command
             'post urls' => fn () => $urls(),
             'category urls' => fn () => $categories(),
             // The fetch action swallows a failure (empty catalogue): the raw query is run here so the failure is counted
-            'properties' => fn () => $sanity->fetch(
-                sprintf('*[%s] | order(coalesce(createdAt, _createdAt) desc) { %s }', FetchSanityProperties::FILTER, FetchSanityProperties::PROJECTION),
-                ['type' => (string) config('services.sanity.property_type', 'estateProperty')],
-            ),
+            'properties' => fn () => $sanity->fetch(FetchSanityProperties::query(), FetchSanityProperties::params()),
         ];
         foreach ($jobs as $name => $job) {
             try {

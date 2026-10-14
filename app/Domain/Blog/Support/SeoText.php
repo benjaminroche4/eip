@@ -9,6 +9,8 @@ final class SeoText
 
     public const DESCRIPTION_MAX = 160;
 
+    public const DESCRIPTION_MIN = 120;
+
     public const TITLE_MIN = 20;
 
     /**

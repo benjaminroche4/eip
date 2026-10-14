@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Domain\Properties\Actions\FetchSanityProperties;
 use App\Domain\Properties\Actions\ListProperties;
+use App\Domain\Properties\Support\SanityProperty;
+use App\Domain\Seo\Support\SitemapBuilder;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -39,6 +41,9 @@ class PropertiesSanityTest extends TestCase
             SanityPropertyTest::doc(['_id' => 'estateProperty-test-en', 'language' => 'en', 'slug' => 'test-4-room-haussmann-apartment-paris-7th', 'title' => '[TEST] 4-room Haussmann apartment with balcony, Paris 7th', 'propertyType' => 'apartment', 'categories' => [['slug' => 'exclusive', 'name' => 'Exclusive']], 'metaDescription' => 'Haussmann 4-room apartment of 118 sqm with balcony, 3 bedrooms, Paris 7th.']),
             SanityPropertyTest::doc(['_id' => 'sold-fr', 'slug' => 'vendu-paris-6e', 'uniqueId' => 'EP0002', 'status' => 'sold', 'arrondissement' => 6, 'createdAt' => '2026-08-01T00:00:00Z', 'metro' => ['Odéon']]),
             SanityPropertyTest::doc(['_id' => 'sans-langue', 'slug' => 'sans-langue', 'language' => null]),
+            SanityPropertyTest::doc(['_id' => 'english-only', 'language' => 'en', 'slug' => 'english-only-paris-5th', 'uniqueId' => 'EP0011', 'arrondissement' => 5, 'translations' => null, 'createdAt' => '2026-07-01T00:00:00Z']), // no French twin
+            SanityPropertyTest::doc(['_id' => 'sans-photo', 'slug' => 'sans-photo-paris-5e', 'uniqueId' => 'EP0009', 'arrondissement' => 5, 'mainPhoto' => null, 'photos' => []]), // skipped: the pages need a photo (review 2026-10-14)
+            SanityPropertyTest::doc(['_id' => 'casse', 'slug' => 'casse-paris-5e', 'uniqueId' => 'EP0010', 'arrondissement' => 5, 'title' => ['not', 'a', 'string']]), // skipped and reported, never a 500
             SanityPropertyTest::doc(['_id' => 'confidentiel-fr', 'slug' => 'confidentiel-paris-8e', 'uniqueId' => 'EP0003', 'confidential' => true, 'accessCode' => '7351', 'arrondissement' => 8, 'createdAt' => '2026-09-01T00:00:00Z', 'price' => 5400000]),
             SanityPropertyTest::doc(['_id' => 'sur-demande-fr', 'slug' => 'prix-sur-demande-paris-16e', 'uniqueId' => 'EP0004', 'priceOnRequest' => true, 'arrondissement' => 16, 'createdAt' => '2026-08-15T00:00:00Z', 'price' => 7200000, 'metro' => ['Passy'], 'metaDescription' => null]), // no Studio meta: the generated one
         ];
@@ -74,7 +79,7 @@ class PropertiesSanityTest extends TestCase
         $this->withLocale('en')->fakeSanity($this->docs());
         $this->get('/en/properties')
             ->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->has('properties', 1)->where('properties.0.slug', 'test-4-room-haussmann-apartment-paris-7th')->where('properties.0.type', 'apartment'));
+            ->assertInertia(fn (Assert $p) => $p->has('properties', 2)->where('properties.0.slug', 'test-4-room-haussmann-apartment-paris-7th')->where('properties.0.type', 'apartment')->where('properties.1.slug', 'english-only-paris-5th')); // the twin and the English-only listing
     }
 
     public function test_the_detail_page_resolves_its_twin_reference_advisor_role_and_sold_state(): void
@@ -91,11 +96,12 @@ class PropertiesSanityTest extends TestCase
                 ->where('property.bathrooms', 2)->where('property.surface_living', 121)->where('property.total_floors', 6)->where('property.tags.0', 'Exclusivité')
                 ->where('property.dpe.consumption', 215)->where('property.address', null)
                 ->where('property.photo_alts.1', 'Salon')->where('property.photo_sizes.0', ['width' => 1448, 'height' => 1086])
-                ->where('meta.description', 'Appartement haussmannien 4 pièces de 118 m² Carrez avec balcon, 3 chambres, Paris 7e Invalides.') // the Studio's `metaDescription`, verbatim
+                ->where('meta.description', 'Appartement haussmannien 4 pièces de 118 m² Carrez avec balcon, 3 chambres, Paris 7e Invalides. Contactez Estate in Paris pour une visite privée.') // the Studio's `metaDescription` (95 characters), completed by the call to action
                 ->where('advisor.name', 'Charles Mata')
                 ->where('advisor.role', 'Conseiller investissement') // the team member of the same first name lends the role
                 ->where('meta.title', 'Appartement 4 pièces à vendre, École Militaire · Paris 7e')
                 ->where('localization.alternates.en', url('/en/properties/buy/paris-7th/test-4-room-haussmann-apartment-paris-7th'))
+                ->where('meta.answer', 'À la vente : appartement de 4 pièces (118 m², 3 chambres) à École Militaire, Paris 7e, au prix de 1 890 000 €.')
                 ->has('similar', 1)->where('similar.0.slug', 'prix-sur-demande-paris-16e')->where('similar.0.price', 0)); // the only other public sale, its price undisclosed in the card too
 
         // Sold: online in noindex, out of the catalogue
@@ -111,7 +117,7 @@ class PropertiesSanityTest extends TestCase
         $this->assertStringNotContainsString('7351', $this->get('/nos-biens/achat/paris-8e/confidentiel-paris-8e')->getContent());
         $this->from('/nos-biens/achat/paris-8e/confidentiel-paris-8e')->post('/biens-off-market', ['code' => '7351', 'property' => 'confidentiel-paris-8e'])->assertSessionHasNoErrors();
         $this->get('/nos-biens/achat/paris-8e/confidentiel-paris-8e')->assertOk()
-            ->assertInertia(fn (Assert $p) => $p->component('properties/show')->where('property.price', 5400000)->where('property.lat', 48.8585)->where('meta.noindex', true));
+            ->assertInertia(fn (Assert $p) => $p->component('properties/show')->where('property.price', 5400000)->where('property.lat', SanityProperty::CENTROIDS[8][0])->where('meta.noindex', true)); // the address is hidden: the centroid
     }
 
     public function test_a_price_on_request_never_reaches_the_browser(): void
@@ -151,6 +157,57 @@ class PropertiesSanityTest extends TestCase
 
         $this->get('/nos-biens/achat/paris-7e/test-4-pieces-haussmannien-avec-balcon-paris-7e')
             ->assertInertia(fn (Assert $p) => $p->where('localization.alternates.en', url('/en/properties/buy/paris-7th/test-4-room-haussmann-apartment-paris-7th')));
+    }
+
+    public function test_the_sitemap_lists_each_listing_and_district_page_only_in_the_languages_that_have_them(): void
+    {
+        $this->fakeSanity($this->docs());
+        $xml = app(SitemapBuilder::class)->properties()->render();
+        // The translated listing: both URLs, each with the other as hreflang (twins by Sanity slug, never by row index)
+        $this->assertStringContainsString('<loc>'.url('/nos-biens/achat/paris-7e/test-4-pieces-haussmannien-avec-balcon-paris-7e').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/en/properties/buy/paris-7th/test-4-room-haussmann-apartment-paris-7th').'</loc>', $xml);
+        $this->assertStringContainsString('hreflang="en" href="'.url('/en/properties/buy/paris-7th/test-4-room-haussmann-apartment-paris-7th').'"', $xml);
+        // The price-on-request listing has no English document: a French URL only, no English hreflang, no made-up English slug
+        $this->assertStringContainsString('<loc>'.url('/nos-biens/achat/paris-16e/prix-sur-demande-paris-16e').'</loc>', $xml);
+        $this->assertStringNotContainsString('/en/properties/buy/paris-16th/', $xml);
+        $this->assertSame(2, substr_count($xml, 'hreflang="en" href="'.url('/en/properties/buy/paris-7th/')), 'the English hreflang on the French URL and on its twin, for the translated listing only');
+        // A listing published in English only (no French document yet): its English URL is listed, with itself as x-default
+        $this->assertStringContainsString('<loc>'.url('/en/properties/buy/paris-5th/english-only-paris-5th').'</loc>', $xml);
+        $this->assertStringContainsString('hreflang="x-default" href="'.url('/en/properties/buy/paris-5th/english-only-paris-5th').'"', $xml);
+        $this->assertStringNotContainsString('/nos-biens/achat/paris-5e/english-only', $xml);
+        // The French district page of the 16e declares no English hreflang (its English twin is empty, `noindex`), the switcher goes to the English listing
+        $this->get('/nos-biens/paris-16e')->assertOk()->assertInertia(fn (Assert $p) => $p
+            ->where('localization.alternates', ['fr' => url('/nos-biens/paris-16e'), 'x-default' => url('/nos-biens/paris-16e')])
+            ->where('localization.locales.1.url', url('/en/properties')));
+        $this->get('/nos-biens/paris-7e')->assertOk()->assertInertia(fn (Assert $p) => $p->where('localization.alternates.en', url('/en/properties/paris-7th')));
+        // District pages: Paris 7e in both languages, Paris 16e in French only (no English listing there); never the confidential 8e
+        $this->assertStringContainsString('<loc>'.url('/en/properties/paris-7th').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/nos-biens/paris-16e').'</loc>', $xml);
+        $this->assertStringNotContainsString('/en/properties/paris-16th', $xml);
+        $this->assertStringNotContainsString('confidentiel', $xml);
+    }
+
+    public function test_a_listing_without_a_twin_sends_the_language_switcher_to_the_listing_page_and_declares_no_english_hreflang(): void
+    {
+        // Not translated in the Studio yet: the switcher goes to the English listing page, never to `/en/nos-biens/…` (404, bug
+        // 2026-10-14), and no English hreflang is declared (it would point every untranslated listing at the same page, review 2026-10-14)
+        $this->fakeSanity([SanityPropertyTest::doc(['translations' => null])]); // Http::fake keeps earlier stubs first: one fake per test
+        $this->get('/nos-biens/achat/paris-7e/test-4-pieces-haussmannien-avec-balcon-paris-7e')->assertOk()
+            ->assertInertia(fn (Assert $p) => $p
+                ->where('localization.alternates', ['fr' => url('/nos-biens/achat/paris-7e/test-4-pieces-haussmannien-avec-balcon-paris-7e'), 'x-default' => url('/nos-biens/achat/paris-7e/test-4-pieces-haussmannien-avec-balcon-paris-7e')])
+                ->where('localization.locales.1.code', 'en')->where('localization.locales.1.url', url('/en/properties')));
+    }
+
+    public function test_similar_listings_of_a_price_on_request_listing_are_not_ranked_by_its_secret_price(): void
+    {
+        $this->fakeSanity([
+            SanityPropertyTest::doc(['_id' => 'secret', 'slug' => 'secret-paris-16e', 'uniqueId' => 'EP0101', 'priceOnRequest' => true, 'price' => 7200000, 'arrondissement' => 16, 'main' => ['rooms' => 4, 'bedrooms' => '3']]),
+            SanityPropertyTest::doc(['_id' => 'meme-budget', 'slug' => 'meme-budget-paris-5e', 'uniqueId' => 'EP0102', 'price' => 7000000, 'arrondissement' => 5, 'main' => ['rooms' => 4, 'bedrooms' => '3'], 'createdAt' => '2026-09-01T00:00:00Z']),
+            SanityPropertyTest::doc(['_id' => 'meme-arrondissement', 'slug' => 'meme-arrondissement-paris-16e', 'uniqueId' => 'EP0103', 'price' => 1000000, 'arrondissement' => 16, 'main' => ['rooms' => 2, 'bedrooms' => '1'], 'createdAt' => '2026-08-01T00:00:00Z']),
+        ]);
+        // With the secret price, the 7 M€ listing would come first and give the band away: the arrondissement ranks instead
+        $this->get('/nos-biens/achat/paris-16e/secret-paris-16e')->assertOk()
+            ->assertInertia(fn (Assert $p) => $p->where('similar.0.slug', 'meme-arrondissement-paris-16e')->where('similar.1.slug', 'meme-budget-paris-5e'));
     }
 
     public function test_the_catalogue_is_read_once_per_request(): void

@@ -15,15 +15,16 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /**
  * Detail page of a listing (`/nos-biens/achat/paris-6e/{slug}` ↔ `/en/properties/buy/paris-6th/{slug}`, 2026-09-28 / 29,
  * transaction and arrondissement in the path for SEO): the property, its similar
  * listings, its arrondissement (link to the district listing and to the arrondissement profile), the advisor in
- * charge, the SEO meta built from the listing's data (`PropertySeo`: « Appartement 5 pièces, Passy · Paris 16e »,
- * description 120-160 with facts, excerpt and call to action) and four FAQ questions of the matching topic. hreflang / language switcher point to the same listing in the other language. A slug that
+ * charge, the SEO meta built from the listing's data (`PropertySeo`: « Appartement 5 pièces à vendre, Passy · Paris 16e »,
+ * description 120-160 from the Studio's `metaDescription` or the facts) and the six-question FAQ of `BuildPropertyFaq`. hreflang / language switcher point to the same listing in the other language. A slug that
  * is not a published listing is a 404. A **confidential (off-market) listing** renders the gate `properties/locked`
- * (six-digit access code, `noindex`, nothing but its type and arrondissement) until the session is unlocked
+ * (four-digit access code, `noindex`, nothing but its type and arrondissement) until the session is unlocked
  * (`OffMarketAccess`, user decision 2026-09-29); then the full page, still `noindex`.
  */
 class PropertyController extends Controller
@@ -47,8 +48,11 @@ class PropertyController extends Controller
             ]);
         }
 
-        $localizedUrls->override(collect($page->slugs)
-            ->mapWithKeys(fn (string $twin, string $code) => [$code => PropertyUrl::make($property->transaction, $property->arrondissement, $twin, $code)])
+        // hreflang = the twin listing in each language that has one; a language not translated in the Studio yet gets no
+        // hreflang, and its switcher link goes to the listing page instead of a 404 (review 2026-10-14)
+        $twins = collect($page->slugs)->mapWithKeys(fn (string $twin, string $code) => [$code => PropertyUrl::make($property->transaction, $property->arrondissement, $twin, $code)]);
+        $localizedUrls->override($twins->all(), collect(array_keys(LaravelLocalization::getSupportedLocales()))
+            ->mapWithKeys(fn (string $code) => [$code => LaravelLocalization::getURLFromRouteNameTranslated($code, 'routes.properties')])
             ->all());
 
         $arrondissement = collect($arrondissements())->firstWhere('n', $property->arrondissement);
@@ -75,7 +79,7 @@ class PropertyController extends Controller
                 'url' => route('properties.district', ['district' => DistrictSlug::make($property->arrondissement, $locale)]),
                 'profileUrl' => route('districts', [$locale === 'fr' ? 'arrondissement' : 'district' => $property->arrondissement]),
             ],
-            'advisor' => ['name' => $property->advisor['name'], 'photo' => $property->advisor['photo'] ?? $member?->photo, 'role' => $member?->role],
+            'advisor' => ['name' => $property->advisor['name'] !== '' ? $property->advisor['name'] : null, 'photo' => $property->advisor['photo'] ?? $member?->photo, 'role' => $member?->role],
             // The FAQ closing the page: process and agency questions answered from the listing's data (2026-10-14)
             'faq' => $faq($property, $locale),
             // Meta from the data (type, rooms, quartier, arrondissement), not the editorial title (SEO conventions, 2026-09-28)

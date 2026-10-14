@@ -17,7 +17,6 @@ import { LARGE_SCREEN, useMediaQuery } from '@/hooks/use-media-query';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
 import { stripFaqMarkup } from '@/lib/faq-markup';
-import { formatPrice } from '@/lib/format-price';
 import { linkClass } from '@/lib/hover-surface';
 import { breadcrumbList, faqPage, realEstateListings } from '@/lib/json-ld';
 import { ordinal } from '@/lib/ordinal';
@@ -50,7 +49,7 @@ type PropertyShowProps = {
     advisor: Advisor;
     /** Page meta (`meta`, not `seo`: that name is the shared prop). */
     /** `noindex`: a confidential listing stays out of the index even once the session unlocked it (2026-09-29). */
-    meta: { title: string; withBrand: boolean; description: string; noindex?: boolean };
+    meta: { title: string; withBrand: boolean; description: string; answer: string; noindex?: boolean };
     map: MapConfig;
     /** Previous / next catalogue listing of the same transaction. */
     neighbours: { previous: Neighbour; next: Neighbour };
@@ -65,11 +64,11 @@ type PropertyShowProps = {
  * profile, the Google map centred on the building); on the right the sticky advisor card (price, availability, the
  * advisor by name, contact prefilled with the listing, phone), replaced under lg by a bar fixed to the screen bottom
  * that opens the card in a sheet. Below, up to six similar listings as a row of marketplace cards, previous / next (the alert form was removed on user decision 2026-09-29),
- * then the CTA card (the FAQ block left the page before 2026-10-14). 2026-09-28 additions: real description and
+ * then the FAQ of `BuildPropertyFaq` (process and agency questions, FAQPage JSON-LD, 2026-10-14) and the breadcrumb. 2026-09-28 additions: real description and
  * rooms, energy labels, transport and district facts, folded map, sold banner (noindex), price history and the
  * viewing request in the card (the mortgage estimate was removed on user decision 2026-09-29).
- * Under the map, the mandatory notices of a French listing (fees, surface, diagnostics, Géorisques). Before the CTA, four
- * JSON-LD: breadcrumb + the standalone `RealEstateListing` (`datePosted`);
+ * Under the map, the mandatory notices of a French listing (fees, surface, diagnostics, Géorisques). Three JSON-LD:
+ * breadcrumb, the standalone `RealEstateListing` (`datePosted`) and the FAQPage;
  * meta built from the data (`PropertySeo`); hreflang from the server (`LocalizedUrls::override`).
  */
 export default function PropertyShow({ property, similar, district, advisor, meta, map, neighbours, faq }: PropertyShowProps) {
@@ -112,19 +111,8 @@ export default function PropertyShow({ property, similar, district, advisor, met
         { name: district.name, url: district.url },
         { name: property.title },
     ];
-    // GEO answer-first: one factual sentence, citable on its own (brand + type + facts + place + price), distinct from the excerpt
-    const answer = t(
-        property.price_on_request ? 'property.answer_on_request' : property.transaction === 'rent' ? 'property.answer_rent' : 'property.answer',
-        {
-            type: t(`properties.types.${property.type}`).toLocaleLowerCase(locale),
-            rooms: property.rooms,
-            surface: property.surface,
-            bedrooms: property.bedrooms,
-            area: property.area,
-            arrondissement,
-            price: formatPrice(property.price, locale),
-        },
-    );
+    // GEO answer-first: one factual sentence, citable on its own, built by the server (`PropertySeo::answer()`, 2026-10-14: never « 0 pièce »)
+    const answer = meta.answer;
 
     return (
         <>
@@ -348,8 +336,8 @@ export default function PropertyShow({ property, similar, district, advisor, met
                     id="property-faq"
                     texts={{
                         eyebrow: t('property.faq.eyebrow'),
-                        title: t('property.faq.title'),
-                        intro: t('property.faq.intro'),
+                        title: t(property.transaction === 'rent' ? 'property.faq.title_rent' : 'property.faq.title'),
+                        intro: t(property.transaction === 'rent' ? 'property.faq.intro_rent' : 'property.faq.intro'),
                         all: t('property.faq.all'),
                     }}
                     faq={faq}

@@ -26,7 +26,7 @@ class BuildPropertyFaqTest extends TestCase
         $this->assertSame('puis-je-visiter-ce-bien', $faq['items'][0]['slug']);
         $this->assertStringNotContainsString('Charles', json_encode($faq, JSON_UNESCAPED_UNICODE), 'never the advisor\'s name (user decision 2026-10-14)');
         $this->assertStringContainsString('6 % TTC du prix de vente, à la charge du vendeur', $faq['items'][2]['answer']);
-        $this->assertStringContainsString('19 091 € le m², contre 13 000 € en moyenne dans le Paris 7e', $faq['items'][3]['answer']); // 3 150 000 / 165 (narrow no-break space, as every price) against the Notaires' figure
+        $this->assertStringContainsString('19 091 € le m², contre 13 000 € en moyenne à Paris 7e', $faq['items'][3]['answer']); // 3 150 000 / 165 (narrow no-break space, as every price) against the Notaires' figure
         $this->assertStringContainsString('+33 1 88 83 73 30', $faq['items'][5]['answer']);
         $this->assertStringContainsString('3 rue Grégoire de Tours, 75006 Paris', $faq['items'][5]['answer']);
         $this->assertStringContainsString('[page contact](contact)', $faq['items'][5]['answer']); // the FAQ link markup, rendered by the block
@@ -40,6 +40,9 @@ class BuildPropertyFaqTest extends TestCase
         $onRequest = $this->faq(['price_on_request' => true]);
         $this->assertStringNotContainsString('19 091', $onRequest['items'][3]['answer']);
         $this->assertStringNotContainsString('3 150 000', json_encode($onRequest, JSON_UNESCAPED_UNICODE), 'a hidden price never shows up');
+
+        $noSurface = $this->faq(['surface' => 0]);
+        $this->assertStringNotContainsString('0 €', $noSurface['items'][3]['answer'], 'no surface: no price per m² sentence (review 2026-10-14)');
 
         $buyer = $this->faq(['fees' => ['paid_by' => 'buyer', 'amount' => 20000]]);
         $this->assertStringContainsString("20 000 € TTC, à la charge de l'acquéreur", $buyer['items'][2]['answer']);

@@ -165,6 +165,12 @@ final readonly class Property implements Arrayable
     }
 
     /** Sold or let: out of the catalogue, the page stays online in noindex. */
+    /** The reference shown on the page and in the contact prefill: the agency's (Sanity `uniqueId`), else one built from the slug (same rule as `pages/properties/show.tsx`). */
+    public function displayReference(): string
+    {
+        return $this->reference ?? strtoupper(substr($this->slug, 0, 2)).'-'.$this->arrondissement;
+    }
+
     public function isSold(): bool
     {
         return $this->soldAt !== null;

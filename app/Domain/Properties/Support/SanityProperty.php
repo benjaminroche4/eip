@@ -43,6 +43,9 @@ final class SanityProperty
         'local-commercial' => 'commercial', 'commercial-premises' => 'commercial',
     ];
 
+    /** Types sold without a room count (the texts then skip it). */
+    public const NO_ROOM_COUNT = ['building', 'commercial'];
+
     public const CONDITIONS = ['toRenovate' => 'to_renovate', 'good' => 'good', 'renovated' => 'renovated', 'new' => 'new'];
 
     /** `equipment.*` keys → `Property::FEATURES` keys. */
@@ -76,7 +79,7 @@ final class SanityProperty
     public function row(array $doc, array $slugs = []): array
     {
         $status = (string) ($doc['status'] ?? 'forSale');
-        $arrondissement = max(1, min(20, (int) ($doc['arrondissement'] ?? 1)));
+        $arrondissement = max(1, min(20, (int) ($doc['arrondissement'] ?? 0)));
         // `categories[]->{slug, name}`: the slugs drive the flags, the names are shown as tags
         $categoryDocs = array_values(array_filter((array) ($doc['categories'] ?? []), 'is_array'));
         $categories = array_values(array_filter(array_map(fn (array $c) => $c['slug'] ?? null, $categoryDocs), 'is_string'));
@@ -86,7 +89,11 @@ final class SanityProperty
         $totalFloors = self::int($doc['floors']['totalFloors'] ?? null);
         $published = self::date($doc['createdAt'] ?? null);
         $price = (int) round((float) ($doc['price'] ?? 0));
-        [$lat, $lng] = isset($doc['location']['lat'], $doc['location']['lng'])
+        // The exact position only when the editor shows the address: a hidden address sits on the arrondissement centroid
+        // (the map pin, the JSON-LD `geo` and the `?bounds=` filter would otherwise give the building away, review 2026-10-14)
+        $hideAddress = ! empty($doc['hideExactAddress']);
+        $type = self::TYPE_SLUGS[(string) ($doc['propertyType'] ?? '')] ?? 'apartment';
+        [$lat, $lng] = ! $hideAddress && isset($doc['location']['lat'], $doc['location']['lng'])
             ? [(float) $doc['location']['lat'], (float) $doc['location']['lng']]
             : self::CENTROIDS[$arrondissement];
 
@@ -114,19 +121,20 @@ final class SanityProperty
             $alts[] = trim((string) ($image['alt'] ?? ''));
             $sizes[] = $this->images->size($image) ?? ['width' => 1600, 'height' => 1200];
         }
-        $address = empty($doc['hideExactAddress']) ? self::address((array) ($doc['address'] ?? [])) : null;
+        $address = $hideAddress ? null : self::address((array) ($doc['address'] ?? []));
 
         return [
             'slug' => (string) ($doc['slug'] ?? ''),
             'title' => trim((string) ($doc['title'] ?? '')),
             'arrondissement' => $arrondissement,
             'area' => $metro[0] ?? __('ui.districts.items.'.($arrondissement - 1).'.name', [], $doc['language'] ?? null),
-            'type' => self::TYPE_SLUGS[(string) ($doc['propertyType'] ?? '')] ?? 'apartment',
+            'type' => $type,
             // The Studio only lists sales today: a rental type would map here
             'transaction' => 'sale',
             'price' => $price,
             'surface' => (int) round((float) ($doc['surfaces']['carrez'] ?? $doc['surfaces']['living'] ?? 0)),
-            'rooms' => (int) ($doc['main']['rooms'] ?? 0),
+            // A studio counts as one room (the Studio may leave `rooms` empty for it): « 0 pièce » never shows (review 2026-10-14)
+            'rooms' => max((int) ($doc['main']['rooms'] ?? 0), $type === 'studio' || ($doc['main']['bedrooms'] ?? null) === 'studio' ? 1 : 0),
             'bedrooms' => self::bedrooms($doc['main']['bedrooms'] ?? null),
             'excerpt' => trim((string) ($doc['metaDescription'] ?? '')),
             'meta_description' => trim((string) ($doc['metaDescription'] ?? '')),
@@ -135,7 +143,7 @@ final class SanityProperty
             'photo_alts' => $alts,
             'photo_sizes' => $sizes,
             'advisor' => [
-                'name' => trim((string) ($doc['agent']['fullName'] ?? '')) ?: (string) config('seo.organization.name', ''),
+                'name' => trim((string) ($doc['agent']['fullName'] ?? '')), // empty without an agent: the card then says « Votre conseiller » (review 2026-10-14)
                 'photo' => $this->images->thumbnail($doc['agent']['photo'] ?? null),
             ],
             'available' => $status === 'forSale',
@@ -228,6 +236,26 @@ final class SanityProperty
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    /**
+     * What the site cannot render without (review 2026-10-14): the name of the first missing fact, null when complete. The
+     * Studio only requires title, slug, language and reference; a listing without a photo, a Paris arrondissement, a room
+     * count, a surface or a price (unless « sur demande ») would show « 0 pièce », « 0 m² », « 0 € » or a wrong district.
+     *
+     * @param  array<string, mixed>  $doc
+     * @param  array<string, mixed>  $row
+     */
+    public static function missing(array $doc, array $row): ?string
+    {
+        return match (true) {
+            $row['photos'] === [] => 'photo',
+            (int) ($doc['arrondissement'] ?? 0) < 1 || (int) ($doc['arrondissement'] ?? 0) > 20 => 'arrondissement',
+            $row['rooms'] < 1 && ! in_array($row['type'], self::NO_ROOM_COUNT, true) => 'rooms',
+            $row['surface'] < 1 => 'surface',
+            $row['price'] < 1 && ! $row['price_on_request'] => 'price',
+            default => null,
+        };
     }
 
     /** The row is only usable with a slug and a language (`Str::slug` keeps the URL safe). @param array<string, mixed> $doc */

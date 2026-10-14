@@ -99,8 +99,19 @@ class PropertyShowTest extends TestCase
         $this->assertSame('Hôtel particulier à vendre Paris 6e', $make(['type' => 'mansion', 'rooms' => 12, 'area' => 'Saint-Germain-des-Prés', 'arrondissement' => 6])['title'], '61 characters with the quartier: the minimal tier');
         $this->assertSame('Hôtel particulier à vendre Paris 16e', $make(['type' => 'mansion', 'rooms' => 12, 'area' => 'Chaussée-de-la-Muette-Boulainvilliers', 'arrondissement' => 16])['title'], 'the minimal tier when even the short one passes 60');
         $this->assertSame('5-room apartment 165 sqm for sale, Champ-de-Mars · Paris 7th', $make([], 'en')['title'], 'exactly 60: the full tier');
+        // No surface or no room count in the Studio: never « 0 m² » nor « 0 pièce » in the title (review 2026-10-14)
+        $this->assertSame('Studio 1 pièce à vendre, Odéon · Paris 6e', $make(['type' => 'studio', 'rooms' => 1, 'surface' => 0, 'area' => 'Odéon', 'arrondissement' => 6])['title']);
+        $this->assertSame('Appartement à vendre, Champ-de-Mars · Paris 7e', $make(['rooms' => 0])['title']);
+        // The sentences skip a missing room count or bedroom (a building, a studio): never « 0 pièce » / « 0 chambres »
+        $this->assertSame('À la vente : immeuble de 420 m² à Champ-de-Mars, Paris 7e, au prix de 3 150 000 €.', $make(['type' => 'building', 'rooms' => 0, 'bedrooms' => 0, 'surface' => 420])['answer']);
+        $this->assertSame('À la vente : appartement de 5 pièces (165 m², 3 chambres) à Champ-de-Mars, Paris 7e, au prix de 3 150 000 €.', $make([])['answer']);
+        $this->assertStringStartsWith('Immeuble de 420 m² à Champ-de-Mars, Paris 7e, 3 150 000 €', $make(['type' => 'building', 'rooms' => 0, 'bedrooms' => 0, 'surface' => 420, 'meta_description' => ''])['description']); // `SeoText::description()` normalises the spaces
+        $this->assertStringStartsWith('Studio de 1 pièce, 25 m² à Odéon', $make(['type' => 'studio', 'rooms' => 1, 'bedrooms' => 0, 'surface' => 25, 'area' => 'Odéon', 'arrondissement' => 6, 'meta_description' => ''])['description']);
+        $this->assertSame('For sale: building (420 sqm) in Champ-de-Mars, Paris 7th, priced at €3,150,000.', $make(['type' => 'building', 'rooms' => 0, 'bedrooms' => 0, 'surface' => 420], 'en')['answer']);
+        $this->assertStringStartsWith('Building, 420 sqm in Champ-de-Mars', $make(['type' => 'building', 'rooms' => 0, 'bedrooms' => 0, 'surface' => 420, 'meta_description' => ''], 'en')['description']);
         // The editor's meta description wins over the generated one, clamped at 160 on a word
-        $this->assertSame('Texte du Studio.', $make(['meta_description' => 'Texte du Studio.'])['description']);
+        $this->assertSame('Texte du Studio. Contactez Estate in Paris pour une visite privée.', $make(['meta_description' => 'Texte du Studio.'])['description'], 'a short Studio text gets the call to action');
+        $this->assertSame(str_repeat('Texte du Studio. ', 7).'Fin.', $make(['meta_description' => str_repeat('Texte du Studio. ', 7).'Fin.'])['description'], '124 characters: verbatim');
         $this->assertLessThanOrEqual(SeoText::DESCRIPTION_MAX, mb_strlen($make(['meta_description' => str_repeat('Longue phrase du Studio. ', 10)])['description']));
         $this->assertStringStartsWith('Appartement de 5 pièces, 165 m²', $make(['meta_description' => ''])['description'], 'empty = generated');
     }
@@ -141,7 +152,7 @@ class PropertyShowTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p
                 ->where('prefill.topic', 'buy')
-                ->where('prefill.message', fn (string $m) => str_starts_with($m, 'Je souhaite visiter « Appartement familial, Champ-de-Mars » à Paris 7e (référence ')));
+                ->where('prefill.message', 'Je souhaite visiter « Appartement familial, Champ-de-Mars » à Paris 7e (référence AP-7).')); // the same reference as the page (`Property::displayReference()`, review 2026-10-14)
         $this->get('/contact?property=location-appartement-meuble-marais')->assertInertia(fn (Assert $p) => $p->where('prefill.topic', 'other'));
         $this->get('/contact?property=appartement-saint-germain-des-pres')->assertInertia(fn (Assert $p) => $p->where('prefill', null)); // confidential: nothing leaks
         $this->get('/contact?property=nope')->assertInertia(fn (Assert $p) => $p->where('prefill', null));

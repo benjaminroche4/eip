@@ -2,11 +2,11 @@
 
 /*
 |--------------------------------------------------------------------------
-| "Our properties" — TEMPORARY sample set
+| "Our properties" — test fixture (the English twin rows of fr.php)
 |--------------------------------------------------------------------------
-| Properties will come from Sanity (`estateProperty` type, user decision 2026-09-25). Until then this set feeds the
-| page, the navigation badge and the sitemap through `Domain/Properties/Actions/ListProperties`. Photos = the district
-| cards' placeholders. Remove as soon as Sanity is wired: nothing here may reach production as is.
+| The listing is read from Sanity (`estateProperty`, wired 2026-10-14). These rows are bound to `ListProperties` by
+| `tests/TestCase.php` for the Feature tests; never loaded by the application. Photos = the district
+| cards' placeholders.
 */
 
 return [

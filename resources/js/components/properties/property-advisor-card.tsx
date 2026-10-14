@@ -94,7 +94,7 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
             </Avatar>
             <div className="flex flex-col">
                 {/* The advisor by name and role (E-E-A-T, redesign 2026-09-28); the heading stays « Votre conseiller » */}
-                <p className={cn('font-medium', size === 'lg' ? 'text-base' : 'text-sm')}>{advisor.name ?? t('property.advisor_title')}</p>
+                <p className={cn('font-medium', size === 'lg' ? 'text-base' : 'text-sm')}>{advisor.name || t('property.advisor_title')}</p>
                 {advisor.role && <p className="text-muted-foreground text-xs">{advisor.role}</p>}
             </div>
         </div>

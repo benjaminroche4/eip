@@ -9,7 +9,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('sitemap:generate')->daily();
-// Keep the Sanity cache warm for the home, the blog and the sitemap (15-minute TTL, refreshed every 10).
+// Keep the Sanity cache warm for the home, the blog and the sitemap (15-minute TTL, refreshed every 5).
 Schedule::command('sanity:warm')->everyFiveMinutes();
 // Leads first: retry the agency e-mails that failed while the mailer was down (see SendValuationRequest).
 Schedule::command('valuations:resend-mails')->hourly();

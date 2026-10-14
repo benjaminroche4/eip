@@ -35,7 +35,7 @@ final class BuildPropertyFaq
                 $key === 'visit' && $property->isSold() => 'visit_sold',
                 $rent && in_array($key, ['offer', 'fees', 'negotiate', 'documents'], true) => "{$key}_rent",
                 $key === 'fees' && ($property->fees['paid_by'] ?? null) === 'buyer' && ($property->fees['amount'] ?? 0) > 0 => 'fees_buyer',
-                $key === 'negotiate' && ($property->priceOnRequest || $values['district_price'] === '') => 'negotiate_on_request',
+                $key === 'negotiate' && ($property->priceOnRequest || $values['district_price'] === '' || $values['price_sqm'] === '') => 'negotiate_on_request',
                 default => $key,
             };
             $question = __("ui.property.faq.items.$variant.question", $values, $locale);
@@ -55,7 +55,7 @@ final class BuildPropertyFaq
             'district' => 'Paris '.DistrictSlug::ordinal($property->arrondissement, $locale),
             // `Arrondissement::$price` is already formatted (« 13 000 »): Notaires du Grand Paris, last published quarter
             'district_price' => ($arrondissement?->price ?? '') !== '' ? __('ui.districts.price_format', ['price' => $arrondissement->price], $locale) : '',
-            'price_sqm' => $property->priceOnRequest ? '' : $format($property->pricePerSqm()),
+            'price_sqm' => $property->priceOnRequest || $property->surface <= 0 || $property->price <= 0 ? '' : $format($property->pricePerSqm()),
             'fees_amount' => isset($property->fees['amount']) ? $format((int) $property->fees['amount']) : '',
             'phone' => (string) config('seo.organization.phone'),
             'email' => (string) config('seo.organization.email'),

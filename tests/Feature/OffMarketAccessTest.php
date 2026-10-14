@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Properties\Actions\UnlockOffMarket;
 use App\Domain\Properties\Data\Property;
 use App\Domain\Properties\Support\OffMarketAccess;
 use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -73,5 +75,20 @@ class OffMarketAccessTest extends TestCase
             $this->post('/biens-off-market', ['code' => '1111'])->assertRedirect();
         }
         $this->post('/biens-off-market', ['code' => '1111'])->assertStatus(429);
+    }
+
+    public function test_a_gate_locks_for_an_hour_after_twenty_wrong_codes_from_anyone(): void
+    {
+        $this->withoutMiddleware(ThrottleRequests::class); // the per-IP throttle is tested above; this is the per-gate lock (review 2026-10-14)
+        $unlock = app(UnlockOffMarket::class);
+        foreach (range(1, UnlockOffMarket::MAX_FAILURES) as $i) {
+            $this->assertNull($unlock('0000', session()->driver(), 'appartement-saint-germain-des-pres'));
+        }
+        $this->assertNull($unlock('2468', session()->driver(), 'appartement-saint-germain-des-pres'), 'the right code is refused while the gate is locked');
+        $this->assertNull($unlock('0000', session()->driver(), 'slug-inconnu'));
+        $this->assertNull(Cache::get('off_market:failures:slug-inconnu'), 'an unknown slug never creates a counter');
+        $this->assertNotNull($unlock('2468', session()->driver()), 'the selection gate keeps its own counter');
+        $this->travel(61)->minutes();
+        $this->assertNotNull($unlock('2468', session()->driver(), 'appartement-saint-germain-des-pres'), 'unlocked again after the hour');
     }
 }

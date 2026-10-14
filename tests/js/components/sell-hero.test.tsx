@@ -16,7 +16,7 @@ describe('SellHero', () => {
         page.props = sharedProps();
         const { container } = renderPage(<SellHero stats={STATS} video={null} />);
 
-        expect(screen.getByRole('heading', { level: 1, name: "Vendez votre bien à Paris avec un conseiller dédié" })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: 'Vendez votre bien à Paris avec un conseiller dédié' })).toBeInTheDocument();
         expect(screen.getByText('Vendre à Paris')).toBeInTheDocument(); // eyebrow
         expect(screen.getByText(/^Nous vous accompagnons de l'estimation à la signature/)).toBeInTheDocument(); // GEO answer-first intro
         const cta = screen.getByRole('link', { name: 'Faire estimer mon bien' });
