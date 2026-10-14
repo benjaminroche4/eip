@@ -92,12 +92,16 @@ export default function PropertyMobileBar({ property, advisor, reference, until 
                         >
                             <span className="flex min-w-0 flex-col">
                                 <span className="font-heading truncate text-lg font-semibold tabular-nums">
-                                    {formatPrice(property.price, locale)}
+                                    {property.price_on_request ? t('properties.price_on_request') : formatPrice(property.price, locale)}
                                     {property.transaction === 'rent' && (
                                         <span className="text-muted-foreground text-xs font-normal"> {t('property.per_month')}</span>
                                     )}
                                 </span>
-                                <span className="text-muted-foreground text-xs tabular-nums">{t('property.price_per_sqm', { price: perSqm })}</span>
+                                {!property.price_on_request && (
+                                    <span className="text-muted-foreground text-xs tabular-nums">
+                                        {t('property.price_per_sqm', { price: perSqm })}
+                                    </span>
+                                )}
                             </span>
                             <span aria-hidden className="border-border bg-card flex size-10 shrink-0 items-center justify-center border">
                                 {/* One chevron that flips over (rotateX) as the card opens / closes, as on the estimate bar */}

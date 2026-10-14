@@ -12,9 +12,18 @@ import { usePage } from '@inertiajs/react';
 import { Info, Phone } from 'lucide-react';
 import { type ReactNode } from 'react';
 
-export type Advisor = { id: number; photo: string; name: string | null; role: string | null };
+export type Advisor = { photo: string | null; name: string | null; role: string | null };
 
 type PropertyAdvisorCardProps = { property: Property; advisor: Advisor; reference: string; className?: string };
+
+/** « Charles Mata » → « CM », the avatar's fallback until the portrait loads (or without one). */
+const initials = (name: string | null) =>
+    (name ?? '')
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() ?? '')
+        .join('');
 
 /**
  * Sticky card of the detail page (2026-09-28), the site's card: the price large (monthly for a rental, with the charges
@@ -28,13 +37,14 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
     const { seo } = usePage<SharedData>().props;
     const isRent = property.transaction === 'rent';
     const sold = Boolean(property.sold_at);
+    const onRequest = Boolean(property.price_on_request);
     const perSqm = formatPrice(Math.round(property.price / property.surface), locale);
     const priceBlock = (dark = false) => (
         <div className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                 <p className="font-heading text-3xl font-semibold tabular-nums">
                     <span className="sr-only">{t('properties.price')} </span>
-                    {formatPrice(property.price, locale)}
+                    {onRequest ? t('properties.price_on_request') : formatPrice(property.price, locale)}
                     {isRent && (
                         <span className={cn('text-base font-normal', dark ? 'text-primary-foreground/70' : 'text-muted-foreground')}>
                             {' '}
@@ -50,7 +60,7 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
             <p className={cn('flex items-center gap-1.5 text-sm tabular-nums', dark ? 'text-primary-foreground/70' : 'text-muted-foreground')}>
                 {isRent
                     ? t(property.charges_included ? 'property.charges_included' : 'property.charges_excluded')
-                    : t('properties.per_sqm', { price: perSqm })}
+                    : !onRequest && t('properties.per_sqm', { price: perSqm })}
                 {/* The fees sentence lives in a tooltip on an info icon (user decision 2026-09-29): opens on hover, focus and tap */}
                 <TooltipProvider>
                     <Tooltip>
@@ -64,7 +74,12 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
                             </button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="max-w-64 text-pretty">
-                            {t(isRent ? 'property.fees_rent' : 'property.fees')}
+                            {/* The listing's own fees when they are the buyer's (Sanity `fees`, 2026-10-14), else the agency's rule */}
+                            {isRent
+                                ? t('property.fees_rent')
+                                : property.fees?.paid_by === 'buyer' && property.fees.amount
+                                  ? t('property.fees_buyer', { amount: formatPrice(property.fees.amount, locale) })
+                                  : t('property.fees')}
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
@@ -74,8 +89,8 @@ export default function PropertyAdvisorCard({ property, advisor, reference, clas
     const advisorRow = (size: 'sm' | 'md' | 'lg' = 'md', centered = false) => (
         <div className={cn('flex items-center gap-3', centered && 'flex-col text-center')}>
             <Avatar className={cn('ring-card ring-2', size === 'sm' && 'size-9', size === 'md' && 'size-12', size === 'lg' && 'size-20')}>
-                <AvatarImage src={advisor.photo} alt="" loading="lazy" />
-                <AvatarFallback className="bg-background-10 text-foreground text-xs font-medium">{String(advisor.id)}</AvatarFallback>
+                {advisor.photo && <AvatarImage src={advisor.photo} alt="" loading="lazy" />}
+                <AvatarFallback className="bg-background-10 text-foreground text-xs font-medium">{initials(advisor.name)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
                 {/* The advisor by name and role (E-E-A-T, redesign 2026-09-28); the heading stays « Votre conseiller » */}

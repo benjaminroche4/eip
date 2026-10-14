@@ -27,12 +27,15 @@ export type Property = {
     /** `{w}` templates, 800 and 1600 available; the card scrolls through them. */
     photos: string[];
     photo_alt: string;
-    /** Advisor in charge (1-3, `public/images/advisors/`). */
-    advisor: number;
+    /** Per-photo alt texts and intrinsic sizes aligned with `photos` (Sanity, 2026-10-14); missing = `photo_alt` numbered, default ratio. */
+    photo_alts?: string[];
+    photo_sizes?: { width: number; height: number }[];
+    /** Advisor in charge (the Sanity agent): name and square portrait URL, null without a photo. */
+    advisor: { name: string; photo: string | null };
     available: boolean;
-    /** WGS84 position for the map. */
-    lat: number;
-    lng: number;
+    /** WGS84 position for the map; null on a redacted confidential card (kept off the map). */
+    lat: number | null;
+    lng: number | null;
     /** Confidential listing: the card hides its details (2026-09-28). */
     off_market?: boolean;
     /** Featured listing (« Coup de cœur »): its card stands out in the grid (2026-09-28). */
@@ -54,16 +57,36 @@ export type Property = {
     orientation?: string | null;
     annual_charges?: number | null;
     property_tax?: number | null;
-    dpe?: { energy: string; climate: string; cost_min: number; cost_max: number; year: number } | null;
+    /** Energy labels; the yearly costs and their year are null when the diagnosis does not carry them. */
+    dpe?: {
+        energy: string;
+        climate: string;
+        cost_min: number | null;
+        cost_max: number | null;
+        year: number | null;
+        consumption?: number | null;
+        emissions?: number | null;
+    } | null;
     lots?: number | null;
     procedure?: boolean | null;
     rent_reference?: number | null;
     deposit?: number | null;
     price_history?: { date: string; price: number }[];
     visits?: string[];
-    transport?: { name: string; kind: 'metro' | 'rer'; lines: string[]; minutes: number }[];
+    /** Stations near the building; `minutes` on foot is null when unknown. */
+    transport?: { name: string; kind: 'metro' | 'rer'; lines: string[]; minutes: number | null }[];
     sold_at?: string | null;
     days_to_sell?: number | null;
+    /** Sanity fields (2026-10-14): agency reference, « Prix sur demande », buyer's fees, street address when not hidden. */
+    reference?: string | null;
+    price_on_request?: boolean;
+    fees?: { paid_by: string; amount: number | null } | null;
+    address?: string | null;
+    /** Shown only when filled: bathrooms, living surface, floors of the building, category names. */
+    bathrooms?: number | null;
+    surface_living?: number | null;
+    total_floors?: number | null;
+    tags?: string[];
 };
 
 type PropertyCardProps = {
@@ -88,10 +111,11 @@ export default function PropertyCard({ property, active = false, onActivate, pri
     const url = propertyUrl(property, locale);
 
     const isRent = property.transaction === 'rent';
+    // « Prix sur demande » (Sanity `priceOnRequest`, 2026-10-14): the price stays in the data for the sort and the filters, never on the card
     const priceNode = (
         <span className="font-heading text-xl font-semibold tabular-nums">
             <span className="sr-only">{t('properties.price')} </span>
-            {formatPrice(property.price, locale)}
+            {property.price_on_request ? t('properties.price_on_request') : formatPrice(property.price, locale)}
         </span>
     );
     // On the photo the chip is white; the state is carried by the dot's colour and the wording
@@ -158,7 +182,9 @@ export default function PropertyCard({ property, active = false, onActivate, pri
             )}
         </ul>
     );
-    const photos = <PropertyPhotos photos={property.photos} alt={property.photo_alt} title={property.title} priority={priority} />;
+    const photos = (
+        <PropertyPhotos photos={property.photos} alts={property.photo_alts} alt={property.photo_alt} title={property.title} priority={priority} />
+    );
     // The whole card leads to the listing (user decision 2026-09-29): the title stays the real link (keyboard, crawlers);
     // a click anywhere else follows it, unless it landed on a control (photo arrows, comparison tick), came with a
     // modifier (new tab is the link's job), followed a drag of the photos (8px or more), or the listing has no public
@@ -205,8 +231,13 @@ export default function PropertyCard({ property, active = false, onActivate, pri
     );
     const note = (
         <span className="text-right text-xs tabular-nums">
-            {isRent ? t('properties.per_month') : t('properties.per_sqm', { price: formatPrice(property.price / property.surface, locale) })}
-            <span className="text-muted-foreground"> · {t(isRent ? 'properties.fees_rent' : 'properties.fees_sale')}</span>
+            {isRent
+                ? t('properties.per_month')
+                : !property.price_on_request && t('properties.per_sqm', { price: formatPrice(property.price / property.surface, locale) })}
+            <span className="text-muted-foreground">
+                {!isRent && property.price_on_request ? '' : ' · '}
+                {t(isRent ? 'properties.fees_rent' : 'properties.fees_sale')}
+            </span>
         </span>
     );
 

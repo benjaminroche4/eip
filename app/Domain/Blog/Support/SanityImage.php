@@ -37,6 +37,40 @@ final class SanityImage
     }
 
     /**
+     * `{w}` width template of the image (`?w={w}&auto=format&fit=max`), the shape the property cards, the image
+     * sitemap and the JSON-LD expect (they substitute 800 or 1600). Null when the image has no resolvable asset.
+     *
+     * @param  array{asset?: array{_ref?: string}}|null  $image
+     */
+    public function template(?array $image): ?string
+    {
+        $ref = $image['asset']['_ref'] ?? null;
+        if (! is_string($ref) || ! preg_match('/^image-([a-f0-9]+)-(\d+)x(\d+)-(\w+)$/', $ref, $m)) {
+            return null;
+        }
+
+        [, $id, $width, $height, $ext] = $m;
+
+        return sprintf('https://cdn.sanity.io/images/%s/%s/%s-%sx%s.%s?w={w}&auto=format&fit=max', $this->projectId, $this->dataset, $id, $width, $height, $ext);
+    }
+
+    /**
+     * Intrinsic size of an image asset (`image-{id}-{w}x{h}-{ext}`), for `width` / `height` attributes without CLS.
+     *
+     * @param  array{asset?: array{_ref?: string}}|null  $image
+     * @return array{width: int, height: int}|null
+     */
+    public function size(?array $image): ?array
+    {
+        $ref = $image['asset']['_ref'] ?? null;
+        if (! is_string($ref) || ! preg_match('/^image-([a-f0-9]+)-(\d+)x(\d+)-(\w+)$/', $ref, $m)) {
+            return null;
+        }
+
+        return ['width' => (int) $m[2], 'height' => (int) $m[3]];
+    }
+
+    /**
      * Square, cropped thumbnail URL (avatars). Null when the image has no resolvable asset.
      *
      * @param  array{asset?: array{_ref?: string}}|null  $image

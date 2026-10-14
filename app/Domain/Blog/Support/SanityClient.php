@@ -13,12 +13,17 @@ use Illuminate\Support\Facades\Http;
  * scheduled `sanity:warm` command refreshes the queries the public pages depend on, so a visitor never pays the round
  * trip. A failure is remembered for `FAILURE_TTL_SECONDS` (negative cache): during an outage the home, the blog and the
  * sitemap page fail fast instead of each waiting the 10 s timeout (audit 2026-10-12).
+ *
+ * `refresh()` makes the following reads skip the cached value and overwrite it (`sanity:warm` every five minutes, so a
+ * Studio publish is online within five minutes at most, 2026-10-14).
  */
 final class SanityClient
 {
     public const CACHE_TTL_SECONDS = 900;
 
     public const FAILURE_TTL_SECONDS = 60;
+
+    private bool $refresh = false;
 
     /** @var array{project_id: string, dataset: string, api_version: string, token: string, use_cdn: bool} */
     private readonly array $config;
@@ -49,9 +54,9 @@ final class SanityClient
         }
 
         $url = $this->endpoint();
-        $key = 'sanity:'.md5($url.serialize($query));
+        $key = $this->cacheKey($groq, $params);
 
-        if (($hit = Cache::get($key)) !== null) {
+        if (! $this->refresh && ($hit = Cache::get($key)) !== null) {
             return $hit;
         }
         if (Cache::has($key.':down')) {
@@ -77,6 +82,27 @@ final class SanityClient
         Cache::put($key, $result, self::CACHE_TTL_SECONDS);
 
         return $result;
+    }
+
+    /**
+     * The cache entry of a query. It ignores the host: the live API and the CDN answer the same query.
+     *
+     * @param  array<string, mixed>  $params
+     */
+    public function cacheKey(string $groq, array $params = []): string
+    {
+        $query = ['query' => $groq, 'perspective' => 'published'];
+        foreach ($params as $name => $value) {
+            $query['$'.$name] = json_encode($value, JSON_THROW_ON_ERROR);
+        }
+
+        return 'sanity:'.md5($this->projectId().$this->dataset().$this->config['api_version'].serialize($query));
+    }
+
+    /** Every following read fetches Sanity and overwrites the cached value (the scheduled warm-up). */
+    public function refresh(): void
+    {
+        $this->refresh = true;
     }
 
     public function projectId(): string

@@ -1,6 +1,6 @@
 import { type Property } from '@/components/properties/property-card';
 import { useTranslation } from '@/hooks/use-translation';
-import { BedDouble, Building2, Layers, LayoutGrid, type LucideIcon, Maximize2, Sofa, Wrench } from 'lucide-react';
+import { Bath, BedDouble, Building2, Layers, LayoutGrid, type LucideIcon, Maximize2, Sofa, Wrench } from 'lucide-react';
 
 export type Fact = { key: string; label: string; value: string; icon: LucideIcon };
 
@@ -23,6 +23,13 @@ export function usePropertyFacts(property: Property): Fact[] {
                 label: t('property.bedrooms'),
                 value: tc('properties.bedrooms', property.bedrooms, { count: property.bedrooms }),
             },
+            // Bathrooms and the building's floors come from Sanity when filled (2026-10-14)
+            {
+                key: 'bathrooms',
+                icon: Bath,
+                label: t('property.bathrooms'),
+                value: property.bathrooms ? tc('property.bathrooms_value', property.bathrooms, { count: property.bathrooms }) : null,
+            },
             {
                 key: 'floor',
                 icon: Layers,
@@ -30,7 +37,12 @@ export function usePropertyFacts(property: Property): Fact[] {
                 value:
                     property.floor === null || property.floor === undefined
                         ? null
-                        : tc('property.floor_value', property.floor, { count: property.floor }),
+                        : property.total_floors
+                          ? t('property.floor_of', {
+                                floor: tc('property.floor_value', property.floor, { count: property.floor }),
+                                total: property.total_floors,
+                            })
+                          : tc('property.floor_value', property.floor, { count: property.floor }),
             },
             {
                 key: 'condition',

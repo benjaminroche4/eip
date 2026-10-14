@@ -15,6 +15,9 @@ type PropertyGalleryProps = {
     /** `{w}` templates, 400 / 800 / 1200 / 1600 available. */
     photos: string[];
     alt: string;
+    /** Own alt and intrinsic size per photo when known (Sanity, 2026-10-14): a portrait photo no longer declares a landscape box. */
+    alts?: string[];
+    photoSizes?: { width: number; height: number }[];
     title: string;
 };
 
@@ -30,7 +33,7 @@ type PropertyGalleryProps = {
  * counter announced, a strip of thumbnails (`aria-pressed`), Escape / the cross close it and the focus returns to
  * the tile. A single photo shows alone, without button.
  */
-export default function PropertyGallery({ photos, alt, title }: PropertyGalleryProps) {
+export default function PropertyGallery({ photos, alt, title, alts, photoSizes }: PropertyGalleryProps) {
     const { t } = useTranslation();
     const [open, setOpen] = useState<number | null>(null);
     // The tile or button that opened the lightbox: the focus goes back to it on close (the dialog is controlled, no trigger)
@@ -119,7 +122,8 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
     // Arrows from sm only, centred on the sides (under sm the finger drags and the counter alone remains — mobile review 2026-09-30)
     const arrowClass =
         'focus-ring bg-card/80 text-foreground hover:bg-card absolute hidden size-10 items-center justify-center backdrop-blur transition-colors duration-300 sm:top-1/2 sm:flex sm:-translate-y-1/2 motion-reduce:transition-none';
-    const altOf = (i: number) => (i === 0 ? alt : t('properties.photo_n', { alt, n: i + 1, count }));
+    const altOf = (i: number) => alts?.[i] || (i === 0 ? alt : t('properties.photo_n', { alt, n: i + 1, count }));
+    const sizeOf = (i: number) => photoSizes?.[i] ?? { width: 1600, height: 1067 };
     const go = (delta: number) => setOpen((i) => (i === null ? null : (i + delta + count) % count));
     const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'ArrowRight') go(1);
@@ -168,8 +172,8 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
                                 srcSet={srcSet(photo)}
                                 sizes="(min-width: 1024px) 60vw, 90vw"
                                 alt={altOf(i)}
-                                width={1600}
-                                height={1067}
+                                width={sizeOf(i).width}
+                                height={sizeOf(i).height}
                                 priority={i === 0}
                                 draggable={false}
                                 className="h-full w-auto max-w-none object-cover"
@@ -254,8 +258,8 @@ export default function PropertyGallery({ photos, alt, title }: PropertyGalleryP
                                 key={photos[open]}
                                 src={src(photos[open], 1600)}
                                 alt={altOf(open)}
-                                width={1600}
-                                height={1067}
+                                width={sizeOf(open).width}
+                                height={sizeOf(open).height}
                                 draggable={false}
                                 className="animate-fade-in max-h-full max-w-full touch-pan-y object-contain select-none motion-reduce:animate-none"
                             />

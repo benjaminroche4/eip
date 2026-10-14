@@ -1,5 +1,5 @@
 import EnergyLabels from '@/components/properties/energy-labels';
-import PropertyDetails from '@/components/properties/property-details';
+import PropertyDetails, { hasPropertyDetails } from '@/components/properties/property-details';
 import PropertyTransport from '@/components/properties/property-transport';
 import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
@@ -39,6 +39,42 @@ describe('Detail page blocks (2026-09-28)', () => {
         expect(screen.getByText('Loyer de référence majoré').nextElementSibling).toHaveTextContent(/5 890 € \/ mois/);
         expect(screen.getByText('Dépôt de garantie').nextElementSibling).toHaveTextContent(/13 000 €/);
         expect(screen.queryByText('Taxe foncière')).toBeNull();
+    });
+
+    it('details: the Sanity facts (living surface, floors of the building) only when filled, and the page knows when the block is empty', () => {
+        const { rerender } = renderPage(<PropertyDetails property={{ ...LISTING, surface_living: 121, total_floors: 6 }} />);
+        expect(screen.getByText('Surface habitable').nextElementSibling).toHaveTextContent('121 m²');
+        expect(screen.getByText("Étages de l'immeuble").nextElementSibling).toHaveTextContent('6');
+        rerender(<PropertyDetails property={LISTING} />);
+        expect(screen.queryByText('Surface habitable')).toBeNull();
+        expect(hasPropertyDetails(LISTING)).toBe(true);
+        expect(
+            hasPropertyDetails({
+                ...LISTING,
+                rooms_detail: [],
+                year_built: null,
+                heating: null,
+                orientation: null,
+                annual_charges: null,
+                property_tax: null,
+                lots: null,
+                procedure: null,
+            }),
+        ).toBe(false);
+        expect(
+            hasPropertyDetails({
+                ...LISTING,
+                rooms_detail: [],
+                year_built: null,
+                heating: null,
+                orientation: null,
+                annual_charges: null,
+                property_tax: null,
+                lots: null,
+                procedure: null,
+                total_floors: 6,
+            }),
+        ).toBe(true);
     });
 
     it("energy labels: both scales with the listing's class marked, the yearly costs, and the excessive-consumption notice for F and G", async () => {

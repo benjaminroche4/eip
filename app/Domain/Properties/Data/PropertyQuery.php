@@ -16,7 +16,7 @@ final readonly class PropertyQuery
 {
     public const PER_PAGE = 12;
 
-    public const TYPES = ['apartment', 'house', 'mansion', 'loft'];
+    public const TYPES = ['apartment', 'house', 'mansion', 'loft', 'studio', 'duplex', 'building', 'commercial'];
 
     /** Sort orders; `recent` = the source order (Sanity will send the newest first), the only indexable one. */
     public const SORTS = ['recent', 'price_asc', 'price_desc', 'sqm_asc', 'surface_asc', 'surface_desc'];
@@ -156,8 +156,9 @@ final readonly class PropertyQuery
             && ($this->cities === [] || in_array($property->arrondissement, $this->cities, true))
             && ($this->types === [] || in_array($property->type, $this->types, true))
             && ($this->rooms === [] || in_array(min($property->rooms, 5), $this->rooms, true))
-            && ($this->budget === null || $property->price <= $this->budget)
-            && ($this->budgetMin === null || $property->price >= $this->budgetMin)
+            // A secret price (« sur demande », confidential) is never tested against a budget: a visitor could otherwise find it by bisection (2026-10-14)
+            && ($this->budget === null || $property->hidesPrice() || $property->price <= $this->budget)
+            && ($this->budgetMin === null || $property->hidesPrice() || $property->price >= $this->budgetMin)
             && ($this->surfaceMin === null || $property->surface >= $this->surfaceMin)
             && ($this->bedrooms === [] || in_array(min($property->bedrooms, 5), $this->bedrooms, true))
             && array_diff($this->features, $property->features) === []
@@ -167,7 +168,8 @@ final readonly class PropertyQuery
             && ($this->furnished === null || $property->transaction !== 'rent' || $property->furnished === $this->furnished)
             && (! $this->availableOnly || $property->available)
             && ($this->areas === [] || in_array($property->area, $this->areas, true))
-            && ($this->bounds === null || $this->inBounds($property));
+            // A secret position is never tested against a map box either (bisection on `?bounds=`, security review 2026-10-14)
+            && ($this->bounds === null || (! $property->hidesPosition() && $this->inBounds($property)));
     }
 
     private function inBounds(Property $property): bool
@@ -212,11 +214,12 @@ final readonly class PropertyQuery
     public function sort(Collection $properties): Collection
     {
         return match ($this->sort) {
-            'price_asc' => $properties->sortBy(fn (Property $p) => $p->price, SORT_NUMERIC)->values(),
-            'price_desc' => $properties->sortByDesc(fn (Property $p) => $p->price, SORT_NUMERIC)->values(),
+            // Secret prices sort last either way: their rank must not place them on the price scale (2026-10-14)
+            'price_asc' => $properties->sortBy(fn (Property $p) => $p->hidesPrice() ? PHP_INT_MAX : $p->price, SORT_NUMERIC)->values(),
+            'price_desc' => $properties->sortByDesc(fn (Property $p) => $p->hidesPrice() ? -1 : $p->price, SORT_NUMERIC)->values(),
             'surface_desc' => $properties->sortByDesc(fn (Property $p) => $p->surface, SORT_NUMERIC)->values(),
             'surface_asc' => $properties->sortBy(fn (Property $p) => $p->surface, SORT_NUMERIC)->values(),
-            'sqm_asc' => $properties->sortBy(fn (Property $p) => $p->pricePerSqm(), SORT_NUMERIC)->values(),
+            'sqm_asc' => $properties->sortBy(fn (Property $p) => $p->hidesPrice() ? PHP_INT_MAX : $p->pricePerSqm(), SORT_NUMERIC)->values(),
             default => $properties,
         };
     }

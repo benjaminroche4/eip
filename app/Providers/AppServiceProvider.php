@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Domain\Blog\Support\SanityClient;
 use App\Domain\Blog\Support\SanityImage;
 use App\Domain\Localization\Support\LocalizedUrls;
+use App\Domain\Properties\Actions\FetchSanityProperties;
 use App\Http\Ssr\ResilientHttpGateway;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Gateway::class, ResilientHttpGateway::class);
         $this->app->singleton(LocalizedUrls::class);
         $this->app->singleton(SanityClient::class, fn () => new SanityClient(config('services.sanity')));
+        // One read of the catalogue per request (the listing rebuilt it six times: filter, areas, bounds, badge, district links)
+        $this->app->scoped(FetchSanityProperties::class);
         $this->app->singleton(SanityImage::class, fn () => new SanityImage(config('services.sanity.project_id') ?? '', config('services.sanity.dataset')));
     }
 

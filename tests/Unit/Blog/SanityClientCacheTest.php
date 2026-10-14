@@ -4,6 +4,7 @@ namespace Tests\Unit\Blog;
 
 use App\Domain\Blog\Exceptions\SanityRequestFailed;
 use App\Domain\Blog\Support\SanityClient;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -56,7 +57,8 @@ class SanityClientCacheTest extends TestCase
             $this->assertStringContainsString('unreachable', $e->getMessage());
             $this->assertInstanceOf(ConnectionException::class, $e->getPrevious());
         }
-        $this->assertTrue(Cache::has('sanity:'.md5('https://abc.api.sanity.io/v2025-02-09/data/query/production'.serialize(['query' => 'count(*)', 'perspective' => 'published'])).':down'));
+        $this->assertTrue(Cache::has($this->client()->cacheKey('count(*)').':down'));
+        $this->assertSame($this->client()->cacheKey('count(*)'), (new SanityClient(['project_id' => 'abc', 'token' => 'x', 'use_cdn' => true]))->cacheKey('count(*)'), 'the key ignores the CDN / live API host');
     }
 
     public function test_the_warm_command_refreshes_the_public_queries(): void
@@ -66,6 +68,19 @@ class SanityClientCacheTest extends TestCase
 
         $this->artisan('sanity:warm')->assertSuccessful();
         $this->assertGreaterThanOrEqual(6, count(Http::recorded()));
+    }
+
+    public function test_the_warm_command_overwrites_the_cached_values(): void
+    {
+        config(['services.sanity.project_id' => 'abc', 'services.sanity.token' => 'x']);
+        Http::fake(fn () => Http::response(['result' => []]));
+        $this->artisan('sanity:warm')->assertSuccessful();
+        $warmed = count(Http::recorded());
+
+        // Still cached: a second warm-up fetches everything again (a Studio publish is online within five minutes, 2026-10-14)
+        $this->artisan('sanity:warm')->assertSuccessful();
+        $this->assertSame($warmed * 2, count(Http::recorded()));
+        $this->assertSame('*/5 * * * *', collect(app(Schedule::class)->events())->first(fn ($e) => str_contains($e->command ?? '', 'sanity:warm'))?->expression, 'scheduled every five minutes');
     }
 
     public function test_the_warm_command_fails_only_when_every_query_fails(): void

@@ -6,25 +6,50 @@ import { cn } from '@/lib/utils';
 import { Link, useForm } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { ArrowUpRight, LockKeyhole } from 'lucide-react';
-import { type FormEvent, useId } from 'react';
+import { type FormEvent, useCallback, useEffect, useId, useRef } from 'react';
 
-const LENGTH = 6;
+const LENGTH = 4;
 
 /**
- * The off-market gate (user decision 2026-09-29): a six-digit access code typed in the site's OTP field (one square
- * white cell per digit, digits only, paste-friendly, auto-submits on the sixth digit) posted to `off_market.unlock`;
- * a wrong code comes back as a field error, a right one reloads the page the visitor came from, now unlocked. Under it,
- * the way to get a code: the contact page.
+ * The off-market gate (user decision 2026-09-29): the listing's four-digit access code (Sanity `accessCode`, 2026-10-14) typed in the site's OTP field (one square
+ * white cell per digit, digits only, paste-friendly, **submitted by itself on the sixth digit**, the button only serves
+ * Enter / a paste) posted to `off_market.unlock`; a wrong code comes back as a field error under the cells, which are
+ * emptied for a new try; a right one reloads the page the visitor came from, now unlocked. Under it, the way to get a
+ * code: the contact page.
  */
-export default function OffMarketGate({ className }: { className?: string }) {
+type OffMarketGateProps = {
+    className?: string;
+    /** Slug of the listing behind the gate (its own code is tried); null on the selection page (every listing's). */ property?: string | null;
+};
+
+export default function OffMarketGate({ className, property = null }: OffMarketGateProps) {
     const { t } = useTranslation();
     const id = useId();
-    const { data, setData, post, processing, errors } = useForm<{ code: string }>({ code: '' });
+    const { data, setData, post, processing, errors } = useForm<{ code: string; property: string | null }>({ code: '', property });
 
-    const send = () => post(route('off_market.unlock'), { preserveScroll: true });
+    // Posted from an effect, never from the field's `onComplete`: that callback fires in the same tick as `onChange`,
+    // when `data.code` still holds five digits (the server then answered « 6 chiffres », user report 2026-10-14).
+    const send = useCallback(
+        () =>
+            post(route('off_market.unlock'), {
+                preserveScroll: true,
+                // A wrong code empties the cells and puts the cursor back: the visitor retypes at once, the error stays on screen
+                onError: () => setData('code', ''),
+            }),
+        [post, setData],
+    );
+    const sent = useRef('');
+    useEffect(() => {
+        if (data.code.length === LENGTH && !processing && sent.current !== data.code) {
+            sent.current = data.code;
+            send();
+        }
+    }, [data.code, processing, send]);
     const submit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        send();
+        if (data.code.length === LENGTH) {
+            send();
+        }
     };
 
     return (
@@ -44,19 +69,14 @@ export default function OffMarketGate({ className }: { className?: string }) {
                     autoFocus
                     value={data.code}
                     onChange={(value) => setData('code', value)}
-                    onComplete={send}
                     disabled={processing}
                     aria-invalid={errors.code ? true : undefined}
                     aria-describedby={cn(`${id}-hint`, errors.code && `${id}-error`)}
                 >
-                    <InputOTPGroup className="gap-2">
+                    {/* The cells only mirror the real (labelled) input: decorative for assistive tech (axe `aria-prohibited-attr`, 2026-10-14) */}
+                    <InputOTPGroup className="gap-2" aria-hidden>
                         {Array.from({ length: LENGTH }, (_, i) => (
-                            <InputOTPSlot
-                                key={i}
-                                index={i}
-                                aria-label={t('off_market.code_digit', { n: i + 1, count: LENGTH })}
-                                className="border-l"
-                            />
+                            <InputOTPSlot key={i} index={i} className="border-l" />
                         ))}
                     </InputOTPGroup>
                 </InputOTP>

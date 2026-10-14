@@ -8,6 +8,13 @@ import { PROPERTY } from '../fixtures/property';
 import { renderPage } from '../inertia';
 
 describe('PropertyCard', () => {
+    it('shows « Prix sur demande » instead of a price, without a price per m² (the server sends 0)', () => {
+        renderPage(<PropertyCard property={{ ...PROPERTY, price: 0, price_sqm: 0, price_on_request: true }} />);
+
+        expect(screen.getByText('Prix sur demande').parentElement).toHaveTextContent('Prix Prix sur demande Honoraires inclus');
+        expect(screen.queryByText(/€\/m²/)).toBeNull();
+    });
+
     it('renders the marketplace card: scrolling photos, availability with the advisor, price with fees, transaction + type, location, facts row', async () => {
         const { container } = renderPage(<PropertyCard property={PROPERTY} />);
 

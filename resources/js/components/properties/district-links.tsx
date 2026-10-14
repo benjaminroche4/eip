@@ -21,7 +21,8 @@ export default function DistrictLinks({ districts, current }: DistrictLinksProps
 
     return (
         <nav aria-label={t('properties.by_district')} className="border-border flex flex-col gap-4 border-t pt-6">
-            <h3 className="text-base font-medium">{t('properties.by_district')}</h3>
+            {/* A block of its own under the h1, not a child of the count's h2 (SEO audit 2026-10-14) */}
+            <h2 className="text-base font-medium">{t('properties.by_district')}</h2>
             <ul role="list" className="divide-border divide-y">
                 {districts.map((d) => (
                     <li key={d.n}>

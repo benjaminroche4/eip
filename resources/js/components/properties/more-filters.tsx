@@ -22,22 +22,39 @@ import {
     Car,
     ConciergeBell,
     Eye,
+    Flame,
+    Flower2,
     Hammer,
     Layers,
     type LucideIcon,
     Map,
     Maximize2,
+    Snowflake,
     Sofa,
     Sparkles,
     Sun,
+    ThumbsUp,
     TreePalm,
     VolumeX,
     Wine,
 } from 'lucide-react';
 import { useId } from 'react';
 
-export const FEATURES = ['elevator', 'balcony', 'terrace', 'top_floor', 'parking', 'concierge', 'view', 'cellar', 'quiet'] as const;
-export const CONDITIONS = ['to_renovate', 'renovated', 'new'] as const;
+export const FEATURES = [
+    'elevator',
+    'balcony',
+    'terrace',
+    'garden',
+    'top_floor',
+    'parking',
+    'concierge',
+    'view',
+    'cellar',
+    'quiet',
+    'fireplace',
+    'air_conditioning',
+] as const;
+export const CONDITIONS = ['to_renovate', 'good', 'renovated', 'new'] as const;
 export const FLOORS = ['not_ground', 'top'] as const;
 const SURFACES = [50, 80, 100, 150, 200, 300];
 /** Icons of the filters (user decision 2026-09-28). */
@@ -51,8 +68,16 @@ export const FEATURE_ICONS: Record<(typeof FEATURES)[number], LucideIcon> = {
     view: Eye,
     cellar: Wine,
     quiet: VolumeX,
+    garden: Flower2,
+    fireplace: Flame,
+    air_conditioning: Snowflake,
 };
-const CONDITION_ICONS: Record<(typeof CONDITIONS)[number], LucideIcon> = { to_renovate: Hammer, renovated: Sparkles, new: BadgeCheck };
+const CONDITION_ICONS: Record<(typeof CONDITIONS)[number], LucideIcon> = {
+    to_renovate: Hammer,
+    good: ThumbsUp,
+    renovated: Sparkles,
+    new: BadgeCheck,
+};
 
 /** The richer criteria of « Nos biens » (user decision 2026-09-28), kept in the page's state next to the bar's own. */
 export type MoreFilters = {

@@ -15,7 +15,7 @@ export const PROPERTY: Property = {
     excerpt: 'Étage noble, parquet, moulures et cheminées.',
     photos: ['/images/buy/district-1-{w}.webp', '/images/buy/district-2-{w}.webp', '/images/buy/district-3-{w}.webp'],
     photo_alt: 'Salon haussmannien lumineux',
-    advisor: 1,
+    advisor: { name: 'Julien L.', photo: '/images/advisors/advisor-1.webp' },
     available: true,
     lat: 48.8539,
     lng: 2.3338,

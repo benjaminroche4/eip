@@ -10,16 +10,20 @@ import { cn } from '@/lib/utils';
 import {
     ArrowUpRight,
     Briefcase,
+    Building,
     Building2,
     Check,
+    DoorOpen,
     Home,
     Key,
     KeyRound,
     Landmark,
+    Layers2,
     LayoutGrid,
     MapPin,
     Plus,
     Search,
+    Store,
     Wallet,
     Warehouse,
     X,
@@ -29,9 +33,18 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent
 
 export const ARRONDISSEMENTS = Array.from({ length: 20 }, (_, i) => i + 1);
 /** Property types of the listing (keys of `properties.types`). */
-export const PROPERTY_TYPES = ['apartment', 'house', 'mansion', 'loft'] as const;
+export const PROPERTY_TYPES = ['apartment', 'house', 'mansion', 'loft', 'studio', 'duplex', 'building', 'commercial'] as const;
 /** Icons of the filters (user decision 2026-09-28): one per property type. */
-const TYPE_ICONS: Record<(typeof PROPERTY_TYPES)[number], LucideIcon> = { apartment: Building2, house: Home, mansion: Landmark, loft: Warehouse };
+const TYPE_ICONS: Record<(typeof PROPERTY_TYPES)[number], LucideIcon> = {
+    apartment: Building2,
+    house: Home,
+    mansion: Landmark,
+    loft: Warehouse,
+    studio: DoorOpen,
+    duplex: Layers2,
+    building: Building,
+    commercial: Store,
+};
 export type Transaction = 'sale' | 'rent';
 /** Quick monthly rents (euros) offered under the budget cell when renting. */
 export const RENTS = [2_000, 3_000, 4_000, 6_000, 8_000, 12_000];

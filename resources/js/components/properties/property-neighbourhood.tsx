@@ -83,7 +83,8 @@ export default function PropertyNeighbourhood({ property, district, arrondisseme
         </p>
     );
     const source = <p className="text-grey-60 text-xs text-pretty">{t('property.price_source')}</p>;
-    const showCompare = districtSqm > 0 && !isRent;
+    // No comparison for an undisclosed price (the server sends 0, 2026-10-14)
+    const showCompare = districtSqm > 0 && !isRent && !property.price_on_request;
     // Mobile (review 2026-09-30): schools and parks wait behind « En savoir plus sur le 8e »; always shown from sm
     const small = useMediaQuery(SMALL_SCREEN);
     const [more, setMore] = useState(false);

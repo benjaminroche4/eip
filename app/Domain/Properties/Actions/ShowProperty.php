@@ -9,8 +9,9 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /**
  * The detail page of a listing by its slug (2026-09-28): null when no published listing carries it (a confidential,
- * off-market listing has no public page until the gated area exists; a sold one keeps its page). The twin slugs come
- * from the same row index in the other languages' lists; « similar » = up to six other catalogue listings of the same
+ * off-market listing has no public page until the gated area exists; a sold one keeps its page). The twin slugs are
+ * the listing's `slugs` (Sanity translations, 2026-10-14), else the same row index in the other languages' lists
+ * (fixture rows); « similar » = up to six other catalogue listings of the same
  * transaction, same budget ± 20 % and rooms first, then the same arrondissement, then the same type, then the rest;
  * « neighbours » = the previous and next catalogue listings of the same transaction.
  */
@@ -36,8 +37,11 @@ final class ShowProperty
 
         $slugs = [];
         foreach (array_keys(LaravelLocalization::getSupportedLocales()) as $code) {
-            $twin = $code === $locale ? $property : $this->properties->all($code)->get($index);
-            if ($twin instanceof Property) {
+            if ($code === $locale) {
+                $slugs[$code] = $property->slug;
+            } elseif (isset($property->slugs[$code])) {
+                $slugs[$code] = $property->slugs[$code];
+            } elseif ($property->slugs === [] && ($twin = $this->properties->all($code)->get($index)) instanceof Property) {
                 $slugs[$code] = $twin->slug;
             }
         }

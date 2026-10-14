@@ -6,7 +6,7 @@ import { axe } from 'vitest-axe';
 import { PROPERTY } from '../fixtures/property';
 import { page, renderPage, sharedProps } from '../inertia';
 
-const ADVISOR = { id: 1, photo: '/images/advisors/advisor-1.webp', name: 'Alexandre Moreau', role: 'Conseiller senior' };
+const ADVISOR = { photo: '/images/advisors/advisor-1.webp', name: 'Alexandre Moreau', role: 'Conseiller senior' };
 
 describe('PropertyMobileBar', () => {
     it('is fixed to the screen bottom from the start with the price and the price per m², and the whole bar opens the advisor card in a sheet', async () => {

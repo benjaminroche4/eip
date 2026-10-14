@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Properties\Actions\FetchSanityProperties;
 use App\Domain\Properties\Actions\ListProperties;
 use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -34,13 +35,17 @@ class PropertiesTest extends TestCase
                 ->where('properties.0.slug', 'appartement-saint-germain-des-pres')
                 ->where('properties.0.arrondissement', 6)
                 ->where('properties.0.transaction', 'sale')
-                ->where('properties.0.price', 2450000)
+                ->where('properties.0.price', 0) // confidential: the card is redacted (no price, excerpt, position, one photo)
                 ->where('properties.0.type', 'apartment')
-                ->where('properties.0.advisor', 1)
+                ->where('properties.0.advisor', ['name' => 'Julien L.', 'photo' => '/images/advisors/advisor-1.webp'])
                 ->where('properties.0.available', true)
                 ->where('properties.2.available', false)
-                ->where('properties.0.photos.0', '/images/buy/district-1-{w}.webp')
-                ->where('properties.0.lat', 48.8539)
+                ->has('properties.0.photos', 1)
+                ->where('properties.0.lat', null)
+                ->where('properties.0.excerpt', '')
+                ->where('properties.0.price_on_request', true)
+                ->where('properties.1.price', 9800000)
+                ->where('properties.1.lat', 48.8686)
                 ->where('properties.0.off_market', true) // the sample's confidential one, shown with its details hidden
                 ->where('properties.2.featured', true) // the sample's « Coup de cœur » (Champ-de-Mars), its card stands out
                 ->where('properties.0.featured', false)
@@ -84,14 +89,16 @@ class PropertiesTest extends TestCase
             ->assertInertia(fn (Assert $p) => $p->where('filters', ['city' => [], 'budget' => null, 'transaction' => 'sale', 'type' => [], 'rooms' => [], 'sort' => 'recent', 'bounds' => null] + self::REST)->where('indexing.noindex', false));
 
         // « Rechercher dans cette zone » (2026-09-28): the map frame filters by position, noindex, kept in the pagination links
-        $this->get('/nos-biens?bounds=48.85,2.33,48.86,2.35')
+        // (the box around the Haut Marais loft: the Saint-Germain one is confidential and never answers a map box, security review 2026-10-14)
+        $this->get('/nos-biens?bounds=48.86,2.36,48.87,2.37')
             ->assertOk()
             ->assertInertia(fn (Assert $p) => $p
-                ->where('filters.bounds', [48.85, 2.33, 48.86, 2.35])
+                ->where('filters.bounds', [48.86, 2.36, 48.87, 2.37])
                 ->has('properties', 1)
-                ->where('properties.0.arrondissement', 6)
+                ->where('properties.0.arrondissement', 3)
                 ->where('indexing.noindex', true)
-                ->where('indexing.canonical', url('/nos-biens?bounds=48.85%2C2.33%2C48.86%2C2.35')));
+                ->where('indexing.canonical', url('/nos-biens?bounds=48.86%2C2.36%2C48.87%2C2.37')));
+        $this->get('/nos-biens?bounds=48.85,2.33,48.86,2.35')->assertInertia(fn (Assert $p) => $p->has('properties', 0)); // only the confidential one lives there
 
         // The list's sort select (2026-09-28): applied on the server, kept in the URL of the pagination links, noindex
         $this->get('/nos-biens?sort=price_asc')
@@ -99,7 +106,8 @@ class PropertiesTest extends TestCase
             ->assertInertia(fn (Assert $p) => $p
                 ->where('filters.sort', 'price_asc')
                 ->where('properties.0.price', 1650000) // the loft, cheapest sale of the sample
-                ->where('properties.5.price', 9800000)
+                ->where('properties.4.price', 9800000) // the confidential Saint-Germain one closes the price sorts (security review 2026-10-14)
+                ->where('properties.5.price', 0)
                 ->where('indexing.noindex', true)
                 ->where('indexing.canonical', url('/nos-biens?sort=price_asc')));
         $this->get('/nos-biens?sort=price_desc')->assertInertia(fn (Assert $p) => $p->where('properties.0.price', 9800000));
@@ -110,8 +118,9 @@ class PropertiesTest extends TestCase
     public function test_listing_is_paginated_on_the_server_with_a_merge_prop_past_page_one(): void
     {
         // 30 sales: the sample repeated with distinct slugs (the Sanity catalogue will be bigger than the sample)
-        $sample = collect(__('properties.sample'))->where('transaction', 'sale')->reject(fn (array $r) => isset($r['sold_at']))->values(); // the sold one stays out
+        $sample = collect(self::sampleProperties('fr'))->where('transaction', 'sale')->reject(fn (array $r) => isset($r['sold_at']))->values(); // the sold one stays out
         $this->app->bind(ListProperties::class, fn () => new ListProperties(
+            app(FetchSanityProperties::class),
             fn () => collect(range(0, 29))->map(fn (int $i) => ['slug' => "bien-$i"] + $sample[$i % $sample->count()])->all(),
         ));
 

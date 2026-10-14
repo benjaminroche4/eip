@@ -37,6 +37,8 @@ return [
         // Document type of the articles: the Sanity project is shared with Relocation in Paris (`blog`); this site reads `estateBlog`.
         'blog_type' => env('SANITY_BLOG_TYPE', 'estateBlog'),
         'category_type' => env('SANITY_CATEGORY_TYPE', 'estateCategory'),
+        // The listings of « Nos biens » (shared project: Relocation in Paris reads `property`, this site `estateProperty`)
+        'property_type' => env('SANITY_PROPERTY_TYPE', 'estateProperty'),
     ],
 
     'slack' => [

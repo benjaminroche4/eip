@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Domain\Content\Actions\ListArrondissements;
 use App\Domain\Content\Actions\ListTeamMembers;
 use App\Domain\Localization\Support\LocalizedUrls;
+use App\Domain\Properties\Actions\BuildPropertyFaq;
 use App\Domain\Properties\Actions\ShowProperty;
 use App\Domain\Properties\Support\DistrictSlug;
 use App\Domain\Properties\Support\OffMarketAccess;
 use App\Domain\Properties\Support\PropertySeo;
 use App\Domain\Properties\Support\PropertyUrl;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,7 +28,7 @@ use Inertia\Response;
  */
 class PropertyController extends Controller
 {
-    public function show(string $transaction, string $district, string $slug, ShowProperty $show, ListArrondissements $arrondissements, ListTeamMembers $team, LocalizedUrls $localizedUrls): Response|RedirectResponse
+    public function show(string $transaction, string $district, string $slug, ShowProperty $show, ListArrondissements $arrondissements, ListTeamMembers $team, LocalizedUrls $localizedUrls, BuildPropertyFaq $faq): Response|RedirectResponse
     {
         $page = $show($slug, withOffMarket: true);
         abort_if($page === null, 404);
@@ -38,10 +40,10 @@ class PropertyController extends Controller
             return redirect()->to(PropertyUrl::of($property, $locale), 301);
         }
 
-        if ($property->offMarket && ! OffMarketAccess::isUnlocked(request()->session())) {
+        if ($property->offMarket && ! OffMarketAccess::isUnlocked(request()->session(), $property)) {
             return Inertia::render('properties/locked', [
-                // Nothing that identifies the listing: its kind and arrondissement only
-                'teaser' => ['type' => $property->type, 'transaction' => $property->transaction, 'arrondissement' => $property->arrondissement],
+                // Nothing that identifies the listing: its kind and arrondissement only (the slug is the URL's own)
+                'teaser' => ['type' => $property->type, 'transaction' => $property->transaction, 'arrondissement' => $property->arrondissement, 'slug' => $property->slug],
             ]);
         }
 
@@ -50,8 +52,12 @@ class PropertyController extends Controller
             ->all());
 
         $arrondissement = collect($arrondissements())->firstWhere('n', $property->arrondissement);
-        // The advisor in charge by name and role (E-E-A-T): the team member of the same rank, when the team has one
-        $member = $team()[$property->advisor - 1] ?? null;
+        // The advisor in charge (Sanity agent: name + portrait) by name and role (E-E-A-T): the role comes from the team
+        // member of the same name, or of the same first name, when the « À propos » page lists them
+        $first = Str::before($property->advisor['name'], ' ');
+        $members = collect($team());
+        $member = $members->first(fn ($m) => $m->name === $property->advisor['name'])
+            ?? ($first !== '' ? $members->first(fn ($m) => Str::startsWith($m->name, $first.' ') || $m->name === $first) : null);
 
         return Inertia::render('properties/show', [
             'property' => $property->toArray(),
@@ -69,7 +75,9 @@ class PropertyController extends Controller
                 'url' => route('properties.district', ['district' => DistrictSlug::make($property->arrondissement, $locale)]),
                 'profileUrl' => route('districts', [$locale === 'fr' ? 'arrondissement' : 'district' => $property->arrondissement]),
             ],
-            'advisor' => ['id' => $property->advisor, 'photo' => "/images/advisors/advisor-{$property->advisor}.webp", 'name' => $member?->name, 'role' => $member?->role],
+            'advisor' => ['name' => $property->advisor['name'], 'photo' => $property->advisor['photo'] ?? $member?->photo, 'role' => $member?->role],
+            // The FAQ closing the page: process and agency questions answered from the listing's data (2026-10-14)
+            'faq' => $faq($property, $locale),
             // Meta from the data (type, rooms, quartier, arrondissement), not the editorial title (SEO conventions, 2026-09-28)
             // Named `meta`, never `seo`: that name is the shared prop (organization, phone…) and a page prop would shadow it
             // (blank page 2026-09-28, the collision already met on the search page)

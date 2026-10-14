@@ -137,7 +137,7 @@ final class SitemapBuilder
                     ->setLastModificationDate($lastChange ? new \DateTimeImmutable($lastChange) : $this->pagesLastmod());
                 // The photos (image sitemap), captioned in the page's language
                 foreach (array_slice($property->photos, 0, 3) as $i => $photo) {
-                    $url->addImage(url(str_replace('{w}', '1600', $photo)), $twin->photoAlt.($i > 0 ? ' ('.($i + 1).')' : ''));
+                    $url->addImage(url(str_replace('{w}', '1600', $photo)), $twin->photoAlt($i, $locale));
                 }
                 foreach ($locales as $alt) {
                     $url->addAlternate($detailUrl($alt), $alt);

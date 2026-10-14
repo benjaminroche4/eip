@@ -45,7 +45,10 @@ class PropertyQueryTest extends TestCase
         $this->assertSame('48.85,2.33,48.86,2.35', $query->params()['bounds']);
         $this->assertFalse($query->isIndexable());
         $this->assertTrue($query->hasFilters());
-        $this->assertSame(1, app(FilterProperties::class)($query, 'fr')->total); // the 6e sale (48.8539, 2.3338) alone
+        // The 6e sale (48.8539, 2.3338) is the only one in the box, but it is confidential: a secret position never answers a map box (security review 2026-10-14)
+        $this->assertSame(0, app(FilterProperties::class)($query, 'fr')->total);
+        $loft = PropertyQuery::fromRequest(Request::create('/nos-biens', 'GET', ['bounds' => '48.86,2.36,48.87,2.37']));
+        $this->assertSame(1, app(FilterProperties::class)($loft, 'fr')->total); // the Haut Marais loft (48.863, 2.3625)
 
         // Junk, an inverted box or one far from Paris never filters everything out silently
         foreach (['abc', '48.86,2.33,48.85,2.35', '40,2,41,3', '48.85,2.33,48.86'] as $bad) {
@@ -75,15 +78,18 @@ class PropertyQueryTest extends TestCase
         $slugs = fn (PropertyQuery $q) => $filter($q, 'fr')->items->pluck('slug')->all();
 
         $this->assertSame($source, $slugs(new PropertyQuery)); // « recent » = the source order (Sanity: newest first)
-        $prices = fn (PropertyQuery $q) => $filter($q, 'fr')->items->pluck('price')->all();
+        // The confidential Saint-Germain one (2.45 M€) sorts last either way: its rank must not place it on the price scale (security review 2026-10-14)
+        $prices = fn (PropertyQuery $q) => $filter($q, 'fr')->items->reject(fn (Property $p) => $p->offMarket)->pluck('price')->all();
         $asc = $prices(new PropertyQuery(sort: 'price_asc'));
         $this->assertSame(collect($asc)->sort()->values()->all(), $asc);
         $this->assertSame(array_reverse($asc), $prices(new PropertyQuery(sort: 'price_desc')));
+        $this->assertSame('appartement-saint-germain-des-pres', $filter(new PropertyQuery(sort: 'price_asc'), 'fr')->items->last()->slug);
+        $this->assertSame('appartement-saint-germain-des-pres', $filter(new PropertyQuery(sort: 'price_desc'), 'fr')->items->last()->slug);
         $surfaces = $filter(new PropertyQuery(sort: 'surface_desc'), 'fr')->items->pluck('surface')->all();
         $this->assertSame(collect($surfaces)->sortDesc()->values()->all(), $surfaces);
         // The sort applies to the whole match, then the page is sliced: the cheapest sale opens page 1, the dearest closes page 2
         $this->assertSame(min($asc), $filter(new PropertyQuery(sort: 'price_asc', perPage: 4), 'fr')->items->first()->price);
-        $this->assertSame(max($asc), $filter(new PropertyQuery(sort: 'price_asc', page: 2, perPage: 4), 'fr')->items->last()->price);
+        $this->assertSame(max($asc), $filter(new PropertyQuery(sort: 'price_asc', page: 2, perPage: 4), 'fr')->items->reject(fn (Property $p) => $p->offMarket)->last()->price);
     }
 
     public function test_filter_matches_transaction_arrondissements_type_rooms_and_budget_then_slices_the_page(): void
@@ -131,7 +137,7 @@ class PropertyQueryTest extends TestCase
         $this->assertFalse($query->isIndexable());
         $this->assertSame(['budget_min' => 2000000, 'surface_min' => 150, 'bedrooms' => [3, 5], 'features' => ['elevator', 'view'], 'condition' => ['renovated'], 'floor' => ['top'], 'furnished' => '1', 'available' => '1', 'area' => ['Passy']], $query->params());
 
-        $this->assertSame(3, $filter(new PropertyQuery(budgetMin: 3000000), 'fr')->total); // 3.15 M, 9.8 M, 4.3 M
+        $this->assertSame(4, $filter(new PropertyQuery(budgetMin: 3000000), 'fr')->total); // 3.15 M, 9.8 M, 4.3 M + the confidential one, which a budget never tests (security review 2026-10-14)
         $this->assertSame(3, $filter(new PropertyQuery(surfaceMin: 160), 'fr')->total); // 165, 420, 210
         $this->assertSame(3, $filter(new PropertyQuery(bedrooms: [3]), 'fr')->total); // 7e, Passy, Monceau
         $this->assertSame(2, $filter(new PropertyQuery(features: ['elevator', 'view']), 'fr')->total); // every feature required: 7e, Monceau
@@ -143,7 +149,7 @@ class PropertyQueryTest extends TestCase
         $this->assertSame(1, $filter(new PropertyQuery(transaction: 'rent', furnished: true), 'fr')->total);
         $this->assertSame(6, $filter(new PropertyQuery(furnished: true), 'fr')->total); // furnished means nothing for a sale
 
-        $sqm = $filter(new PropertyQuery(sort: 'sqm_asc'), 'fr')->items->map(fn (Property $p) => $p->pricePerSqm())->all();
+        $sqm = $filter(new PropertyQuery(sort: 'sqm_asc'), 'fr')->items->reject(fn (Property $p) => $p->offMarket)->map(fn (Property $p) => $p->pricePerSqm())->all();
         $this->assertSame($sqm, collect($sqm)->sort()->values()->all());
         $surfaces = $filter(new PropertyQuery(sort: 'surface_asc'), 'fr')->items->pluck('surface')->all();
         $this->assertSame($surfaces, collect($surfaces)->sort()->values()->all());
@@ -162,7 +168,7 @@ class PropertyQueryTest extends TestCase
 
     public function test_a_property_knows_when_it_is_sold_and_how_long_it_took(): void
     {
-        $rows = collect(__('properties.sample', [], 'fr'));
+        $rows = collect(TestCase::sampleProperties('fr'));
         $sold = Property::fromArray($rows->firstWhere('slug', 'appartement-luxembourg'));
         $this->assertTrue($sold->isSold());
         $this->assertSame(23, $sold->daysToSell());
@@ -175,7 +181,7 @@ class PropertyQueryTest extends TestCase
         $this->assertCount(2, $live->description);
         $this->assertSame(1931, $live->toArray()['year_built']);
         // The catalogue leaves the sold one out, `all()` keeps it
-        $list = new ListProperties;
+        $list = app(ListProperties::class); // the fixture rows bound by TestCase
         $this->assertNull($list()->firstWhere('slug', 'appartement-luxembourg'));
         $this->assertNotNull($list->all()->firstWhere('slug', 'appartement-luxembourg'));
         $this->assertSame(8, $list->count());

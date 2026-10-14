@@ -23,10 +23,13 @@ export default function PropertyTransport({ property }: { property: Property }) 
                         ))}
                     </span>
                     <span className="truncate font-medium">{stop.name}</span>
-                    <span className="text-muted-foreground flex items-center gap-1 text-xs whitespace-nowrap tabular-nums">
-                        <Footprints aria-hidden className="size-3.5" strokeWidth={1.5} />
-                        {t('property.walk_minutes', { minutes: stop.minutes })}
-                    </span>
+                    {/* The walking time only when known (the Sanity documents name the stations without it, 2026-10-14) */}
+                    {stop.minutes !== null && (
+                        <span className="text-muted-foreground flex items-center gap-1 text-xs whitespace-nowrap tabular-nums">
+                            <Footprints aria-hidden className="size-3.5" strokeWidth={1.5} />
+                            {t('property.walk_minutes', { minutes: stop.minutes })}
+                        </span>
+                    )}
                 </li>
             ))}
         </ul>

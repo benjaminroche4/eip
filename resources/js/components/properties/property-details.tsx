@@ -13,6 +13,23 @@ import { type CSSProperties, type ReactNode } from 'react';
  * facts as two labelled definition lists (« L'immeuble », « Copropriété et charges » or « Conditions de location »),
  * label left and value right on hairline rows, side by side from `sm`.
  */
+/** Whether the block has anything to show: rooms, or at least one building / co-ownership / rental fact (the page skips the section otherwise, 2026-10-14). */
+export const hasPropertyDetails = (p: Property): boolean =>
+    (p.rooms_detail?.length ?? 0) > 0 ||
+    [
+        p.year_built,
+        p.heating,
+        p.orientation,
+        p.surface_living,
+        p.total_floors,
+        p.annual_charges,
+        p.property_tax,
+        p.lots,
+        p.procedure,
+        p.rent_reference,
+        p.deposit,
+    ].some((v) => v !== null && v !== undefined);
+
 export default function PropertyDetails({ property }: { property: Property }) {
     const { t, locale } = useTranslation();
     const rooms = property.rooms_detail ?? [];
@@ -27,6 +44,13 @@ export default function PropertyDetails({ property }: { property: Property }) {
         },
         { key: 'heating', label: t('property.heating'), value: property.heating ?? null },
         { key: 'orientation', label: t('property.orientation'), value: property.orientation ?? null },
+        // Sanity facts, when filled (2026-10-14)
+        {
+            key: 'surface_living',
+            label: t('property.surface_living'),
+            value: property.surface_living ? t('properties.surface', { surface: property.surface_living }) : null,
+        },
+        { key: 'total_floors', label: t('property.total_floors'), value: property.total_floors ?? null },
     ];
     const terms: Fact[] = [
         ...(isRent

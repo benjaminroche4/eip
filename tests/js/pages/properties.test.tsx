@@ -113,7 +113,7 @@ describe('Properties page', () => {
         expect(within(search).queryByRole('radiogroup', { name: 'Projet' })).toBeNull();
         expect(within(search).getByRole('button', { name: 'Filtres' })).toHaveAttribute('aria-haspopup', 'dialog');
         expect(search.parentElement).toHaveClass('lg:max-w-4xl', 'sticky', 'top-3'); // centred on desktop, pinned at every width (user decision 2026-09-28)
-        expect(screen.getByRole('heading', { level: 2, name: /bien/ })).toHaveTextContent('3 biens à vendre à Paris'); // the server's total
+        expect(screen.getByRole('heading', { level: 2, name: /^[0-9]+ bien/ })).toHaveTextContent('3 biens à vendre à Paris'); // the server's total
         expect(screen.getAllByRole('article')).toHaveLength(3);
         expect(container.querySelector('ul.grid')).toHaveClass('sm:grid-cols-2', '2xl:grid-cols-3');
         const map = screen.getByRole('region', { name: 'Carte des biens' });
@@ -179,7 +179,7 @@ describe('Properties page', () => {
         const results = screen.getAllByRole('article')[0].closest('[aria-busy]')!;
         expect(results).toHaveClass('opacity-60', 'pointer-events-none');
         expect(document.querySelectorAll('.animate-pulse')).toHaveLength(0);
-        expect(screen.getByRole('heading', { level: 2, name: /bien/ })).toHaveAttribute('aria-busy', 'true');
+        expect(screen.getByRole('heading', { level: 2, name: /^[0-9]+ bien/ })).toHaveAttribute('aria-busy', 'true');
         act(() => vi.advanceTimersByTime(400));
         expect(screen.queryAllByRole('article')).toHaveLength(0);
         expect(document.querySelectorAll('.animate-pulse')).toHaveLength(6);
@@ -349,7 +349,7 @@ describe('Properties page', () => {
             />,
         );
 
-        expect(screen.getByRole('heading', { level: 2, name: /bien/ })).toHaveTextContent('30 biens à vendre à Paris');
+        expect(screen.getByRole('heading', { level: 2, name: /^[0-9]+ bien/ })).toHaveTextContent('30 biens à vendre à Paris');
         const more = screen.getByRole('link', { name: 'Voir plus de biens' });
         expect(more).toHaveAttribute('href', 'http://localhost/nos-biens?page=3'); // crawlable
         expect(screen.getByText('3 biens affichés sur 30')).toBeInTheDocument();
@@ -523,7 +523,7 @@ describe('Properties page', () => {
         // Thin page no more (SEO audit 2026-09-30): the arrondissement's profile, its average price, the count naming it
         expect(screen.getByText(/l’adresse la plus recherchée de Paris/)).toBeInTheDocument();
         expect(screen.getByText('Prix moyen constaté dans le Paris 6e : 14 500 €/m² (Notaires du Grand Paris).')).toBeInTheDocument();
-        expect(screen.getByRole('heading', { level: 2, name: /bien/ })).toHaveTextContent('à Paris 6e');
+        expect(screen.getByRole('heading', { level: 2, name: /^[0-9]+ bien/ })).toHaveTextContent('à Paris 6e');
         expect(document.title).toContain('Biens à vendre à Paris 6e');
         // Crawlable links to every district page with properties, the current one marked
         const nav = screen.getByRole('navigation', { name: 'Nos biens par arrondissement' });

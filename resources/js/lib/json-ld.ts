@@ -169,10 +169,12 @@ export type ListingInput = {
     bedrooms: number;
     arrondissement: number;
     photos: string[];
+    photo_alts?: string[];
     available: boolean;
-    lat: number;
-    lng: number;
+    lat: number | null;
+    lng: number | null;
     off_market?: boolean;
+    price_on_request?: boolean;
     /** `Y-m-d`, the `datePosted` of a detail page. */
     published_at?: string | null;
     photo_alt?: string;
@@ -225,17 +227,20 @@ export function realEstateListings(
                       '@type': 'ImageObject',
                       contentUrl: absolute(photo.replace('{w}', '1600')),
                       url: absolute(photo.replace('{w}', '1600')),
-                      ...(p.photo_alt ? { caption: i === 0 ? p.photo_alt : `${p.photo_alt} (${i + 1})` } : {}),
+                      ...(p.photo_alts?.[i] || p.photo_alt
+                          ? { caption: p.photo_alts?.[i] || (i === 0 ? p.photo_alt : `${p.photo_alt} (${i + 1})`) }
+                          : {}),
                   }))
                 : p.photos.slice(0, 3).map((photo) => absolute(photo.replace('{w}', '1600'))),
             offers: {
                 '@type': 'Offer',
                 ...(standalone || p.url ? { url: standalone ? pageUrl : p.url } : {}),
-                price: p.price,
+                // An undisclosed price is left out of the offer (the server sends 0, 2026-10-14)
+                ...(p.price_on_request ? {} : { price: p.price }),
                 priceCurrency: 'EUR',
                 availability: p.available ? 'https://schema.org/InStock' : 'https://schema.org/LimitedAvailability',
                 businessFunction: p.transaction === 'rent' ? 'http://purl.org/goodrelations/v1#LeaseOut' : 'http://purl.org/goodrelations/v1#Sell',
-                ...(p.transaction === 'rent'
+                ...(p.transaction === 'rent' && !p.price_on_request
                     ? { priceSpecification: { '@type': 'UnitPriceSpecification', price: p.price, priceCurrency: 'EUR', unitCode: 'MON' } }
                     : {}),
             },
@@ -253,7 +258,7 @@ export function realEstateListings(
                     postalCode: `750${String(p.arrondissement).padStart(2, '0')}`,
                     addressCountry: 'FR',
                 },
-                geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng },
+                ...(p.lat !== null && p.lng !== null ? { geo: { '@type': 'GeoCoordinates', latitude: p.lat, longitude: p.lng } } : {}),
             },
         }));
 }

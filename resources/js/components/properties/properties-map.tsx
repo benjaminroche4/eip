@@ -11,8 +11,13 @@ import { createPortal } from 'react-dom';
 
 export type MapConfig = { key: string | null; mapId: string };
 
+/** A listing the map can pin: a public card with its position (a redacted confidential card has none, 2026-10-14). */
+export type MappedProperty = Property & { lat: number; lng: number };
+
+export const onMap = (p: Property): p is MappedProperty => !p.off_market && p.lat !== null && p.lng !== null;
+
 type PropertiesMapProps = {
-    properties: Property[];
+    properties: MappedProperty[];
     /** Slug of the property whose card is hovered / focused (its marker lifts). */
     active: string | null;
     onActivate: (slug: string | null) => void;
@@ -144,6 +149,8 @@ export default function PropertiesMap({
 
     // Markers follow the shown properties (one chip each), the viewport fits them
     const slugs = properties.map((p) => p.slug).join(',');
+    // Read outside the effect: a plain string keeps the dependency stable (the hook's `t` is not)
+    const onRequestLabel = t('properties.price_on_request');
     useEffect(() => {
         const el = container.current;
         if (!el) return;
@@ -181,11 +188,13 @@ export default function PropertiesMap({
                 if (markers.current.has(property.slug)) continue;
                 const content = document.createElement('div');
                 content.className = markerClass(false);
-                content.textContent = shortPrice(property, locale);
+                // An undisclosed price shows its wording on the chip (the server sends 0, 2026-10-14)
+                const chip = property.price_on_request ? onRequestLabel : shortPrice(property, locale);
+                content.textContent = chip;
                 const marker = new AdvancedMarkerElement({
                     position: { lat: property.lat, lng: property.lng },
                     content,
-                    title: `${property.title}, Paris ${ordinal(property.arrondissement, locale)}, ${shortPrice(property, locale)}`,
+                    title: `${property.title}, Paris ${ordinal(property.arrondissement, locale)}, ${chip}`,
                     gmpClickable: true,
                 });
                 content.addEventListener('pointerenter', () => handlers.current.onActivate(property.slug));
@@ -211,7 +220,7 @@ export default function PropertiesMap({
         void sync();
         el.addEventListener('map-ready', sync);
         return () => el.removeEventListener('map-ready', sync);
-    }, [slugs, properties, locale, fitKey]);
+    }, [slugs, properties, locale, fitKey, onRequestLabel]);
 
     // The mini card = one more advanced marker at the chosen position, whose content receives the React preview (portal);
     // Google keeps it glued to the chip while panning / zooming (user decision 2026-09-26: above the chip, not docked)

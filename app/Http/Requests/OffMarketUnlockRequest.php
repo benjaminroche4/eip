@@ -16,7 +16,7 @@ class OffMarketUnlockRequest extends FormRequest
     /** @return array<string, list<string>> */
     public function rules(): array
     {
-        return ['code' => ['required', 'string', 'digits:'.OffMarketAccess::LENGTH]];
+        return ['code' => ['required', 'string', 'digits:'.OffMarketAccess::LENGTH], 'property' => ['nullable', 'string', 'max:200']];
     }
 
     /** @return array<string, string> */

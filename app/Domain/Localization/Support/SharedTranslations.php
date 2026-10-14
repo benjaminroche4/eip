@@ -28,7 +28,7 @@ final class SharedTranslations
         'about' => ['about', 'team', 'values', 'testimonials'],
         'faq' => ['faq'],
         'districts' => ['districts', 'faq'],
-        'properties' => ['properties', 'search_bar', 'off_market', 'property', 'contact'], // off_market: the confidential card's wording; property: the detail page; contact: its viewing request form (2026-09-28)
+        'properties' => ['properties', 'search_bar', 'off_market', 'property', 'contact', 'faq'], // faq: « Tout ouvrir » of the FAQ closing the detail page (2026-10-14) // off_market: the confidential card's wording; property: the detail page; contact: its viewing request form (2026-09-28)
         'off_market' => ['off_market', 'properties'], // properties: type labels, facts wording
         'blog' => ['blog', 'faq'],
         'search' => ['search'],
@@ -41,7 +41,7 @@ final class SharedTranslations
      * Content arrays the controllers already pass as page props (FAQ categories, team, testimonials…): never read
      * through `t()`, so they are stripped from the shared strings (the FAQ's 12 KB of questions were sent twice).
      */
-    public const EXCLUDE = ['faq.categories', 'testimonials.items', 'team.members', 'stories.items', 'about.stats', 'buy.strategies.items', 'buy.districts.items', 'districts.items', 'sell.process.items', 'sell.gallery'];
+    public const EXCLUDE = ['faq.categories', 'testimonials.items', 'team.members', 'stories.items', 'about.stats', 'buy.strategies.items', 'buy.districts.items', 'districts.items', 'sell.process.items', 'sell.gallery', 'property.faq.items'];
 
     /** @return list<string> */
     public static function sectionsFor(?string $routeName): array

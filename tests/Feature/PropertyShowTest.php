@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Domain\Blog\Support\SeoText;
 use App\Domain\Properties\Actions\ListProperties;
+use App\Domain\Properties\Data\Property;
 use App\Domain\Properties\Support\PropertySeo;
 use App\Domain\Seo\Support\SitemapBuilder;
 use Illuminate\Support\Facades\Http;
@@ -32,12 +33,12 @@ class PropertyShowTest extends TestCase
                 ->where('district.name', 'Paris 7e')
                 ->where('district.url', url('/nos-biens/paris-7e'))
                 ->where('district.profileUrl', url('/arrondissements-paris?arrondissement=7'))
-                ->where('advisor', ['id' => 3, 'photo' => '/images/advisors/advisor-3.webp', 'name' => 'Charles M.', 'role' => 'Conseiller investissement']) // the team member of the same rank
+                ->where('advisor', ['name' => 'Charles M.', 'photo' => '/images/advisors/advisor-3.webp', 'role' => 'Conseiller investissement']) // the Sanity agent, the role from the team member of the same name
                 ->where('district.price', '13 000') // average price of the 7e, read against the listing's own
                 // Meta built from the data, keyword first (type, rooms, quartier, arrondissement), never the editorial title
-                ->where('meta.title', 'Appartement 5 pièces, Champ-de-Mars · Paris 7e')
+                ->where('meta.title', 'Appartement 5 pièces à vendre, Champ-de-Mars · Paris 7e') // the full tier with « 165 m² » would pass 60: the next one
                 ->where('seo.organization.name', config('seo.organization.name')) // the shared prop survives: a page prop named `seo` shadowed it (blank page 2026-09-28)
-                ->where('meta.withBrand', false) // 46 characters: the brand prefix would pass 60, the quartier keyword wins
+                ->where('meta.withBrand', false) // 55 characters: the brand prefix would pass 60, the search intent wins
                 ->where('meta.description', 'Appartement de 5 pièces, 165 m², 3 chambres à Champ-de-Mars, Paris 7e, 3 150 000 € honoraires inclus. Contactez Estate in Paris pour une visite privée.') // the excerpt would pass 160: facts + call to action
                 ->where('district.metro', ['8', '10', '12', '13'])
                 ->where('neighbours.previous.title', "Hôtel particulier, Triangle d'or") // previous / next sale of the catalogue
@@ -67,7 +68,7 @@ class PropertyShowTest extends TestCase
     {
         $brand = config('seo.site_name').config('seo.title_separator');
         foreach (['fr', 'en'] as $locale) {
-            foreach ((new ListProperties)($locale) as $property) {
+            foreach (app(ListProperties::class)($locale) as $property) {
                 if ($property->offMarket) {
                     continue;
                 }
@@ -83,6 +84,25 @@ class PropertyShowTest extends TestCase
         }
 
         // Rentals borrow the agency FAQ topic (no « renting » topic yet)
+    }
+
+    public function test_the_meta_title_puts_the_search_intent_first_and_picks_the_longest_tier_that_fits(): void
+    {
+        $row = collect(self::sampleProperties('fr'))->firstWhere('slug', 'appartement-champ-de-mars');
+        $make = fn (array $over, string $locale = 'fr') => PropertySeo::for(Property::fromArray(array_merge($row, $over)), $locale);
+
+        $this->assertSame('Appartement 5 pièces à vendre, Champ-de-Mars · Paris 7e', $make([])['title']);
+        $this->assertSame('Studio 1 pièce 24 m² à vendre, Odéon · Paris 6e', $make(['type' => 'studio', 'rooms' => 1, 'surface' => 24, 'area' => 'Odéon', 'arrondissement' => 6])['title'], 'the full tier when it fits');
+        $this->assertSame('Appartement 5 pièces 165 m² à vendre, Paris 7e', $make(['area' => ''])['title'], 'no quartier: the arrondissement alone');
+        $this->assertSame('Appartement 5 pièces à louer, Champ-de-Mars · Paris 7e', $make(['transaction' => 'rent'])['title']);
+        $this->assertSame('Hôtel particulier à vendre, Saint-Germain · Paris 6e', $make(['type' => 'mansion', 'rooms' => 12, 'area' => 'Saint-Germain', 'arrondissement' => 6])['title'], 'the short tier');
+        $this->assertSame('Hôtel particulier à vendre Paris 6e', $make(['type' => 'mansion', 'rooms' => 12, 'area' => 'Saint-Germain-des-Prés', 'arrondissement' => 6])['title'], '61 characters with the quartier: the minimal tier');
+        $this->assertSame('Hôtel particulier à vendre Paris 16e', $make(['type' => 'mansion', 'rooms' => 12, 'area' => 'Chaussée-de-la-Muette-Boulainvilliers', 'arrondissement' => 16])['title'], 'the minimal tier when even the short one passes 60');
+        $this->assertSame('5-room apartment 165 sqm for sale, Champ-de-Mars · Paris 7th', $make([], 'en')['title'], 'exactly 60: the full tier');
+        // The editor's meta description wins over the generated one, clamped at 160 on a word
+        $this->assertSame('Texte du Studio.', $make(['meta_description' => 'Texte du Studio.'])['description']);
+        $this->assertLessThanOrEqual(SeoText::DESCRIPTION_MAX, mb_strlen($make(['meta_description' => str_repeat('Longue phrase du Studio. ', 10)])['description']));
+        $this->assertStringStartsWith('Appartement de 5 pièces, 165 m²', $make(['meta_description' => ''])['description'], 'empty = generated');
     }
 
     public function test_a_sold_listing_keeps_its_page_out_of_the_catalogue_and_says_so(): void

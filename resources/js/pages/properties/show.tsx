@@ -1,10 +1,11 @@
+import FaqTeaser, { type FaqTeaserData } from '@/components/page/faq-teaser';
 import EnergyLabels from '@/components/properties/energy-labels';
 import { FEATURE_ICONS } from '@/components/properties/more-filters';
-import PropertiesMap, { type MapConfig } from '@/components/properties/properties-map';
+import PropertiesMap, { onMap, type MapConfig } from '@/components/properties/properties-map';
 import PropertyAdvisorCard, { type Advisor } from '@/components/properties/property-advisor-card';
 import PropertyCard, { type Property } from '@/components/properties/property-card';
 import PropertyDescription from '@/components/properties/property-description';
-import PropertyDetails from '@/components/properties/property-details';
+import PropertyDetails, { hasPropertyDetails } from '@/components/properties/property-details';
 import PropertyGallery from '@/components/properties/property-gallery';
 import PropertyHeader from '@/components/properties/property-header';
 import PropertyMobileBar from '@/components/properties/property-mobile-bar';
@@ -15,9 +16,10 @@ import { Button } from '@/components/ui/button';
 import { LARGE_SCREEN, useMediaQuery } from '@/hooks/use-media-query';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
+import { stripFaqMarkup } from '@/lib/faq-markup';
 import { formatPrice } from '@/lib/format-price';
 import { linkClass } from '@/lib/hover-surface';
-import { breadcrumbList, realEstateListings } from '@/lib/json-ld';
+import { breadcrumbList, faqPage, realEstateListings } from '@/lib/json-ld';
 import { ordinal } from '@/lib/ordinal';
 import { propertyUrl } from '@/lib/property-url';
 import { type SharedData } from '@/types';
@@ -42,12 +44,13 @@ type Neighbour = { title: string; url: string } | null;
 type PropertyShowProps = {
     property: Property;
     similar: Property[];
+    /** Process and agency questions answered from the listing (`BuildPropertyFaq`, 2026-10-14), FAQPage JSON-LD. */
+    faq: FaqTeaserData;
     district: District;
     advisor: Advisor;
     /** Page meta (`meta`, not `seo`: that name is the shared prop). */
     meta: { title: string; withBrand: boolean; description: string };
     map: MapConfig;
-    /** Four questions of the matching FAQ topic (GEO, 2026-09-28). */
     /** Previous / next catalogue listing of the same transaction. */
     neighbours: { previous: Neighbour; next: Neighbour };
 };
@@ -61,14 +64,14 @@ type PropertyShowProps = {
  * profile, the Google map centred on the building); on the right the sticky advisor card (price, availability, the
  * advisor by name, contact prefilled with the listing, phone), replaced under lg by a bar fixed to the screen bottom
  * that opens the card in a sheet. Below, up to six similar listings as a row of marketplace cards, previous / next (the alert form was removed on user decision 2026-09-29),
- * then the FAQ and the CTA card. 2026-09-28 additions: real description and
+ * then the CTA card (the FAQ block left the page before 2026-10-14). 2026-09-28 additions: real description and
  * rooms, energy labels, transport and district facts, folded map, sold banner (noindex), price history and the
  * viewing request in the card (the mortgage estimate was removed on user decision 2026-09-29).
  * Under the map, the mandatory notices of a French listing (fees, surface, diagnostics, Géorisques). Before the CTA, four
- * FAQ questions of the matching topic. JSON-LD: breadcrumb + the standalone `RealEstateListing` (`datePosted`) +
- * `FAQPage`; meta built from the data (`PropertySeo`); hreflang from the server (`LocalizedUrls::override`).
+ * JSON-LD: breadcrumb + the standalone `RealEstateListing` (`datePosted`);
+ * meta built from the data (`PropertySeo`); hreflang from the server (`LocalizedUrls::override`).
  */
-export default function PropertyShow({ property, similar, district, advisor, meta, map, neighbours }: PropertyShowProps) {
+export default function PropertyShow({ property, similar, district, advisor, meta, map, neighbours, faq }: PropertyShowProps) {
     const { t, locale } = useTranslation();
     const { ziggy, seo } = usePage<SharedData>().props;
     const sold = Boolean(property.sold_at);
@@ -83,18 +86,25 @@ export default function PropertyShow({ property, similar, district, advisor, met
     const sectionTitle = (id: string, label: string) => {
         sectionNumber += 1;
         return (
-            <h2 id={id} className="flex items-baseline gap-3 text-xl font-medium tracking-tight">
-                <span aria-hidden className="font-heading text-secondary-50 text-lg font-semibold tabular-nums sm:text-2xl">
-                    {String(sectionNumber).padStart(2, '0')}
-                </span>
+            // The number is CSS-only (`attr(data-number)`): the heading's text stays « Le bien », never « 01Le bien », for crawlers as for readers (SEO audit 2026-10-14)
+            <h2
+                id={id}
+                data-number={String(sectionNumber).padStart(2, '0')}
+                className="before:font-heading before:text-secondary-50 flex items-baseline gap-3 text-xl font-medium tracking-tight before:text-lg before:font-semibold before:tabular-nums before:content-[attr(data-number)] sm:before:text-2xl"
+            >
                 {label}
             </h2>
         );
     };
     const origin = new URL(ziggy.location).origin;
+    // A Sanity photo is already absolute (cdn.sanity.io): never prefix it with the site's origin (SEO audit 2026-10-14)
+    const absolute = (u: string) => (u.startsWith('http') ? u : `${origin}${u}`);
     const url = propertyUrl(property, locale);
     const arrondissement = `Paris ${ordinal(property.arrondissement, locale)}`;
-    const reference = `${property.slug.slice(0, 2).toUpperCase()}-${property.arrondissement}`;
+    // The agency reference from Sanity (`uniqueId`, 2026-10-14), else one built from the slug
+    const reference = property.reference ?? `${property.slug.slice(0, 2).toUpperCase()}-${property.arrondissement}`;
+    // The Studio has no quartier field: an empty one leaves the arrondissement alone in the eyebrow and the location line
+    const area = property.area || arrondissement;
     const crumbs = [
         { name: t('nav.home'), url: route('home') },
         { name: t('pages.properties.title'), url: route('properties') },
@@ -102,15 +112,18 @@ export default function PropertyShow({ property, similar, district, advisor, met
         { name: property.title },
     ];
     // GEO answer-first: one factual sentence, citable on its own (brand + type + facts + place + price), distinct from the excerpt
-    const answer = t(property.transaction === 'rent' ? 'property.answer_rent' : 'property.answer', {
-        type: t(`properties.types.${property.type}`).toLocaleLowerCase(locale),
-        rooms: property.rooms,
-        surface: property.surface,
-        bedrooms: property.bedrooms,
-        area: property.area,
-        arrondissement,
-        price: formatPrice(property.price, locale),
-    });
+    const answer = t(
+        property.price_on_request ? 'property.answer_on_request' : property.transaction === 'rent' ? 'property.answer_rent' : 'property.answer',
+        {
+            type: t(`properties.types.${property.type}`).toLocaleLowerCase(locale),
+            rooms: property.rooms,
+            surface: property.surface,
+            bedrooms: property.bedrooms,
+            area: property.area,
+            arrondissement,
+            price: formatPrice(property.price, locale),
+        },
+    );
 
     return (
         <>
@@ -130,17 +143,24 @@ export default function PropertyShow({ property, similar, district, advisor, met
                 title={meta.title}
                 withBrand={meta.withBrand}
                 description={meta.description}
-                image={`${origin}${property.photos[0].replace('{w}', '1600')}`}
+                image={absolute(property.photos[0].replace('{w}', '1600'))}
                 imageAlt={property.photo_alt}
                 jsonLd={[
                     breadcrumbList(crumbs, origin),
                     ...realEstateListings([property], origin, url, locale, true, { name: seo.organization.name, url: origin }),
+                    faqPage(faq.items.map((i) => ({ question: i.question, answer: stripFaqMarkup(i.answer) }))),
                 ]}
             />
             <PublicLayout className="flex max-w-7xl flex-col gap-16 sm:gap-20" backdrop={false}>
                 <article className="flex flex-col gap-6 sm:gap-8">
                     {/* The photos first, full bleed under the header (the breadcrumb sits at the very end of the page) — redesign 2026-09-28 */}
-                    <PropertyGallery photos={property.photos} alt={property.photo_alt} title={property.title} />
+                    <PropertyGallery
+                        photos={property.photos}
+                        alts={property.photo_alts}
+                        photoSizes={property.photo_sizes}
+                        alt={property.photo_alt}
+                        title={property.title}
+                    />
                     {/* The body rises over the bottom of the photo strip on a white surface, a notch cut into the photos (user
                         decision 2026-09-29): container-wide from lg (photos show on both sides), edge to edge under */}
                     <div className="bg-card relative z-10 -mx-6 -mt-12 flex flex-col gap-6 px-6 pt-6 sm:-mt-16 sm:gap-8 sm:pt-8 lg:mx-0 lg:-mt-20 lg:px-8 lg:pt-10">
@@ -148,11 +168,15 @@ export default function PropertyShow({ property, similar, district, advisor, met
                             <div className="flex min-w-0 flex-col gap-14 sm:gap-16">
                                 <PropertyHeader
                                     property={property}
-                                    eyebrow={t('property.eyebrow', {
-                                        transaction: t(`properties.transaction.${property.transaction}`),
-                                        arrondissement,
-                                        area: property.area,
-                                    })}
+                                    eyebrow={
+                                        property.area
+                                            ? t('property.eyebrow', {
+                                                  transaction: t(`properties.transaction.${property.transaction}`),
+                                                  arrondissement,
+                                                  area: property.area,
+                                              })
+                                            : `${t(`properties.transaction.${property.transaction}`)} · ${arrondissement}`
+                                    }
                                     answer={answer}
                                 />
 
@@ -161,7 +185,7 @@ export default function PropertyShow({ property, similar, district, advisor, met
                                     <PropertyDescription property={property} />
                                 </section>
 
-                                {property.rooms_detail && property.rooms_detail.length > 0 && (
+                                {hasPropertyDetails(property) && (
                                     <section aria-labelledby="property-details" className="flex flex-col gap-6">
                                         {sectionTitle('property-details', t('property.details_title'))}
                                         <PropertyDetails property={property} />
@@ -202,13 +226,22 @@ export default function PropertyShow({ property, similar, district, advisor, met
                                     {sectionTitle('property-location', t('property.location_title'))}
                                     {/* Prices read against the arrondissement, stations, schools and parks — `property-neighbourhood.tsx` (rework 2026-09-29) */}
                                     <PropertyNeighbourhood property={property} district={district} arrondissement={arrondissement} />
+                                    {/* The street address when the listing does not hide it (Sanity `hideExactAddress`, 2026-10-14), else the « shared at the viewing » line */}
                                     <p className="text-grey-60 flex gap-2 text-xs text-pretty">
-                                        <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
-                                        <span>{t('property.location_text', { area: property.area, arrondissement })}</span>
+                                        {property.address ? (
+                                            <MapPin aria-hidden className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
+                                        ) : (
+                                            <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
+                                        )}
+                                        <span>
+                                            {property.address
+                                                ? t('property.location_text_address', { address: property.address, area })
+                                                : t('property.location_text', { area, arrondissement: property.area ? arrondissement : 'Paris' })}
+                                        </span>
                                     </p>
                                     {mapOpen || desktop ? (
                                         <PropertiesMap
-                                            properties={[property]}
+                                            properties={[property].filter(onMap)}
                                             active={null}
                                             onActivate={() => {}}
                                             onSelect={() => {}}
@@ -308,6 +341,18 @@ export default function PropertyShow({ property, similar, district, advisor, met
                         </div>
                     </section>
                 )}
+
+                {/* The FAQ closes the content (user decision 2026-10-14): process and agency questions, answers from the listing */}
+                <FaqTeaser
+                    id="property-faq"
+                    texts={{
+                        eyebrow: t('property.faq.eyebrow'),
+                        title: t('property.faq.title'),
+                        intro: t('property.faq.intro'),
+                        all: t('property.faq.all'),
+                    }}
+                    faq={faq}
+                />
 
                 {/* The way back and the breadcrumb close the page as one block (mobile spacing review 2026-09-30) */}
                 <div ref={closing} className="flex flex-col gap-4">

@@ -22,6 +22,7 @@ export default function PropertyDescription({ property }: PropertyDescriptionPro
             <PropertyPhotos
                 photos={property.photos}
                 alt={property.photo_alt}
+                alts={property.photo_alts}
                 title={property.title}
                 imageClass="aspect-video"
                 sizes="(min-width: 64rem) 48rem, 100vw"

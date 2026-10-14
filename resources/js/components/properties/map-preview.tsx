@@ -30,7 +30,7 @@ function Price({ property, className }: { property: Property; className?: string
     const { t, locale } = useTranslation();
     return (
         <p className={cn('font-heading text-lg font-semibold tabular-nums', className)}>
-            {formatPrice(property.price, locale)}
+            {property.price_on_request ? t('properties.price_on_request') : formatPrice(property.price, locale)}
             {property.transaction === 'rent' && <span className="text-muted-foreground text-xs font-normal"> {t('properties.per_month')}</span>}
         </p>
     );

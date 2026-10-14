@@ -27,7 +27,7 @@ const PROPS = {
     property: LISTING,
     similar: SIMILAR,
     district: DISTRICT,
-    advisor: { id: 1, photo: '/images/advisors/advisor-1.webp', name: 'Alexandre Moreau', role: 'Conseiller senior' },
+    advisor: { photo: '/images/advisors/advisor-1.webp', name: 'Alexandre Moreau', role: 'Conseiller senior' },
     meta: {
         title: 'Appartement haussmannien, Saint-Germain-des-Prés',
         withBrand: true,
@@ -35,10 +35,25 @@ const PROPS = {
     },
     map: { key: null, mapId: 'DEMO_MAP_ID' },
     neighbours: { previous: null, next: { title: 'Appartement Art déco, Passy', url: '/nos-biens/achat/paris-16e/appartement-passy' } },
+    faq: {
+        slug: 'buying',
+        items: [
+            {
+                question: 'Puis-je visiter ce bien ?',
+                answer: 'Oui, sur rendez-vous, ou depuis la [page contact](contact).',
+                slug: 'puis-je-visiter-ce-bien',
+            },
+            {
+                question: "Comment contacter l'agence ?",
+                answer: 'Par téléphone, ou depuis la [page contact](contact).',
+                slug: 'comment-contacter-l-agence',
+            },
+        ],
+    },
 };
 
 describe('Property detail page', () => {
-    it('SEO / GEO (2026-09-28): answer-first sentence from the data, mandatory notices with the Géorisques link, standalone listing JSON-LD (the FAQ block was removed on 2026-09-29)', () => {
+    it('SEO / GEO (2026-09-28): answer-first sentence from the data, mandatory notices with the Géorisques link, standalone listing JSON-LD, the FAQ closing the page with its FAQPage (2026-10-14)', () => {
         renderPage(<PropertyShow {...PROPS} />);
         expect(
             screen.getByText(
@@ -48,13 +63,18 @@ describe('Property detail page', () => {
         const legal = screen.getByRole('region', { name: 'Mentions' });
         expect(legal).toHaveTextContent(/honoraires d'agence de 6 % TTC inclus/);
         expect(within(legal).getByRole('link', { name: 'www.georisques.gouv.fr' })).toHaveAttribute('href', 'https://www.georisques.gouv.fr');
-        expect(screen.queryByRole('heading', { level: 2, name: 'Comment se passe une visite avec Estate in Paris ?' })).toBeNull(); // no FAQ nor CTA card on the listing page (user decision 2026-09-29)
+        // The FAQ closes the content (user decision 2026-10-14): the site accordion, first question open, link markup rendered
+        expect(screen.getByRole('heading', { level: 2, name: "Comment se passe l'achat de ce bien ?" })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Puis-je visiter ce bien ?' })).toHaveAttribute('aria-expanded', 'true');
+        expect(screen.getByRole('link', { name: 'page contact' })).toHaveAttribute('href', '/contact'); // the open panel only: closed ones are out of the DOM
         const graph = Array.from(document.querySelectorAll('script[type="application/ld+json"]')).map((n) => JSON.parse(n.textContent ?? '{}'));
         const listing = graph.find((n: { '@type': string }) => n['@type'] === 'RealEstateListing');
         expect(listing.url).toBe(listing.mainEntityOfPage); // the listing is the page, no anchor
         expect(listing.url).not.toContain('#');
         expect(listing.datePosted).toBe('2026-09-22');
-        expect(graph.some((n: { '@type': string }) => n['@type'] === 'FAQPage')).toBe(false);
+        const faq = graph.find((n: { '@type': string }) => n['@type'] === 'FAQPage');
+        expect(faq.mainEntity).toHaveLength(2);
+        expect(faq.mainEntity[1].acceptedAnswer.text).toBe('Par téléphone, ou depuis la page contact.'); // markup stripped
     });
 
     it('renders the breadcrumb, the header, the facts, the features, the neighbourhood links, the sticky advisor card and the similar listings', async () => {

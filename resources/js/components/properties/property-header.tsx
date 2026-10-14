@@ -49,6 +49,16 @@ export default function PropertyHeader({ property, eyebrow, answer }: PropertyHe
                         </div>
                     ))}
                 </dl>
+                {/* Category names from Sanity (« Exclusivité », « Haussmannien »…), square chips, only when the listing has some (2026-10-14) */}
+                {property.tags && property.tags.length > 0 && (
+                    <ul role="list" aria-label={t('property.tags_label')} className="mt-4 flex flex-wrap gap-2">
+                        {property.tags.map((tag) => (
+                            <li key={tag} className="border-secondary-30 bg-card border px-2 py-0.5 text-xs font-medium">
+                                {tag}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </section>
         </>
     );

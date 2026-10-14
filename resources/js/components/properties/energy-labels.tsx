@@ -119,13 +119,21 @@ export default function EnergyLabels({ property }: { property: Property }) {
                 <Scale kind="dpe" value={dpe.energy} label={t('property.dpe_energy', { value: dpe.energy })} />
                 <Scale kind="ges" value={dpe.climate} label={t('property.dpe_climate', { value: dpe.climate })} />
             </div>
-            {/* Light grey note with a leading icon (user decision 2026-09-29), like the notices of the page */}
-            <p className="text-grey-60 flex gap-2 text-xs text-pretty">
-                <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
-                <span>
-                    {t('property.dpe_costs', { min: formatPrice(dpe.cost_min, locale), max: formatPrice(dpe.cost_max, locale), year: dpe.year })}
-                </span>
-            </p>
+            {/* Light grey note with a leading icon (user decision 2026-09-29), like the notices of the page; only when the diagnosis carries the yearly costs (Sanity does not, 2026-10-14) */}
+            {dpe.consumption != null && dpe.emissions != null && (
+                <p className="text-grey-60 flex gap-2 text-xs text-pretty">
+                    <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
+                    <span>{t('property.dpe_values', { consumption: dpe.consumption, emissions: dpe.emissions })}</span>
+                </p>
+            )}
+            {dpe.cost_min !== null && dpe.cost_max !== null && dpe.year !== null && (
+                <p className="text-grey-60 flex gap-2 text-xs text-pretty">
+                    <Info aria-hidden className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
+                    <span>
+                        {t('property.dpe_costs', { min: formatPrice(dpe.cost_min, locale), max: formatPrice(dpe.cost_max, locale), year: dpe.year })}
+                    </span>
+                </p>
+            )}
             {excessive && <p className="text-warning-foreground bg-warning/15 w-fit px-2 py-1 text-xs font-medium">{t('property.dpe_excessive')}</p>}
         </div>
     );

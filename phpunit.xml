@@ -41,5 +41,6 @@
         <env name="SANITY_TOKEN" value="secret-token" force="true"/>
         <env name="SANITY_USE_CDN" value="false" force="true"/>
         <env name="SANITY_BLOG_TYPE" value="estateBlog" force="true"/>
+        <env name="SANITY_PROPERTY_TYPE" value="estateProperty" force="true"/>
     </php>
 </phpunit>

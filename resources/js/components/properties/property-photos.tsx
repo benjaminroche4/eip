@@ -9,6 +9,8 @@ import { useEffect, useRef, useState } from 'react';
 type PropertyPhotosProps = {
     photos: string[];
     alt: string;
+    /** Own alt per photo when known (Sanity); an empty entry falls back to the numbered `alt`. */
+    alts?: string[];
     title: string;
     /** No row of dots (confidential cards: the photos are blurred, user decision 2026-09-28). */ dots?: boolean;
     /** Card above the fold: its first photo loads eagerly with high priority (LCP), the others stay lazy (2026-09-28). */
@@ -33,6 +35,7 @@ const arrowClass =
 export default function PropertyPhotos({
     photos,
     alt,
+    alts,
     title,
     dots = true,
     priority = false,
@@ -69,7 +72,7 @@ export default function PropertyPhotos({
                 src={src.replace('{w}', '1600')}
                 srcSet={`${src.replace('{w}', '800')} 800w, ${src.replace('{w}', '1600')} 1600w`}
                 sizes={sizes}
-                alt={count > 1 ? t('properties.photo_n', { alt, n: i + 1, count }) : alt}
+                alt={alts?.[i] || (count > 1 ? t('properties.photo_n', { alt, n: i + 1, count }) : alt)}
                 width={1600}
                 height={1200}
                 priority={priority && i === 0}

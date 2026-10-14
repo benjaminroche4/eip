@@ -7,7 +7,7 @@ import FilterBar from '@/components/properties/filter-bar';
 import MapPreview from '@/components/properties/map-preview';
 import { digits, EMPTY_MORE, type MoreFilters } from '@/components/properties/more-filters';
 import { type PriceBounds } from '@/components/properties/price-range';
-import PropertiesMap, { type MapConfig } from '@/components/properties/properties-map';
+import PropertiesMap, { onMap, type MapConfig } from '@/components/properties/properties-map';
 import PropertyCard, { type Property } from '@/components/properties/property-card';
 import PropertyCardSkeleton from '@/components/properties/property-card-skeleton';
 import ResetButton from '@/components/properties/reset-button';
@@ -29,7 +29,7 @@ import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { router, usePage } from '@inertiajs/react';
 import { Info } from 'lucide-react';
-import { type MouseEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
 
 /** [south, west, north, east] of the map frame searched with « Rechercher dans cette zone » (2026-09-28). */
 export type Bounds = [number, number, number, number];
@@ -170,6 +170,8 @@ export default function PropertiesPage({
     const { t, tc, locale } = useTranslation();
     const { ziggy, seo } = usePage<SharedData>().props;
     const origin = new URL(ziggy.location).origin;
+    // A Sanity photo is already absolute (cdn.sanity.io): never prefix it with the site's origin (SEO audit 2026-10-14)
+    const absolute = (u: string) => (u.startsWith('http') ? u : `${origin}${u}`);
     const url = route('properties');
     const pageUrl = district ? `${url}/${district.slug}` : url;
     // Absolute detail URL for the structured data (Ziggy gives an absolute one; the test double a path)
@@ -411,7 +413,7 @@ export default function PropertiesPage({
                 prev={indexing.prev}
                 next={indexing.next}
                 // Every entity links to its detail page, never to an anchor; the agency is the provider (SEO audit 2026-09-30)
-                image={properties[0] ? `${origin}${properties[0].photos[0].replace('{w}', '1600')}` : undefined}
+                image={properties[0] ? absolute(properties[0].photos[0].replace('{w}', '1600')) : undefined}
                 imageAlt={properties[0]?.photo_alt}
                 jsonLd={[
                     breadcrumbList(crumbs, origin),
@@ -601,7 +603,7 @@ export default function PropertiesPage({
                             />
                         )}
                         <PropertiesMap
-                            properties={properties}
+                            properties={properties.filter(onMap)}
                             active={active}
                             onActivate={setActive}
                             onSelect={(slug) => setSelected((current) => (current === slug ? null : slug))}
