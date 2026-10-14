@@ -35,7 +35,6 @@ import {
     Sun,
     ThumbsUp,
     TreePalm,
-    VolumeX,
     Wine,
 } from 'lucide-react';
 import { useId } from 'react';
@@ -50,7 +49,6 @@ export const FEATURES = [
     'concierge',
     'view',
     'cellar',
-    'quiet',
     'fireplace',
     'air_conditioning',
 ] as const;
@@ -67,7 +65,6 @@ export const FEATURE_ICONS: Record<(typeof FEATURES)[number], LucideIcon> = {
     concierge: ConciergeBell,
     view: Eye,
     cellar: Wine,
-    quiet: VolumeX,
     garden: Flower2,
     fireplace: Flame,
     air_conditioning: Snowflake,

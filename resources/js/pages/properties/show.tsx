@@ -49,7 +49,8 @@ type PropertyShowProps = {
     district: District;
     advisor: Advisor;
     /** Page meta (`meta`, not `seo`: that name is the shared prop). */
-    meta: { title: string; withBrand: boolean; description: string };
+    /** `noindex`: a confidential listing stays out of the index even once the session unlocked it (2026-09-29). */
+    meta: { title: string; withBrand: boolean; description: string; noindex?: boolean };
     map: MapConfig;
     /** Previous / next catalogue listing of the same transaction. */
     neighbours: { previous: Neighbour; next: Neighbour };
@@ -139,7 +140,7 @@ export default function PropertyShow({ property, similar, district, advisor, met
                 />
             </Head>
             <SeoHead
-                noindex={sold}
+                noindex={sold || Boolean(meta.noindex)}
                 title={meta.title}
                 withBrand={meta.withBrand}
                 description={meta.description}

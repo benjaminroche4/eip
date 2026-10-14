@@ -257,4 +257,15 @@ describe('Property detail page', () => {
         unmount();
         vi.useRealTimers();
     });
+
+    it('an unlocked confidential listing stays noindex (meta.noindex from the controller, bug 2026-10-14: the page only read the sold state)', () => {
+        page.props = sharedProps();
+        const { unmount } = renderPage(
+            <PropertyShow {...PROPS} property={{ ...LISTING, off_market: true }} meta={{ ...PROPS.meta, noindex: true }} />,
+        );
+        expect(document.head.querySelector('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+        unmount();
+        renderPage(<PropertyShow {...PROPS} />);
+        expect(document.head.querySelector('meta[name="robots"]')?.getAttribute('content')).toMatch(/^index, follow/);
+    });
 });
