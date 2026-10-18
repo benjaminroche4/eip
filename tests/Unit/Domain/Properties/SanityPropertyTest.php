@@ -84,6 +84,15 @@ class SanityPropertyTest extends TestCase
         $this->assertSame([['date' => '2026-10-02', 'price' => 1890000]], $property->priceHistory);
         $this->assertSame([['name' => 'École Militaire', 'kind' => 'metro', 'lines' => [], 'minutes' => null], ['name' => 'La Tour-Maubourg', 'kind' => 'metro', 'lines' => [], 'minutes' => null]], $property->transport);
         $this->assertSame('EP0001', $property->reference);
+        // The editors typed line numbers in « Métro » (bug 2026-10-18, « Situé à 6 »): never a quartier, one « Métro » row with the badges
+        $lines = Property::fromArray($this->mapper()->row(self::doc(['metro' => ['6', '9', '9', '3BIS'], 'arrondissement' => 16])));
+        $this->assertSame('', $lines->area, 'a line number is not a quartier: the arrondissement alone');
+        $this->assertSame([['name' => 'Métro', 'kind' => 'metro', 'lines' => ['6', '9', '3bis'], 'minutes' => null]], $lines->transport);
+        $this->assertSame('Metro', Property::fromArray($this->mapper()->row(self::doc(['metro' => ['6'], 'language' => 'en'])))->transport[0]['name']);
+        $single = Property::fromArray($this->mapper()->row(self::doc(['metro' => ['Trocadéro', '6', '9']])));
+        $this->assertSame('Trocadéro', $single->area);
+        $this->assertSame([['name' => 'Trocadéro', 'kind' => 'metro', 'lines' => ['6', '9'], 'minutes' => null]], $single->transport, 'one station: the lines are its');
+        $this->assertSame([], Property::fromArray($this->mapper()->row(self::doc(['metro' => []])))->transport);
         $this->assertSame(['fr' => 'test-4-pieces-haussmannien-avec-balcon-paris-7e', 'en' => 'test-4-rooms'], $property->slugs);
         $this->assertFalse($property->priceOnRequest);
         $this->assertSame(['paid_by' => 'buyer', 'amount' => 20000], $property->fees);
@@ -124,7 +133,7 @@ class SanityPropertyTest extends TestCase
         $this->assertSame('mansion', $top->type);
         $this->assertSame(9, $top->bedrooms);
         $this->assertSame(SanityProperty::CENTROIDS[7], [$top->lat, $top->lng], 'no geopoint: the arrondissement centroid');
-        $this->assertSame('Paris 7e', $top->area, 'no station: the arrondissement');
+        $this->assertSame('', $top->area, 'no station: no quartier (the pages fall back on the arrondissement)');
         $this->assertNull($top->dpe, 'DPE not required');
         $this->assertFalse($top->procedure);
 

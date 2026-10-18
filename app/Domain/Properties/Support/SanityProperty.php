@@ -21,16 +21,23 @@ use Illuminate\Support\Str;
  * - `condition` toRenovate | good | renovated | new → `to_renovate` | `good` | `renovated` | `new`;
  * - `mainPhoto` then `photos[]` → cdn.sanity.io `{w}` templates (`SanityImage::template()`), the alt of the main photo;
  * - `agent->` → the advisor's name and 64 px square portrait; `metaDescription` → the excerpt (and the meta description);
- * - `description` (Portable Text) → one plain paragraph per block; `metro[]` → stations without lines nor minutes;
+ * - `description` (Portable Text) → one plain paragraph per block; `metro[]` → the stations named (no lines nor minutes), or,
+ *   when the editors typed line numbers (« 6 », « 9 » - the field is a bare list of strings, 2026-10-18), one « Métro » row
+ *   carrying those lines as badges: a line number is never a station, nor a quartier;
  * - `location` geopoint → `lat` / `lng`, the arrondissement's centroid when the document has none;
  * - `address` → one line, only when `hideExactAddress` is false; `uniqueId` → `reference`; `fees`, `dpe` (classes, consumption, emissions), `priceOnRequest`;
  * - `main.bathrooms`, `surfaces.living`, `floors.totalFloors` and the category names (`tags`) travel as they are, each shown only when filled.
  *
- * The Studio has no neighbourhood field: `area` is the first metro station named, else the arrondissement (user to
- * decide whether a `neighbourhood` field joins the schema).
+ * The Studio has no neighbourhood field: `area` is the first metro *station* named, else empty: `PropertySeo` and the
+ * detail page then speak of the arrondissement alone (« Situé dans le 16e arrondissement », « à vendre, Paris 16e »),
+ * never « Situé à 6 » nor « Paris 16e, Paris 16e » (bug 2026-10-18; user to decide whether a `neighbourhood` field joins
+ * the schema).
  */
 final class SanityProperty
 {
+    /** A metro line as the editors type it in the « Métro » list: « 1 » to « 14 », « 3bis », « 7bis ». */
+    public const METRO_LINE = '/^(1[0-4]|[1-9]|3bis|7bis)$/i';
+
     /** Sanity `estatePropertyType` slugs (FR and EN documents) → the site's type keys (`PropertyQuery::TYPES`). */
     public const TYPE_SLUGS = [
         'appartement' => 'apartment', 'apartment' => 'apartment',
@@ -85,6 +92,11 @@ final class SanityProperty
         $categories = array_values(array_filter(array_map(fn (array $c) => $c['slug'] ?? null, $categoryDocs), 'is_string'));
         $tags = array_values(array_filter(array_map(fn (array $c) => is_string($c['name'] ?? null) ? trim($c['name']) : '', $categoryDocs)));
         $metro = array_values(array_filter(array_map(fn ($s) => is_string($s) ? trim($s) : '', (array) ($doc['metro'] ?? []))));
+        // « 6 », « 3bis »: a line, not a station. Stations keep their row; the lines gather on one « Métro » row (or on the
+        // single station named, when there is exactly one)
+        $lines = array_values(array_filter($metro, fn (string $s) => preg_match(self::METRO_LINE, $s) === 1));
+        $stations = array_values(array_filter($metro, fn (string $s) => preg_match(self::METRO_LINE, $s) !== 1));
+        $language = is_string($doc['language'] ?? null) ? $doc['language'] : null;
         $floor = self::int($doc['floors']['floor'] ?? null);
         $totalFloors = self::int($doc['floors']['totalFloors'] ?? null);
         $published = self::date($doc['createdAt'] ?? null);
@@ -127,7 +139,7 @@ final class SanityProperty
             'slug' => (string) ($doc['slug'] ?? ''),
             'title' => trim((string) ($doc['title'] ?? '')),
             'arrondissement' => $arrondissement,
-            'area' => $metro[0] ?? __('ui.districts.items.'.($arrondissement - 1).'.name', [], $doc['language'] ?? null),
+            'area' => $stations[0] ?? '',
             'type' => $type,
             // The Studio only lists sales today: a rental type would map here
             'transaction' => 'sale',
@@ -165,7 +177,7 @@ final class SanityProperty
                 : null,
             'procedure' => isset($doc['condominium']['ongoingProcedure']) ? (bool) $doc['condominium']['ongoingProcedure'] : null,
             'price_history' => $published !== null && $price > 0 ? [['date' => $published, 'price' => $price]] : [],
-            'transport' => array_map(fn (string $name) => ['name' => $name, 'kind' => 'metro', 'lines' => [], 'minutes' => null], $metro),
+            'transport' => self::transport($stations, $lines, $language),
             'sold_at' => $status === 'sold' ? self::date($doc['_updatedAt'] ?? null) : null,
             'reference' => trim((string) ($doc['uniqueId'] ?? '')) ?: null,
             // The listing's own access code (four digits in the Studio); anything else = the listing cannot be opened
@@ -262,5 +274,23 @@ final class SanityProperty
     public static function publishable(array $doc): bool
     {
         return is_string($doc['slug'] ?? null) && Str::slug($doc['slug']) === $doc['slug'] && in_array($doc['language'] ?? null, ['fr', 'en'], true);
+    }
+
+    /**
+     * The transport rows of the detail page: one per station named (the lines on it when it is the only station),
+     * else one « Métro » row wearing the line badges, else nothing.
+     *
+     * @param  list<string>  $stations
+     * @param  list<string>  $lines
+     * @return list<array{name: string, kind: string, lines: list<string>, minutes: null}>
+     */
+    private static function transport(array $stations, array $lines, ?string $language): array
+    {
+        $lines = array_values(array_unique(array_map('strtolower', $lines)));
+        if ($stations === []) {
+            return $lines === [] ? [] : [['name' => __('ui.property.metro', [], $language), 'kind' => 'metro', 'lines' => $lines, 'minutes' => null]];
+        }
+
+        return array_map(fn (string $name) => ['name' => $name, 'kind' => 'metro', 'lines' => count($stations) === 1 ? $lines : [], 'minutes' => null], $stations);
     }
 }

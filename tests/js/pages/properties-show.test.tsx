@@ -261,6 +261,20 @@ describe('Property detail page', () => {
         vi.useRealTimers();
     });
 
+    it('no quartier (line numbers in the Studio, 2026-10-18): the location line names the arrondissement alone, the eyebrow too', () => {
+        page.props = sharedProps();
+        renderPage(
+            <PropertyShow
+                {...PROPS}
+                property={{ ...LISTING, area: '', transport: [{ name: 'Métro', kind: 'metro', lines: ['6', '9'], minutes: null }] }}
+            />,
+        );
+        expect(screen.getByText(/Situé dans le 6e arrondissement de Paris/)).toBeInTheDocument();
+        expect(document.body.textContent).not.toMatch(/Situé à ,|dans le Paris\.|Paris 6e · Paris 6e/);
+        expect(screen.getByRole('img', { name: 'Ligne 6' })).toBeInTheDocument();
+        expect(screen.getByRole('img', { name: 'Ligne 9' })).toBeInTheDocument();
+    });
+
     it('an unlocked confidential listing stays noindex (meta.noindex from the controller, bug 2026-10-14: the page only read the sold state)', () => {
         page.props = sharedProps();
         const { unmount } = renderPage(

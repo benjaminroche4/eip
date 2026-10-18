@@ -127,6 +127,8 @@ final class PropertySeo
             'arrondissement' => $area === $arrondissement ? 'Paris' : $arrondissement,
             // Title parts: « École Militaire · Paris 7e » (or the arrondissement alone) and the transaction keyword
             'place' => $area === $arrondissement ? $arrondissement : "$area · $arrondissement",
+            // Sentence parts: « à École Militaire, Paris 7e » or « à Paris 16e » alone (never « Paris 16e, Paris », 2026-10-18)
+            'location' => $area === $arrondissement ? $arrondissement : "$area, $arrondissement",
             'district' => $arrondissement,
             'intent' => __('ui.property.'.($property->transaction === 'rent' ? 'intent_rent' : 'intent_sale'), [], $locale),
             'price' => $property->priceOnRequest ? '' : __('ui.districts.price_format', ['price' => self::number($property->price, $locale)], $locale),

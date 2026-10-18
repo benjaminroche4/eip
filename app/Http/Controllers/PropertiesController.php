@@ -106,7 +106,7 @@ class PropertiesController extends Controller
             'landing' => $landing,
             'districts' => ($this->districtListings)(),
             // Quartiers to offer in the filters (the `area` of every listing, 2026-09-28)
-            'areas' => ($this->list)()->pluck('area')->unique()->sort()->values()->all(),
+            'areas' => ($this->list)()->pluck('area')->filter()->unique()->sort()->values()->all(),
             'priceBounds' => $this->list->priceBounds(),
             'indexing' => [
                 // A district page without a single property is thin: kept out of the index until it has some

@@ -74,7 +74,7 @@ class PropertiesSanityTest extends TestCase
                 ->where('propertiesCount', 3)
                 ->where('districts.0.n', 7)
                 ->where('priceBounds.sale', ['min' => 1890000, 'max' => 1890000]) // the undisclosed price stays out of the range
-                ->where('areas', ['Passy', 'École Militaire']));
+                ->where('areas', ['Passy', 'École Militaire'])); // the listing with line numbers only has no quartier to filter on
 
         $this->withLocale('en')->fakeSanity($this->docs());
         $this->get('/en/properties')
@@ -147,6 +147,21 @@ class PropertiesSanityTest extends TestCase
                 ->where('meta.description', 'Appartement de 4 pièces, 118 m², 3 chambres à Passy, Paris 16e, prix sur demande. Contactez Estate in Paris pour une visite privée.'));
         $this->assertStringNotContainsString('7200000', $this->get('/nos-biens/achat/paris-16e/prix-sur-demande-paris-16e')->getContent());
         $this->assertStringNotContainsString('7 200 000', $this->get('/nos-biens')->getContent());
+    }
+
+    public function test_line_numbers_in_the_metro_list_never_pass_for_a_quartier(): void
+    {
+        // The Studio's « Métro » field holds « 6 », « 9 » (bug 2026-10-18: « Situé à 6, dans le Paris 16e » on the page, the title and the metas)
+        $this->fakeSanity([SanityPropertyTest::doc(['_id' => 'lignes-fr', 'slug' => 'lignes-paris-16e', 'uniqueId' => 'EP0012', 'arrondissement' => 16, 'metro' => ['6', '9'], 'metaDescription' => null, 'translations' => null])]);
+        $this->get('/nos-biens/achat/paris-16e/lignes-paris-16e')->assertOk()
+            ->assertInertia(fn (Assert $p) => $p->where('property.area', '')
+                ->where('property.transport', [['name' => 'Métro', 'kind' => 'metro', 'lines' => ['6', '9'], 'minutes' => null]])
+                ->where('meta.title', 'Appartement 4 pièces 118 m² à vendre, Paris 16e')
+                ->where('meta.answer', 'À la vente : appartement de 4 pièces (118 m², 3 chambres) à Paris 16e, au prix de 1 890 000 €.')
+                ->where('meta.description', 'Appartement de 4 pièces, 118 m², 3 chambres à Paris 16e, 1 890 000 €. Contactez Estate in Paris pour une visite privée.'));
+        $html = $this->get('/nos-biens/achat/paris-16e/lignes-paris-16e')->getContent();
+        $this->assertStringNotContainsString('à 6', $html);
+        $this->assertStringNotContainsString('Paris 16e, Paris', $html);
     }
 
     public function test_the_twin_slug_falls_back_on_the_shared_reference_without_translation_metadata(): void

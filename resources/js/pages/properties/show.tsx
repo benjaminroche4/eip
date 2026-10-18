@@ -225,7 +225,9 @@ export default function PropertyShow({ property, similar, district, advisor, met
                                         <span>
                                             {property.address
                                                 ? t('property.location_text_address', { address: property.address, area })
-                                                : t('property.location_text', { area, arrondissement: property.area ? arrondissement : 'Paris' })}
+                                                : property.area
+                                                  ? t('property.location_text', { area, arrondissement })
+                                                  : t('property.location_text_district', { ordinal: ordinal(property.arrondissement, locale) })}
                                         </span>
                                     </p>
                                     {mapOpen || desktop ? (
