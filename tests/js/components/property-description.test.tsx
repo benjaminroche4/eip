@@ -19,6 +19,7 @@ describe('PropertyDescription', () => {
         expect(screen.getByText(description[0]).nextElementSibling).toContainElement(carousel);
         expect(carousel.querySelector('img')).toHaveClass('aspect-video');
         expect(screen.getByRole('button', { name: 'Photo suivante' })).toBeInTheDocument();
+        expect(carousel.querySelector('.rounded-full')).toBeNull(); // no row of dots: every photo of the listing is there, too many dots (user decision 2026-10-31)
         expect(container.querySelector('.bg-secondary-60.h-px')).toBeNull(); // no sand rule any more
         expect(await axe(container)).toHaveNoViolations();
 

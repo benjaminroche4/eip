@@ -27,6 +27,7 @@ export default function PropertyDescription({ property }: PropertyDescriptionPro
                 imageClass="aspect-video"
                 sizes="(min-width: 64rem) 48rem, 100vw"
                 label={t('property.description_photos')}
+                dots={false}
             />
         </div>
     );
