@@ -103,6 +103,9 @@ final readonly class Property implements Arrayable
     /** Days during which a listing is flagged « Nouveau ». */
     public const NEW_FOR_DAYS = 14;
 
+    /** Photos a card scrolls through (« Nos biens », similar listings — user decision 2026-10-31): the gallery of the detail page keeps them all. */
+    public const CARD_PHOTOS = 5;
+
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
@@ -253,7 +256,7 @@ final readonly class Property implements Arrayable
         return [
             'slug' => $this->slug, 'title' => $this->title, 'arrondissement' => $this->arrondissement, 'area' => $this->area, 'type' => $this->type, 'transaction' => $this->transaction,
             'price' => $this->publicPrice(), 'surface' => $this->surface, 'rooms' => $this->rooms, 'bedrooms' => $this->bedrooms,
-            'excerpt' => $this->excerpt, 'photos' => $this->photos, 'photo_alt' => $this->photoAlt, 'photo_alts' => $this->photoAlts, 'photo_sizes' => $this->photoSizes, 'advisor' => $this->advisor, 'available' => $this->available,
+            'excerpt' => $this->excerpt, 'photos' => array_slice($this->photos, 0, self::CARD_PHOTOS), 'photo_alt' => $this->photoAlt, 'photo_alts' => array_slice($this->photoAlts, 0, self::CARD_PHOTOS), 'photo_sizes' => array_slice($this->photoSizes, 0, self::CARD_PHOTOS), 'advisor' => $this->advisor, 'available' => $this->available,
             'lat' => $this->lat, 'lng' => $this->lng, 'off_market' => $this->offMarket, 'featured' => $this->featured,
             'features' => $this->features, 'condition' => $this->condition, 'floor' => $this->floor, 'furnished' => $this->furnished, 'charges_included' => $this->chargesIncluded,
             'published_at' => $this->publishedAt, 'is_new' => $this->isNew(), 'price_sqm' => $this->publicPricePerSqm(), 'year_built' => $this->yearBuilt, 'dpe' => $this->dpe,

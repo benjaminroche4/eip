@@ -149,6 +149,19 @@ class SanityPropertyTest extends TestCase
         $this->assertNull(SanityProperty::missing($b = self::doc(['propertyType' => 'immeuble', 'main' => ['rooms' => null]]), $this->mapper()->row($b, [])));
     }
 
+    public function test_a_card_scrolls_through_five_photos_at_most(): void
+    {
+        $photos = array_map(fn ($i) => ['alt' => "Photo $i", 'asset' => ['_ref' => 'image-49e5893e0c28938c1a234e853f418eb1e9aa5c1'.$i.'-1448x1086-webp']], range(0, 7));
+        $property = Property::fromArray($this->mapper()->row(self::doc(['photos' => $photos])));
+
+        $this->assertCount(9, $property->photos, 'the detail page keeps every photo');
+        $card = $property->toCard();
+        $this->assertCount(Property::CARD_PHOTOS, $card['photos']);
+        $this->assertCount(Property::CARD_PHOTOS, $card['photo_alts']);
+        $this->assertCount(Property::CARD_PHOTOS, $card['photo_sizes']);
+        $this->assertSame(array_slice($property->photos, 0, 5), $card['photos'], 'the first five, main photo first');
+    }
+
     public function test_a_listing_missing_a_fact_the_pages_need_is_named(): void
     {
         $missing = fn (array $over) => SanityProperty::missing($doc = self::doc($over), $this->mapper()->row($doc, []));
